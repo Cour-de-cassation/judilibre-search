@@ -19,10 +19,10 @@ class Server {
     if (this.started === false) {
       this.started = true;
       this.app.listen(process.env.API_PORT, () => {
-        console.log(`JUDILIBRE.Server - Start 'search' server on port ${process.env.API_PORT}.`);
+        console.log(`JUDILIBRE-SEARCH.Server: Start server on port ${process.env.API_PORT}.`);
       });
     } else {
-      throw new Error('JUDILIBRE.Server: already started.');
+      throw new Error('JUDILIBRE-SEARCH.Server: Server already started.');
     }
   }
 }
