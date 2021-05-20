@@ -10,7 +10,7 @@
   "license": "",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Cour-de-cassation/judillibre-search.git"
+    "url": "git+https://github.com/Cour-de-cassation/judilibre-search.git"
   },
   "dependencies": {
     "@elastic/elasticsearch": "^7.12.0",
