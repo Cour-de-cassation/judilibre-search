@@ -5,8 +5,7 @@ const Elastic = require('../modules/elastic');
 const pathId = 'search';
 
 api.get(`/${pathId}/:query`, async (req, res) => {
-  res.header('Content-Type', 'application/json');
-  res.send(JSON.stringify(await getSearch(req.params.query)));
+  res.status(200).json(await getSearch(req.params.query));
 });
 
 async function getSearch(query) {

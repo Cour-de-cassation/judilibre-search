@@ -5,8 +5,7 @@ const Elastic = require('../modules/elastic');
 const pathId = 'taxonomy';
 
 api.get(`/${pathId}/:query`, async (req, res) => {
-  res.header('Content-Type', 'application/json');
-  res.send(JSON.stringify(await getTaxonomy(req.params.query)));
+  res.status(200).json(await getTaxonomy(req.params.query));
 });
 
 async function getTaxonomy(query) {

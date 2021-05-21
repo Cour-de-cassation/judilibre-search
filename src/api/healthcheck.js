@@ -5,8 +5,7 @@ const Elastic = require('../modules/elastic');
 const pathId = 'healthcheck';
 
 api.get(`/${pathId}/:query`, async (req, res) => {
-  res.header('Content-Type', 'application/json');
-  res.send(JSON.stringify(await getHealthcheck(req.params.query)));
+  res.status(200).json(await getHealthcheck(req.params.query));
 });
 
 async function getHealthcheck(query) {
