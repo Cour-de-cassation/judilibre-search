@@ -2,15 +2,20 @@ require('../modules/env');
 const express = require('express');
 const api = express.Router();
 const Elastic = require('../modules/elastic');
-const pathId = 'search';
+const route = 'search';
 
-api.get(`/${pathId}/:query`, async (req, res) => {
-  res.status(200).json(await getSearch(req.params.query));
+api.get(`/${route}/:query`, async (req, res) => {
+  try {
+    const result = await getSearch(req.params.query);
+    res.status(200).json(result);
+  } catch (e) {
+    res.status(500).json({ route: route, message: 'Internal Server Error', error: e.message });
+  }
 });
 
 async function getSearch(query) {
   return {
-    path: pathId,
+    route: route,
     query: query,
   };
 }
