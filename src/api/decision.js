@@ -9,13 +9,13 @@ api.get(`/${route}`, async (req, res) => {
     const result = await getDecision(req.query);
     return res.status(200).json(result);
   } catch (e) {
-    return res.status(500).json({ errors: [{ location: route, msg: 'Internal Server Error', error: e.message }] });
+    return res.status(500).json({ errors: [{ route: route, msg: 'Internal Server Error', error: e.message }] });
   }
 });
 
 async function getDecision(query) {
   return {
-    location: route,
+    route: route,
     query: query,
   };
 }

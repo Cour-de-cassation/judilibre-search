@@ -12,7 +12,12 @@ api.get(
       in: ['query'],
       isString: true,
       toLowerCase: true,
-      errorMessage: 'The query parameter is missing',
+      optional: true,
+    },
+    field: {
+      in: ['query'],
+      isArray: true,
+      optional: true,
     },
   }),
   async (req, res) => {
@@ -24,14 +29,14 @@ api.get(
       const result = await getSearch(req.query);
       return res.status(200).json(result);
     } catch (e) {
-      return res.status(500).json({ errors: [{ location: route, msg: 'Internal Server Error', error: e.message }] });
+      return res.status(500).json({ errors: [{ route: route, msg: 'Internal Server Error', error: e.message }] });
     }
   },
 );
 
 async function getSearch(query) {
   return {
-    location: route,
+    route: route,
     query: query,
   };
 }
