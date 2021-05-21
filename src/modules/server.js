@@ -1,6 +1,5 @@
+require('./env');
 const path = require('path');
-require('dotenv').config({ path: path.join(__dirname, '..', '..', '.env') });
-
 const express = require('express');
 const cors = require('cors');
 
@@ -19,10 +18,10 @@ class Server {
     if (this.started === false) {
       this.started = true;
       this.app.listen(process.env.API_PORT, () => {
-        console.log(`JUDILIBRE-SEARCH.Server: Start server on port ${process.env.API_PORT}.`);
+        console.log(`JUDILIBRE-${process.env.APP_ID}.Server: Start server on port ${process.env.API_PORT}.`);
       });
     } else {
-      throw new Error('JUDILIBRE-SEARCH.Server: Server already started.');
+      throw new Error(`JUDILIBRE-${process.env.APP_ID}.Server: Server already started.`);
     }
   }
 }
