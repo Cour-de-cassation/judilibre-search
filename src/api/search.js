@@ -5,18 +5,28 @@ const { checkSchema, validationResult } = require('express-validator');
 const Elastic = require('../modules/elastic');
 const route = 'search';
 
+const field = require('../taxons/field');
+
 api.get(
   `/${route}`,
   checkSchema({
     query: {
-      in: ['query'],
+      in: 'query',
       isString: true,
       toLowerCase: true,
       optional: true,
     },
     field: {
-      in: ['query'],
-      isArray: true,
+      in: 'query',
+      toArray: true,
+    },
+    'field.*': {
+      in: 'query',
+      isString: true,
+      isIn: {
+        options: [Object.keys(field)],
+      },
+      errorMessage: `Value of the field parameter must be in [${Object.keys(field)}].`,
       optional: true,
     },
   }),
