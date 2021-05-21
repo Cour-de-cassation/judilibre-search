@@ -4,9 +4,9 @@ const api = express.Router();
 const Elastic = require('../modules/elastic');
 const route = 'healthcheck';
 
-api.get(`/${route}/:query`, async (req, res) => {
+api.get(`/${route}`, async (req, res) => {
   try {
-    const result = await getHealthcheck(req.params.query);
+    const result = await getHealthcheck(req.query);
     return res.status(200).json(result);
   } catch (e) {
     return res.status(500).json({ errors: [{ location: route, msg: 'Internal Server Error', error: e.message }] });
@@ -15,7 +15,7 @@ api.get(`/${route}/:query`, async (req, res) => {
 
 async function getHealthcheck(query) {
   return {
-    route: route,
+    location: route,
     query: query,
   };
 }
