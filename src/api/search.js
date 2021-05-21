@@ -6,6 +6,7 @@ const Elastic = require('../modules/elastic');
 const route = 'search';
 
 const field = require('../taxons/field');
+const operator = require('../taxons/operator');
 
 api.get(
   `/${route}`,
@@ -23,10 +24,21 @@ api.get(
     'field.*': {
       in: 'query',
       isString: true,
+      toLowerCase: true,
       isIn: {
-        options: [Object.keys(field)],
+        options: [field.options],
       },
-      errorMessage: `Value of the field parameter must be in [${Object.keys(field)}].`,
+      errorMessage: `Value of the field parameter must be in [${field.keys}].`,
+      optional: true,
+    },
+    operator: {
+      in: 'query',
+      isString: true,
+      toLowerCase: true,
+      isIn: {
+        options: [operator.options],
+      },
+      errorMessage: `Value of the operator parameter must be in [${operator.keys}].`,
       optional: true,
     },
   }),

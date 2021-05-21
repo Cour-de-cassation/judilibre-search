@@ -1,4 +1,4 @@
-module.exports = {
+const taxon = {
   expose: 'Exposé du litige',
   moyens: 'Moyens',
   motivations: 'Motivations',
@@ -8,4 +8,9 @@ module.exports = {
   visa: 'Visa',
   sommaire: 'Sommaire',
   titrage: 'Titrage',
+};
+
+module.exports = {
+  options: [''].concat(Object.keys(taxon)),
+  keys: Object.keys(taxon),
 };
