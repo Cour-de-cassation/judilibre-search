@@ -10,6 +10,14 @@ class Server {
     this.app.use(express.json({ limit: '50mb' }));
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(express.static(path.join(__dirname, '..', '..', 'public')));
+    this.app.use((err, req, res, next) => {
+      if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+        return res
+          .status(400)
+          .json({ route: `${req.method} ${req.path}`, errors: [{ msg: 'Bad request.', err: err.message }] });
+      }
+      next();
+    });
     this.app.use(require(path.join(__dirname, '..', 'api')));
     this.started = false;
   }
