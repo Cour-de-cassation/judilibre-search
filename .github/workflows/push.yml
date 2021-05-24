@@ -1,6 +1,6 @@
-name: Test & Build
+name: Publish Dockerimage
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   build:
