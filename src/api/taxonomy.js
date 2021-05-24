@@ -2,7 +2,6 @@ require('../modules/env');
 const express = require('express');
 const api = express.Router();
 const { checkSchema, validationResult } = require('express-validator');
-// const Elastic = require('../modules/elastic');
 const route = 'taxonomy';
 
 const taxons = require('../taxons');
@@ -78,6 +77,19 @@ api.get(
 );
 
 async function getTaxonomy(query) {
+  if (!query.id && !query.key && !query.value && !query.context_value) {
+    return {
+      result: Object.keys(taxons),
+    };
+  }
+  if (query.id) {
+    if (!query.key && !query.value && !query.context_value) {
+      return {
+        id: query.id,
+        result: taxons[query.id].taxonomy,
+      };
+    }
+  }
   return {
     route: `GET /${route}`,
     query: query,
