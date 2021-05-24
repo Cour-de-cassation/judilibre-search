@@ -11,6 +11,12 @@ const type = require('../taxons/type');
 const theme = require('../taxons/theme');
 const chamber = require('../taxons/chamber');
 const formation = require('../taxons/formation');
+const jurisdiction = require('../taxons/jurisdiction');
+const committee = require('../taxons/committee');
+const publication = require('../taxons/publication');
+const solution = require('../taxons/solution');
+const sort = require('../taxons/sort');
+const order = require('../taxons/order');
 
 api.get(
   `/${route}`,
@@ -99,6 +105,117 @@ api.get(
         options: [formation.options],
       },
       errorMessage: `Value of the formation parameter must be in [${formation.keys}].`,
+      optional: true,
+    },
+    jurisdiction: {
+      in: 'query',
+      toArray: true,
+    },
+    'jurisdiction.*': {
+      in: 'query',
+      isString: true,
+      toLowerCase: true,
+      isIn: {
+        options: [jurisdiction.options],
+      },
+      errorMessage: `Value of the jurisdiction parameter must be in [${jurisdiction.keys}].`,
+      optional: true,
+    },
+    committee: {
+      in: 'query',
+      toArray: true,
+    },
+    'committee.*': {
+      in: 'query',
+      isString: true,
+      toLowerCase: true,
+      isIn: {
+        options: [committee.options],
+      },
+      errorMessage: `Value of the committee parameter must be in [${committee.keys}].`,
+      optional: true,
+    },
+    publication: {
+      in: 'query',
+      toArray: true,
+    },
+    'publication.*': {
+      in: 'query',
+      isString: true,
+      toLowerCase: true,
+      isIn: {
+        options: [publication.options],
+      },
+      errorMessage: `Value of the publication parameter must be in [${publication.keys}].`,
+      optional: true,
+    },
+    solution: {
+      in: 'query',
+      toArray: true,
+    },
+    'solution.*': {
+      in: 'query',
+      isString: true,
+      toLowerCase: true,
+      isIn: {
+        options: [solution.options],
+      },
+      errorMessage: `Value of the solution parameter must be in [${solution.keys}].`,
+      optional: true,
+    },
+    date_start: {
+      in: 'query',
+      isISO8601: true,
+      errorMessage: `Start date must be of type ISO-8601 (e.g. 2021-05-13).`,
+      optional: true,
+    },
+    date_end: {
+      in: 'query',
+      isISO8601: true,
+      errorMessage: `End date must be of type ISO-8601 (e.g. 2021-05-13).`,
+      optional: true,
+    },
+    sort: {
+      in: 'query',
+      isString: true,
+      toLowerCase: true,
+      isIn: {
+        options: [sort.options],
+      },
+      errorMessage: `Value of the sort parameter must be in [${sort.keys}].`,
+      optional: true,
+    },
+    order: {
+      in: 'query',
+      isString: true,
+      toLowerCase: true,
+      isIn: {
+        options: [order.options],
+      },
+      errorMessage: `Value of the order parameter must be in [${order.keys}].`,
+      optional: true,
+    },
+    page_size: {
+      in: 'query',
+      isInt: {
+        options: {
+          min: 1,
+          max: 50,
+        },
+      },
+      errorMessage: `Value of the page_size parameter must be an integer between 1 and 50.`,
+      optional: true,
+    },
+    page: {
+      in: 'query',
+      isInt: true,
+      errorMessage: `Value of the page parameter must be an integer.`,
+      optional: true,
+    },
+    resolve_references: {
+      in: 'query',
+      isBoolean: true,
+      errorMessage: `Value of the resolve_references parameter must be a boolean.`,
       optional: true,
     },
   }),
