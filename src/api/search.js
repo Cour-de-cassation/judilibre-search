@@ -7,6 +7,10 @@ const route = 'search';
 
 const field = require('../taxons/field');
 const operator = require('../taxons/operator');
+const type = require('../taxons/type');
+const theme = require('../taxons/theme');
+const chamber = require('../taxons/chamber');
+const formation = require('../taxons/formation');
 
 api.get(
   `/${route}`,
@@ -39,6 +43,62 @@ api.get(
         options: [operator.options],
       },
       errorMessage: `Value of the operator parameter must be in [${operator.keys}].`,
+      optional: true,
+    },
+    type: {
+      in: 'query',
+      toArray: true,
+    },
+    'type.*': {
+      in: 'query',
+      isString: true,
+      toLowerCase: true,
+      isIn: {
+        options: [type.options],
+      },
+      errorMessage: `Value of the type parameter must be in [${type.keys}].`,
+      optional: true,
+    },
+    theme: {
+      in: 'query',
+      toArray: true,
+    },
+    'theme.*': {
+      in: 'query',
+      isString: true,
+      toLowerCase: true,
+      isIn: {
+        options: [theme.options],
+      },
+      errorMessage: `Value of the theme parameter must be in [${theme.keys}].`,
+      optional: true,
+    },
+    chamber: {
+      in: 'query',
+      toArray: true,
+    },
+    'chamber.*': {
+      in: 'query',
+      isString: true,
+      toLowerCase: true,
+      isIn: {
+        options: [chamber.options],
+      },
+      errorMessage: `Value of the chamber parameter must be in [${chamber.keys}].`,
+      optional: true,
+    },
+    formation: {
+      in: 'query',
+      toArray: true,
+    },
+    'formation.*': {
+      in: 'query',
+      isString: true,
+      toLowerCase: true,
+      isIn: {
+        options: [formation.options],
+      },
+      errorMessage: `Value of the formation parameter must be in [${formation.keys}].`,
       optional: true,
     },
   }),
