@@ -5,18 +5,7 @@ const { checkSchema, validationResult } = require('express-validator');
 // const Elastic = require('../modules/elastic');
 const route = 'search';
 
-const field = require('../taxons/field');
-const operator = require('../taxons/operator');
-const type = require('../taxons/type');
-const theme = require('../taxons/theme');
-const chamber = require('../taxons/chamber');
-const formation = require('../taxons/formation');
-const jurisdiction = require('../taxons/jurisdiction');
-const committee = require('../taxons/committee');
-const publication = require('../taxons/publication');
-const solution = require('../taxons/solution');
-const sort = require('../taxons/sort');
-const order = require('../taxons/order');
+const taxons = require('../taxons');
 
 api.get(
   `/${route}`,
@@ -36,9 +25,9 @@ api.get(
       isString: true,
       toLowerCase: true,
       isIn: {
-        options: [field.options],
+        options: [taxons.field.options],
       },
-      errorMessage: `Value of the field parameter must be in [${field.keys}].`,
+      errorMessage: `Value of the field parameter must be in [${taxons.field.keys}].`,
       optional: true,
     },
     operator: {
@@ -46,9 +35,9 @@ api.get(
       isString: true,
       toLowerCase: true,
       isIn: {
-        options: [operator.options],
+        options: [taxons.operator.options],
       },
-      errorMessage: `Value of the operator parameter must be in [${operator.keys}].`,
+      errorMessage: `Value of the operator parameter must be in [${taxons.operator.keys}].`,
       optional: true,
     },
     type: {
@@ -60,9 +49,9 @@ api.get(
       isString: true,
       toLowerCase: true,
       isIn: {
-        options: [type.options],
+        options: [taxons.type.options],
       },
-      errorMessage: `Value of the type parameter must be in [${type.keys}].`,
+      errorMessage: `Value of the type parameter must be in [${taxons.type.keys}].`,
       optional: true,
     },
     theme: {
@@ -74,9 +63,9 @@ api.get(
       isString: true,
       toLowerCase: true,
       isIn: {
-        options: [theme.options],
+        options: [taxons.theme.options],
       },
-      errorMessage: `Value of the theme parameter must be in [${theme.keys}].`,
+      errorMessage: `Value of the theme parameter must be in [${taxons.theme.keys}].`,
       optional: true,
     },
     chamber: {
@@ -88,9 +77,9 @@ api.get(
       isString: true,
       toLowerCase: true,
       isIn: {
-        options: [chamber.options],
+        options: [taxons.chamber.options],
       },
-      errorMessage: `Value of the chamber parameter must be in [${chamber.keys}].`,
+      errorMessage: `Value of the chamber parameter must be in [${taxons.chamber.keys}].`,
       optional: true,
     },
     formation: {
@@ -102,9 +91,9 @@ api.get(
       isString: true,
       toLowerCase: true,
       isIn: {
-        options: [formation.options],
+        options: [taxons.formation.options],
       },
-      errorMessage: `Value of the formation parameter must be in [${formation.keys}].`,
+      errorMessage: `Value of the formation parameter must be in [${taxons.formation.keys}].`,
       optional: true,
     },
     jurisdiction: {
@@ -116,9 +105,9 @@ api.get(
       isString: true,
       toLowerCase: true,
       isIn: {
-        options: [jurisdiction.options],
+        options: [taxons.jurisdiction.options],
       },
-      errorMessage: `Value of the jurisdiction parameter must be in [${jurisdiction.keys}].`,
+      errorMessage: `Value of the jurisdiction parameter must be in [${taxons.jurisdiction.keys}].`,
       optional: true,
     },
     committee: {
@@ -130,9 +119,9 @@ api.get(
       isString: true,
       toLowerCase: true,
       isIn: {
-        options: [committee.options],
+        options: [taxons.committee.options],
       },
-      errorMessage: `Value of the committee parameter must be in [${committee.keys}].`,
+      errorMessage: `Value of the committee parameter must be in [${taxons.committee.keys}].`,
       optional: true,
     },
     publication: {
@@ -144,9 +133,9 @@ api.get(
       isString: true,
       toLowerCase: true,
       isIn: {
-        options: [publication.options],
+        options: [taxons.publication.options],
       },
-      errorMessage: `Value of the publication parameter must be in [${publication.keys}].`,
+      errorMessage: `Value of the publication parameter must be in [${taxons.publication.keys}].`,
       optional: true,
     },
     solution: {
@@ -158,9 +147,9 @@ api.get(
       isString: true,
       toLowerCase: true,
       isIn: {
-        options: [solution.options],
+        options: [taxons.solution.options],
       },
-      errorMessage: `Value of the solution parameter must be in [${solution.keys}].`,
+      errorMessage: `Value of the solution parameter must be in [${taxons.solution.keys}].`,
       optional: true,
     },
     date_start: {
@@ -180,9 +169,9 @@ api.get(
       isString: true,
       toLowerCase: true,
       isIn: {
-        options: [sort.options],
+        options: [taxons.sort.options],
       },
-      errorMessage: `Value of the sort parameter must be in [${sort.keys}].`,
+      errorMessage: `Value of the sort parameter must be in [${taxons.sort.keys}].`,
       optional: true,
     },
     order: {
@@ -190,9 +179,9 @@ api.get(
       isString: true,
       toLowerCase: true,
       isIn: {
-        options: [order.options],
+        options: [taxons.order.options],
       },
-      errorMessage: `Value of the order parameter must be in [${order.keys}].`,
+      errorMessage: `Value of the order parameter must be in [${taxons.order.keys}].`,
       optional: true,
     },
     page_size: {
@@ -203,18 +192,21 @@ api.get(
           max: 50,
         },
       },
+      toInt: true,
       errorMessage: `Value of the page_size parameter must be an integer between 10 and 50.`,
       optional: true,
     },
     page: {
       in: 'query',
       isInt: true,
+      toInt: true,
       errorMessage: `Value of the page parameter must be an integer.`,
       optional: true,
     },
     resolve_references: {
       in: 'query',
       isBoolean: true,
+      toBoolean: true,
       errorMessage: `Value of the resolve_references parameter must be a boolean.`,
       optional: true,
     },
