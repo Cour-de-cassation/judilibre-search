@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: judilibre-svc
+spec:
+  ports:
+  - port: 80
+    targetPort: 8080
+    protocol: TCP
+    name: http
+  selector:
+    app: judilibre-api
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: judilibre-api-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: judilibre-api
+  template:
+    metadata:
+      labels:
+        app: judilibre-api
+    spec:
+      containers:
+      - name: judilibre-api
+        image: opendatajustice/judilibre:master
+        ports:
+        - containerPort: 8080 
+        env:
+          - name: elasticsearch_node
+            value: http://judilibre-elasticsearch-es-default-0:9200
+

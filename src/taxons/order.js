@@ -1,12 +1,11 @@
 const taxon = {
-  or: 'Ou',
-  and: 'Et',
-  exact: 'Expression exacte',
+  asc: 'Ascendant',
+  desc: 'Descendant',
 };
 
 module.exports = {
   options: [''].concat(Object.keys(taxon)),
   keys: Object.keys(taxon),
-  default: Object.keys(taxon)[0],
+  default: Object.keys(taxon)[1],
   taxonomy: taxon,
 };

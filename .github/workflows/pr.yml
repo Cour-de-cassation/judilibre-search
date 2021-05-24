@@ -1,0 +1,35 @@
+name: Test & Build
+
+on: [pull_request]
+
+jobs:
+  build:
+    name: 🐳 Build docker image
+    runs-on: ubuntu-latest
+    env:
+      APP_ID: judilibre
+      API_PORT: 8080
+      DOCKER_USERNAME: opendatajustice
+    steps:
+      - uses: actions/checkout@v1
+      - name: get version
+        run: echo "##[set-output name=version;]$(cat package.json | jq -r '.version')-$(git rev-parse --short HEAD)"
+        id: extract_version
+      - name: extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+      - name: 🐋 Build the master docker image
+        run: docker build --build-arg API_PORT=${API_PORT} --target production -t ${DOCKER_USERNAME}/${APP_ID}:${VERSION} .
+        env:
+          VERSION: ${{ steps.extract_version.outputs.version }}
+      - name: 🏁 Start service
+        run: docker run --name ${APP_ID} -d -p ${API_PORT}:${API_PORT} ${DOCKER_USERNAME}/${APP_ID}:${VERSION}
+        env:
+          VERSION: ${{ steps.extract_version.outputs.version }}
+      - name: ✅ Execute minimal tests
+        run: |
+          docker ps
+          ./scripts/wait_service.sh
+          docker logs ${APP_ID}
+          ./scripts/test_minimal.sh
