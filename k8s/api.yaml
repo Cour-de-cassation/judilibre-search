@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
       - name: judilibre-api
-        image: opendatajustice/judilibre:ops-packaging 
+        image: opendatajustice/judilibre:master
         ports:
         - containerPort: 8080 
         env:
