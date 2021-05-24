@@ -7,6 +7,12 @@ const route = 'stats';
 api.get(`/${route}`, async (req, res) => {
   try {
     const result = await getStats(req.query);
+    if (result.errors) {
+      return res.status(400).json({
+        route: `${req.method} ${req.path}`,
+        errors: result.errors,
+      });
+    }
     return res.status(200).json(result);
   } catch (e) {
     return res
