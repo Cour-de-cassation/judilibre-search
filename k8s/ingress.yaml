@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: judilibre-ingress
+spec:
+  rules:
+  - host: api.judilibre.io
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: judilibre-svc
+            port:
+              number: 80
