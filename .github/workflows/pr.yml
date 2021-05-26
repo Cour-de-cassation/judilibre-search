@@ -23,7 +23,7 @@ jobs:
         run: docker build --build-arg API_PORT=${API_PORT} --target production -t ${DOCKER_USERNAME}/${APP_ID}:${VERSION} .
         env:
           VERSION: ${{ steps.extract_version.outputs.version }}
-      - name: 🏁 Start service
+      - name: 🏁 Start local service
         run: docker run --name ${APP_ID} -d -p ${API_PORT}:${API_PORT} ${DOCKER_USERNAME}/${APP_ID}:${VERSION}
         env:
           VERSION: ${{ steps.extract_version.outputs.version }}
@@ -33,31 +33,6 @@ jobs:
           ./scripts/wait_service.sh
           docker logs ${APP_ID}
           ./scripts/test_minimal.sh
-  deploy:
-    name: 🚀 Deploy ☸️
-    needs: build
-    runs-on: ubuntu-latest
-    env:
-      APP_ID: judilibre
-      API_PORT: 8080
-      DOCKER_USERNAME: opendatajustice
-    steps:
-      - uses: actions/checkout@v1
-      - name: get version
-        run: echo "##[set-output name=version;]$(cat package.json | jq -r '.version')-$(git rev-parse --short HEAD)"
-        id: extract_version
-      - name: extract branch name
-        shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-        id: extract_branch
-      - name: 🚀 deploy ☸️
-        run: |
-          apt-get install -yq gettext
-          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl
-          chmod +x kubectl
-          mkdir ~/.kube
-          echo ${KUBECONFIG_YAML} > ~/.kube/config
-          cat k8s/api | envsubst | ./kubectl apply -f -
-          rm ~/.kube/config
         env:
-          KUBECONFIG_YAML: ${{ secrets.KUBECONFIG_YAML }}
+          SCHEME: http
+          HOST: localhost
