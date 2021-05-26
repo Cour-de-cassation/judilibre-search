@@ -3,6 +3,10 @@ kind: Ingress
 metadata:
   name: ${API_ID}-ingress
 spec:
+  tls:
+  - hosts:
+    - search.judilibre.io
+    secretName: ${API_ID}-tls
   rules:
   - host: search.judilibre.io
     http:

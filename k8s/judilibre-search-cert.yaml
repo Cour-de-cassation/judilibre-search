@@ -1,11 +1,11 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: ${API_ID}-cert
+  name: judilibre-search-cert
   namespace: default
 spec:
   commonName: search.judilibre.io
-  secretName: ${API_ID}-cert
+  secretName: judilibre-search-cert
   dnsNames:
     - search.judilibre.io
   issuerRef:

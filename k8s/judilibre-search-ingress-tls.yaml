@@ -1,8 +1,12 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ${API_ID}-ingress
+  name: judilibre-search-ingress
 spec:
+  tls:
+  - hosts:
+    - search.judilibre.io
+    secretName: search-judilibre-tls
   rules:
   - host: search.judilibre.io
     http:
@@ -11,6 +15,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: ${API_ID}-svc
+            name: judilibre-search-svc
             port:
               number: 80

@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${API_ID}-svc
+spec:
+  ports:
+  - port: 80
+    targetPort: ${API_PORT}
+    protocol: TCP
+    name: http
+  selector:
+    app: ${API_ID}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${API_ID}-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ${API_ID}
+  template:
+    metadata:
+      labels:
+        app: ${API_ID}
+    spec:
+      containers:
+      - name: ${API_ID}
+        image: ${DOCKER_USERNAME}/${API_ID}:${VERSION}
+        ports:
+        - containerPort: ${API_PORT}
+        env:
+          - name: elasticsearch_node
+            value: http://judilibre-elasticsearch-es-default-0:9200
+
