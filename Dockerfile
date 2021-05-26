@@ -32,7 +32,7 @@ ARG NPM_FIX
 ARG NPM_VERBOSE
 ARG APP_ID
 ARG API_PORT
-ENV API_ID=${API_ID}
+ENV APP_ID=${APP_ID}
 ENV API_PORT=${API_PORT}
 ENV NPM_CONFIG_LOGLEVEL debug
 
@@ -61,7 +61,7 @@ CMD ["npm","run", "dev"]
 ###############################
 FROM base as production
 ARG NPM_AUDIT_DRY_RUN
-ENV APP_ID=judilibre
+ENV APP_ID=judilibre-search
 ENV API_PORT=8080
 ENV NODE_ENV=production
 
