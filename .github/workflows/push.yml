@@ -7,7 +7,7 @@ jobs:
     name: 🐳 Build docker image
     runs-on: ubuntu-latest
     env:
-      APP_ID: judilibre
+      APP_ID: judilibre-search
       API_PORT: 8080
       DOCKER_USERNAME: opendatajustice
     steps:

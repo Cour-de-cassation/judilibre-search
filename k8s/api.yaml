@@ -5,7 +5,7 @@ metadata:
 spec:
   ports:
   - port: 80
-    targetPort: 8080
+    targetPort: ${API_PORT}
     protocol: TCP
     name: http
   selector:
@@ -27,9 +27,9 @@ spec:
     spec:
       containers:
       - name: judilibre-api
-        image: opendatajustice/judilibre:master
+        image: ${DOCKER_USERNAME}/${API_ID}:${VERSION}
         ports:
-        - containerPort: 8080 
+        - containerPort: ${API_PORT}
         env:
           - name: elasticsearch_node
             value: http://judilibre-elasticsearch-es-default-0:9200
