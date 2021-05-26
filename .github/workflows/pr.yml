@@ -7,7 +7,7 @@ jobs:
     name: 🐳 Build docker image
     runs-on: ubuntu-latest
     env:
-      APP_ID: judilibre
+      APP_ID: judilibre-search
       API_PORT: 8080
       DOCKER_USERNAME: opendatajustice
     steps:
@@ -23,7 +23,7 @@ jobs:
         run: docker build --build-arg API_PORT=${API_PORT} --target production -t ${DOCKER_USERNAME}/${APP_ID}:${VERSION} .
         env:
           VERSION: ${{ steps.extract_version.outputs.version }}
-      - name: 🏁 Start service
+      - name: 🏁 Start local service
         run: docker run --name ${APP_ID} -d -p ${API_PORT}:${API_PORT} ${DOCKER_USERNAME}/${APP_ID}:${VERSION}
         env:
           VERSION: ${{ steps.extract_version.outputs.version }}
@@ -33,3 +33,6 @@ jobs:
           ./scripts/wait_service.sh
           docker logs ${APP_ID}
           ./scripts/test_minimal.sh
+        env:
+          SCHEME: http
+          HOST: localhost

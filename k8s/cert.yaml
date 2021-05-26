@@ -1,13 +1,13 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: judilibre-cert
+  name: ${APP_ID}-cert
   namespace: default
 spec:
-  commonName: api.judilibre.io
-  secretName: judilibre-cert
+  commonName: search.judilibre.io
+  secretName: ${APP_ID}-cert
   dnsNames:
-    - api.judilibre.io
+    - search.judilibre.io
   issuerRef:
     name: letsencrypt-prod
     kind: ClusterIssuer

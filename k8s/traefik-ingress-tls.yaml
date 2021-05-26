@@ -1,16 +1,16 @@
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: judilibre-route
+  name: ${APP_ID}-route
   namespace: default
 spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`api.judilibre.io`) && PathPrefix(`/`)
+    - match: Host(`search.judilibre.io`) && PathPrefix(`/`)
       kind: Rule
       services:
-        - name: judilibre-svc
+        - name: ${APP_ID}-svc
           port: 80
   tls:
-    secretName: judilibre-cert
+    secretName: ${APP_ID}-cert
