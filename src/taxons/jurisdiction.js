@@ -1,4 +1,6 @@
-const taxon = {};
+const taxon = {
+  cc: 'Cour de cassation',
+};
 
 module.exports = {
   options: [''].concat(Object.keys(taxon)),
