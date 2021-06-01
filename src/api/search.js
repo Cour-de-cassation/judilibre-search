@@ -2,7 +2,7 @@ require('../modules/env');
 const express = require('express');
 const api = express.Router();
 const { checkSchema, validationResult } = require('express-validator');
-// const Elastic = require('../modules/elastic');
+const Elastic = require('../modules/elastic');
 const route = 'search';
 
 const taxons = require('../taxons');
@@ -234,10 +234,7 @@ api.get(
 );
 
 async function getSearch(query) {
-  return {
-    route: `GET /${route}`,
-    query: query,
-  };
+  return await Elastic.search(query);
 }
 
 module.exports = api;
