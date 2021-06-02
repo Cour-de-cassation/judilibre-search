@@ -206,7 +206,7 @@ class Elastic {
       // @ TODO add visa, etc.
       if (fields[i] === 'number') {
         boostedFields[i] = fields[i] + '^100';
-      } else if (fields[i] === 'motivations' || fields[i] === 'dispositif') {
+      } else if (fields[i] === 'zoneMotivations' || fields[i] === 'zoneDispositif') {
         boostedFields[i] = fields[i] + '^5';
       } else {
         boostedFields[i] = fields[i];
