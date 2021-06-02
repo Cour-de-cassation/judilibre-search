@@ -4,7 +4,7 @@ const taxons = require('../taxons');
 class Elastic {
   constructor() {
     if (process.env.FAKE_ELASTIC) {
-      this.data = [];
+      this.data = null;
     } else {
       const { Client } = require('@elastic/elasticsearch');
       this.client = new Client({ node: `http://${process.env.ELASTIC_NODE}` });
@@ -15,8 +15,10 @@ class Elastic {
     const fs = require('fs');
     const path = require('path');
 
-    if (this.data.length === 0) {
-      this.data = JSON.parse(fs.readFileSync(path.join('..', '..', 'public', 'sample.json')).toString());
+    if (this.data === null) {
+      this.data = JSON.parse(
+        fs.readFileSync(path.join(__dirname, '..', '..', 'public', 'sample_list.json')).toString(),
+      );
     }
 
     const page = query.page || 0;
@@ -26,12 +28,14 @@ class Elastic {
       page: page,
       page_size: page_size,
       query: query,
-      total: this.data.length,
+      total: query.resolve_references ? this.data.resolved.length : this.data.unresolved.length,
       previous_page: null,
       next_page: null,
       took: 42,
       max_score: 10,
-      results: this.data.slice(page * page_size, (page + 1) * page_size),
+      results: query.resolve_references
+        ? this.data.resolved.slice(page * page_size, (page + 1) * page_size)
+        : this.data.unresolved.slice(page * page_size, (page + 1) * page_size),
     };
 
     if (page > 0) {
@@ -39,10 +43,18 @@ class Elastic {
       previous_page_params.set('page', page - 1);
       response.previous_page = previous_page_params.toString();
     }
-    if ((page + 1) * page_size < this.data.length) {
-      let next_page_params = new URLSearchParams(query);
-      next_page_params.set('page', page + 1);
-      response.next_page = next_page_params.toString();
+    if (query.resolve_references) {
+      if ((page + 1) * page_size < this.data.resolved.length) {
+        let next_page_params = new URLSearchParams(query);
+        next_page_params.set('page', page + 1);
+        response.next_page = next_page_params.toString();
+      }
+    } else {
+      if ((page + 1) * page_size < this.data.unresolved.length) {
+        let next_page_params = new URLSearchParams(query);
+        next_page_params.set('page', page + 1);
+        response.next_page = next_page_params.toString();
+      }
     }
 
     return response;
@@ -248,7 +260,7 @@ class Elastic {
           let result = {
             score: rawResult._score ? rawResult._score / response.max_score : 0,
             highlights: {},
-            id: rawResult._source.id,
+            id: rawResult._id,
             jurisdiction:
               query.resolve_references && taxons.jurisdiction.taxonomy[rawResult._source.jurisdiction]
                 ? taxons.jurisdiction.taxonomy[rawResult._source.jurisdiction]
