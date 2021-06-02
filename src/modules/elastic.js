@@ -11,8 +11,9 @@ class Elastic {
     const page = query.page || 0;
     const page_size = query.page_size || 10;
 
-    // Reformat what could be pourvoi numbers:
-    const searchString = query.query.trim().split(/\s+/gm);
+    // Reformat what could be "pourvoi" numbers:
+    const string = query.query || '';
+    let searchString = string.trim().split(/\s+/gm);
     for (let i = 0; i < searchString.length; i++) {
       if (/^\d\d[^\w\d]\d\d[^\w\d]\d\d\d$/.test(searchString[i])) {
         searchString[i] = searchString[i].replace(/[^\w\d]/gm, '');
@@ -20,10 +21,10 @@ class Elastic {
     }
 
     // Base query:
-    const searchQuery = {
+    let searchQuery = {
       index: process.env.ELASTIC_INDEX,
-      explain: false,
-      from: page,
+      explain: true,
+      from: page * page_size,
       size: page_size,
       _source: true,
       body: {
@@ -82,7 +83,7 @@ class Elastic {
     }
 
     // Publication:
-    if (query.publication) {
+    if (query.publication && query.publication.length > 0) {
       if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
         searchQuery.body.query.function_score.query.bool.filter = [];
       }
@@ -94,7 +95,7 @@ class Elastic {
     }
 
     // Formation:
-    if (query.formation) {
+    if (query.formation && query.formation.length > 0) {
       if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
         searchQuery.body.query.function_score.query.bool.filter = [];
       }
@@ -106,7 +107,7 @@ class Elastic {
     }
 
     // Chamber:
-    if (query.chamber) {
+    if (query.chamber && query.chamber.length > 0) {
       if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
         searchQuery.body.query.function_score.query.bool.filter = [];
       }
@@ -118,7 +119,6 @@ class Elastic {
     }
 
     // Fields:
-    const fields = [];
     const queryField = {
       expose: 'zoneExpose',
       moyens: 'zoneMoyens',
@@ -130,6 +130,7 @@ class Elastic {
       summary: 'summary',
       themes: 'themes',
     };
+    let fields = [];
     if (query.field) {
       query.field.forEach((field) => {
         if (queryField[field]) {
@@ -143,7 +144,7 @@ class Elastic {
     }
 
     // Boosts:
-    const boostedFields = [];
+    let boostedFields = [];
     for (let i = 0; i < fields.length; i++) {
       // @ TODO add visa, etc.
       if (fields[i] === 'number') {
@@ -160,7 +161,7 @@ class Elastic {
       multi_match: {
         query: searchString.join(' '),
         fields: boostedFields,
-        operator: query.operator ? query.operator : taxons.operator.default,
+        operator: query.operator ? query.operator.toUpperCase() : taxons.operator.default.toUpperCase(),
         type: 'cross_fields',
       },
     };
@@ -168,91 +169,95 @@ class Elastic {
     // Highlight all fields but...
     fields.forEach((field) => {
       if (field !== 'number') {
-        query.body.highlight.fields[field] = {};
+        searchQuery.body.highlight.fields[field] = {};
       }
     });
 
-    try {
-      const rawResponse = await this.client.search(searchQuery);
-      const response = {
-        page: page,
-        page_size: page_size,
-        query: query,
-        total: 0,
-        previous_page: null,
-        next_page: null,
-        took: 0,
-        max_score: 0,
-        results: [],
-      };
-      if (rawResponse) {
-        if (rawResponse.hits && rawResponse.hits.total && rawResponse.hits.total.value > 0) {
-          response.total = rawResponse.hits.total.value;
-          response.max_score = rawResponse.hits.max_score;
-          if (page > 0) {
-            const previous_page_params = new URLSearchParams(query);
-            previous_page_params.set('page', page - 1);
-            response.previous_page = previous_page_params.toString();
-          }
-          if ((page + 1) * page_size < rawResponse.hits.total.value) {
-            const next_page_params = new URLSearchParams(query);
-            next_page_params.set('page', page + 1);
-            response.next_page = next_page_params.toString();
-          }
-          rawResponse.hits.hits.forEach((rawResult) => {
-            const result = {
-              score: rawResult._score ? rawResult._score / response.max_score : 0,
-              highlights: {},
-              id: rawResult._source.id,
-              jurisdiction: query.resolve_references
+    const rawResponse = await this.client.search(searchQuery);
+    let response = {
+      page: page,
+      page_size: page_size,
+      query: query,
+      total: 0,
+      previous_page: null,
+      next_page: null,
+      took: 0,
+      max_score: 0,
+      results: [],
+    };
+    if (rawResponse && rawResponse.body) {
+      if (rawResponse.body.hits && rawResponse.body.hits.total && rawResponse.body.hits.total.value > 0) {
+        response.total = rawResponse.body.hits.total.value;
+        response.max_score = rawResponse.body.hits.max_score;
+        if (page > 0) {
+          let previous_page_params = new URLSearchParams(query);
+          previous_page_params.set('page', page - 1);
+          response.previous_page = previous_page_params.toString();
+        }
+        if ((page + 1) * page_size < rawResponse.body.hits.total.value) {
+          let next_page_params = new URLSearchParams(query);
+          next_page_params.set('page', page + 1);
+          response.next_page = next_page_params.toString();
+        }
+        rawResponse.body.hits.hits.forEach((rawResult) => {
+          let result = {
+            score: rawResult._score ? rawResult._score / response.max_score : 0,
+            highlights: {},
+            id: rawResult._source.id,
+            jurisdiction:
+              query.resolve_references && taxons.jurisdiction.taxonomy[rawResult._source.jurisdiction]
                 ? taxons.jurisdiction.taxonomy[rawResult._source.jurisdiction]
                 : rawResult._source.jurisdiction,
-              chamber: query.resolve_references
+            chamber:
+              query.resolve_references && taxons.chamber.taxonomy[rawResult._source.chamber]
                 ? taxons.chamber.taxonomy[rawResult._source.chamber]
                 : rawResult._source.chamber,
-              number: rawResult._source.numberFull,
-              ecli: rawResult._source.ecli,
-              formation: query.resolve_references
+            number: rawResult._source.numberFull,
+            ecli: rawResult._source.ecli,
+            formation:
+              query.resolve_references && taxons.formation.taxonomy[rawResult._source.formation]
                 ? taxons.formation.taxonomy[rawResult._source.formation]
                 : rawResult._source.formation,
-              publication: query.resolve_references
-                ? rawResult._source.publication.map((key) => {
+            publication: query.resolve_references
+              ? rawResult._source.publication.map((key) => {
+                  if (taxons.publication.taxonomy[key]) {
                     return taxons.publication.taxonomy[key];
-                  })
-                : rawResult._source.publication,
-              decision_date: rawResult._source.decision_date,
-              solution: query.resolve_references
+                  }
+                  return key;
+                })
+              : rawResult._source.publication,
+            decision_date: rawResult._source.decision_date,
+            solution:
+              query.resolve_references && taxons.solution.taxonomy[rawResult._source.solution]
                 ? taxons.solution.taxonomy[rawResult._source.solution]
                 : rawResult._source.solution,
-              solution_alt: rawResult._source.solution_alt,
-              summary: rawResult._source.summary,
-              themes: rawResult._source.themes,
-              bulletin: rawResult._source.bulletin,
-              files: rawResult._source.files,
-            };
+            solution_alt: rawResult._source.solution_alt,
+            summary: rawResult._source.summary,
+            themes: rawResult._source.themes,
+            bulletin: rawResult._source.bulletin,
+            files: rawResult._source.files,
+          };
 
-            taxons.field.keys.forEach((field) => {
-              if (rawResult.highlight[field] && rawResult.highlight[field].length > 0) {
-                result.highlights[field] = [];
-                rawResult.highlight[field].forEach(function (hit) {
-                  hit = hit.replace(/^[^a-z<>]*/i, '');
-                  hit = hit.replace(/[^a-z<>]*$/i, '');
-                  result.highlights[field].push(hit.trim());
-                });
-              }
-            });
+          for (let key in queryField) {
+            let field = queryField[key];
+            if (rawResult.highlight[field] && rawResult.highlight[field].length > 0) {
+              result.highlights[key] = [];
+              rawResult.highlight[field].forEach(function (hit) {
+                hit = hit.replace(/^[^a-z<>]*/i, '');
+                hit = hit.replace(/[^a-z<>]*$/i, '');
+                result.highlights[key].push(hit.trim());
+              });
+            }
+          }
 
-            response.results.push(result);
-          });
-        }
-        if (rawResponse.took) {
-          response.took = rawResponse.took;
-        }
+          response.results.push(result);
+        });
       }
-      return response;
-    } catch (e) {
-      return e.meta.body.error;
+      if (rawResponse.body.took) {
+        response.took = rawResponse.body.took;
+      }
     }
+    return response;
   }
 }
 
