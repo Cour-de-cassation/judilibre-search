@@ -1,13 +1,58 @@
 require('./env');
-const { Client } = require('@elastic/elasticsearch');
 const taxons = require('../taxons');
 
 class Elastic {
   constructor() {
-    this.client = new Client({ node: `http://${process.env.ELASTIC_NODE}` });
+    if (process.env.FAKE_ELASTIC) {
+      this.data = [];
+    } else {
+      const { Client } = require('@elastic/elasticsearch');
+      this.client = new Client({ node: `http://${process.env.ELASTIC_NODE}` });
+    }
+  }
+
+  fakeSearch(query) {
+    const fs = require('fs');
+    const path = require('path');
+
+    if (this.data.length === 0) {
+      this.data = JSON.parse(fs.readFileSync(path.join('..', '..', 'public', 'sample.json')).toString());
+    }
+
+    const page = query.page || 0;
+    const page_size = query.page_size || 10;
+
+    let response = {
+      page: page,
+      page_size: page_size,
+      query: query,
+      total: this.data.length,
+      previous_page: null,
+      next_page: null,
+      took: 42,
+      max_score: 10,
+      results: this.data.slice(page * page_size, (page + 1) * page_size),
+    };
+
+    if (page > 0) {
+      let previous_page_params = new URLSearchParams(query);
+      previous_page_params.set('page', page - 1);
+      response.previous_page = previous_page_params.toString();
+    }
+    if ((page + 1) * page_size < this.data.length) {
+      let next_page_params = new URLSearchParams(query);
+      next_page_params.set('page', page + 1);
+      response.next_page = next_page_params.toString();
+    }
+
+    return response;
   }
 
   async search(query) {
+    if (process.env.FAKE_ELASTIC) {
+      return this.fakeSearch(query);
+    }
+
     const page = query.page || 0;
     const page_size = query.page_size || 10;
 
