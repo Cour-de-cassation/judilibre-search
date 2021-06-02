@@ -142,7 +142,7 @@ async function getTaxonomy(query) {
       };
     }
   }
-  throw new Error(`JUDILIBRE-${process.env.APP_ID}/taxonomy: cannot process request.`);
+  throw new Error(`${process.env.APP_ID}/taxonomy: cannot process request.`);
 }
 
 module.exports = api;
