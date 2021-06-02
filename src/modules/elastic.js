@@ -119,9 +119,22 @@ class Elastic {
 
     // Fields:
     const fields = [];
+    const queryField = {
+      expose: 'zoneExpose',
+      moyens: 'zoneMoyens',
+      motivations: 'zoneMotivations',
+      dispositif: 'zoneDispositif',
+      annexes: 'zoneAnnexes',
+      number: 'number',
+      // @TODO visa: 'visa',
+      summary: 'summary',
+      themes: 'themes',
+    };
     if (query.field) {
       query.field.forEach((field) => {
-        fields.push(field);
+        if (queryField[field]) {
+          fields.push(queryField[field]);
+        }
       });
     }
     if (fields.length === 0) {
@@ -133,7 +146,7 @@ class Elastic {
     const boostedFields = [];
     for (let i = 0; i < fields.length; i++) {
       // @ TODO add visa, etc.
-      if (fields[i] === 'pourvoi') {
+      if (fields[i] === 'number') {
         boostedFields[i] = fields[i] + '^100';
       } else if (fields[i] === 'motivations' || fields[i] === 'dispositif') {
         boostedFields[i] = fields[i] + '^5';
@@ -154,7 +167,7 @@ class Elastic {
 
     // Highlight all fields but...
     fields.forEach((field) => {
-      if (field !== 'pourvoi') {
+      if (field !== 'number') {
         query.body.highlight.fields[field] = {};
       }
     });
@@ -188,29 +201,47 @@ class Elastic {
           }
           rawResponse.hits.hits.forEach((rawResult) => {
             const result = {
-              decision_date: rawResult._source.decision_date,
-              number: rawResult._source.numberFull,
+              score: rawResult._score ? rawResult._score / response.max_score : 0,
+              highlights: {},
+              id: rawResult._source.id,
               jurisdiction: query.resolve_references
                 ? taxons.jurisdiction.taxonomy[rawResult._source.jurisdiction]
                 : rawResult._source.jurisdiction,
               chamber: query.resolve_references
                 ? taxons.chamber.taxonomy[rawResult._source.chamber]
                 : rawResult._source.chamber,
-              solution: query.resolve_references
-                ? taxons.solution.taxonomy[rawResult._source.solution]
-                : rawResult._source.solution,
-              solution_alt: rawResult._source.solution_alt,
+              number: rawResult._source.numberFull,
+              ecli: rawResult._source.ecli,
+              formation: query.resolve_references
+                ? taxons.formation.taxonomy[rawResult._source.formation]
+                : rawResult._source.formation,
               publication: query.resolve_references
                 ? rawResult._source.publication.map((key) => {
                     return taxons.publication.taxonomy[key];
                   })
                 : rawResult._source.publication,
-              formation: query.resolve_references
-                ? taxons.formation.taxonomy[rawResult._source.formation]
-                : rawResult._source.formation,
-              score: rawResult._score ? Math.round((rawResult._score / response.max_score) * 10) : 0,
-              id: rawResult._source.id,
+              decision_date: rawResult._source.decision_date,
+              solution: query.resolve_references
+                ? taxons.solution.taxonomy[rawResult._source.solution]
+                : rawResult._source.solution,
+              solution_alt: rawResult._source.solution_alt,
+              summary: rawResult._source.summary,
+              themes: rawResult._source.themes,
+              bulletin: rawResult._source.bulletin,
+              files: rawResult._source.files,
             };
+
+            taxons.field.keys.forEach((field) => {
+              if (rawResult.highlight[field] && rawResult.highlight[field].length > 0) {
+                result.highlights[field] = [];
+                rawResult.highlight[field].forEach(function (hit) {
+                  hit = hit.replace(/^[^a-z<>]*/i, '');
+                  hit = hit.replace(/[^a-z<>]*$/i, '');
+                  result.highlights[field].push(hit.trim());
+                });
+              }
+            });
+
             response.results.push(result);
           });
         }

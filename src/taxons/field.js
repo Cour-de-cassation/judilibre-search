@@ -4,10 +4,10 @@ const taxon = {
   motivations: 'Motivations',
   dispositif: 'Dispositif',
   annexes: 'Moyens annexés',
-  pourvoi: 'Numéro de pourvoi',
+  number: 'Numéro de pourvoi',
   visa: 'Visa',
-  sommaire: 'Sommaire',
-  titrage: 'Titrage',
+  summary: 'Sommaire',
+  themes: 'Titrage',
 };
 
 module.exports = {
