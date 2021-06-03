@@ -273,9 +273,7 @@ class Elastic {
     const path = require('path');
 
     if (this.data === null) {
-      this.data = JSON.parse(
-        fs.readFileSync(path.join(__dirname, '..', '..', 'public', 'sample_list.json')).toString(),
-      );
+      this.data = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'sample_list.json')).toString());
     }
 
     const page = query.page || 0;
@@ -390,11 +388,11 @@ class Elastic {
 
     if (query.resolve_references) {
       response = JSON.parse(
-        fs.readFileSync(path.join(__dirname, '..', '..', 'public', 'sample_detail_resolved.json')).toString(),
+        fs.readFileSync(path.join(__dirname, '..', 'data', 'sample_detail_resolved.json')).toString(),
       );
     } else {
       response = JSON.parse(
-        fs.readFileSync(path.join(__dirname, '..', '..', 'public', 'sample_detail_unresolved.json')).toString(),
+        fs.readFileSync(path.join(__dirname, '..', 'data', 'sample_detail_unresolved.json')).toString(),
       );
     }
 
