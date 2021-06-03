@@ -3,7 +3,7 @@ const taxons = require('../taxons');
 
 class Elastic {
   constructor() {
-    if (process.env.FAKE_ELASTIC) {
+    if (process.env.WITHOUT_ELASTIC) {
       this.data = null;
     } else {
       const { Client } = require('@elastic/elasticsearch');
@@ -12,8 +12,8 @@ class Elastic {
   }
 
   async search(query) {
-    if (process.env.FAKE_ELASTIC) {
-      return this.fakeSearch(query);
+    if (process.env.WITHOUT_ELASTIC) {
+      return this.searchWithoutElastic(query);
     }
 
     const page = query.page || 0;
@@ -268,7 +268,7 @@ class Elastic {
     return response;
   }
 
-  fakeSearch(query) {
+  searchWithoutElastic(query) {
     const fs = require('fs');
     const path = require('path');
 
@@ -317,8 +317,8 @@ class Elastic {
   }
 
   async decision(query) {
-    if (process.env.FAKE_ELASTIC) {
-      return this.fakeDecision(query);
+    if (process.env.WITHOUT_ELASTIC) {
+      return this.decisionWithoutElastic(query);
     }
 
     let rawResponse;
@@ -380,7 +380,7 @@ class Elastic {
     return response;
   }
 
-  fakeDecision(query) {
+  decisionWithoutElastic(query) {
     const fs = require('fs');
     const path = require('path');
 
