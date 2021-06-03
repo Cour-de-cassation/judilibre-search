@@ -31,6 +31,8 @@ spec:
         ports:
         - containerPort: ${API_PORT}
         env:
-          - name: elasticsearch_node
-            value: http://judilibre-elasticsearch-es-default-0:9200
+          - name: ELASTIC_NODE
+            value: http://judilibre-elasticsearch-es-http:9200
+          - name: ELASTIC_INDEX
+            value: judilibre_0
 
