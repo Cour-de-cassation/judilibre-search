@@ -300,6 +300,7 @@ class Elastic {
       previous_page_params.set('page', page - 1);
       response.previous_page = previous_page_params.toString();
     }
+
     if (query.resolve_references) {
       if ((page + 1) * page_size < this.data.resolved.length) {
         let next_page_params = new URLSearchParams(query);
@@ -382,12 +383,22 @@ class Elastic {
   }
 
   fakeDecision(query) {
-    /*
-    @TODO static data
     const fs = require('fs');
     const path = require('path');
-    */
+
     let response = null;
+
+    if (query.resolve_references) {
+      response = JSON.parse(
+        fs.readFileSync(path.join(__dirname, '..', '..', 'public', 'sample_detail_resolved.json')).toString(),
+      );
+    } else {
+      response = JSON.parse(
+        fs.readFileSync(path.join(__dirname, '..', '..', 'public', 'sample_detail_unresolved.json')).toString(),
+      );
+    }
+
+    response.id = query.id;
 
     return response;
   }
