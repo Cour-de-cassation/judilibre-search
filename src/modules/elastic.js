@@ -11,55 +11,6 @@ class Elastic {
     }
   }
 
-  fakeSearch(query) {
-    const fs = require('fs');
-    const path = require('path');
-
-    if (this.data === null) {
-      this.data = JSON.parse(
-        fs.readFileSync(path.join(__dirname, '..', '..', 'public', 'sample_list.json')).toString(),
-      );
-    }
-
-    const page = query.page || 0;
-    const page_size = query.page_size || 10;
-
-    let response = {
-      page: page,
-      page_size: page_size,
-      query: query,
-      total: query.resolve_references ? this.data.resolved.length : this.data.unresolved.length,
-      previous_page: null,
-      next_page: null,
-      took: 42,
-      max_score: 10,
-      results: query.resolve_references
-        ? this.data.resolved.slice(page * page_size, (page + 1) * page_size)
-        : this.data.unresolved.slice(page * page_size, (page + 1) * page_size),
-    };
-
-    if (page > 0) {
-      let previous_page_params = new URLSearchParams(query);
-      previous_page_params.set('page', page - 1);
-      response.previous_page = previous_page_params.toString();
-    }
-    if (query.resolve_references) {
-      if ((page + 1) * page_size < this.data.resolved.length) {
-        let next_page_params = new URLSearchParams(query);
-        next_page_params.set('page', page + 1);
-        response.next_page = next_page_params.toString();
-      }
-    } else {
-      if ((page + 1) * page_size < this.data.unresolved.length) {
-        let next_page_params = new URLSearchParams(query);
-        next_page_params.set('page', page + 1);
-        response.next_page = next_page_params.toString();
-      }
-    }
-
-    return response;
-  }
-
   async search(query) {
     if (process.env.FAKE_ELASTIC) {
       return this.fakeSearch(query);
@@ -314,6 +265,130 @@ class Elastic {
         response.took = rawResponse.body.took;
       }
     }
+    return response;
+  }
+
+  fakeSearch(query) {
+    const fs = require('fs');
+    const path = require('path');
+
+    if (this.data === null) {
+      this.data = JSON.parse(
+        fs.readFileSync(path.join(__dirname, '..', '..', 'public', 'sample_list.json')).toString(),
+      );
+    }
+
+    const page = query.page || 0;
+    const page_size = query.page_size || 10;
+
+    let response = {
+      page: page,
+      page_size: page_size,
+      query: query,
+      total: query.resolve_references ? this.data.resolved.length : this.data.unresolved.length,
+      previous_page: null,
+      next_page: null,
+      took: 42,
+      max_score: 10,
+      results: query.resolve_references
+        ? this.data.resolved.slice(page * page_size, (page + 1) * page_size)
+        : this.data.unresolved.slice(page * page_size, (page + 1) * page_size),
+    };
+
+    if (page > 0) {
+      let previous_page_params = new URLSearchParams(query);
+      previous_page_params.set('page', page - 1);
+      response.previous_page = previous_page_params.toString();
+    }
+    if (query.resolve_references) {
+      if ((page + 1) * page_size < this.data.resolved.length) {
+        let next_page_params = new URLSearchParams(query);
+        next_page_params.set('page', page + 1);
+        response.next_page = next_page_params.toString();
+      }
+    } else {
+      if ((page + 1) * page_size < this.data.unresolved.length) {
+        let next_page_params = new URLSearchParams(query);
+        next_page_params.set('page', page + 1);
+        response.next_page = next_page_params.toString();
+      }
+    }
+
+    return response;
+  }
+
+  async decision(query) {
+    if (process.env.FAKE_ELASTIC) {
+      return this.fakeDecision(query);
+    }
+
+    let rawResponse;
+    let response = null;
+
+    try {
+      rawResponse = await this.client.get({
+        id: query.id,
+        index: process.env.ELASTIC_INDEX,
+        _source: true,
+      });
+    } catch (e) {
+      rawResponse = null;
+    }
+
+    if (rawResponse && rawResponse.body && rawResponse.body.found) {
+      let rawResult = rawResponse.body;
+      response = {
+        id: rawResult._id,
+        source: rawResult._source.source,
+        text: rawResult._source.text,
+        chamber:
+          query.resolve_references && taxons.chamber.taxonomy[rawResult._source.chamber]
+            ? taxons.chamber.taxonomy[rawResult._source.chamber]
+            : rawResult._source.chamber,
+        decision_date: rawResult._source.decision_date,
+        ecli: rawResult._source.ecli,
+        jurisdiction:
+          query.resolve_references && taxons.jurisdiction.taxonomy[rawResult._source.jurisdiction]
+            ? taxons.jurisdiction.taxonomy[rawResult._source.jurisdiction]
+            : rawResult._source.jurisdiction,
+        number: rawResult._source.numberFull,
+        publication: query.resolve_references
+          ? rawResult._source.publication.map((key) => {
+              if (taxons.publication.taxonomy[key]) {
+                return taxons.publication.taxonomy[key];
+              }
+              return key;
+            })
+          : rawResult._source.publication,
+        solution:
+          query.resolve_references && taxons.solution.taxonomy[rawResult._source.solution]
+            ? taxons.solution.taxonomy[rawResult._source.solution]
+            : rawResult._source.solution,
+        solution_alt: rawResult._source.solution_alt,
+        formation:
+          query.resolve_references && taxons.formation.taxonomy[rawResult._source.formation]
+            ? taxons.formation.taxonomy[rawResult._source.formation]
+            : rawResult._source.formation,
+        update_date: rawResult._source.update_date,
+        summary: rawResult._source.summary,
+        themes: rawResult._source.themes,
+        bulletin: rawResult._source.bulletin,
+        files: rawResult._source.files,
+        zones: rawResult._source.zones,
+      };
+    }
+
+    return response;
+  }
+
+  fakeDecision(query) {
+    /*
+    @TODO static data
+    const fs = require('fs');
+    const path = require('path');
+    */
+    let response = null;
+
     return response;
   }
 }
