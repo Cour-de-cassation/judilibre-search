@@ -32,7 +32,7 @@ spec:
         - containerPort: ${API_PORT}
         env:
           - name: ELASTIC_NODE
-            value: http://judilibre-elasticsearch-es-http:9200
+            value: judilibre-elasticsearch-es-http:9200
           - name: ELASTIC_INDEX
             value: judilibre_0
 
