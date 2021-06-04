@@ -3,10 +3,25 @@ kind: Elasticsearch
 metadata:
   name: judilibre-elasticsearch
 spec:
-  version: 7.12.1
+  version: ${ELASTIC_VERSION}
   nodeSets:
   - name: default
-    count: 1
+    count: 3
     config:
-      node.store.allow_mmap: false
       xpack.security.enabled: false
+    podTemplate:
+      spec:
+        initContainers:
+        - name: sysctl
+          securityContext:
+            privileged: true
+          command: ['sh', '-c', 'sysctl -w vm.max_map_count=262144']
+        containers:
+          - name: elasticsearch
+            readinessProbe:
+              httpGet:
+                path: /_cluster/health?local=true
+                port: 9200
+                scheme: HTTP
+              initialDelaySeconds: 3
+              periodSeconds: 3
