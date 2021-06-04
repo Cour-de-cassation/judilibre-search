@@ -10,6 +10,9 @@ jobs:
       APP_ID: judilibre-search
       API_PORT: 8080
       DOCKER_USERNAME: opendatajustice
+      ELASTIC_NODE: elasticsearch
+      ELASTIC_VERSION: 7.12.1
+      ELASTIC_MEM: 512m
     steps:
       - uses: actions/checkout@v1
       - name: get version
@@ -24,13 +27,12 @@ jobs:
         env:
           VERSION: ${{ steps.extract_version.outputs.version }}
       - name: 🏁 Start local service
-        run: docker run --name ${APP_ID} -d -p ${API_PORT}:${API_PORT} ${DOCKER_USERNAME}/${APP_ID}:${VERSION}
+        run: ./scripts/start_local_services.sh
         env:
           VERSION: ${{ steps.extract_version.outputs.version }}
       - name: ✅ Execute minimal tests
         run: |
           docker ps
-          ./scripts/wait_service.sh
           docker logs ${APP_ID}
           ./scripts/test_minimal.sh
         env:
