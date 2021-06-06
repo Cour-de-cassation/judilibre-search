@@ -2,10 +2,10 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ${APP_ID}-ingress
+  namespace: ${APP_GROUP}
 spec:
   rules:
-  - host: search.judilibre.io
-    http:
+  - http:
       paths:
       - path: /
         pathType: Prefix

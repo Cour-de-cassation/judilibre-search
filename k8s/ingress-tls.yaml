@@ -2,13 +2,14 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ${APP_ID}-ingress
+  namespace: ${APP_GROUP}
 spec:
   tls:
   - hosts:
-    - search.judilibre.io
+    - ${APP_HOST}
     secretName: ${APP_ID}-tls
   rules:
-  - host: search.judilibre.io
+  - host: ${APP_HOST}
     http:
       paths:
       - path: /

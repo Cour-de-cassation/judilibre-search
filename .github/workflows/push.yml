@@ -7,12 +7,20 @@ jobs:
     name: 🐳 Build docker image
     runs-on: ubuntu-latest
     env:
-      APP_ID: judilibre-search
-      API_PORT: 8080
       DOCKER_USERNAME: opendatajustice
-      ELASTIC_NODE: elasticsearch
-      ELASTIC_VERSION: 7.12.1
+      APP_GROUP: judilibre
+      APP_ID: judilibre-search
+      APP_NODES: 1
+      APP_HOST: localhost
+      APP_SCHEME: https
+      APP_PORT: 443
+      API_PORT: 8080
+      ELASTIC_VERSION: 7.13.1
+      ELASTIC_NODES: 1
+      ELASTIC_INDEX: judilibre_0
       ELASTIC_MEM: 512m
+      START_TIMEOUT: 120
+      K8S: k3s
     steps:
       - uses: actions/checkout@v1
       - name: get version
@@ -23,21 +31,20 @@ jobs:
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
       - name: 🐋 Build the master docker image
-        run: docker build --build-arg API_PORT=${API_PORT} --target production -t ${DOCKER_USERNAME}/${APP_ID}:${VERSION} .
+        run: ./scripts/docker-build.sh
         env:
           VERSION: ${{ steps.extract_version.outputs.version }}
-      - name: 🏁 Start local service
-        run: ./scripts/start_local_services.sh
+      - name: ☸️  Deploy local k8s services
+        run: ./scripts/deploy_k8s_services.sh
         env:
           VERSION: ${{ steps.extract_version.outputs.version }}
       - name: ✅ Execute minimal tests
         run: |
-          docker ps
-          docker logs ${APP_ID}
+          kubectl get pods --namespace=${APP_GROUP}
+          kubectl logs service/${APP_ID}-svc --namespace=${APP_GROUP}
           ./scripts/test_minimal.sh
         env:
-          SCHEME: http
-          HOST: localhost
+          KUBECONFIG: /home/runner/.kube/config-local-k3s.yaml
       - name: 🚀 Push docker image
         if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/master'
         run: |
@@ -50,14 +57,25 @@ jobs:
           VERSION: ${{ steps.extract_version.outputs.version }}
           GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
   deploy:
-    name: 🚀 Deploy ☸️
+    name: 🚀 Deploy, update ☸️
     needs: build
     if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     env:
-      APP_ID: judilibre-search
-      API_PORT: 8080
       DOCKER_USERNAME: opendatajustice
+      APP_GROUP: judilibre
+      APP_ID: judilibre-search
+      APP_NODES: 2
+      APP_HOST: search.judilibre.io
+      APP_DNS: search.judilibre.io
+      APP_SCHEME: https
+      APP_PORT: 443
+      API_PORT: 8080
+      ELASTIC_VERSION: 7.13.1
+      ELASTIC_NODES: 3
+      ELASTIC_INDEX: judilibre_0
+      ELASTIC_MEM: 1024m
+      START_TIMEOUT: 60
     steps:
       - uses: actions/checkout@v1
       - name: get version
@@ -65,22 +83,24 @@ jobs:
         id: extract_version
       - name: kube prerequisites
         run: |
-          sudo apt-get install -yq gettext
-          curl -sLO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-          chmod +x kubectl
-          mkdir ~/.kube
+          mkdir -p ${HOME}/.kube
           cat k8s/kubeconfig.yaml | envsubst > ~/.kube/config
         env:
           KUBE_USER: ${{ secrets.KUBE_USER }}
           KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
           KUBE_URL: ${{ secrets.KUBE_URL }}
           KUBE_CA: ${{ secrets.KUBE_CA }}
+      - name: ☸️  Deploy remote k8s services
+        run: ./scripts/deploy_k8s_services.sh
+        env:
+          VERSION: ${{ steps.extract_version.outputs.version }}
       - name: 🚀 update ☸️
         run: |
-          ./kubectl set image deployments/${APP_ID}-deployment ${APP_ID}=${DOCKER_USERNAME}/${APP_ID}:${VERSION}
+          kubectl set --namespace=${APP_GROUP} image deployments/${APP_ID}-deployment ${APP_ID}=${DOCKER_USERNAME}/${APP_ID}:${VERSION}
+          ./scripts/wait_services_readiness.sh
+          kubectl get pods --namespace=${APP_GROUP}
+          kubectl logs service/${APP_ID}-svc --namespace=${APP_GROUP}
           ./scripts/test_minimal.sh || (kubectl rollout undo deployments/${APP_ID}-deployment && exit 1)
         env:
           VERSION: ${{ steps.extract_version.outputs.version }}
-          SCHEME: https
-          HOST: search.judilibre.io
-          API_PORT: 443
+          START_TIMEOUT: 20
