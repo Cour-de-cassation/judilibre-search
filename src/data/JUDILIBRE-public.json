@@ -1285,7 +1285,10 @@
           },
           "value": {
             "description": "Liste des segments de texte contenant une ou plusieurs correspondances.",
-            "type": "array"
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         },
         "example": {
