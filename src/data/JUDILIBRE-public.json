@@ -1442,6 +1442,10 @@
                 "items": {
                   "$ref": "#/components/schemas/decisionLink"
                 }
+              },
+              "to_be_deleted": {
+                "description": "Lorsque la propriété `to_be_deleted` est définie et vaut `true`, alors la décision correspondante doit être supprimée des archives ou des bases de données du réutilisateur. Cette propriété peut apparaître dans le cadre d'un export des décisions mises à jour (`/export?date_type=update`).",
+                "type": "boolean"
               }
             }
           },

@@ -15,36 +15,36 @@ paths:
   /decision:
     get:
       servers:
-      - url: "http://{searchServer}.courdecassation.fr/api"
-        description: Serveur de recherche.
-        variables:
-          searchServer:
-            default: judilibre
+        - url: 'http://{searchServer}.courdecassation.fr/api'
+          description: Serveur de recherche.
+          variables:
+            searchServer:
+              default: judilibre
       parameters:
-      - name: id
-        description: Identifiant de la décision à récupérer.
-        schema:
-          type: string
-        in: query
-        required: true
-      - name: resolve_references
-        description: "Lorsque ce paramètre vaut `true`, le résultat de la requête\
-          \ contiendra, pour chaque information retournée par défaut sous forme de\
-          \ clé, l'intitulé complet de celle-ci (vaut `false` par défaut)."
-        schema:
-          type: boolean
-        in: query
-      - name: query
-        description: "Objet facultatif contenant les paramètres complets d'une requê\
-          te de recherche, tel qu'il est retourné en résultat de `GET /search`. Ce\
-          \ paramètre est utilisé pour surligner en retour, dans le texte intégral\
-          \ de la décision, les termes correspondant avec la recherche (ces termes\
-          \ étant délimitées par des balises `<em>`)."
-        schema:
-          type: string
-        in: query
+        - name: id
+          description: Identifiant de la décision à récupérer.
+          schema:
+            type: string
+          in: query
+          required: true
+        - name: resolve_references
+          description: "Lorsque ce paramètre vaut `true`, le résultat de la requête\
+            \ contiendra, pour chaque information retournée par défaut sous forme de\
+            \ clé, l'intitulé complet de celle-ci (vaut `false` par défaut)."
+          schema:
+            type: boolean
+          in: query
+        - name: query
+          description: "Objet facultatif contenant les paramètres complets d'une requê\
+            te de recherche, tel qu'il est retourné en résultat de `GET /search`. Ce\
+            \ paramètre est utilisé pour surligner en retour, dans le texte intégral\
+            \ de la décision, les termes correspondant avec la recherche (ces termes\
+            \ étant délimitées par des balises `<em>`)."
+          schema:
+            type: string
+          in: query
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
@@ -59,8 +59,8 @@ paths:
                     ecli: ECLI:FR:CCASS:2018:C301117
                     formation: fs
                     publication:
-                    - p
-                    - b
+                      - p
+                      - b
                     decision_date: 2018-12-20
                     solution: rejet
                     summary: "Le titulaire d'une autorisation temporaire d'occupation,\
@@ -68,12 +68,12 @@ paths:
                       \ en droit d'obtenir l'indemnisation de son préjudice résultant\
                       \ de l'expropriation"
                     themes:
-                    - Expropriation pour cause d'utilité publique
-                    - Indemnité
-                    - Préjudice
-                    - Réparation
-                    - Cas
-                    - Titulaire d'une autorisation temporaire d'occupation en vigueur
+                      - Expropriation pour cause d'utilité publique
+                      - Indemnité
+                      - Préjudice
+                      - Réparation
+                      - Cas
+                      - Titulaire d'une autorisation temporaire d'occupation en vigueur
                     text: "CIV.3 \r\nCH.B\r\n\r\n\r\n\r\nCOUR DE CASSATION\r\n______________________\r\
                       \n\r\n\r\nAudience publique du 20 décembre 2018\r\n\r\n\r\n\r\
                       \n\r\nRejet\r\n\r\n\r\nM. CHAUVIN, président\r\n\r\n\r\n\r\n\
@@ -88,31 +88,31 @@ paths:
                       \ ensemble les articles L. 322-1 L. 322-2 du code de l'expropriation."
                     zones:
                       introduction:
-                      - start: 0
-                        end: 2309
+                        - start: 0
+                          end: 2309
                       motivations:
-                      - start: 2309
-                        end: 4834
+                        - start: 2309
+                          end: 4834
                       dispositif:
-                      - start: 4834
-                        end: 5199
+                        - start: 4834
+                          end: 5199
                       annexes:
-                      - start: 5199
-                        end: 16798
+                        - start: 5199
+                          end: 16798
           description: Décision retournée avec succès.
-        "400":
+        '400':
           description: Requête invalide.
-        "401":
+        '401':
           description: Authentification requise.
-        "403":
+        '403':
           description: Permissions insuffisantes.
-        "423":
+        '423':
           description: Accès bloqué suite à une activité suspecte.
-        "500":
+        '500':
           description: Erreur indéfinie côté serveur.
       security:
-      - {}
-      - advanced: []
+        - {}
+        - advanced: []
       operationId: decision
       summary: Permet de récupérer le contenu intégral d'une décision.
       description: "Connaissant l'identifiant unique d'une décision, le point d'entré\
@@ -135,43 +135,43 @@ paths:
   /taxonomy:
     get:
       servers:
-      - url: "http://{searchServer}.courdecassation.fr/api"
-        description: Serveur de recherche.
-        variables:
-          searchServer:
-            default: judilibre
+        - url: 'http://{searchServer}.courdecassation.fr/api'
+          description: Serveur de recherche.
+          variables:
+            searchServer:
+              default: judilibre
       parameters:
-      - name: id
-        description: "Identifiant de l'entrée de taxonomie à interroger (`type`, `jurisdiction`,\
-          \ `chamber`, etc. - les valeurs disponibles sont accessibles via `GET /taxonomy`\
-          \ sans paramètre)."
-        schema:
-          type: string
-        in: query
-      - name: key
-        description: "Clé du terme dont on veut récupérer l'intitulé complet (le paramè\
-          tre `id` est alors requis), par exemple : la requête `GET /taxonomy?id=jurisdiction&key=cc`\
-          \ retournera `Cour de cassation`."
-        schema:
-          type: string
-        in: query
-      - name: value
-        description: "Intitulé complet du terme dont on veut récupérer la clé (le\
-          \ paramètre `id` est alors requis), par exemple : la requête `GET /taxonomy?id=jurisdiction&value=cour%20de%20cassation`\
-          \ retournera `cc`."
-        schema:
-          type: string
-        in: query
-      - name: context_value
-        description: "Valeur pouvant être requise pour contextualiser certaines listes\
-          \ (par exemple, la liste des chambres qui n’a de sens que dans le contexte\
-          \ d’une juridiction – ainsi, pour obtenir la liste des chambres de la Cour\
-          \ de cassation : `GET /taxonomy?id=chamber&context_value=cc`)."
-        schema:
-          type: string
-        in: query
+        - name: id
+          description: "Identifiant de l'entrée de taxonomie à interroger (`type`, `jurisdiction`,\
+            \ `chamber`, etc. - les valeurs disponibles sont accessibles via `GET /taxonomy`\
+            \ sans paramètre)."
+          schema:
+            type: string
+          in: query
+        - name: key
+          description: "Clé du terme dont on veut récupérer l'intitulé complet (le paramè\
+            tre `id` est alors requis), par exemple : la requête `GET /taxonomy?id=jurisdiction&key=cc`\
+            \ retournera `Cour de cassation`."
+          schema:
+            type: string
+          in: query
+        - name: value
+          description: "Intitulé complet du terme dont on veut récupérer la clé (le\
+            \ paramètre `id` est alors requis), par exemple : la requête `GET /taxonomy?id=jurisdiction&value=cour%20de%20cassation`\
+            \ retournera `cc`."
+          schema:
+            type: string
+          in: query
+        - name: context_value
+          description: "Valeur pouvant être requise pour contextualiser certaines listes\
+            \ (par exemple, la liste des chambres qui n’a de sens que dans le contexte\
+            \ d’une juridiction – ainsi, pour obtenir la liste des chambres de la Cour\
+            \ de cassation : `GET /taxonomy?id=chamber&context_value=cc`)."
+          schema:
+            type: string
+          in: query
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
@@ -181,7 +181,7 @@ paths:
                   value:
                     id: publication
                     result:
-                      "n": Non publié
+                      'n': Non publié
                       b: Publié au Bulletin
                       l: Publié à la lettre de chambre
                       r: Publié au rapport
@@ -196,16 +196,16 @@ paths:
                     id: publication
                     value: Non publié
                     result:
-                      key: "n"
+                      key: 'n'
           description: Requête effectuée avec succès.
-        "400":
+        '400':
           description: Requête invalide.
-        "423":
+        '423':
           description: Accès bloqué suite à une activité suspecte.
-        "500":
+        '500':
           description: Erreur indéfinie côté serveur.
       security:
-      - {}
+        - {}
       operationId: taxonomy
       summary: Permet de récupérer les listes des termes employés par le processus
         de recherche.
@@ -227,13 +227,13 @@ paths:
   /stats:
     get:
       servers:
-      - url: "http://{searchServer}.courdecassation.fr/api"
-        description: Serveur de recherche.
-        variables:
-          searchServer:
-            default: judilibre
+        - url: 'http://{searchServer}.courdecassation.fr/api'
+          description: Serveur de recherche.
+          variables:
+            searchServer:
+              default: judilibre
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
@@ -246,26 +246,26 @@ paths:
                     newestDecision: 2021-04-15
                     indexedTotal: 2250000
                     indexedByJurisdiction:
-                    - value: 1500000
-                      label: Cour de cassation
-                    - value: 135000
-                      label: Cour d'appel de Paris
+                      - value: 1500000
+                        label: Cour de cassation
+                      - value: 135000
+                        label: Cour d'appel de Paris
                     indexedByYear:
-                    - value: 250000
-                      label: "2019"
-                    - value: 195000
-                      label: "2018"
+                      - value: 250000
+                        label: '2019'
+                      - value: 195000
+                        label: '2018'
                     requestPerWeek: 17500
                     requestPerMonth: 520000
           description: Requête effectuée avec succès.
-        "400":
+        '400':
           description: Requête invalide.
-        "423":
+        '423':
           description: Accès bloqué suite à une activité suspecte.
-        "500":
+        '500':
           description: Erreur indéfinie côté serveur.
       security:
-      - {}
+        - {}
       operationId: stats
       summary: Permet de récupérer des statistiques sur le contenu de la base JUDILIBRE.
       description: "Ce point d'entrée publiera notamment les statistiques suivantes,\
@@ -276,192 +276,192 @@ paths:
   /search:
     get:
       servers:
-      - url: "http://{searchServer}.courdecassation.fr/api"
-        description: Serveur de recherche.
-        variables:
-          searchServer:
-            default: judilibre
+        - url: 'http://{searchServer}.courdecassation.fr/api'
+          description: Serveur de recherche.
+          variables:
+            searchServer:
+              default: judilibre
       parameters:
-      - name: query
-        description: Chaîne de caractères correspondant à la recherche. Une recherche
-          avec un paramètre `query` vide ou manquant est ignorée et retourne un résultat
-          vide.
-        schema:
-          type: string
-        in: query
-        required: false
-      - name: field
-        description: "Liste des champs, métadonnées ou zones de contenu ciblés par\
-          \ la recherche (parmi les valeurs : `expose`, `moyens`, `motivations`, `dispositif`,\
-          \ `annexes`, `sommaire`, `titrage`, etc. - les valeurs disponibles sont\
-          \ accessibles via `GET /taxonomy?id=field`). Une recherche avec un paramè\
-          tre `field` vide ou manquant est appliquée à l'intégralité de la décision\
-          \ (introduction et moyens annexés compris) mais va exclure les métadonné\
-          es (sommaire, titrage, etc.)."
-        schema:
-          type: array
-          items:
+        - name: query
+          description: Chaîne de caractères correspondant à la recherche. Une recherche
+            avec un paramètre `query` vide ou manquant est ignorée et retourne un résultat
+            vide.
+          schema:
             type: string
-        in: query
-        required: false
-      - name: operator
-        description: "Opérateur logique reliant les multiples termes que le paramè\
-          tre `query` peut contenir (`or` par défaut, `and` ou `exact` – dans ce dernier\
-          \ cas le moteur recherchera exactement le contenu du paramètre `query`)."
-        schema:
-          type: string
-        in: query
-        required: false
-      - name: type
-        description: "Filtre les résultats suivant la natures des décisions (parmi\
-          \ les valeurs : `arret`, `qpc`, `qpj`, `ordonnance`, `saisie`, etc. - les\
-          \ valeurs disponibles sont accessibles via `GET /taxonomy?id=type`). Une\
-          \ recherche avec un paramètre `type` vide ou manquant retourne des décisions\
-          \ de toutes natures."
-        schema:
-          type: array
-          items:
+          in: query
+          required: false
+        - name: field
+          description: "Liste des champs, métadonnées ou zones de contenu ciblés par\
+            \ la recherche (parmi les valeurs : `expose`, `moyens`, `motivations`, `dispositif`,\
+            \ `annexes`, `sommaire`, `titrage`, etc. - les valeurs disponibles sont\
+            \ accessibles via `GET /taxonomy?id=field`). Une recherche avec un paramè\
+            tre `field` vide ou manquant est appliquée à l'intégralité de la décision\
+            \ (introduction et moyens annexés compris) mais va exclure les métadonné\
+            es (sommaire, titrage, etc.)."
+          schema:
+            type: array
+            items:
+              type: string
+          in: query
+          required: false
+        - name: operator
+          description: "Opérateur logique reliant les multiples termes que le paramè\
+            tre `query` peut contenir (`or` par défaut, `and` ou `exact` – dans ce dernier\
+            \ cas le moteur recherchera exactement le contenu du paramètre `query`)."
+          schema:
             type: string
-        in: query
-        required: false
-      - name: theme
-        description: Filtre les résultats suivant la matière (nomenclature de la Cour
-          de cassation) relative aux décisions (les valeurs disponibles sont accessibles
-          via `GET /taxonomy?id=theme`). Une recherche avec un paramètre `theme` vide
-          ou manquant retourne des décisions relatives à toutes les matières.
-        schema:
-          type: array
-          items:
+          in: query
+          required: false
+        - name: type
+          description: "Filtre les résultats suivant la natures des décisions (parmi\
+            \ les valeurs : `arret`, `qpc`, `qpj`, `ordonnance`, `saisie`, etc. - les\
+            \ valeurs disponibles sont accessibles via `GET /taxonomy?id=type`). Une\
+            \ recherche avec un paramètre `type` vide ou manquant retourne des décisions\
+            \ de toutes natures."
+          schema:
+            type: array
+            items:
+              type: string
+          in: query
+          required: false
+        - name: theme
+          description: Filtre les résultats suivant la matière (nomenclature de la Cour
+            de cassation) relative aux décisions (les valeurs disponibles sont accessibles
+            via `GET /taxonomy?id=theme`). Une recherche avec un paramètre `theme` vide
+            ou manquant retourne des décisions relatives à toutes les matières.
+          schema:
+            type: array
+            items:
+              type: string
+          in: query
+          required: false
+        - name: chamber
+          description: Filtre les résultats suivant la chambre relative aux décisions
+            (les valeurs disponibles sont accessibles via `GET /taxonomy?id=chamber`).
+            Une recherche avec un paramètre `chamber` vide ou manquant retourne des
+            décisions relatives à toutes les chambres.
+          schema:
+            type: array
+            items:
+              type: string
+          in: query
+          required: false
+        - name: formation
+          description: Filtre les résultats suivant la formation relative aux décisions
+            (les valeurs disponibles sont accessibles via `GET /taxonomy?id=formation`).
+            Une recherche avec un paramètre `formation` vide ou manquant retourne des
+            décisions relatives à toutes les formations.
+          schema:
+            type: array
+            items:
+              type: string
+          in: query
+          required: false
+        - name: jurisdiction
+          description: Filtre les résultats suivant la juridiction relative aux décisions
+            (les valeurs disponibles sont accessibles via `GET /taxonomy?id=jurisdiction`).
+            Une recherche avec un paramètre `jurisdiction` vide ou manquant retourne
+            des décisions relatives à toutes les juridictions.
+          schema:
+            type: array
+            items:
+              type: string
+          in: query
+          required: false
+        - name: committee
+          description: Filtre les résultats suivant la commission relative aux décisions
+            (les valeurs disponibles sont accessibles via `GET /taxonomy?id=committee`).
+            Une recherche avec un paramètre `committee` vide ou manquant retourne des
+            décisions relatives à toutes les commissions.
+          schema:
+            type: array
+            items:
+              type: string
+          in: query
+          required: false
+        - name: publication
+          description: "Filtre les résultats suivant le niveau de publication des dé\
+            cisions (parmi les valeurs : `b`, `p`, `r`, `i`, `l`, `c`, etc. - les valeurs\
+            \ disponibles sont accessibles via `GET /taxonomy?id=publication`). Une\
+            \ recherche avec un paramètre `publication` vide ou manquant retourne des\
+            \ décisions de n'importe quel niveau de publication."
+          schema:
+            type: array
+            items:
+              type: string
+          in: query
+          required: false
+        - name: solution
+          description: "Filtre les résultats suivant le type de solution des décisions\
+            \ (parmi les valeurs : `annulation`, `avis`, `cassation`, `decheance`, `designation`,\
+            \ `irrecevabilite`, `nonlieu`, `qpc`, `rabat`, etc. - les valeurs disponibles\
+            \ sont accessibles via `GET /taxonomy?id=solution`). Une recherche avec\
+            \ un paramètre `solution` vide retourne des décisions ayant n'importe quel\
+            \ type de solution."
+          schema:
+            type: array
+            items:
+              type: string
+          in: query
+          required: false
+        - name: date_start
+          description: "Combiné avec le paramètre `date_end`, permet de restreindre\
+            \ les résultats à un intervalle de dates, au format ISO-8601 (par exemple\
+            \ 2021-05-13)."
+          schema:
+            format: date
             type: string
-        in: query
-        required: false
-      - name: chamber
-        description: Filtre les résultats suivant la chambre relative aux décisions
-          (les valeurs disponibles sont accessibles via `GET /taxonomy?id=chamber`).
-          Une recherche avec un paramètre `chamber` vide ou manquant retourne des
-          décisions relatives à toutes les chambres.
-        schema:
-          type: array
-          items:
+          in: query
+          required: false
+        - name: date_end
+          description: "Combiné avec le paramètre `date_start`, permet de restreindre\
+            \ les résultats à un intervalle de dates, au format ISO-8601 (par exemple\
+            \ 2021-05-13)."
+          schema:
+            format: date
             type: string
-        in: query
-        required: false
-      - name: formation
-        description: Filtre les résultats suivant la formation relative aux décisions
-          (les valeurs disponibles sont accessibles via `GET /taxonomy?id=formation`).
-          Une recherche avec un paramètre `formation` vide ou manquant retourne des
-          décisions relatives à toutes les formations.
-        schema:
-          type: array
-          items:
+          in: query
+          required: false
+        - name: sort
+          description: "Permet de choisir la valeur suivant laquelle les résultats sont\
+            \ triés (`score` pour un tri par pertinence, `scorepub` pour un tri par\
+            \ pertinence et niveau de publication et `date` pour un tri par date, vaut\
+            \ `scorepub` par défaut)."
+          schema:
             type: string
-        in: query
-        required: false
-      - name: jurisdiction
-        description: Filtre les résultats suivant la juridiction relative aux décisions
-          (les valeurs disponibles sont accessibles via `GET /taxonomy?id=jurisdiction`).
-          Une recherche avec un paramètre `jurisdiction` vide ou manquant retourne
-          des décisions relatives à toutes les juridictions.
-        schema:
-          type: array
-          items:
+          in: query
+          required: false
+        - name: order
+          description: "Permet de choisir l'ordre du tri (`asc` pour un tri ascendant\
+            \ ou `desc` pour un tri descendant, vaut `desc` par défaut)."
+          schema:
             type: string
-        in: query
-        required: false
-      - name: committee
-        description: Filtre les résultats suivant la commission relative aux décisions
-          (les valeurs disponibles sont accessibles via `GET /taxonomy?id=committee`).
-          Une recherche avec un paramètre `committee` vide ou manquant retourne des
-          décisions relatives à toutes les commissions.
-        schema:
-          type: array
-          items:
-            type: string
-        in: query
-        required: false
-      - name: publication
-        description: "Filtre les résultats suivant le niveau de publication des dé\
-          cisions (parmi les valeurs : `b`, `p`, `r`, `i`, `l`, `c`, etc. - les valeurs\
-          \ disponibles sont accessibles via `GET /taxonomy?id=publication`). Une\
-          \ recherche avec un paramètre `publication` vide ou manquant retourne des\
-          \ décisions de n'importe quel niveau de publication."
-        schema:
-          type: array
-          items:
-            type: string
-        in: query
-        required: false
-      - name: solution
-        description: "Filtre les résultats suivant le type de solution des décisions\
-          \ (parmi les valeurs : `annulation`, `avis`, `cassation`, `decheance`, `designation`,\
-          \ `irrecevabilite`, `nonlieu`, `qpc`, `rabat`, etc. - les valeurs disponibles\
-          \ sont accessibles via `GET /taxonomy?id=solution`). Une recherche avec\
-          \ un paramètre `solution` vide retourne des décisions ayant n'importe quel\
-          \ type de solution."
-        schema:
-          type: array
-          items:
-            type: string
-        in: query
-        required: false
-      - name: date_start
-        description: "Combiné avec le paramètre `date_end`, permet de restreindre\
-          \ les résultats à un intervalle de dates, au format ISO-8601 (par exemple\
-          \ 2021-05-13)."
-        schema:
-          format: date
-          type: string
-        in: query
-        required: false
-      - name: date_end
-        description: "Combiné avec le paramètre `date_start`, permet de restreindre\
-          \ les résultats à un intervalle de dates, au format ISO-8601 (par exemple\
-          \ 2021-05-13)."
-        schema:
-          format: date
-          type: string
-        in: query
-        required: false
-      - name: sort
-        description: "Permet de choisir la valeur suivant laquelle les résultats sont\
-          \ triés (`score` pour un tri par pertinence, `scorepub` pour un tri par\
-          \ pertinence et niveau de publication et `date` pour un tri par date, vaut\
-          \ `scorepub` par défaut)."
-        schema:
-          type: string
-        in: query
-        required: false
-      - name: order
-        description: "Permet de choisir l'ordre du tri (`asc` pour un tri ascendant\
-          \ ou `desc` pour un tri descendant, vaut `desc` par défaut)."
-        schema:
-          type: string
-        in: query
-        required: false
-      - name: page_size
-        description: "Permet de déterminer le nombre de résultats retournés par page\
-          \ (50 maximum, vaut 10 par défaut)."
-        schema:
-          type: integer
-        in: query
-        required: false
-      - name: page
-        description: Permet de déterminer le numéro de la page de résultats à retourner
-          (la première page valant `0`).
-        schema:
-          type: integer
-        in: query
-        required: false
-      - name: resolve_references
-        description: "Lorsque ce paramètre vaut `true`, le résultat de la requête\
-          \ contiendra, pour chaque information retournée par défaut sous forme de\
-          \ clé, l'intitulé complet de celle-ci (vaut `false` par défaut)."
-        schema:
-          type: boolean
-        in: query
-        required: false
+          in: query
+          required: false
+        - name: page_size
+          description: "Permet de déterminer le nombre de résultats retournés par page\
+            \ (50 maximum, vaut 10 par défaut)."
+          schema:
+            type: integer
+          in: query
+          required: false
+        - name: page
+          description: Permet de déterminer le numéro de la page de résultats à retourner
+            (la première page valant `0`).
+          schema:
+            type: integer
+          in: query
+          required: false
+        - name: resolve_references
+          description: "Lorsque ce paramètre vaut `true`, le résultat de la requête\
+            \ contiendra, pour chaque information retournée par défaut sous forme de\
+            \ clé, l'intitulé complet de celle-ci (vaut `false` par défaut)."
+          schema:
+            type: boolean
+          in: query
+          required: false
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
@@ -474,21 +474,21 @@ paths:
                     query:
                       query: expropriation
                       field:
-                      - expose
-                      - moyens
-                      - motivations
+                        - expose
+                        - moyens
+                        - motivations
                       operator: or
                       type:
-                      - arret
-                      - qpc
+                        - arret
+                        - qpc
                       theme: []
                       chamber: []
                       formation: []
                       jurisdiction: []
                       committee: []
                       publication:
-                      - l
-                      - b
+                        - l
+                        - b
                       solution: []
                       date_start: 1970-01-01
                       date_end: 2021-01-01
@@ -502,57 +502,57 @@ paths:
                     took: 14
                     max_score: 2428.1362
                     results:
-                    - score: 0.6848325044168517
-                      highlights:
-                        motivations:
-                        - "2016) fixe les indemnités revenant à la société Nour, depuis\
-                          \ en liquidation judiciaire, à la suite de <em>l'expropriation</em>"
-                        - "indemnités allouées doivent couvrir l'intégralité du pré\
-                          judice direct, matériel et certain causé par <em>l'expropriation</em>"
-                        - "Nour ne bénéficiait que d'une autorisation précaire d'exploiter\
-                          \ son fonds sur la terrasse, objet de <em>l'expropriation</em>"
-                        - ";\r\n\r\n2°/ qu'en énonçant que cette autorisation était\
-                          \ toujours en vigueur au moment de la procédure <em>d'expropriation</em>"
-                        - ", la cour d'appel en a exactement déduit que, le préjudice\
-                          \ de cette société étant en lien avec <em>l'expropriation</em>"
-                      id: 5fca7d162a251e6bf9c78514
-                      jurisdiction: cc
-                      chamber: civ3
-                      number: 17-18.194
-                      ecli: ECLI:FR:CCASS:2018:C301117
-                      formation: fs
-                      publication:
-                      - p
-                      - b
-                      - i
-                      decision_date: 2018-12-20
-                      solution: rejet
-                      summary: "Le titulaire d'une autorisation temporaire d'occupation,\
-                        \ en vigueur au moment de la procédure d'expropriation, est\
-                        \ en droit d'obtenir l'indemnisation de son préjudice résultant\
-                        \ de l'expropriation"
-                      themes:
-                      - Expropriation pour cause d'utilité publique
-                      - Indemnité
-                      - Préjudice
-                      - Réparation
-                      - Cas
-                      - Titulaire d'une autorisation temporaire d'occupation en vigueur
-                    - {}
+                      - score: 0.6848325044168517
+                        highlights:
+                          motivations:
+                            - "2016) fixe les indemnités revenant à la société Nour, depuis\
+                              \ en liquidation judiciaire, à la suite de <em>l'expropriation</em>"
+                            - "indemnités allouées doivent couvrir l'intégralité du pré\
+                              judice direct, matériel et certain causé par <em>l'expropriation</em>"
+                            - "Nour ne bénéficiait que d'une autorisation précaire d'exploiter\
+                              \ son fonds sur la terrasse, objet de <em>l'expropriation</em>"
+                            - ";\r\n\r\n2°/ qu'en énonçant que cette autorisation était\
+                              \ toujours en vigueur au moment de la procédure <em>d'expropriation</em>"
+                            - ", la cour d'appel en a exactement déduit que, le préjudice\
+                              \ de cette société étant en lien avec <em>l'expropriation</em>"
+                        id: 5fca7d162a251e6bf9c78514
+                        jurisdiction: cc
+                        chamber: civ3
+                        number: 17-18.194
+                        ecli: ECLI:FR:CCASS:2018:C301117
+                        formation: fs
+                        publication:
+                          - p
+                          - b
+                          - i
+                        decision_date: 2018-12-20
+                        solution: rejet
+                        summary: "Le titulaire d'une autorisation temporaire d'occupation,\
+                          \ en vigueur au moment de la procédure d'expropriation, est\
+                          \ en droit d'obtenir l'indemnisation de son préjudice résultant\
+                          \ de l'expropriation"
+                        themes:
+                          - Expropriation pour cause d'utilité publique
+                          - Indemnité
+                          - Préjudice
+                          - Réparation
+                          - Cas
+                          - Titulaire d'une autorisation temporaire d'occupation en vigueur
+                      - {}
           description: Recherche effectuée avec succès.
-        "400":
+        '400':
           description: Requête invalide.
-        "401":
+        '401':
           description: Authentification requise.
-        "403":
+        '403':
           description: Permissions insuffisantes.
-        "423":
+        '423':
           description: Accès bloqué suite à une activité suspecte.
-        "500":
+        '500':
           description: Erreur indéfinie côté serveur.
       security:
-      - {}
-      - advanced: []
+        - {}
+        - advanced: []
       operationId: search
       summary: Permet d'effectuer une recherche dans les données ouvertes des décisions
         de justice.
@@ -588,161 +588,161 @@ paths:
   /export:
     get:
       servers:
-      - url: "http://{searchServer}.courdecassation.fr/api"
-        description: Serveur de recherche.
-        variables:
-          searchServer:
-            default: judilibre
+        - url: 'http://{searchServer}.courdecassation.fr/api'
+          description: Serveur de recherche.
+          variables:
+            searchServer:
+              default: judilibre
       parameters:
-      - name: type
-        description: "Filtre les résultats suivant la natures des décisions (parmi\
-          \ les valeurs : `arret`, `qpc`, `qpj`, `ordonnance`, `saisie`, etc. - les\
-          \ valeurs disponibles sont accessibles via `GET /taxonomy?id=type`). Un\
-          \ export avec un paramètre `type` vide ou manquant retourne des décisions\
-          \ de toutes natures."
-        schema:
-          type: array
-          items:
+        - name: type
+          description: "Filtre les résultats suivant la natures des décisions (parmi\
+            \ les valeurs : `arret`, `qpc`, `qpj`, `ordonnance`, `saisie`, etc. - les\
+            \ valeurs disponibles sont accessibles via `GET /taxonomy?id=type`). Un\
+            \ export avec un paramètre `type` vide ou manquant retourne des décisions\
+            \ de toutes natures."
+          schema:
+            type: array
+            items:
+              type: string
+          in: query
+          required: false
+        - name: theme
+          description: Filtre les résultats suivant la matière (nomenclature de la Cour
+            de cassation) relative aux décisions (les valeurs disponibles sont accessibles
+            via `GET /taxonomy?id=theme`). Un export avec un paramètre `theme` vide
+            ou manquant retourne des décisions relatives à toutes les matières.
+          schema:
+            type: array
+            items:
+              type: string
+          in: query
+          required: false
+        - name: chamber
+          description: Filtre les résultats suivant la chambre relative aux décisions
+            (les valeurs disponibles sont accessibles via `GET /taxonomy?id=chamber`).
+            Un export avec un paramètre `chamber` vide ou manquant retourne des décisions
+            relatives à toutes les chambres.
+          schema:
+            type: array
+            items:
+              type: string
+          in: query
+          required: false
+        - name: formation
+          description: Filtre les résultats suivant la formation relative aux décisions
+            (les valeurs disponibles sont accessibles via `GET /taxonomy?id=formation`).
+            Un export avec un paramètre `formation` vide ou manquant retourne des décisions
+            relatives à toutes les formations.
+          schema:
+            type: array
+            items:
+              type: string
+          in: query
+          required: false
+        - name: jurisdiction
+          description: Filtre les résultats suivant la juridiction relative aux décisions
+            (les valeurs disponibles sont accessibles via `GET /taxonomy?id=jurisdiction`).
+            Un export avec un paramètre `jurisdiction` vide ou manquant retourne des
+            décisions relatives à toutes les juridictions.
+          schema:
+            type: array
+            items:
+              type: string
+          in: query
+          required: false
+        - name: committee
+          description: Filtre les résultats suivant la commission relative aux décisions
+            (les valeurs disponibles sont accessibles via `GET /taxonomy?id=committee`).
+            Un export avec un paramètre `committee` vide ou manquant retourne des décisions
+            relatives à toutes les commissions.
+          schema:
+            type: array
+            items:
+              type: string
+          in: query
+          required: false
+        - name: publication
+          description: "Filtre les résultats suivant le niveau de publication des dé\
+            cisions (parmi les valeurs : `b`, `p`, `r`, `i`, `l`, `c`, etc. - les valeurs\
+            \ disponibles sont accessibles via `GET /taxonomy?id=publication`). Un export\
+            \ avec un paramètre `publication` vide ou manquant retourne des décisions\
+            \ de n'importe quel niveau de publication."
+          schema:
+            type: array
+            items:
+              type: string
+          in: query
+          required: false
+        - name: solution
+          description: "Filtre les résultats suivant le type de solution des décisions\
+            \ (parmi les valeurs : `annulation`, `avis`, `cassation`, `decheance`, `designation`,\
+            \ `irrecevabilite`, `nonlieu`, `qpc`, `rabat`, etc. - les valeurs disponibles\
+            \ sont accessibles via `GET /taxonomy?id=solution`). Un export avec un paramè\
+            tre `solution` vide retourne des décisions ayant n'importe quel type de\
+            \ solution."
+          schema:
+            type: array
+            items:
+              type: string
+          in: query
+          required: false
+        - name: date_start
+          description: "Combiné avec le paramètre `date_end`, permet de restreindre\
+            \ les résultats à un intervalle de dates, au format ISO-8601 (par exemple\
+            \ 2021-05-13)."
+          schema:
+            format: date
             type: string
-        in: query
-        required: false
-      - name: theme
-        description: Filtre les résultats suivant la matière (nomenclature de la Cour
-          de cassation) relative aux décisions (les valeurs disponibles sont accessibles
-          via `GET /taxonomy?id=theme`). Un export avec un paramètre `theme` vide
-          ou manquant retourne des décisions relatives à toutes les matières.
-        schema:
-          type: array
-          items:
+          in: query
+          required: false
+        - name: date_end
+          description: "Combiné avec le paramètre `date_start`, permet de restreindre\
+            \ les résultats à un intervalle de dates, au format ISO-8601 (par exemple\
+            \ 2021-05-13)."
+          schema:
+            format: date
             type: string
-        in: query
-        required: false
-      - name: chamber
-        description: Filtre les résultats suivant la chambre relative aux décisions
-          (les valeurs disponibles sont accessibles via `GET /taxonomy?id=chamber`).
-          Un export avec un paramètre `chamber` vide ou manquant retourne des décisions
-          relatives à toutes les chambres.
-        schema:
-          type: array
-          items:
+          in: query
+          required: false
+        - name: date_type
+          description: Type de date à prendre en compte pour l’intervalle de dates fourni
+            pour l’export (vaut `creation` ou `update`).
+          schema:
             type: string
-        in: query
-        required: false
-      - name: formation
-        description: Filtre les résultats suivant la formation relative aux décisions
-          (les valeurs disponibles sont accessibles via `GET /taxonomy?id=formation`).
-          Un export avec un paramètre `formation` vide ou manquant retourne des décisions
-          relatives à toutes les formations.
-        schema:
-          type: array
-          items:
+          in: query
+          required: false
+        - name: order
+          description: "Permet de choisir l’ordre du tri des décisions exportées ('asc'\
+            \ pour un tri par date chronologique ou 'desc' pour un tri par date antichronologique,\
+            \ vaut 'asc' par défaut)."
+          schema:
             type: string
-        in: query
-        required: false
-      - name: jurisdiction
-        description: Filtre les résultats suivant la juridiction relative aux décisions
-          (les valeurs disponibles sont accessibles via `GET /taxonomy?id=jurisdiction`).
-          Un export avec un paramètre `jurisdiction` vide ou manquant retourne des
-          décisions relatives à toutes les juridictions.
-        schema:
-          type: array
-          items:
-            type: string
-        in: query
-        required: false
-      - name: committee
-        description: Filtre les résultats suivant la commission relative aux décisions
-          (les valeurs disponibles sont accessibles via `GET /taxonomy?id=committee`).
-          Un export avec un paramètre `committee` vide ou manquant retourne des décisions
-          relatives à toutes les commissions.
-        schema:
-          type: array
-          items:
-            type: string
-        in: query
-        required: false
-      - name: publication
-        description: "Filtre les résultats suivant le niveau de publication des dé\
-          cisions (parmi les valeurs : `b`, `p`, `r`, `i`, `l`, `c`, etc. - les valeurs\
-          \ disponibles sont accessibles via `GET /taxonomy?id=publication`). Un export\
-          \ avec un paramètre `publication` vide ou manquant retourne des décisions\
-          \ de n'importe quel niveau de publication."
-        schema:
-          type: array
-          items:
-            type: string
-        in: query
-        required: false
-      - name: solution
-        description: "Filtre les résultats suivant le type de solution des décisions\
-          \ (parmi les valeurs : `annulation`, `avis`, `cassation`, `decheance`, `designation`,\
-          \ `irrecevabilite`, `nonlieu`, `qpc`, `rabat`, etc. - les valeurs disponibles\
-          \ sont accessibles via `GET /taxonomy?id=solution`). Un export avec un paramè\
-          tre `solution` vide retourne des décisions ayant n'importe quel type de\
-          \ solution."
-        schema:
-          type: array
-          items:
-            type: string
-        in: query
-        required: false
-      - name: date_start
-        description: "Combiné avec le paramètre `date_end`, permet de restreindre\
-          \ les résultats à un intervalle de dates, au format ISO-8601 (par exemple\
-          \ 2021-05-13)."
-        schema:
-          format: date
-          type: string
-        in: query
-        required: false
-      - name: date_end
-        description: "Combiné avec le paramètre `date_start`, permet de restreindre\
-          \ les résultats à un intervalle de dates, au format ISO-8601 (par exemple\
-          \ 2021-05-13)."
-        schema:
-          format: date
-          type: string
-        in: query
-        required: false
-      - name: date_type
-        description: Type de date à prendre en compte pour l’intervalle de dates fourni
-          pour l’export (vaut `creation` ou `update`).
-        schema:
-          type: string
-        in: query
-        required: false
-      - name: order
-        description: "Permet de choisir l’ordre du tri des décisions exportées ('asc'\
-          \ pour un tri par date chronologique ou 'desc' pour un tri par date antichronologique,\
-          \ vaut 'asc' par défaut)."
-        schema:
-          type: string
-        in: query
-        required: false
-      - name: batch_size
-        description: "Permet de déterminer le nombre de résultats retournés par lot\
-          \ (100 maximum, vaut 50 par défaut)."
-        schema:
-          type: integer
-        in: query
-        required: false
-      - name: batch
-        description: Permet de déterminer le numéro du lot de résultats à retourner
-          (le premier lot ayant la valeur 0).
-        schema:
-          type: integer
-        in: query
-        required: false
-      - name: resolve_references
-        description: "Lorsque ce paramètre vaut `true`, le résultat de la requête\
-          \ contiendra, pour chaque information retournée par défaut sous forme de\
-          \ clé, l'intitulé complet de celle-ci (vaut `false` par défaut)."
-        schema:
-          type: boolean
-        in: query
-        required: false
+          in: query
+          required: false
+        - name: batch_size
+          description: "Permet de déterminer le nombre de résultats retournés par lot\
+            \ (100 maximum, vaut 50 par défaut)."
+          schema:
+            type: integer
+          in: query
+          required: false
+        - name: batch
+          description: Permet de déterminer le numéro du lot de résultats à retourner
+            (le premier lot ayant la valeur 0).
+          schema:
+            type: integer
+          in: query
+          required: false
+        - name: resolve_references
+          description: "Lorsque ce paramètre vaut `true`, le résultat de la requête\
+            \ contiendra, pour chaque information retournée par défaut sous forme de\
+            \ clé, l'intitulé complet de celle-ci (vaut `false` par défaut)."
+          schema:
+            type: boolean
+          in: query
+          required: false
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
@@ -754,16 +754,16 @@ paths:
                     batch_size: 10
                     query:
                       type:
-                      - arret
-                      - qpc
+                        - arret
+                        - qpc
                       theme: []
                       chamber: []
                       formation: []
                       jurisdiction: []
                       committee: []
                       publication:
-                      - p
-                      - b
+                        - p
+                        - b
                       solution: []
                       date_start: 1970-01-01
                       date_end: 2021-01-01
@@ -775,70 +775,70 @@ paths:
                     next_batch: http://.../...&batch=1
                     took: 42
                     results:
-                    - id: 5fca7d162a251e6bf9c78514
-                      jurisdiction: cc
-                      chamber: civ3
-                      number: 17-18.194
-                      ecli: ECLI:FR:CCASS:2018:C301117
-                      formation: fs
-                      publication:
-                      - p
-                      - b
-                      - i
-                      decision_date: 2018-12-20
-                      solution: rejet
-                      summary: "Le titulaire d'une autorisation temporaire d'occupation,\
-                        \ en vigueur au moment de la procédure d'expropriation, est\
-                        \ en droit d'obtenir l'indemnisation de son préjudice résultant\
-                        \ de l'expropriation"
-                      themes:
-                      - Expropriation pour cause d'utilité publique
-                      - Indemnité
-                      - Préjudice
-                      - Réparation
-                      - Cas
-                      - Titulaire d'une autorisation temporaire d'occupation en vigueur
-                      text: "CIV.3 \r\nCH.B\r\n\r\n\r\n\r\nCOUR DE CASSATION\r\n______________________\r\
-                        \n\r\n\r\nAudience publique du 20 décembre 2018\r\n\r\n\r\n\
-                        \r\n\r\nRejet\r\n\r\n\r\nM. CHAUVIN, président\r\n\r\n\r\n\
-                        \r\nArrêt n° 1117 FS-P+B+I\r\n\r\nPourvoi n° C 17-18.194\r\
-                        \n\r\n\r\n\r\n\r\n\r\n\r\n\r\nR É P U B L I Q U E F R A N\
-                        \ Ç A I S E\r\n\r\n_________________________\r\n\r\nAU NOM\
-                        \ DU PEUPLE FRANÇAIS\r\n_________________________\r\n\r\n\r\
-                        \nLA COUR DE CASSATION, TROISIÈME CHAMBRE CIVILE, a rendu\
-                        \ l'arrêt suivant :\r\n\r\nStatuant sur le pourvoi (...) la\
-                        \ cour d'appel n'a pas mis la Cour de cassation en mesure\
-                        \ d'exercer son contrôle, violant ainsi les articles 455 du\
-                        \ code de procédure civile, ensemble les articles L. 322-1\
-                        \ L. 322-2 du code de l'expropriation."
-                      zones:
-                        introduction:
-                        - start: 0
-                          end: 2309
-                        motivations:
-                        - start: 2309
-                          end: 4834
-                        dispositif:
-                        - start: 4834
-                          end: 5199
-                        annexes:
-                        - start: 5199
-                          end: 16798
-                    - {}
+                      - id: 5fca7d162a251e6bf9c78514
+                        jurisdiction: cc
+                        chamber: civ3
+                        number: 17-18.194
+                        ecli: ECLI:FR:CCASS:2018:C301117
+                        formation: fs
+                        publication:
+                          - p
+                          - b
+                          - i
+                        decision_date: 2018-12-20
+                        solution: rejet
+                        summary: "Le titulaire d'une autorisation temporaire d'occupation,\
+                          \ en vigueur au moment de la procédure d'expropriation, est\
+                          \ en droit d'obtenir l'indemnisation de son préjudice résultant\
+                          \ de l'expropriation"
+                        themes:
+                          - Expropriation pour cause d'utilité publique
+                          - Indemnité
+                          - Préjudice
+                          - Réparation
+                          - Cas
+                          - Titulaire d'une autorisation temporaire d'occupation en vigueur
+                        text: "CIV.3 \r\nCH.B\r\n\r\n\r\n\r\nCOUR DE CASSATION\r\n______________________\r\
+                          \n\r\n\r\nAudience publique du 20 décembre 2018\r\n\r\n\r\n\
+                          \r\n\r\nRejet\r\n\r\n\r\nM. CHAUVIN, président\r\n\r\n\r\n\
+                          \r\nArrêt n° 1117 FS-P+B+I\r\n\r\nPourvoi n° C 17-18.194\r\
+                          \n\r\n\r\n\r\n\r\n\r\n\r\n\r\nR É P U B L I Q U E F R A N\
+                          \ Ç A I S E\r\n\r\n_________________________\r\n\r\nAU NOM\
+                          \ DU PEUPLE FRANÇAIS\r\n_________________________\r\n\r\n\r\
+                          \nLA COUR DE CASSATION, TROISIÈME CHAMBRE CIVILE, a rendu\
+                          \ l'arrêt suivant :\r\n\r\nStatuant sur le pourvoi (...) la\
+                          \ cour d'appel n'a pas mis la Cour de cassation en mesure\
+                          \ d'exercer son contrôle, violant ainsi les articles 455 du\
+                          \ code de procédure civile, ensemble les articles L. 322-1\
+                          \ L. 322-2 du code de l'expropriation."
+                        zones:
+                          introduction:
+                            - start: 0
+                              end: 2309
+                          motivations:
+                            - start: 2309
+                              end: 4834
+                          dispositif:
+                            - start: 4834
+                              end: 5199
+                          annexes:
+                            - start: 5199
+                              end: 16798
+                      - {}
           description: Export effectué avec succès.
-        "400":
+        '400':
           description: Requête invalide.
-        "401":
+        '401':
           description: Authentification requise.
-        "403":
+        '403':
           description: Permissions insuffisantes.
-        "423":
+        '423':
           description: Accès bloqué suite à une activité suspecte.
-        "500":
+        '500':
           description: Erreur indéfinie côté serveur.
       security:
-      - {}
-      - advanced: []
+        - {}
+        - advanced: []
       operationId: export
       summary: Permet d'effectuer un export par lot de décisions de justice.
       description: "Destiné aux utilisateurs désirant procéder à leur propre indexation\
@@ -854,18 +854,18 @@ paths:
   /healthcheck:
     get:
       servers:
-      - url: "https://{indexServer}.courdecassation.fr/api"
-        description: Serveur d'indexation et d'administration.
-        variables:
-          indexServer:
-            default: judilibre-admin
-      - url: "http://{searchServer}.courdecassation.fr/api"
-        description: Serveur de recherche.
-        variables:
-          searchServer:
-            default: judilibre
+        - url: 'https://{indexServer}.courdecassation.fr/api'
+          description: Serveur d'indexation et d'administration.
+          variables:
+            indexServer:
+              default: judilibre-admin
+        - url: 'http://{searchServer}.courdecassation.fr/api'
+          description: Serveur de recherche.
+          variables:
+            searchServer:
+              default: judilibre
       responses:
-        "200":
+        '200':
           content:
             application/json:
               schema:
@@ -878,14 +878,14 @@ paths:
                   value:
                     status: indisponible
           description: État retourné avec succès.
-        "400":
+        '400':
           description: Requête invalide.
-        "423":
+        '423':
           description: Accès bloqué suite à une activité suspecte.
-        "500":
+        '500':
           description: Erreur indéfinie côté serveur.
       security:
-      - {}
+        - {}
       operationId: healthcheck
       summary: Permet de récupérer l'état de disponibilité du service.
       description: Ce point d'entrée permet de connaître l'état de disponibilité du
@@ -896,12 +896,12 @@ components:
       title: Type d'objet `searchPage`.
       description: Décrit une page de résultats de recherche.
       required:
-      - page
-      - page_size
-      - query
-      - total
-      - took
-      - max_score
+        - page
+        - page_size
+        - query
+        - total
+        - took
+        - max_score
       type: object
       properties:
         page:
@@ -945,21 +945,21 @@ components:
         query:
           query: expropriation
           field:
-          - expose
-          - moyens
-          - motivations
+            - expose
+            - moyens
+            - motivations
           operator: or
           type:
-          - arret
-          - qpc
+            - arret
+            - qpc
           theme: []
           chamber: []
           formation: []
           jurisdiction: []
           committee: []
           publication:
-          - p
-          - b
+            - p
+            - b
           solution: []
           date_start: 1970-01-01
           date_end: 2021-01-01
@@ -973,42 +973,42 @@ components:
         took: 14
         max_score: 2428.1362
         results:
-        - score: 0.6848325044168517
-          highlights:
-            motivations:
-            - "2016) fixe les indemnités revenant à la société Nour, depuis en liquidation\
-              \ judiciaire, à la suite de <em>l'expropriation</em>"
-            - "indemnités allouées doivent couvrir l'intégralité du préjudice direct,\
-              \ matériel et certain causé par <em>l'expropriation</em>"
-            - "Nour ne bénéficiait que d'une autorisation précaire d'exploiter son\
-              \ fonds sur la terrasse, objet de <em>l'expropriation</em>"
-            - ";\r\n\r\n2°/ qu'en énonçant que cette autorisation était toujours en\
-              \ vigueur au moment de la procédure <em>d'expropriation</em>"
-            - ", la cour d'appel en a exactement déduit que, le préjudice de cette\
-              \ société étant en lien avec <em>l'expropriation</em>"
-          id: 5fca7d162a251e6bf9c78514
-          jurisdiction: cc
-          chamber: civ3
-          number: 17-18.194
-          ecli: ECLI:FR:CCASS:2018:C301117
-          formation: fs
-          publication:
-          - p
-          - b
-          - i
-          decision_date: 2018-12-20
-          solution: rejet
-          summary: "Le titulaire d'une autorisation temporaire d'occupation, en vigueur\
-            \ au moment de la procédure d'expropriation, est en droit d'obtenir l'indemnisation\
-            \ de son préjudice résultant de l'expropriation"
-          themes:
-          - Expropriation pour cause d'utilité publique
-          - Indemnité
-          - Préjudice
-          - Réparation
-          - Cas
-          - Titulaire d'une autorisation temporaire d'occupation en vigueur
-        - {}
+          - score: 0.6848325044168517
+            highlights:
+              motivations:
+                - "2016) fixe les indemnités revenant à la société Nour, depuis en liquidation\
+                  \ judiciaire, à la suite de <em>l'expropriation</em>"
+                - "indemnités allouées doivent couvrir l'intégralité du préjudice direct,\
+                  \ matériel et certain causé par <em>l'expropriation</em>"
+                - "Nour ne bénéficiait que d'une autorisation précaire d'exploiter son\
+                  \ fonds sur la terrasse, objet de <em>l'expropriation</em>"
+                - ";\r\n\r\n2°/ qu'en énonçant que cette autorisation était toujours en\
+                  \ vigueur au moment de la procédure <em>d'expropriation</em>"
+                - ", la cour d'appel en a exactement déduit que, le préjudice de cette\
+                  \ société étant en lien avec <em>l'expropriation</em>"
+            id: 5fca7d162a251e6bf9c78514
+            jurisdiction: cc
+            chamber: civ3
+            number: 17-18.194
+            ecli: ECLI:FR:CCASS:2018:C301117
+            formation: fs
+            publication:
+              - p
+              - b
+              - i
+            decision_date: 2018-12-20
+            solution: rejet
+            summary: "Le titulaire d'une autorisation temporaire d'occupation, en vigueur\
+              \ au moment de la procédure d'expropriation, est en droit d'obtenir l'indemnisation\
+              \ de son préjudice résultant de l'expropriation"
+            themes:
+              - Expropriation pour cause d'utilité publique
+              - Indemnité
+              - Préjudice
+              - Réparation
+              - Cas
+              - Titulaire d'une autorisation temporaire d'occupation en vigueur
+          - {}
     searchResult:
       title: Type d'objet `searchResult`.
       description: "Décrit un élément de la litste de résultats de recherche.\n\n\
@@ -1017,36 +1017,36 @@ components:
         te (incluant les zones) repose sur le point d'entrée `GET /decision`."
       type: object
       allOf:
-      - required:
-        - score
-        type: object
-        properties:
-          score:
-            format: float
-            description: Score de la décision (pertinence) entre 0 et 1 (max_score).
-            type: number
-          highlights:
-            description: "Liste des segments de la décision ayant des correspondances\
-              \ avec la requête saisie, les correspondances étant délimitées par des\
-              \ balises `<em>`. Chaque segment est un objet de type `searchHighlight`."
-            type: array
-            items:
-              $ref: '#/components/schemas/searchHighlight'
-      - $ref: '#/components/schemas/decisionShort'
+        - required:
+            - score
+          type: object
+          properties:
+            score:
+              format: float
+              description: Score de la décision (pertinence) entre 0 et 1 (max_score).
+              type: number
+            highlights:
+              description: "Liste des segments de la décision ayant des correspondances\
+                \ avec la requête saisie, les correspondances étant délimitées par des\
+                \ balises `<em>`. Chaque segment est un objet de type `searchHighlight`."
+              type: array
+              items:
+                $ref: '#/components/schemas/searchHighlight'
+        - $ref: '#/components/schemas/decisionShort'
       example:
         score: 0.6848325044168517
         highlights:
           motivations:
-          - "2016) fixe les indemnités revenant à la société Nour, depuis en liquidation\
-            \ judiciaire, à la suite de <em>l'expropriation</em>"
-          - "indemnités allouées doivent couvrir l'intégralité du préjudice direct,\
-            \ matériel et certain causé par <em>l'expropriation</em>"
-          - "Nour ne bénéficiait que d'une autorisation précaire d'exploiter son fonds\
-            \ sur la terrasse, objet de <em>l'expropriation</em>"
-          - ";\r\n\r\n2°/ qu'en énonçant que cette autorisation était toujours en\
-            \ vigueur au moment de la procédure <em>d'expropriation</em>"
-          - ", la cour d'appel en a exactement déduit que, le préjudice de cette socié\
-            té étant en lien avec <em>l'expropriation</em>"
+            - "2016) fixe les indemnités revenant à la société Nour, depuis en liquidation\
+              \ judiciaire, à la suite de <em>l'expropriation</em>"
+            - "indemnités allouées doivent couvrir l'intégralité du préjudice direct,\
+              \ matériel et certain causé par <em>l'expropriation</em>"
+            - "Nour ne bénéficiait que d'une autorisation précaire d'exploiter son fonds\
+              \ sur la terrasse, objet de <em>l'expropriation</em>"
+            - ";\r\n\r\n2°/ qu'en énonçant que cette autorisation était toujours en\
+              \ vigueur au moment de la procédure <em>d'expropriation</em>"
+            - ", la cour d'appel en a exactement déduit que, le préjudice de cette socié\
+              té étant en lien avec <em>l'expropriation</em>"
         id: 5fca7d162a251e6bf9c78514
         jurisdiction: cc
         chamber: civ3
@@ -1054,21 +1054,21 @@ components:
         ecli: ECLI:FR:CCASS:2018:C301117
         formation: fs
         publication:
-        - p
-        - b
-        - i
+          - p
+          - b
+          - i
         decision_date: 2018-12-20
         solution: rejet
         summary: "Le titulaire d'une autorisation temporaire d'occupation, en vigueur\
           \ au moment de la procédure d'expropriation, est en droit d'obtenir l'indemnisation\
           \ de son préjudice résultant de l'expropriation"
         themes:
-        - Expropriation pour cause d'utilité publique
-        - Indemnité
-        - Préjudice
-        - Réparation
-        - Cas
-        - Titulaire d'une autorisation temporaire d'occupation en vigueur
+          - Expropriation pour cause d'utilité publique
+          - Indemnité
+          - Préjudice
+          - Réparation
+          - Cas
+          - Titulaire d'une autorisation temporaire d'occupation en vigueur
     searchQuery:
       title: Type d'objet `searchQuery`.
       description: Décrit l'objet contenant les paramètres d'une requête de recherche.
@@ -1201,21 +1201,21 @@ components:
       example:
         query: expropriation
         field:
-        - expose
-        - moyens
-        - motivations
+          - expose
+          - moyens
+          - motivations
         operator: or
         type:
-        - arret
-        - qpc
+          - arret
+          - qpc
         theme: []
         chamber: []
         formation: []
         jurisdiction: []
         committee: []
         publication:
-        - p
-        - b
+          - p
+          - b
         solution: []
         date_start: 1970-01-01
         date_end: 2021-01-01
@@ -1229,8 +1229,8 @@ components:
       description: Décrit un fragment de résultat contenant une correspondance avec
         la recherche saisie.
       required:
-      - key
-      - value
+        - key
+        - value
       type: object
       properties:
         key:
@@ -1245,7 +1245,7 @@ components:
             type: string
       example:
         dispositif:
-        - un <em>exemple</em> de fragment
+          - un <em>exemple</em> de fragment
     decisionShort:
       title: Type d'objet `decisionShort`.
       description: "Décrit la version courte d'un décision, telle qu'elle apparait\
@@ -1254,15 +1254,15 @@ components:
         \ recherche. La récupération d'une décision complète (incluant les zones)\
         \ repose sur le point d'entrée `GET /decision`."
       required:
-      - jurisdiction
-      - id
-      - chamber
-      - number
-      - ecli
-      - formation
-      - publication
-      - decision_date
-      - solution
+        - jurisdiction
+        - id
+        - chamber
+        - number
+        - ecli
+        - formation
+        - publication
+        - decision_date
+        - solution
       type: object
       properties:
         id:
@@ -1276,7 +1276,8 @@ components:
             \ contient l'intitulé complet de celle-ci."
           type: string
         chamber:
-          description: "Clé de la chambre. Par défaut, utiliser `GET /taxonomy?id=chamber&context_value={jurisdiction}&key={chamber}`\
+          description:
+            "Clé de la chambre. Par défaut, utiliser `GET /taxonomy?id=chamber&context_value={jurisdiction}&key={chamber}`\
             \ pour récupérer l'intitulé complet de celle-ci. Si la requête utilise\
             \ `resolve_references=true`, alors cette propriété est retournée sous\
             \ la forme d'un objet `{ key, value }`, où `key` contient la clé et `value`\
@@ -1289,14 +1290,16 @@ components:
           description: Code ECLI de la décision.
           type: string
         formation:
-          description: "Clé de la formation. Par défaut, utiliser `GET /taxonomy?id=formation&context_value={jurisdiction}&key={formation}`\
+          description:
+            "Clé de la formation. Par défaut, utiliser `GET /taxonomy?id=formation&context_value={jurisdiction}&key={formation}`\
             \ pour récupérer l'intitulé complet de celle-ci. Si la requête utilise\
             \ `resolve_references=true`, alors cette propriété est retournée sous\
             \ la forme d'un objet `{ key, value }`, où `key` contient la clé et `value`\
             \ contient l'intitulé complet de celle-ci."
           type: string
         publication:
-          description: "Clés du niveau de publication. Par défaut, utiliser `GET /taxonomy?id=publication&context_value={jurisdiction}&key={publication}`\
+          description:
+            "Clés du niveau de publication. Par défaut, utiliser `GET /taxonomy?id=publication&context_value={jurisdiction}&key={publication}`\
             \ pour récupérer le nom de chaque clé. Si la requête utilise `resolve_references=true`,\
             \ alors cette propriété est retournée sous la forme d'un objet `{ key,\
             \ value }`, où `key` contient la clé et `value` contient l'intitulé complet\
@@ -1310,7 +1313,8 @@ components:
             \ 2021-05-13)."
           type: string
         solution:
-          description: "Clé de la solution. Par défaut, utiliser `GET /taxonomy?id=solution&context_value={jurisdiction}&key={solution}`\
+          description:
+            "Clé de la solution. Par défaut, utiliser `GET /taxonomy?id=solution&context_value={jurisdiction}&key={solution}`\
             \ pour récupérer l'intitulé complet de celle-ci. Si la requête utilise\
             \ `resolve_references=true`, alors cette propriété est retournée sous\
             \ la forme d'un objet `{ key, value }`, où `key` contient la clé et `value`\
@@ -1349,70 +1353,76 @@ components:
         ecli: ECLI:FR:CCASS:2018:C301117
         formation: fs
         publication:
-        - p
-        - b
-        - i
+          - p
+          - b
+          - i
         decision_date: 2018-12-20
         solution: rejet
         summary: "Le titulaire d'une autorisation temporaire d'occupation, en vigueur\
           \ au moment de la procédure d'expropriation, est en droit d'obtenir l'indemnisation\
           \ de son préjudice résultant de l'expropriation"
         themes:
-        - Expropriation pour cause d'utilité publique
-        - Indemnité
-        - Préjudice
-        - Réparation
-        - Cas
-        - Titulaire d'une autorisation temporaire d'occupation en vigueur
+          - Expropriation pour cause d'utilité publique
+          - Indemnité
+          - Préjudice
+          - Réparation
+          - Cas
+          - Titulaire d'une autorisation temporaire d'occupation en vigueur
     decisionFull:
       title: Type d'objet `decisionFull`.
       description: Décrit l'objet contenant une décision intégrale.
       type: object
       allOf:
-      - required:
-        - text
-        type: object
-        properties:
-          zones:
-            $ref: '#/components/schemas/zone'
-            description: "Objet de type `zone` énumérant les différentes zones dé\
-              tectées dans le texte intégral de la décision. Chaque zone contient\
-              \ une liste d'objets `{ start, end }` indiquant respectivement l'indice\
-              \ de début et de fin des caractères (relativement au texte intégral)\
-              \ contenus dans chaque segment de la zone (une zone pouvant contenir\
-              \ plusieurs segments)."
-          text:
-            description: Texte intégral et pseudonymisé de la décision (texte brut).
-            type: string
-          text_highlight:
-            description: Texte intégral de la décision dans lequel les correspondances
-              avec la recherche saisie (dans le cas où le paramètre `query` a été
-              transmis à la requêtes) sont délimitées par des balises `<em>`.
-            type: string
-          nac:
-            description: Code NAC de la décision.
-            type: string
-          update_date:
-            format: date
-            description: Date de dernière mise à jour de la décision.
-            type: string
-          applied:
-            description: "Liste des textes appliqués par la décision, chaque texte\
-              \ étant représenté par un objet de type `attachment` où `label` contient\
-              \ l'intitulé du texte et `URL` contient le lien vers celui-ci."
-            type: array
-            items:
-              $ref: '#/components/schemas/textLink'
-          rapprochements:
-            description: "Liste des rapprochements de jurisprudence, chaque rapprochement\
-              \ étant représenté par un objet de type `attachment` où `label` contient\
-              \ son numéro de pourvoi, `description` son court texte descriptif, `theme`\
-              \ la liste de ses matières (ou éléments de titrage) et `URL` le lien\
-              \ vers celui-ci."
-            type: array
-            items:
-              $ref: '#/components/schemas/decisionLink'
-      - $ref: '#/components/schemas/decisionShort'
+        - required:
+            - text
+          type: object
+          properties:
+            zones:
+              $ref: '#/components/schemas/zone'
+              description: "Objet de type `zone` énumérant les différentes zones dé\
+                tectées dans le texte intégral de la décision. Chaque zone contient\
+                \ une liste d'objets `{ start, end }` indiquant respectivement l'indice\
+                \ de début et de fin des caractères (relativement au texte intégral)\
+                \ contenus dans chaque segment de la zone (une zone pouvant contenir\
+                \ plusieurs segments)."
+            text:
+              description: Texte intégral et pseudonymisé de la décision (texte brut).
+              type: string
+            text_highlight:
+              description: Texte intégral de la décision dans lequel les correspondances
+                avec la recherche saisie (dans le cas où le paramètre `query` a été
+                transmis à la requêtes) sont délimitées par des balises `<em>`.
+              type: string
+            nac:
+              description: Code NAC de la décision.
+              type: string
+            update_date:
+              format: date
+              description: Date de dernière mise à jour de la décision.
+              type: string
+            applied:
+              description: "Liste des textes appliqués par la décision, chaque texte\
+                \ étant représenté par un objet de type `attachment` où `label` contient\
+                \ l'intitulé du texte et `URL` contient le lien vers celui-ci."
+              type: array
+              items:
+                $ref: '#/components/schemas/textLink'
+            rapprochements:
+              description: "Liste des rapprochements de jurisprudence, chaque rapprochement\
+                \ étant représenté par un objet de type `attachment` où `label` contient\
+                \ son numéro de pourvoi, `description` son court texte descriptif, `theme`\
+                \ la liste de ses matières (ou éléments de titrage) et `URL` le lien\
+                \ vers celui-ci."
+              type: array
+              items:
+                $ref: '#/components/schemas/decisionLink'
+            to_be_deleted:
+              description: "Lorsque la propriété `to_be_deleted` est définie et vaut\
+                \ `true`, alors la décision correspondante doit être supprimée des archives\
+                \ ou des bases de données du réutilisateur. Cette propriété peut apparaî\
+                tre dans le cadre d'un export des décisions mises à jour (`/export?date_type=update`)."
+              type: boolean
+        - $ref: '#/components/schemas/decisionShort'
       example:
         id: 5fca7d162a251e6bf9c78514
         jurisdiction: cc
@@ -1421,21 +1431,21 @@ components:
         ecli: ECLI:FR:CCASS:2018:C301117
         formation: fs
         publication:
-        - p
-        - b
-        - i
+          - p
+          - b
+          - i
         decision_date: 2018-12-20
         solution: rejet
         summary: "Le titulaire d'une autorisation temporaire d'occupation, en vigueur\
           \ au moment de la procédure d'expropriation, est en droit d'obtenir l'indemnisation\
           \ de son préjudice résultant de l'expropriation"
         themes:
-        - Expropriation pour cause d'utilité publique
-        - Indemnité
-        - Préjudice
-        - Réparation
-        - Cas
-        - Titulaire d'une autorisation temporaire d'occupation en vigueur
+          - Expropriation pour cause d'utilité publique
+          - Indemnité
+          - Préjudice
+          - Réparation
+          - Cas
+          - Titulaire d'une autorisation temporaire d'occupation en vigueur
         text: "CIV.3 \r\nCH.B\r\n\r\n\r\n\r\nCOUR DE CASSATION\r\n______________________\r\
           \n\r\n\r\nAudience publique du 20 décembre 2018\r\n\r\n\r\n\r\n\r\nRejet\r\
           \n\r\n\r\nM. CHAUVIN, président\r\n\r\n\r\n\r\nArrêt n° 1117 FS-P+B+I\r\n\
@@ -1449,17 +1459,17 @@ components:
           \ l'expropriation."
         zones:
           introduction:
-          - start: 0
-            end: 2309
+            - start: 0
+              end: 2309
           motivations:
-          - start: 2309
-            end: 4834
+            - start: 2309
+              end: 4834
           dispositif:
-          - start: 4834
-            end: 5199
+            - start: 4834
+              end: 5199
           annexes:
-          - start: 5199
-            end: 16798
+            - start: 5199
+              end: 16798
     zone:
       title: Type d'objet `zone`.
       description: "Décrit l'objet définissant une zone détectée dans le texte inté\
@@ -1468,8 +1478,8 @@ components:
         \ de début et de fin des caractères (relativement au texte intégral) contenus\
         \ dans chaque segment de la zone (une zone pouvant contenir plusieurs segments)."
       required:
-      - key
-      - value
+        - key
+        - value
       type: object
       properties:
         key:
@@ -1488,18 +1498,18 @@ components:
             $ref: '#/components/schemas/zoneSegment'
       example:
         expose:
-        - start: 8
-          end: 72
-        - start: 77
-          end: 95
+          - start: 8
+            end: 72
+          - start: 77
+            end: 95
     zoneSegment:
       title: Type d'objet `zoneSegment`.
       description: "Décrit un segment d'une zone en tant qu'objet `{ start, end }`\
         \ indiquant respectivement l'indice de début et de fin des caractères (relativement\
         \ au texte intégral) contenus dans le segment de la zone considérée."
       required:
-      - end
-      - start
+        - end
+        - start
       type: object
       properties:
         start:
@@ -1516,10 +1526,10 @@ components:
       description: Objet décrivant un lien vers un fichier pouvant être associé à
         une décision.
       required:
-      - id
-      - label
-      - URL
-      - type
+        - id
+        - label
+        - URL
+        - type
       type: object
       properties:
         id:
@@ -1544,10 +1554,10 @@ components:
       title: Type d'objet `decisionLink`.
       description: Objet décrivant un lien vers une décision.
       required:
-      - id
-      - number
-      - URL
-      - description
+        - id
+        - number
+        - URL
+        - description
       type: object
       properties:
         id:
@@ -1572,16 +1582,16 @@ components:
         URL: some text
         description: some text
         theme:
-        - some text
-        - some text
+          - some text
+          - some text
         number: some text
     textLink:
       title: Type d'objet `textLink`.
       description: Objet décrivant un lien vers un texte appliqué.
       required:
-      - id
-      - title
-      - URL
+        - id
+        - title
+        - URL
       type: object
       properties:
         id:
@@ -1601,11 +1611,11 @@ components:
       title: Type d'objet `exportBatch`.
       description: Objet décrivant un lot de décisions exportées.
       required:
-      - batch
-      - batch_size
-      - query
-      - total
-      - took
+        - batch
+        - batch_size
+        - query
+        - total
+        - took
       type: object
       properties:
         query:
@@ -1643,16 +1653,16 @@ components:
         batch_size: 10
         query:
           type:
-          - arret
-          - qpc
+            - arret
+            - qpc
           theme: []
           chamber: []
           formation: []
           jurisdiction: []
           committee: []
           publication:
-          - p
-          - b
+            - p
+            - b
           solution: []
           date_start: 1970-01-01
           date_end: 2021-01-01
@@ -1664,53 +1674,53 @@ components:
         next_batch: http://.../...&batch=1
         took: 42
         results:
-        - id: 5fca7d162a251e6bf9c78514
-          jurisdiction: cc
-          chamber: civ3
-          number: 17-18.194
-          ecli: ECLI:FR:CCASS:2018:C301117
-          formation: fs
-          publication:
-          - p
-          - b
-          - i
-          decision_date: 2018-12-20
-          solution: rejet
-          summary: "Le titulaire d'une autorisation temporaire d'occupation, en vigueur\
-            \ au moment de la procédure d'expropriation, est en droit d'obtenir l'indemnisation\
-            \ de son préjudice résultant de l'expropriation"
-          themes:
-          - Expropriation pour cause d'utilité publique
-          - Indemnité
-          - Préjudice
-          - Réparation
-          - Cas
-          - Titulaire d'une autorisation temporaire d'occupation en vigueur
-          text: "CIV.3 \r\nCH.B\r\n\r\n\r\n\r\nCOUR DE CASSATION\r\n______________________\r\
-            \n\r\n\r\nAudience publique du 20 décembre 2018\r\n\r\n\r\n\r\n\r\nRejet\r\
-            \n\r\n\r\nM. CHAUVIN, président\r\n\r\n\r\n\r\nArrêt n° 1117 FS-P+B+I\r\
-            \n\r\nPourvoi n° C 17-18.194\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nR É P U B\
-            \ L I Q U E F R A N Ç A I S E\r\n\r\n_________________________\r\n\r\n\
-            AU NOM DU PEUPLE FRANÇAIS\r\n_________________________\r\n\r\n\r\nLA COUR\
-            \ DE CASSATION, TROISIÈME CHAMBRE CIVILE, a rendu l'arrêt suivant :\r\n\
-            \r\nStatuant sur le pourvoi (...) la cour d'appel n'a pas mis la Cour\
-            \ de cassation en mesure d'exercer son contrôle, violant ainsi les articles\
-            \ 455 du code de procédure civile, ensemble les articles L. 322-1 L. 322-2\
-            \ du code de l'expropriation."
-          zones:
-            introduction:
-            - start: 0
-              end: 2309
-            motivations:
-            - start: 2309
-              end: 4834
-            dispositif:
-            - start: 4834
-              end: 5199
-            annexes:
-            - start: 5199
-              end: 16798
-        - {}
+          - id: 5fca7d162a251e6bf9c78514
+            jurisdiction: cc
+            chamber: civ3
+            number: 17-18.194
+            ecli: ECLI:FR:CCASS:2018:C301117
+            formation: fs
+            publication:
+              - p
+              - b
+              - i
+            decision_date: 2018-12-20
+            solution: rejet
+            summary: "Le titulaire d'une autorisation temporaire d'occupation, en vigueur\
+              \ au moment de la procédure d'expropriation, est en droit d'obtenir l'indemnisation\
+              \ de son préjudice résultant de l'expropriation"
+            themes:
+              - Expropriation pour cause d'utilité publique
+              - Indemnité
+              - Préjudice
+              - Réparation
+              - Cas
+              - Titulaire d'une autorisation temporaire d'occupation en vigueur
+            text: "CIV.3 \r\nCH.B\r\n\r\n\r\n\r\nCOUR DE CASSATION\r\n______________________\r\
+              \n\r\n\r\nAudience publique du 20 décembre 2018\r\n\r\n\r\n\r\n\r\nRejet\r\
+              \n\r\n\r\nM. CHAUVIN, président\r\n\r\n\r\n\r\nArrêt n° 1117 FS-P+B+I\r\
+              \n\r\nPourvoi n° C 17-18.194\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nR É P U B\
+              \ L I Q U E F R A N Ç A I S E\r\n\r\n_________________________\r\n\r\n\
+              AU NOM DU PEUPLE FRANÇAIS\r\n_________________________\r\n\r\n\r\nLA COUR\
+              \ DE CASSATION, TROISIÈME CHAMBRE CIVILE, a rendu l'arrêt suivant :\r\n\
+              \r\nStatuant sur le pourvoi (...) la cour d'appel n'a pas mis la Cour\
+              \ de cassation en mesure d'exercer son contrôle, violant ainsi les articles\
+              \ 455 du code de procédure civile, ensemble les articles L. 322-1 L. 322-2\
+              \ du code de l'expropriation."
+            zones:
+              introduction:
+                - start: 0
+                  end: 2309
+              motivations:
+                - start: 2309
+                  end: 4834
+              dispositif:
+                - start: 4834
+                  end: 5199
+              annexes:
+                - start: 5199
+                  end: 16798
+          - {}
     exportQuery:
       title: Type d'objet `searchQuery`.
       description: Décrit l'objet contenant les paramètres d'une requête d'export.
@@ -1819,16 +1829,16 @@ components:
           type: integer
       example:
         type:
-        - arret
-        - qpc
+          - arret
+          - qpc
         theme: []
         chamber: []
         formation: []
         jurisdiction: []
         committee: []
         publication:
-        - p
-        - b
+          - p
+          - b
         solution: []
         date_start: 1970-01-01
         date_end: 2021-01-01
@@ -1840,14 +1850,14 @@ components:
       title: Type d'objet `health`.
       description: Objet décrivant l'état de disponibilité du service.
       required:
-      - status
+        - status
       type: object
       properties:
         status:
           description: État de disponibilité du service.
           enum:
-          - disponible
-          - indisponible
+            - disponible
+            - indisponible
           type: string
       example:
         status: disponible
@@ -1891,21 +1901,21 @@ components:
           type: string
       example:
         id: publication
-        key: "n"
+        key: 'n'
         result:
           value: Non publié
     stats:
       title: Type d'objet `stats`.
       description: Objet décrivant les statistiques publiées par l'API.
       required:
-      - indexedTotal
-      - newestDecision
-      - oldestDecision
-      - requestPerDay
-      - indexedByJurisdiction
-      - indexedByYear
-      - requestPerWeek
-      - requestPerMonth
+        - indexedTotal
+        - newestDecision
+        - oldestDecision
+        - requestPerDay
+        - indexedByJurisdiction
+        - indexedByYear
+        - requestPerWeek
+        - requestPerMonth
       type: object
       properties:
         requestPerDay:
@@ -1944,15 +1954,15 @@ components:
         newestDecision: 2021-04-15
         indexedTotal: 2250000
         indexedByJurisdiction:
-        - value: 1500000
-          label: Cour de cassation
-        - value: 135000
-          label: Cour d'appel de Paris
+          - value: 1500000
+            label: Cour de cassation
+          - value: 135000
+            label: Cour d'appel de Paris
         indexedByYear:
-        - value: 250000
-          label: "2019"
-        - value: 195000
-          label: "2018"
+          - value: 250000
+            label: '2019'
+          - value: 195000
+            label: '2018'
         requestPerWeek: 17500
         requestPerMonth: 520000
     statItem:
@@ -1973,7 +1983,7 @@ components:
       title: Type d'objet `importBatch`.
       description: Décrit un lot de décisions importées.
       required:
-      - id
+        - id
       type: object
       properties:
         decisions:
@@ -1988,53 +1998,53 @@ components:
       example:
         id: 12345678
         decisions:
-        - id: 5fca7d162a251e6bf9c78514
-          jurisdiction: cc
-          chamber: civ3
-          number: 17-18.194
-          ecli: ECLI:FR:CCASS:2018:C301117
-          formation: fs
-          publication:
-          - p
-          - b
-          - i
-          decision_date: 2018-12-20
-          solution: rejet
-          summary: "Le titulaire d'une autorisation temporaire d'occupation, en vigueur\
-            \ au moment de la procédure d'expropriation, est en droit d'obtenir l'indemnisation\
-            \ de son préjudice résultant de l'expropriation"
-          themes:
-          - Expropriation pour cause d'utilité publique
-          - Indemnité
-          - Préjudice
-          - Réparation
-          - Cas
-          - Titulaire d'une autorisation temporaire d'occupation en vigueur
-          text: "CIV.3 \r\nCH.B\r\n\r\n\r\n\r\nCOUR DE CASSATION\r\n______________________\r\
-            \n\r\n\r\nAudience publique du 20 décembre 2018\r\n\r\n\r\n\r\n\r\nRejet\r\
-            \n\r\n\r\nM. CHAUVIN, président\r\n\r\n\r\n\r\nArrêt n° 1117 FS-P+B+I\r\
-            \n\r\nPourvoi n° C 17-18.194\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nR É P U B\
-            \ L I Q U E F R A N Ç A I S E\r\n\r\n_________________________\r\n\r\n\
-            AU NOM DU PEUPLE FRANÇAIS\r\n_________________________\r\n\r\n\r\nLA COUR\
-            \ DE CASSATION, TROISIÈME CHAMBRE CIVILE, a rendu l'arrêt suivant :\r\n\
-            \r\nStatuant sur le pourvoi (...) la cour d'appel n'a pas mis la Cour\
-            \ de cassation en mesure d'exercer son contrôle, violant ainsi les articles\
-            \ 455 du code de procédure civile, ensemble les articles L. 322-1 L. 322-2\
-            \ du code de l'expropriation."
-          zones:
-            introduction:
-            - start: 0
-              end: 2309
-            motivations:
-            - start: 2309
-              end: 4834
-            dispositif:
-            - start: 4834
-              end: 5199
-            annexes:
-            - start: 5199
-              end: 16798
-        - {}
+          - id: 5fca7d162a251e6bf9c78514
+            jurisdiction: cc
+            chamber: civ3
+            number: 17-18.194
+            ecli: ECLI:FR:CCASS:2018:C301117
+            formation: fs
+            publication:
+              - p
+              - b
+              - i
+            decision_date: 2018-12-20
+            solution: rejet
+            summary: "Le titulaire d'une autorisation temporaire d'occupation, en vigueur\
+              \ au moment de la procédure d'expropriation, est en droit d'obtenir l'indemnisation\
+              \ de son préjudice résultant de l'expropriation"
+            themes:
+              - Expropriation pour cause d'utilité publique
+              - Indemnité
+              - Préjudice
+              - Réparation
+              - Cas
+              - Titulaire d'une autorisation temporaire d'occupation en vigueur
+            text: "CIV.3 \r\nCH.B\r\n\r\n\r\n\r\nCOUR DE CASSATION\r\n______________________\r\
+              \n\r\n\r\nAudience publique du 20 décembre 2018\r\n\r\n\r\n\r\n\r\nRejet\r\
+              \n\r\n\r\nM. CHAUVIN, président\r\n\r\n\r\n\r\nArrêt n° 1117 FS-P+B+I\r\
+              \n\r\nPourvoi n° C 17-18.194\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nR É P U B\
+              \ L I Q U E F R A N Ç A I S E\r\n\r\n_________________________\r\n\r\n\
+              AU NOM DU PEUPLE FRANÇAIS\r\n_________________________\r\n\r\n\r\nLA COUR\
+              \ DE CASSATION, TROISIÈME CHAMBRE CIVILE, a rendu l'arrêt suivant :\r\n\
+              \r\nStatuant sur le pourvoi (...) la cour d'appel n'a pas mis la Cour\
+              \ de cassation en mesure d'exercer son contrôle, violant ainsi les articles\
+              \ 455 du code de procédure civile, ensemble les articles L. 322-1 L. 322-2\
+              \ du code de l'expropriation."
+            zones:
+              introduction:
+                - start: 0
+                  end: 2309
+              motivations:
+                - start: 2309
+                  end: 4834
+              dispositif:
+                - start: 4834
+                  end: 5199
+              annexes:
+                - start: 5199
+                  end: 16798
+          - {}
   securitySchemes:
     advanced:
       type: apiKey
