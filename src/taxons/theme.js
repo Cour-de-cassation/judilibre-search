@@ -1,4 +1,4 @@
-const taxon = {
+const source = {
   ABSEN: 'Absence',
   ACCIR: 'Accident de la circulation',
   ACPOS: 'Actions possessoires',
@@ -429,6 +429,21 @@ const taxon = {
   LOCFI: 'Location financière',
   ENTRS: 'Entreprise en difficulté - Responsabilité et sanctions',
 };
+
+const taxon = {};
+
+for (let key in source) {
+  let item = source[key].replace(/\s+/gm, ' ');
+  item = item.replace(/(\w)\s+\./gm, '$1.');
+  item = item.replace(/\(\s+(\w)/gm, '($1');
+  item = item.replace(/(\w)\s+\)/gm, '$1)');
+  item = item.replace(/(\w)\(/gm, '$1 (');
+  item = item.replace(/([^,]),(\w)/gm, '$1, $2');
+  item = item.trim();
+  if (item && Object.values(taxon).indexOf(item) === -1) {
+    taxon[key] = item;
+  }
+}
 
 module.exports = {
   options: [''].concat(Object.keys(taxon)),
