@@ -432,14 +432,18 @@ const source = {
 
 const taxon = {};
 
-for (let key in source) {
-  let item = source[key].replace(/\s+/gm, ' ');
+function cleanItem(item) {
+  item = item.replace(/\s+/gm, ' ');
   item = item.replace(/(\w)\s+\./gm, '$1.');
   item = item.replace(/\(\s+(\w)/gm, '($1');
   item = item.replace(/(\w)\s+\)/gm, '$1)');
   item = item.replace(/(\w)\(/gm, '$1 (');
   item = item.replace(/([^,]),(\w)/gm, '$1, $2');
-  item = item.trim();
+  return item.trim();
+}
+
+for (let key in source) {
+  const item = cleanItem(source[key]);
   if (item && Object.values(taxon).indexOf(item) === -1) {
     taxon[key] = item;
   }
@@ -449,4 +453,5 @@ module.exports = {
   options: [''].concat(Object.keys(taxon)),
   keys: Object.keys(taxon),
   taxonomy: taxon,
+  cleanItem: cleanItem,
 };
