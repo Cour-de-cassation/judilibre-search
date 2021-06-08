@@ -1,17 +1,13 @@
 #######################
 # Step 1: Base target #
 #######################
-FROM node:14-slim as base
+FROM node:16-alpine as base
 ARG http_proxy
 ARG https_proxy
 ARG no_proxy
 ARG npm_registry
 ARG MIRROR_DEBIAN
 ARG NPM_LATEST
-
-# update debian w/proxy & mirror
-RUN echo "$http_proxy $no_proxy" && set -x && [ -z "$MIRROR_DEBIAN" ] || \
-   sed -i.orig -e "s|http://deb.debian.org\([^[:space:]]*\)|$MIRROR_DEBIAN/debian9|g ; s|http://security.debian.org\([^[:space:]]*\)|$MIRROR_DEBIAN/debian9-security|g" /etc/apt/sources.list
 
 # use proxy & private npm registry
 RUN if [ ! -z "$http_proxy" ] ; then \
