@@ -6,7 +6,6 @@ ARG http_proxy
 ARG https_proxy
 ARG no_proxy
 ARG npm_registry
-ARG MIRROR_DEBIAN
 ARG NPM_LATEST
 
 # use proxy & private npm registry
@@ -62,9 +61,10 @@ ENV API_PORT=8080
 ENV NODE_ENV=production
 
 WORKDIR /home/node/
+COPY package.json package-lock.json ./
+RUN chown node package-lock.json
 USER node
 
-COPY package.json package-lock.json ./
 
 # Install production dependencies and clean cache
 RUN npm install --production && \
