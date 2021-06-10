@@ -5,7 +5,7 @@ API de recherche et de consultation de la plateforme JUDILIBRE.
 
 1. `docker pull opendatajustice/judilibre-search:master` ;
 2. `docker run --env WITHOUT_ELASTIC=true -p 80:8080/tcp opendatajustice/judilibre-search:master` ;
-3. L'API publique (entrées `/search`, `/decision` et `/taxonomy`, cf. [spécifications au format OpenAPI 3.0.2](src/data/JUDILIBRE-public.json)) est accessible via `http://localhost:80` sur un jeu statique de données publiques pseudonymisées (accessibles par ailleurs via le site www.legifrance.gouv.fr).
+3. L'API publique (entrées `/search`, `/decision` et `/taxonomy`, cf. spécifications [au format OpenAPI 3.0.2](public/JUDILIBRE-public.json) ou [au format Swagger 2.0](public/JUDILIBRE-public-swagger.json)) est accessible via `http://localhost:80` sur un jeu statique de données publiques pseudonymisées (accessibles par ailleurs via le site www.legifrance.gouv.fr).
 
 Les données statiques, destinées aux tests fonctionnels de base, sont :
 * Un ensemble représentatif de 1000+ résultats paginés en retour du point d'entrée `/search` (ne contient que des fragments de décisions) ;
