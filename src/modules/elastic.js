@@ -91,7 +91,7 @@ class Elastic {
     }
 
     // Publication:
-    if (query.publication && query.publication.length > 0) {
+    if (query.publication && Array.isArray(query.publication) && query.publication.length > 0) {
       if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
         searchQuery.body.query.function_score.query.bool.filter = [];
       }
@@ -103,7 +103,7 @@ class Elastic {
     }
 
     // Formation:
-    if (query.formation && query.formation.length > 0) {
+    if (query.formation && Array.isArray(query.formation) && query.formation.length > 0) {
       if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
         searchQuery.body.query.function_score.query.bool.filter = [];
       }
@@ -115,7 +115,7 @@ class Elastic {
     }
 
     // Chamber:
-    if (query.chamber && query.chamber.length > 0) {
+    if (query.chamber && Array.isArray(query.chamber) && query.chamber.length > 0) {
       if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
         searchQuery.body.query.function_score.query.bool.filter = [];
       }
@@ -139,7 +139,7 @@ class Elastic {
       themes: 'themes',
     };
     let fields = [];
-    if (query.field) {
+    if (query.field && Array.isArray(query.field) && query.field.length > 0) {
       query.field.forEach((field) => {
         if (queryField[field]) {
           fields.push(queryField[field]);
