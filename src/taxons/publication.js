@@ -1,8 +1,10 @@
+// @TODO 'n' ?
+
 const taxon = {
-  n: 'Non publié',
-  b: 'Publié au bulletin',
-  l: 'Publié à la lettre de chambre',
-  r: 'Publié au rapport',
+  b: 'Publié au Bulletin',
+  l: 'Publié aux Lettres de chambre',
+  r: 'Publié au Rapport',
+  c: 'Communiqué de presse',
 };
 
 module.exports = {
