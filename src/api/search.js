@@ -62,10 +62,7 @@ api.get(
       in: 'query',
       isString: true,
       toLowerCase: true,
-      isIn: {
-        options: [taxons.theme.options],
-      },
-      errorMessage: `Value of the theme parameter must be in [${taxons.theme.keys}].`,
+      errorMessage: `Theme parameter must be an array of strings.`,
       optional: true,
     },
     chamber: {
