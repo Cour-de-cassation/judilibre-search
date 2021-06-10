@@ -1,5 +1,5 @@
 const taxon = {
-  f: 'Formation ordinaire',
+  f: 'Formation restreinte',
   fs: 'Formation de section',
   fp: 'Formation plénière de chambre',
   frh: 'Formation restreinte hors RNSM',
