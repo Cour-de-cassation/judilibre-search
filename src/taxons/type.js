@@ -1,5 +1,3 @@
-// @TODO info not in DB
-
 const taxon = {
   arret: 'Arrêt',
   demande: "Demande d'avis",

@@ -1,5 +1,3 @@
-// @TODO 'n' ?
-
 const taxon = {
   b: 'Publié au Bulletin',
   l: 'Publié aux Lettres de chambre',

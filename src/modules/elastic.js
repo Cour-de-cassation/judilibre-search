@@ -47,7 +47,7 @@ class Elastic {
               {
                 filter: {
                   match: {
-                    publication: 'p',
+                    publication: 'b',
                   },
                 },
                 weight: 10,
@@ -55,7 +55,15 @@ class Elastic {
               {
                 filter: {
                   match: {
-                    publication: 'd',
+                    publication: 'r',
+                  },
+                },
+                weight: 10,
+              },
+              {
+                filter: {
+                  match: {
+                    publication: 'c',
                   },
                 },
                 weight: 5,
@@ -63,7 +71,7 @@ class Elastic {
               {
                 filter: {
                   match: {
-                    publication: 'n',
+                    publication: 'l',
                   },
                 },
                 weight: 1,
