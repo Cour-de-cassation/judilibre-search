@@ -1,0 +1,5 @@
+deploy_k8s_services.sh
+docker-build.sh
+wait_services_readiness.sh
+check_install.sh
+load_data.sh

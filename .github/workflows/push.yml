@@ -10,8 +10,7 @@ jobs:
       DOCKER_USERNAME: opendatajustice
       APP_GROUP: judilibre
       APP_ID: judilibre-search
-      APP_NODES: 1
-      APP_HOST: localhost
+      APP_HOST: search.judilibre.local
       APP_SCHEME: https
       APP_PORT: 443
       API_PORT: 8080
@@ -19,8 +18,9 @@ jobs:
       ELASTIC_NODES: 1
       ELASTIC_INDEX: judilibre_0
       ELASTIC_MEM: 512m
+      KUBE_TYPE: k3s
+      KUBE_ZONE: local
       START_TIMEOUT: 120
-      K8S: k3s
     steps:
       - uses: actions/checkout@v1
       - name: get version
@@ -28,79 +28,110 @@ jobs:
         id: extract_version
       - name: extract branch name
         shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF} | sed 's|^refs/heads/||;' | tr '/' '-')"
         id: extract_branch
+      - name: init deps
+        run: ./scripts/init_deps.sh
+        env:
+          GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
+          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
       - name: 🐋 Build the master docker image
         run: ./scripts/docker-build.sh
         env:
+          GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
           VERSION: ${{ steps.extract_version.outputs.version }}
       - name: ☸️  Deploy local k8s services
         run: ./scripts/deploy_k8s_services.sh
         env:
+          GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
           VERSION: ${{ steps.extract_version.outputs.version }}
       - name: ✅ Execute minimal tests
         run: |
-          kubectl get pods --namespace=${APP_GROUP}
-          kubectl logs service/${APP_ID}-svc --namespace=${APP_GROUP}
+          export KUBE_NAMESPACE=${APP_GROUP}-${KUBE_ZONE}-${GIT_BRANCH}
+          kubectl get pods --namespace=${KUBE_NAMESPACE}
+          kubectl logs service/${APP_ID}-svc --namespace=${KUBE_NAMESPACE}
           ./scripts/test_minimal.sh
         env:
+          GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
+          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
           KUBECONFIG: /home/runner/.kube/config-local-k3s.yaml
       - name: 🚀 Push docker image
         if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/master'
         run: |
           echo "${DOCKER_TOKEN}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
           docker push ${DOCKER_USERNAME}/${APP_ID}:${VERSION};
-          docker tag ${DOCKER_USERNAME}/${APP_ID}:${VERSION} ${DOCKER_USERNAME}/${APP_ID}:$(echo ${GIT_BRANCH} | tr '/' '-')
-          docker push ${DOCKER_USERNAME}/${APP_ID}:$(echo ${GIT_BRANCH} | tr '/' '-')
+          docker tag ${DOCKER_USERNAME}/${APP_ID}:${VERSION} ${DOCKER_USERNAME}/${APP_ID}:${GIT_BRANCH}
+          docker push ${DOCKER_USERNAME}/${APP_ID}:${GIT_BRANCH}
         env:
           DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
-          VERSION: ${{ steps.extract_version.outputs.version }}
           GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
+          VERSION: ${{ steps.extract_version.outputs.version }}
   deploy:
     name: 🚀 Deploy, update ☸️
     needs: build
     if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     env:
-      DOCKER_USERNAME: opendatajustice
       APP_GROUP: judilibre
       APP_ID: judilibre-search
-      APP_NODES: 2
       APP_HOST: search.judilibre.io
-      APP_DNS: search.judilibre.io
       APP_SCHEME: https
       APP_PORT: 443
       API_PORT: 8080
+      DOCKER_USERNAME: opendatajustice
       ELASTIC_VERSION: 7.13.1
       ELASTIC_NODES: 3
       ELASTIC_INDEX: judilibre_0
       ELASTIC_MEM: 1024m
-      START_TIMEOUT: 60
+      KUBE_TYPE: k8s
+      KUBE_ZONE: scw
+      START_TIMEOUT: 120
     steps:
       - uses: actions/checkout@v1
       - name: get version
         run: echo "##[set-output name=version;]$(cat package.json | jq -r '.version')-$(git rev-parse --short HEAD)"
         id: extract_version
+      - name: extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF} | sed 's|^refs/heads/||;' | tr '/' '-')"
+        id: extract_branch
+      - name: init deps
+        run: ./scripts/init_deps.sh
+        env:
+          GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
+          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
       - name: kube prerequisites
         run: |
           mkdir -p ${HOME}/.kube
           cat k8s/kubeconfig.yaml | envsubst > ~/.kube/config
         env:
-          KUBE_USER: ${{ secrets.KUBE_USER }}
+          KUBE_CA: ${{ secrets.KUBE_CA }}
           KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
           KUBE_URL: ${{ secrets.KUBE_URL }}
-          KUBE_CA: ${{ secrets.KUBE_CA }}
+          KUBE_USER: ${{ secrets.KUBE_USER }}
       - name: ☸️  Deploy remote k8s services
-        run: ./scripts/deploy_k8s_services.sh
+        run: |
+          if [ "${GIT_BRANCH}" != "master" ];then
+            export APP_HOST=search.${GIT_BRANCH}.judilibre.io;
+            export ELASTIC_MEM=512m;
+          fi;
+          ./scripts/deploy_k8s_services.sh
         env:
           VERSION: ${{ steps.extract_version.outputs.version }}
+          GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
       - name: 🚀 update ☸️
         run: |
-          kubectl set --namespace=${APP_GROUP} image deployments/${APP_ID}-deployment ${APP_ID}=${DOCKER_USERNAME}/${APP_ID}:${VERSION}
+          if [ "${GIT_BRANCH}" != "master" ];then
+            export APP_HOST=search.${GIT_BRANCH}.judilibre.io;
+            export ELASTIC_MEM=512m;
+          fi;
+          export KUBE_NAMESPACE=${APP_GROUP}-${KUBE_ZONE}-${GIT_BRANCH}
+          kubectl set image --namespace=${KUBE_NAMESPACE} deployments/${APP_ID}-deployment ${APP_ID}=${DOCKER_USERNAME}/${APP_ID}:${VERSION}
           ./scripts/wait_services_readiness.sh
-          kubectl get pods --namespace=${APP_GROUP}
-          kubectl logs service/${APP_ID}-svc --namespace=${APP_GROUP}
+          kubectl get pods --namespace=${KUBE_NAMESPACE}
+          kubectl logs service/${APP_ID}-svc --namespace=${KUBE_NAMESPACE}
           ./scripts/test_minimal.sh || (kubectl rollout undo deployments/${APP_ID}-deployment && exit 1)
         env:
-          VERSION: ${{ steps.extract_version.outputs.version }}
+          GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
           START_TIMEOUT: 20
+          VERSION: ${{ steps.extract_version.outputs.version }}
