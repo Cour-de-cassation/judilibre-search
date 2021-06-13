@@ -7,20 +7,20 @@ jobs:
     name: 🐳 Build docker image
     runs-on: ubuntu-latest
     env:
-      DOCKER_USERNAME: opendatajustice
       APP_GROUP: judilibre
       APP_ID: judilibre-search
-      APP_NODES: 1
-      APP_HOST: localhost
+      APP_HOST: search.judilibre.local
       APP_SCHEME: https
       APP_PORT: 443
       API_PORT: 8080
+      DOCKER_USERNAME: opendatajustice
       ELASTIC_VERSION: 7.13.1
       ELASTIC_NODES: 1
       ELASTIC_INDEX: judilibre_0
       ELASTIC_MEM: 512m
+      KUBE_TYPE: k3s
+      KUBE_ZONE: local
       START_TIMEOUT: 120
-      K8S: k3s
     steps:
       - uses: actions/checkout@v1
       - name: get version
@@ -28,20 +28,32 @@ jobs:
         id: extract_version
       - name: extract branch name
         shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF} | sed 's|^refs/heads/||;' | tr '/' '-')"
         id: extract_branch
+      - name: init deps
+        run: ./scripts/init_deps.sh
+        env:
+          GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
+          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+      - name:
+        run: ./scripts/deploy_k8s_services.sh
       - name: 🐋 Build the master docker image
         run: ./scripts/docker-build.sh
         env:
+          GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
           VERSION: ${{ steps.extract_version.outputs.version }}
       - name: ☸️  Deploy local k8s services
         run: ./scripts/deploy_k8s_services.sh
         env:
+          GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
           VERSION: ${{ steps.extract_version.outputs.version }}
       - name: ✅ Execute minimal tests
         run: |
-          kubectl get pods --namespace=${APP_GROUP}
-          kubectl logs service/${APP_ID}-svc --namespace=${APP_GROUP}
+          export KUBE_NAMESPACE=${APP_GROUP}-${KUBE_ZONE}-${GIT_BRANCH}
+          kubectl get pods --namespace=${KUBE_NAMESPACE}
+          kubectl logs service/${APP_ID}-svc --namespace=${KUBE_NAMESPACE}
           ./scripts/test_minimal.sh
         env:
+          GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
+          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
           KUBECONFIG: /home/runner/.kube/config-local-k3s.yaml
