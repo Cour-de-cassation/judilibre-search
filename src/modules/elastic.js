@@ -134,6 +134,42 @@ class Elastic {
       });
     }
 
+    // Type:
+    if (query.type && Array.isArray(query.type) && query.type.length > 0) {
+      if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
+        searchQuery.body.query.function_score.query.bool.filter = [];
+      }
+      searchQuery.body.query.function_score.query.bool.filter.push({
+        terms: {
+          type: query.type,
+        },
+      });
+    }
+
+    // Solution:
+    if (query.solution && Array.isArray(query.solution) && query.solution.length > 0) {
+      if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
+        searchQuery.body.query.function_score.query.bool.filter = [];
+      }
+      searchQuery.body.query.function_score.query.bool.filter.push({
+        terms: {
+          solution: query.solution,
+        },
+      });
+    }
+
+    // Themes:
+    if (query.theme && Array.isArray(query.theme) && query.theme.length > 0) {
+      if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
+        searchQuery.body.query.function_score.query.bool.filter = [];
+      }
+      searchQuery.body.query.function_score.query.bool.filter.push({
+        terms: {
+          theme: query.theme,
+        },
+      });
+    }
+
     // Fields:
     const queryField = {
       expose: 'zoneExpose',
@@ -144,7 +180,7 @@ class Elastic {
       number: 'number',
       // @TODO visa: 'visa',
       summary: 'summary',
-      themes: 'themes',
+      // themes: 'themes',
     };
     let fields = [];
     if (query.field && Array.isArray(query.field) && query.field.length > 0) {
@@ -248,6 +284,10 @@ class Elastic {
                 ? taxons.solution.taxonomy[rawResult._source.solution]
                 : rawResult._source.solution,
             solution_alt: rawResult._source.solution_alt,
+            type:
+              query.resolve_references && taxons.type.taxonomy[rawResult._source.type]
+                ? taxons.type.taxonomy[rawResult._source.type]
+                : rawResult._source.type,
             summary: rawResult._source.summary,
             themes: rawResult._source.themes,
             bulletin: rawResult._source.bulletin,
@@ -372,6 +412,10 @@ class Elastic {
             ? taxons.solution.taxonomy[rawResult._source.solution]
             : rawResult._source.solution,
         solution_alt: rawResult._source.solution_alt,
+        type:
+          query.resolve_references && taxons.type.taxonomy[rawResult._source.type]
+            ? taxons.type.taxonomy[rawResult._source.type]
+            : rawResult._source.type,
         formation:
           query.resolve_references && taxons.formation.taxonomy[rawResult._source.formation]
             ? taxons.formation.taxonomy[rawResult._source.formation]

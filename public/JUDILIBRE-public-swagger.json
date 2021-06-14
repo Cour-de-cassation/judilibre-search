@@ -49,8 +49,9 @@
                 "number": "17-18.194",
                 "ecli": "ECLI:FR:CCASS:2018:C301117",
                 "formation": "fs",
-                "publication": ["p", "b"],
+                "publication": ["c", "b"],
                 "decision_date": "2018-12-20",
+                "type": "arret",
                 "solution": "rejet",
                 "summary": "Le titulaire d'une autorisation temporaire d'occupation, en vigueur au moment de la procédure d'expropriation, est en droit d'obtenir l'indemnisation de son préjudice résultant de l'expropriation",
                 "themes": [
@@ -259,7 +260,7 @@
           },
           {
             "name": "type",
-            "description": "Filtre les résultats suivant la natures des décisions (parmi les valeurs : `arret`, `qpc`, `qpj`, `ordonnance`, `saisie`, etc. - les valeurs disponibles sont accessibles via `GET /taxonomy?id=type`). Une recherche avec un paramètre `type` vide ou manquant retourne des décisions de toutes natures.",
+            "description": "Filtre les résultats suivant la natures des décisions (parmi les valeurs : `arret`, `qpc`, `ordonnance`, `saisie`, etc. - les valeurs disponibles sont accessibles via `GET /taxonomy?id=type`). Une recherche avec un paramètre `type` vide ou manquant retourne des décisions de toutes natures.",
             "in": "query",
             "type": "array",
             "items": {
@@ -394,7 +395,7 @@
                   "formation": [],
                   "jurisdiction": [],
                   "committee": [],
-                  "publication": ["l", "b"],
+                  "publication": ["c", "b"],
                   "solution": [],
                   "date_start": "1970-01-01",
                   "date_end": "2021-01-01",
@@ -426,8 +427,9 @@
                     "number": "17-18.194",
                     "ecli": "ECLI:FR:CCASS:2018:C301117",
                     "formation": "fs",
-                    "publication": ["p", "b", "i"],
+                    "publication": ["c", "b"],
                     "decision_date": "2018-12-20",
+                    "type": "arret",
                     "solution": "rejet",
                     "summary": "Le titulaire d'une autorisation temporaire d'occupation, en vigueur au moment de la procédure d'expropriation, est en droit d'obtenir l'indemnisation de son préjudice résultant de l'expropriation",
                     "themes": [
@@ -490,7 +492,7 @@
                   "formation": [],
                   "jurisdiction": [],
                   "committee": [],
-                  "publication": ["p", "b"],
+                  "publication": ["c", "b"],
                   "solution": [],
                   "date_start": "1970-01-01",
                   "date_end": "2021-01-01",
@@ -510,8 +512,9 @@
                     "number": "17-18.194",
                     "ecli": "ECLI:FR:CCASS:2018:C301117",
                     "formation": "fs",
-                    "publication": ["p", "b", "i"],
+                    "publication": ["c", "b"],
                     "decision_date": "2018-12-20",
+                    "type": "arret",
                     "solution": "rejet",
                     "summary": "Le titulaire d'une autorisation temporaire d'occupation, en vigueur au moment de la procédure d'expropriation, est en droit d'obtenir l'indemnisation de son préjudice résultant de l'expropriation",
                     "themes": [
@@ -584,7 +587,7 @@
       "parameters": [
         {
           "name": "type",
-          "description": "Filtre les résultats suivant la natures des décisions (parmi les valeurs : `arret`, `qpc`, `qpj`, `ordonnance`, `saisie`, etc. - les valeurs disponibles sont accessibles via `GET /taxonomy?id=type`). Un export avec un paramètre `type` vide ou manquant retourne des décisions de toutes natures.",
+          "description": "Filtre les résultats suivant la natures des décisions (parmi les valeurs : `arret`, `qpc`, `ordonnance`, `saisie`, etc. - les valeurs disponibles sont accessibles via `GET /taxonomy?id=type`). Un export avec un paramètre `type` vide ou manquant retourne des décisions de toutes natures.",
           "in": "query",
           "type": "array",
           "items": {
@@ -792,7 +795,7 @@
           "formation": [],
           "jurisdiction": [],
           "committee": [],
-          "publication": ["p", "b"],
+          "publication": ["c", "b"],
           "solution": [],
           "date_start": "1970-01-01",
           "date_end": "2021-01-01",
@@ -824,8 +827,9 @@
             "number": "17-18.194",
             "ecli": "ECLI:FR:CCASS:2018:C301117",
             "formation": "fs",
-            "publication": ["p", "b", "i"],
+            "publication": ["c", "b"],
             "decision_date": "2018-12-20",
+            "type": "arret",
             "solution": "rejet",
             "summary": "Le titulaire d'une autorisation temporaire d'occupation, en vigueur au moment de la procédure d'expropriation, est en droit d'obtenir l'indemnisation de son préjudice résultant de l'expropriation",
             "themes": [
@@ -885,8 +889,9 @@
         "number": "17-18.194",
         "ecli": "ECLI:FR:CCASS:2018:C301117",
         "formation": "fs",
-        "publication": ["p", "b", "i"],
+        "publication": ["c", "b"],
         "decision_date": "2018-12-20",
+        "type": "arret",
         "solution": "rejet",
         "summary": "Le titulaire d'une autorisation temporaire d'occupation, en vigueur au moment de la procédure d'expropriation, est en droit d'obtenir l'indemnisation de son préjudice résultant de l'expropriation",
         "themes": [
@@ -920,7 +925,7 @@
           "type": "string"
         },
         "type": {
-          "description": "Filtre les résultats suivant la natures des décisions (parmi les valeurs : `arret`, `qpc`, `qpj`, `ordonnance`, `saisie`, etc. - les valeurs disponibles sont accessibles via `GET /taxonomy?id=type`). Une recherche avec un paramètre `type` vide ou manquant retourne des décisions de toutes natures.",
+          "description": "Filtre les résultats suivant la natures des décisions (parmi les valeurs : `arret`, `qpc`, `ordonnance`, `saisie`, etc. - les valeurs disponibles sont accessibles via `GET /taxonomy?id=type`). Une recherche avec un paramètre `type` vide ou manquant retourne des décisions de toutes natures.",
           "type": "array",
           "items": {
             "type": "string"
@@ -1014,7 +1019,7 @@
         "formation": [],
         "jurisdiction": [],
         "committee": [],
-        "publication": ["p", "b"],
+        "publication": ["c", "b"],
         "solution": [],
         "date_start": "1970-01-01",
         "date_end": "2021-01-01",
@@ -1068,11 +1073,11 @@
           "type": "string"
         },
         "jurisdiction": {
-          "description": "Clé de la juridiction. Par défaut, utiliser `GET /taxonomy?id=jurisdiction&key={jurisdiction}` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où `key` contient la clé et `value` contient l'intitulé complet de celle-ci.",
+          "description": "Clé de la juridiction. Par défaut, utiliser `GET /taxonomy?id=jurisdiction&key={jurisdiction}` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété contient l'intitulé complet de celle-ci.",
           "type": "string"
         },
         "chamber": {
-          "description": "Clé de la chambre. Par défaut, utiliser `GET /taxonomy?id=chamber&context_value={jurisdiction}&key={chamber}` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où `key` contient la clé et `value` contient l'intitulé complet de celle-ci.",
+          "description": "Clé de la chambre. Par défaut, utiliser `GET /taxonomy?id=chamber&context_value={jurisdiction}&key={chamber}` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété contient l'intitulé complet de celle-ci.",
           "type": "string"
         },
         "number": {
@@ -1084,11 +1089,11 @@
           "type": "string"
         },
         "formation": {
-          "description": "Clé de la formation. Par défaut, utiliser `GET /taxonomy?id=formation&context_value={jurisdiction}&key={formation}` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où `key` contient la clé et `value` contient l'intitulé complet de celle-ci.",
+          "description": "Clé de la formation. Par défaut, utiliser `GET /taxonomy?id=formation&context_value={jurisdiction}&key={formation}` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété contient l'intitulé complet de celle-ci.",
           "type": "string"
         },
         "publication": {
-          "description": "Clés du niveau de publication. Par défaut, utiliser `GET /taxonomy?id=publication&context_value={jurisdiction}&key={publication}` pour récupérer le nom de chaque clé. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où `key` contient la clé et `value` contient l'intitulé complet de celle-ci.",
+          "description": "Clés du niveau de publication. Par défaut, utiliser `GET /taxonomy?id=publication&context_value={jurisdiction}&key={publication}` pour récupérer le nom de chaque clé. Si la requête utilise `resolve_references=true`, alors cette propriété contient l'intitulé complet de celui-ci.",
           "type": "array",
           "items": {
             "type": "string"
@@ -1099,12 +1104,16 @@
           "description": "Date de création de la décision, au format ISO-8601 (par exemple 2021-05-13).",
           "type": "string"
         },
+        "type": {
+          "description": "Clé du type de décision. Par défaut, utiliser `GET /taxonomy?id=type&context_value={jurisdiction}&key={type}` pour récupérer l'intitulé complet de celui-ci. Si la requête utilise `resolve_references=true`, alors cette propriété contient l'intitulé complet de celui-ci.",
+          "type": "string"
+        },
         "solution": {
-          "description": "Clé de la solution. Par défaut, utiliser `GET /taxonomy?id=solution&context_value={jurisdiction}&key={solution}` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété est retournée sous la forme d'un objet `{ key, value }`, où `key` contient la clé et `value` contient l'intitulé complet de celle-ci.",
+          "description": "Clé de la solution. Par défaut, utiliser `GET /taxonomy?id=solution&context_value={jurisdiction}&key={solution}` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété contient l'intitulé complet de celle-ci.",
           "type": "string"
         },
         "solution_alt": {
-          "description": "Intitulé complet de la solution (si celle-ci n'est pas normalisée et comprise dans la taxonomie, la propriété solution valant alors `autre`).",
+          "description": "Intitulé complet de la solution (si celle-ci n'est pas normalisée et comprise dans la taxonomie, la propriété solution valant alors `other`).",
           "type": "string"
         },
         "summary": {
@@ -1137,8 +1146,9 @@
         "number": "17-18.194",
         "ecli": "ECLI:FR:CCASS:2018:C301117",
         "formation": "fs",
-        "publication": ["p", "b", "i"],
+        "publication": ["c", "b"],
         "decision_date": "2018-12-20",
+        "type": "arret",
         "solution": "rejet",
         "summary": "Le titulaire d'une autorisation temporaire d'occupation, en vigueur au moment de la procédure d'expropriation, est en droit d'obtenir l'indemnisation de son préjudice résultant de l'expropriation",
         "themes": [
@@ -1212,8 +1222,9 @@
         "number": "17-18.194",
         "ecli": "ECLI:FR:CCASS:2018:C301117",
         "formation": "fs",
-        "publication": ["p", "b", "i"],
+        "publication": ["c", "b"],
         "decision_date": "2018-12-20",
+        "type": "arret",
         "solution": "rejet",
         "summary": "Le titulaire d'une autorisation temporaire d'occupation, en vigueur au moment de la procédure d'expropriation, est en droit d'obtenir l'indemnisation de son préjudice résultant de l'expropriation",
         "themes": [
@@ -1449,7 +1460,7 @@
           "formation": [],
           "jurisdiction": [],
           "committee": [],
-          "publication": ["p", "b"],
+          "publication": ["c", "b"],
           "solution": [],
           "date_start": "1970-01-01",
           "date_end": "2021-01-01",
@@ -1469,8 +1480,9 @@
             "number": "17-18.194",
             "ecli": "ECLI:FR:CCASS:2018:C301117",
             "formation": "fs",
-            "publication": ["p", "b", "i"],
+            "publication": ["c", "b"],
             "decision_date": "2018-12-20",
+            "type": "arret",
             "solution": "rejet",
             "summary": "Le titulaire d'une autorisation temporaire d'occupation, en vigueur au moment de la procédure d'expropriation, est en droit d'obtenir l'indemnisation de son préjudice résultant de l'expropriation",
             "themes": [
@@ -1519,7 +1531,7 @@
       "type": "object",
       "properties": {
         "type": {
-          "description": "Filtre les résultats suivant la natures des décisions (parmi les valeurs : `arret`, `qpc`, `qpj`, `ordonnance`, `saisie`, etc. - les valeurs disponibles sont accessibles via `GET /taxonomy?id=type`). Une recherche avec un paramètre `type` vide ou manquant retourne des décisions de toutes natures.",
+          "description": "Filtre les résultats suivant la natures des décisions (parmi les valeurs : `arret`, `qpc`, `ordonnance`, `saisie`, etc. - les valeurs disponibles sont accessibles via `GET /taxonomy?id=type`). Une recherche avec un paramètre `type` vide ou manquant retourne des décisions de toutes natures.",
           "type": "array",
           "items": {
             "type": "string"
@@ -1610,7 +1622,7 @@
         "formation": [],
         "jurisdiction": [],
         "committee": [],
-        "publication": ["p", "b"],
+        "publication": ["c", "b"],
         "solution": [],
         "date_start": "1970-01-01",
         "date_end": "2021-01-01",
@@ -1684,9 +1696,9 @@
       },
       "example": {
         "id": "publication",
-        "key": "n",
+        "key": "r",
         "result": {
-          "value": "Non publié"
+          "value": "Publié au Rapport"
         }
       }
     },
@@ -1822,8 +1834,9 @@
             "number": "17-18.194",
             "ecli": "ECLI:FR:CCASS:2018:C301117",
             "formation": "fs",
-            "publication": ["p", "b", "i"],
+            "publication": ["c", "b"],
             "decision_date": "2018-12-20",
+            "type": "arret",
             "solution": "rejet",
             "summary": "Le titulaire d'une autorisation temporaire d'occupation, en vigueur au moment de la procédure d'expropriation, est en droit d'obtenir l'indemnisation de son préjudice résultant de l'expropriation",
             "themes": [

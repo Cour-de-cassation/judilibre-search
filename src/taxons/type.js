@@ -1,11 +1,10 @@
 const taxon = {
   arret: 'Arrêt',
-  demande: "Demande d'avis",
+  avis: "Demande d'avis",
   qpc: 'Question prioritaire de constitutionnalité',
-  qpj: 'Question préjudicielle',
+  // qpj: 'Question préjudicielle',
   ordonnance: 'Ordonnance',
   saisie: 'Saisie',
-  autre: 'Autre',
 };
 
 module.exports = {

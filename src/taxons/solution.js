@@ -11,7 +11,7 @@ const taxon = {
   reglement: 'Règlement des juges',
   rejet: 'Rejet',
   renvoi: 'Renvoi',
-  autre: 'Autre',
+  other: 'Autre',
 };
 
 module.exports = {

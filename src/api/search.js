@@ -21,6 +21,7 @@ api.get(
       toArray: true,
     },
     'field.*': {
+      // @TODO DEFAULT FIELDS
       in: 'query',
       isString: true,
       toLowerCase: true,
@@ -31,6 +32,7 @@ api.get(
       optional: true,
     },
     operator: {
+      // @TODO EXACT
       in: 'query',
       isString: true,
       toLowerCase: true,
@@ -98,6 +100,7 @@ api.get(
       toArray: true,
     },
     'jurisdiction.*': {
+      // @TODO
       in: 'query',
       isString: true,
       toLowerCase: true,
@@ -112,6 +115,7 @@ api.get(
       toArray: true,
     },
     'committee.*': {
+      // @TODO
       in: 'query',
       isString: true,
       toLowerCase: true,
@@ -150,12 +154,14 @@ api.get(
       optional: true,
     },
     date_start: {
+      // @TODO
       in: 'query',
       isISO8601: true,
       errorMessage: `Start date must be of a ISO-8601 date (e.g. 2021-05-13).`,
       optional: true,
     },
     date_end: {
+      // @TODO
       in: 'query',
       isISO8601: true,
       errorMessage: `End date must be of a ISO-8601 date (e.g. 2021-05-13).`,
@@ -201,6 +207,7 @@ api.get(
       optional: true,
     },
     resolve_references: {
+      // @TODO DEFAULT VALUE
       in: 'query',
       isBoolean: true,
       toBoolean: true,
