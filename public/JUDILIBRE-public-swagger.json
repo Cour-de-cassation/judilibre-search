@@ -314,7 +314,7 @@
           },
           {
             "name": "publication",
-            "description": "Filtre les résultats suivant le niveau de publication des décisions (parmi les valeurs : `b`, `p`, `r`, `i`, `l`, `c`, etc. - les valeurs disponibles sont accessibles via `GET /taxonomy?id=publication`). Une recherche avec un paramètre `publication` vide ou manquant retourne des décisions de n'importe quel niveau de publication.",
+            "description": "Filtre les résultats suivant le niveau de publication des décisions (parmi les valeurs : `b`, `r`, `l`, `c`, etc. - les valeurs disponibles sont accessibles via `GET /taxonomy?id=publication`). Une recherche avec un paramètre `publication` vide ou manquant retourne des décisions de n'importe quel niveau de publication.",
             "in": "query",
             "type": "array",
             "items": {
@@ -641,7 +641,7 @@
         },
         {
           "name": "publication",
-          "description": "Filtre les résultats suivant le niveau de publication des décisions (parmi les valeurs : `b`, `p`, `r`, `i`, `l`, `c`, etc. - les valeurs disponibles sont accessibles via `GET /taxonomy?id=publication`). Un export avec un paramètre `publication` vide ou manquant retourne des décisions de n'importe quel niveau de publication.",
+          "description": "Filtre les résultats suivant le niveau de publication des décisions (parmi les valeurs : `b`, `r`, `l`, `c`, etc. - les valeurs disponibles sont accessibles via `GET /taxonomy?id=publication`). Un export avec un paramètre `publication` vide ou manquant retourne des décisions de n'importe quel niveau de publication.",
           "in": "query",
           "type": "array",
           "items": {
@@ -967,7 +967,7 @@
           }
         },
         "publication": {
-          "description": "Filtre les résultats suivant le niveau de publication des décisions (parmi les valeurs : `b`, `p`, `r`, `i`, `l`, `c`, etc. - les valeurs disponibles sont accessibles via `GET /taxonomy?id=publication`). Une recherche avec un paramètre `publication` vide ou manquant retourne des décisions de n'importe quel niveau de publication.",
+          "description": "Filtre les résultats suivant le niveau de publication des décisions (parmi les valeurs : `b`, `r`, `l`, `c`, etc. - les valeurs disponibles sont accessibles via `GET /taxonomy?id=publication`). Une recherche avec un paramètre `publication` vide ou manquant retourne des décisions de n'importe quel niveau de publication.",
           "type": "array",
           "items": {
             "type": "string"
@@ -1573,7 +1573,7 @@
           }
         },
         "publication": {
-          "description": "Filtre les résultats suivant le niveau de publication des décisions (parmi les valeurs : `b`, `p`, `r`, `i`, `l`, `c`, etc. - les valeurs disponibles sont accessibles via `GET /taxonomy?id=publication`). Une recherche avec un paramètre `publication` vide ou manquant retourne des décisions de n'importe quel niveau de publication.",
+          "description": "Filtre les résultats suivant le niveau de publication des décisions (parmi les valeurs : `b`, `r`, `l`, `c`, etc. - les valeurs disponibles sont accessibles via `GET /taxonomy?id=publication`). Une recherche avec un paramètre `publication` vide ou manquant retourne des décisions de n'importe quel niveau de publication.",
           "type": "array",
           "items": {
             "type": "string"
