@@ -1,0 +1,28 @@
+config:
+  target: "${APP_SCHEME}://${APP_HOST}:${APP_PORT}"
+  tls:
+    rejectUnauthorized: false
+  phases:
+    - duration: 30
+      arrivalRate: 2
+    - duration: 30
+      arrivalRate: 2
+    - duration: 30
+      arrivalRate: 5
+    - duration: 30
+      arrivalRate: 10
+    - duration: 30
+      arrivalRate: 20
+    - duration: 60
+      arrivalRate: 50
+  payload:
+    - path: query_vocab.txt
+      fields:
+        - word
+      order: random
+      skipHeader: true
+scenarios:
+  - name: ${APP_ID}
+    flow:
+    - get:
+        url: "/search?query={{ word }}"
