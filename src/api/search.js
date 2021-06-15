@@ -21,7 +21,6 @@ api.get(
       toArray: true,
     },
     'field.*': {
-      // @TODO DEFAULT FIELDS
       in: 'query',
       isString: true,
       toLowerCase: true,
@@ -32,7 +31,6 @@ api.get(
       optional: true,
     },
     operator: {
-      // @TODO EXACT
       in: 'query',
       isString: true,
       toLowerCase: true,
@@ -100,7 +98,6 @@ api.get(
       toArray: true,
     },
     'jurisdiction.*': {
-      // @TODO
       in: 'query',
       isString: true,
       toLowerCase: true,
@@ -115,7 +112,6 @@ api.get(
       toArray: true,
     },
     'committee.*': {
-      // @TODO
       in: 'query',
       isString: true,
       toLowerCase: true,
@@ -207,7 +203,6 @@ api.get(
       optional: true,
     },
     resolve_references: {
-      // @TODO DEFAULT VALUE
       in: 'query',
       isBoolean: true,
       toBoolean: true,

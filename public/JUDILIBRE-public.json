@@ -1400,7 +1400,7 @@
                 "description": "Date de dernière mise à jour de la décision.",
                 "type": "string"
               },
-              "applied": {
+              "visa": {
                 "description": "Liste des textes appliqués par la décision, chaque texte étant représenté par un objet de type `attachment` où `label` contient l'intitulé du texte et `URL` contient le lien vers celui-ci.",
                 "type": "array",
                 "items": {

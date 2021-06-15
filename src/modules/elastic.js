@@ -28,6 +28,8 @@ class Elastic {
       }
     }
 
+    // @TODO Detect ECLI in query string.
+
     // Base query:
     let searchQuery = {
       index: process.env.ELASTIC_INDEX,
@@ -158,6 +160,30 @@ class Elastic {
       });
     }
 
+    // Jurisdiction:
+    if (query.jurisdiction && Array.isArray(query.jurisdiction) && query.jurisdiction.length > 0) {
+      if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
+        searchQuery.body.query.function_score.query.bool.filter = [];
+      }
+      searchQuery.body.query.function_score.query.bool.filter.push({
+        terms: {
+          jurisdiction: query.jurisdiction,
+        },
+      });
+    }
+
+    // Committee:
+    if (query.committee && Array.isArray(query.committee) && query.committee.length > 0) {
+      if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
+        searchQuery.body.query.function_score.query.bool.filter = [];
+      }
+      searchQuery.body.query.function_score.query.bool.filter.push({
+        terms: {
+          committee: query.committee,
+        },
+      });
+    }
+
     // Themes:
     if (query.theme && Array.isArray(query.theme) && query.theme.length > 0) {
       if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
@@ -178,9 +204,9 @@ class Elastic {
       dispositif: 'zoneDispositif',
       annexes: 'zoneAnnexes',
       number: 'number',
-      // @TODO visa: 'visa',
+      visa: 'visa',
       summary: 'summary',
-      // themes: 'themes',
+      themes: 'themes',
     };
     let fields = [];
     if (query.field && Array.isArray(query.field) && query.field.length > 0) {
@@ -191,14 +217,17 @@ class Elastic {
       });
     }
     if (fields.length === 0) {
-      // @TODO % operator exact --> textExact
-      fields.push('text');
+      if (query.operator && query.operator === 'exact') {
+        fields.push('textExact');
+      } else {
+        fields.push('text');
+      }
     }
 
     // Boosts:
     let boostedFields = [];
     for (let i = 0; i < fields.length; i++) {
-      // @ TODO add visa, etc.
+      // @TODO Boost visa and other fields
       if (fields[i] === 'number') {
         boostedFields[i] = fields[i] + '^100';
       } else if (fields[i] === 'zoneMotivations' || fields[i] === 'zoneDispositif') {
@@ -426,6 +455,8 @@ class Elastic {
         bulletin: rawResult._source.bulletin,
         files: rawResult._source.files,
         zones: rawResult._source.zones,
+        visa: rawResult._source.visa,
+        rapprochements: rawResult._source.rapprochements,
       };
     }
 
