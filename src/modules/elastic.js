@@ -238,19 +238,25 @@ class Elastic {
     }
 
     // Finalize:
-    searchQuery.body.query.function_score.query.bool.must = {
-      multi_match: {
-        query: searchString.join(' '),
-        fields: boostedFields,
-        operator:
-          query.operator === 'exact'
-            ? 'AND'
-            : query.operator
-            ? query.operator.toUpperCase()
-            : taxons.operator.default.toUpperCase(),
-        type: 'cross_fields',
-      },
-    };
+    if (query.operator !== 'exact') {
+      searchQuery.body.query.function_score.query.bool.must = {
+        multi_match: {
+          query: searchString.join(' '),
+          fields: boostedFields,
+          operator: query.operator ? query.operator.toUpperCase() : taxons.operator.default.toUpperCase(),
+          type: 'cross_fields',
+        },
+      };
+    } else {
+      // @TODO still a little bit fuzzy...
+      searchQuery.body.query.function_score.query.bool.must = {
+        match_phrase: {
+          textExact: {
+            query: searchString.join(' '),
+          },
+        },
+      };
+    }
 
     // Highlight all fields but...
     fields.forEach((field) => {
