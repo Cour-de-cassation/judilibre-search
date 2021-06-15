@@ -9,21 +9,22 @@
   "number": "19-60.222",
   "publication": ["b", "c"],
   "solution": "rejet",
+  "type": "arret",
   "formation": "fs",
   "update_date": "2020-11-27",
   "summary": "Aux termes de l'article L. 2314-30 du code du travail, pour chaque collège électoral, les listes présentées aux élections professionnelles qui comportent plusieurs candidats sont composées d'un nombre de femmes et d'hommes correspondant à la part de femmes et d'hommes inscrits sur la liste électorale. \nLes dispositions de l'article L. 2314-30, éclairées par les travaux parlementaires, s'appliquent aux organisations syndicales qui doivent, au premier tour pour lequel elles bénéficient du monopole de présentation des listes de candidats et, par suite, au second tour, constituer des listes qui respectent la représentation équilibrée des femmes et des hommes. Elles ne s'appliquent pas aux candidatures libres présentées au second tour des élections professionnelles",
   "themes": [
-    "ELECTIONS PROFESSIONNELLES",
-    "Comité social et économique",
-    "Opérations électorales",
-    "Modalités d'organisation et de déroulement",
-    "Listes de candidatures",
-    "Alternance des candidats",
-    "Représentation équilibrée des femmes et des hommes",
-    "Régularité de la liste électorale",
-    "Appréciation",
-    "Cas",
-    "Candidatures libres présentées au second tour des élections professionnelles"
+    "elections professionnelles",
+    "comité social et économique",
+    "opérations électorales",
+    "modalités d'organisation et de déroulement",
+    "listes de candidatures",
+    "alternance des candidats",
+    "représentation équilibrée des femmes et des hommes",
+    "régularité de la liste électorale",
+    "appréciation",
+    "cas",
+    "candidatures libres présentées au second tour des élections professionnelles"
   ],
   "zones": {
     "introduction": [
