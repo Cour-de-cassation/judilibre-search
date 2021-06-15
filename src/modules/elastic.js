@@ -323,6 +323,7 @@ class Elastic {
             files: rawResult._source.files,
           };
 
+          let hasHit = false;
           for (let key in queryField) {
             let field = queryField[key];
             if (rawResult.highlight[field] && rawResult.highlight[field].length > 0) {
@@ -331,6 +332,33 @@ class Elastic {
                 hit = hit.replace(/^[^a-z<>]*/i, '');
                 hit = hit.replace(/[^a-z<>]*$/i, '');
                 result.highlights[key].push(hit.trim());
+                hasHit = true;
+              });
+            }
+          }
+
+          if (hasHit === false) {
+            if (
+              fields.indexOf('text') !== -1 &&
+              rawResult.highlight['text'] &&
+              rawResult.highlight['text'].length > 0
+            ) {
+              result.highlights['text'] = [];
+              rawResult.highlight['text'].forEach(function (hit) {
+                hit = hit.replace(/^[^a-z<>]*/i, '');
+                hit = hit.replace(/[^a-z<>]*$/i, '');
+                result.highlights['text'].push(hit.trim());
+              });
+            } else if (
+              fields.indexOf('textExact') !== -1 &&
+              rawResult.highlight['textExact'] &&
+              rawResult.highlight['textExact'].length > 0
+            ) {
+              result.highlights['text'] = [];
+              rawResult.highlight['textExact'].forEach(function (hit) {
+                hit = hit.replace(/^[^a-z<>]*/i, '');
+                hit = hit.replace(/[^a-z<>]*$/i, '');
+                result.highlights['text'].push(hit.trim());
               });
             }
           }

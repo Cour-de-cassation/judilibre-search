@@ -1037,7 +1037,7 @@
       "type": "object",
       "properties": {
         "key": {
-          "description": "Nom du champ ou de la zone contenant le segment (par exemple : `expose`, `dispositif`, `summary`, etc.). Il peut y avoir plusieurs segments par zone.",
+          "description": "Nom du champ (`text` pour le texte entier) ou de la zone contenant le segment (par exemple : `expose`, `dispositif`, `summary`, etc.). Il peut y avoir plusieurs segments par zone.",
           "type": "string"
         },
         "value": {
