@@ -242,7 +242,12 @@ class Elastic {
       multi_match: {
         query: searchString.join(' '),
         fields: boostedFields,
-        operator: query.operator ? query.operator.toUpperCase() : taxons.operator.default.toUpperCase(),
+        operator:
+          query.operator === 'exact'
+            ? 'AND'
+            : query.operator
+            ? query.operator.toUpperCase()
+            : taxons.operator.default.toUpperCase(),
         type: 'cross_fields',
       },
     };
