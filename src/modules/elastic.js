@@ -19,16 +19,24 @@ class Elastic {
     const page = query.page || 0;
     const page_size = query.page_size || 10;
 
-    // Reformat what could be "pourvoi" numbers:
     const string = query.query || '';
-    let searchString = string.trim().split(/\s+/gm);
-    for (let i = 0; i < searchString.length; i++) {
-      if (/^\d\d[^\w\d]\d\d[^\w\d]\d\d\d$/.test(searchString[i])) {
-        searchString[i] = searchString[i].replace(/[^\w\d]/gm, '');
+    const splitString = string.trim().split(/[\s,;/?!]+/gm);
+
+    // Detect some special data in query string:
+    let searchString = [];
+    let searchECLI = [];
+    let searchPourvoiNumber = [];
+    let searchVisa = [];
+    for (let i = 0; i < splitString.length; i++) {
+      if (/^ecli:\w+:\w+:\d+:[a-z0-9.]+$/i.test(splitString[i])) {
+        searchECLI.push(splitString[i]);
+      } else if (/^\d\d[^\w\d]\d\d[^\w\d]\d\d\d$/.test(splitString[i])) {
+        searchPourvoiNumber.push(splitString[i].replace(/[^\w\d]/gm, ''));
+      } else {
+        // @TODO Detect search on visa somehow...
+        searchString.push(splitString[i]);
       }
     }
-
-    // @TODO Detect ECLI and other special data in query string.
 
     // Base query:
     let searchQuery = {
@@ -100,6 +108,45 @@ class Elastic {
       searchQuery.body.sort[0][query.sort] = query.order;
     }
 
+    // ECLI:
+    if (searchECLI.length > 0) {
+      if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
+        searchQuery.body.query.function_score.query.bool.filter = [];
+      }
+      searchQuery.body.query.function_score.query.bool.filter.push({
+        terms: {
+          ecli: searchECLI,
+          boost: 100,
+        },
+      });
+    }
+
+    // "Pourvoi" number:
+    if (searchPourvoiNumber.length > 0) {
+      if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
+        searchQuery.body.query.function_score.query.bool.filter = [];
+      }
+      searchQuery.body.query.function_score.query.bool.filter.push({
+        terms: {
+          number: searchPourvoiNumber,
+          boost: 100,
+        },
+      });
+    }
+
+    // Visa:
+    if (searchVisa.length > 0) {
+      if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
+        searchQuery.body.query.function_score.query.bool.filter = [];
+      }
+      searchQuery.body.query.function_score.query.bool.filter.push({
+        terms: {
+          visa: searchVisa,
+          boost: 10,
+        },
+      });
+    }
+
     // Publication:
     if (query.publication && Array.isArray(query.publication) && query.publication.length > 0) {
       if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
@@ -120,6 +167,7 @@ class Elastic {
       searchQuery.body.query.function_score.query.bool.filter.push({
         terms: {
           formation: query.formation,
+          boost: 10,
         },
       });
     }
@@ -132,6 +180,7 @@ class Elastic {
       searchQuery.body.query.function_score.query.bool.filter.push({
         terms: {
           chamber: query.chamber,
+          boost: 10,
         },
       });
     }
@@ -144,6 +193,7 @@ class Elastic {
       searchQuery.body.query.function_score.query.bool.filter.push({
         terms: {
           type: query.type,
+          boost: 10,
         },
       });
     }
@@ -156,6 +206,7 @@ class Elastic {
       searchQuery.body.query.function_score.query.bool.filter.push({
         terms: {
           solution: query.solution,
+          boost: 10,
         },
       });
     }
@@ -168,6 +219,7 @@ class Elastic {
       searchQuery.body.query.function_score.query.bool.filter.push({
         terms: {
           jurisdiction: query.jurisdiction,
+          boost: 10,
         },
       });
     }
@@ -180,6 +232,7 @@ class Elastic {
       searchQuery.body.query.function_score.query.bool.filter.push({
         terms: {
           committee: query.committee,
+          boost: 10,
         },
       });
     }
@@ -191,7 +244,8 @@ class Elastic {
       }
       searchQuery.body.query.function_score.query.bool.filter.push({
         terms: {
-          theme: query.theme,
+          themes: query.theme,
+          boost: 10,
         },
       });
     }
@@ -217,44 +271,36 @@ class Elastic {
       searchQuery.body.query.function_score.query.bool.filter.push(range);
     }
 
-    // Fields:
+    // Specific text fields to target:
+    let textFields = [];
     const queryField = {
       expose: 'zoneExpose',
       moyens: 'zoneMoyens',
       motivations: 'zoneMotivations',
       dispositif: 'zoneDispositif',
       annexes: 'zoneAnnexes',
-      number: 'number',
-      visa: 'visa',
-      summary: 'summary',
-      themes: 'themes',
     };
-    let fields = [];
     if (query.field && Array.isArray(query.field) && query.field.length > 0) {
       query.field.forEach((field) => {
-        if (queryField[field]) {
-          fields.push(queryField[field]);
+        if (queryField[field] && textFields.indexOf(queryField[field]) === -1) {
+          textFields.push(queryField[field]);
         }
       });
-    }
-    if (fields.length === 0) {
+    } else {
       if (query.operator && query.operator === 'exact') {
-        fields.push('textExact');
+        textFields.push('textExact');
       } else {
-        fields.push('text');
+        textFields.push('text');
       }
     }
 
-    // Boosts:
+    // Boosts text fields:
     let boostedFields = [];
-    for (let i = 0; i < fields.length; i++) {
-      // @TODO Boost visa and other fields
-      if (fields[i] === 'number') {
-        boostedFields[i] = fields[i] + '^100';
-      } else if (fields[i] === 'zoneMotivations' || fields[i] === 'zoneDispositif') {
-        boostedFields[i] = fields[i] + '^5';
+    for (let i = 0; i < textFields.length; i++) {
+      if (textFields[i] === 'zoneMotivations' || textFields[i] === 'zoneDispositif') {
+        boostedFields[i] = textFields[i] + '^5';
       } else {
-        boostedFields[i] = fields[i];
+        boostedFields[i] = textFields[i];
       }
     }
 
@@ -269,21 +315,19 @@ class Elastic {
         },
       };
     } else {
-      // @TODO still a little bit fuzzy...
+      // @FIXME still a little bit fuzzy...
       searchQuery.body.query.function_score.query.bool.must = {
         match_phrase: {
           textExact: {
-            query: searchString.join(' '),
+            query: string,
           },
         },
       };
     }
 
-    // Highlight all fields but...
-    fields.forEach((field) => {
-      if (field !== 'number') {
-        searchQuery.body.highlight.fields[field] = {};
-      }
+    // Highlight all text fields:
+    textFields.forEach((field) => {
+      searchQuery.body.highlight.fields[field] = {};
     });
 
     const rawResponse = await this.client.search(searchQuery);
@@ -371,7 +415,7 @@ class Elastic {
 
           if (hasHit === false) {
             if (
-              fields.indexOf('text') !== -1 &&
+              textFields.indexOf('text') !== -1 &&
               rawResult.highlight['text'] &&
               rawResult.highlight['text'].length > 0
             ) {
@@ -382,7 +426,7 @@ class Elastic {
                 result.highlights['text'].push(hit.trim());
               });
             } else if (
-              fields.indexOf('textExact') !== -1 &&
+              textFields.indexOf('textExact') !== -1 &&
               rawResult.highlight['textExact'] &&
               rawResult.highlight['textExact'].length > 0
             ) {
