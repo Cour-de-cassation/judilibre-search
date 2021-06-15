@@ -28,7 +28,7 @@ class Elastic {
       }
     }
 
-    // @TODO Detect ECLI in query string.
+    // @TODO Detect ECLI and other special data in query string.
 
     // Base query:
     let searchQuery = {
@@ -194,6 +194,27 @@ class Elastic {
           theme: query.theme,
         },
       });
+    }
+
+    // Date start/end
+    if (query.date_start || query.date_end) {
+      if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
+        searchQuery.body.query.function_score.query.bool.filter = [];
+      }
+      let range = {
+        range: {
+          decision_date: {
+            boost: 10,
+          },
+        },
+      };
+      if (query.date_start) {
+        range.range.decision_date.gte = query.date_start;
+      }
+      if (query.date_end) {
+        range.range.decision_date.lte = query.date_end;
+      }
+      searchQuery.body.query.function_score.query.bool.filter.push(range);
     }
 
     // Fields:
