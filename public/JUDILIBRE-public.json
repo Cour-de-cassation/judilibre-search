@@ -38,7 +38,15 @@
           },
           {
             "name": "query",
-            "description": "Objet facultatif contenant les paramètres complets d'une requête de recherche, tel qu'il est retourné en résultat de `GET /search`. Ce paramètre est utilisé pour surligner en retour, dans le texte intégral de la décision, les termes correspondant avec la recherche (ces termes étant délimitées par des balises `<em>`).",
+            "description": "Chaîne de caractères correspondant à la recherche. Ce paramètre est utilisé pour surligner en retour, dans le texte intégral de la décision, les termes correspondant avec la recherche initiale (ces termes étant délimitées par des balises `<em>`).",
+            "schema": {
+              "type": "string"
+            },
+            "in": "query"
+          },
+          {
+            "name": "operator",
+            "description": "Opérateur logique reliant les multiples termes que le paramètre `query` peut contenir (`or` par défaut, `and` ou `exact` – dans ce dernier cas le moteur recherchera exactement le contenu du paramètre `query`).",
             "schema": {
               "type": "string"
             },
