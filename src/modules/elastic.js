@@ -27,13 +27,17 @@ class Elastic {
     let searchECLI = [];
     let searchPourvoiNumber = [];
     let searchVisa = [];
+
+    if (/articles?\s+.*\d/i.test(string)) {
+      searchVisa.push(string);
+    }
+
     for (let i = 0; i < splitString.length; i++) {
       if (/^ecli:\w+:\w+:\d+:[a-z0-9.]+$/i.test(splitString[i])) {
         searchECLI.push(splitString[i]);
       } else if (/^\d\d[^\w\d]\d\d[^\w\d]\d\d\d$/.test(splitString[i])) {
         searchPourvoiNumber.push(splitString[i].replace(/[^\w\d]/gm, ''));
       } else {
-        // @TODO Detect search on visa somehow...
         searchString.push(splitString[i]);
       }
     }
@@ -305,30 +309,34 @@ class Elastic {
     }
 
     // Finalize:
-    if (query.operator !== 'exact') {
-      searchQuery.body.query.function_score.query.bool.must = {
-        multi_match: {
-          query: searchString.join(' '),
-          fields: boostedFields,
-          operator: query.operator ? query.operator.toUpperCase() : taxons.operator.default.toUpperCase(),
-          type: 'cross_fields',
-        },
-      };
-    } else {
-      // @FIXME still a little bit fuzzy...
-      searchQuery.body.query.function_score.query.bool.must = {
-        match_phrase: {
-          textExact: {
-            query: string,
+    if (searchString.length > 0) {
+      if (query.operator !== 'exact') {
+        searchQuery.body.query.function_score.query.bool.must = {
+          multi_match: {
+            query: searchString.join(' '),
+            fields: boostedFields,
+            operator: query.operator ? query.operator.toUpperCase() : taxons.operator.default.toUpperCase(),
+            type: 'cross_fields',
           },
-        },
-      };
+        };
+      } else {
+        // @FIXME still a little bit fuzzy...
+        searchQuery.body.query.function_score.query.bool.must = {
+          match_phrase: {
+            textExact: {
+              query: string,
+            },
+          },
+        };
+      }
     }
 
     // Highlight all text fields:
     textFields.forEach((field) => {
       searchQuery.body.highlight.fields[field] = {};
     });
+
+    // console.log(JSON.stringify(searchQuery, null, 2));
 
     const rawResponse = await this.client.search(searchQuery);
     let response = {
@@ -402,7 +410,7 @@ class Elastic {
           let hasHit = false;
           for (let key in queryField) {
             let field = queryField[key];
-            if (rawResult.highlight[field] && rawResult.highlight[field].length > 0) {
+            if (rawResult.highlight && rawResult.highlight[field] && rawResult.highlight[field].length > 0) {
               result.highlights[key] = [];
               rawResult.highlight[field].forEach(function (hit) {
                 hit = hit.replace(/^[^a-z<>]*/i, '');
@@ -413,7 +421,7 @@ class Elastic {
             }
           }
 
-          if (hasHit === false) {
+          if (rawResult.highlight && hasHit === false) {
             if (
               textFields.indexOf('text') !== -1 &&
               rawResult.highlight['text'] &&

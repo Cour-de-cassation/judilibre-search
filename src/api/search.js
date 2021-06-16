@@ -13,7 +13,6 @@ api.get(
     query: {
       in: 'query',
       isString: true,
-      toLowerCase: true,
       optional: true,
     },
     field: {
