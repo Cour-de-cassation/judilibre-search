@@ -26,10 +26,10 @@ class Elastic {
     let searchString = [];
     let searchECLI = [];
     let searchPourvoiNumber = [];
-    let searchVisa = [];
+    let searchVisa = false;
 
     if (/articles?\s+.*\d/i.test(string)) {
-      searchVisa.push(string);
+      searchVisa = true;
     }
 
     for (let i = 0; i < splitString.length; i++) {
@@ -134,19 +134,6 @@ class Elastic {
         terms: {
           number: searchPourvoiNumber,
           boost: 100,
-        },
-      });
-    }
-
-    // Visa:
-    if (searchVisa.length > 0) {
-      if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
-        searchQuery.body.query.function_score.query.bool.filter = [];
-      }
-      searchQuery.body.query.function_score.query.bool.filter.push({
-        terms: {
-          visa: searchVisa,
-          boost: 10,
         },
       });
     }
@@ -283,6 +270,7 @@ class Elastic {
       motivations: 'zoneMotivations',
       dispositif: 'zoneDispositif',
       annexes: 'zoneAnnexes',
+      visa: 'visa', // handled separately
     };
     if (query.field && Array.isArray(query.field) && query.field.length > 0) {
       query.field.forEach((field) => {
@@ -335,6 +323,23 @@ class Elastic {
     textFields.forEach((field) => {
       searchQuery.body.highlight.fields[field] = {};
     });
+
+    // Visa:
+    if (searchVisa === true) {
+      if (searchQuery.body.query.function_score.query.bool.must === undefined) {
+        searchQuery.body.query.function_score.query.bool.must = {
+          multi_match: {
+            query: searchString.join(' '),
+            fields: ['visa'],
+            operator: query.operator ? query.operator.toUpperCase() : taxons.operator.default.toUpperCase(),
+            type: 'cross_fields',
+          },
+        };
+      } else {
+        searchQuery.body.query.function_score.query.bool.must.multi_match.fields.push('visa^10');
+      }
+      searchQuery.body.highlight.fields['visa'] = {};
+    }
 
     // console.log(JSON.stringify(searchQuery, null, 2));
 
