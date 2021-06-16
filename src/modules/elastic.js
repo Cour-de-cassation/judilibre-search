@@ -341,8 +341,6 @@ class Elastic {
       searchQuery.body.highlight.fields['visa'] = {};
     }
 
-    // console.log(JSON.stringify(searchQuery, null, 2));
-
     const rawResponse = await this.client.search(searchQuery);
     let response = {
       page: page,
