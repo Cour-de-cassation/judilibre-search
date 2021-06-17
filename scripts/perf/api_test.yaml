@@ -16,13 +16,36 @@ config:
     - duration: 60
       arrivalRate: 50
   payload:
-    - path: query_vocab.txt
+    - path: query_vocab_gen.txt
       fields:
-        - word
+        - word1
       order: random
       skipHeader: true
+    - path: query_vocab_gen.txt
+      fields:
+        - word2
+      order: random
+      skipHeader: true
+    - path: query_vocab.txt
+      fields:
+        - word3
+      order: random
+      skipHeader: true
+
 scenarios:
   - name: ${APP_ID}
     flow:
-    - get:
-        url: "/search?query={{ word }}"
+      - get:
+          url: "/search?query={{ word1 }}"
+      - think: 3
+      - get:
+          url: "/search?query={{ word2 }}"
+      - think: 3
+      - get:
+          url: "/search?query={{ word3 }}"
+          capture:
+            - json: $.results[0].id
+              as: "id"
+      - think: 3
+      - get:
+          url: "/decisions?query={{ id }}"
