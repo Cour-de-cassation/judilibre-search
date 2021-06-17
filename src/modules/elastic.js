@@ -511,7 +511,6 @@ class Elastic {
             files: rawResult._source.files,
           };
 
-          let hasHit = false;
           for (let key in searchQuery.queryField) {
             let field = searchQuery.queryField[key];
             if (rawResult.highlight && rawResult.highlight[field] && rawResult.highlight[field].length > 0) {
@@ -520,7 +519,6 @@ class Elastic {
                 hit = hit.replace(/^[^a-z<>]*/i, '');
                 hit = hit.replace(/[^a-z<>]*$/i, '');
                 result.highlights[key].push(hit.trim());
-                hasHit = true;
               });
             }
             if (
@@ -533,7 +531,6 @@ class Elastic {
                 hit = hit.replace(/^[^a-z<>]*/i, '');
                 hit = hit.replace(/[^a-z<>]*$/i, '');
                 result.highlights[key].push(hit.trim());
-                hasHit = true;
               });
             }
           }
@@ -615,13 +612,14 @@ class Elastic {
     }
 
     if (rawResponse && rawResponse.body && rawResponse.body.found) {
+      let rawResult = rawResponse.body;
       let highlightedText = null;
+      let highlightedZoning = null;
 
       if (query.query) {
         // Actual search query is required for hightlighting:
         const searchQuery = this.buildQuery(query, true);
         const queryResponse = await this.client.search(searchQuery.query);
-        // @TODO resolve zoning
         if (
           queryResponse &&
           queryResponse.body &&
@@ -641,10 +639,73 @@ class Elastic {
           ) {
             highlightedText = queryResponse.body.hits.hits[0].highlight['text.exact'][0];
           }
+          if (highlightedText !== null) {
+            // Rebuild zoning to integrate highlights:
+            let flattenZones = [];
+            for (let zone in rawResult._source.zones) {
+              rawResult._source.zones[zone].forEach((fragment) => {
+                flattenZones.push({
+                  zone: zone,
+                  start: fragment.start,
+                  end: fragment.end,
+                });
+              });
+            }
+            flattenZones.sort((a, b) => {
+              if (a.start < b.start) {
+                return -1;
+              }
+              if (a.start > b.start) {
+                return 1;
+              }
+              return 0;
+            });
+            let highlightedFlattenZones = JSON.parse(JSON.stringify(flattenZones));
+            for (let i = 0; i < flattenZones.length; i++) {
+              let start = flattenZones[i].start;
+              let end = flattenZones[i].end;
+              let sourceIndex = start;
+              let inTag = false;
+              if (i > 0) {
+                let offset = highlightedFlattenZones[i - 1].end - highlightedFlattenZones[i].start;
+                highlightedFlattenZones[i].start = highlightedFlattenZones[i - 1].end;
+                highlightedFlattenZones[i].end += offset;
+              }
+              let highlightIndex = highlightedFlattenZones[i].start;
+
+              while (sourceIndex < end) {
+                if (!inTag && rawResult._source.text[sourceIndex] === highlightedText[highlightIndex]) {
+                  sourceIndex++;
+                  highlightIndex++;
+                } else {
+                  if (inTag) {
+                    if (highlightedText[highlightIndex] === '>') {
+                      inTag = false;
+                    }
+                  } else {
+                    if (highlightedText[highlightIndex] === '<') {
+                      inTag = true;
+                    }
+                  }
+                  highlightIndex++;
+                  highlightedFlattenZones[i].end++;
+                }
+              }
+            }
+            highlightedZoning = {};
+            highlightedFlattenZones.forEach((zone) => {
+              if (highlightedZoning[zone.zone] === undefined) {
+                highlightedZoning[zone.zone] = [];
+              }
+              highlightedZoning[zone.zone].push({
+                start: zone.start,
+                end: zone.end,
+              });
+            });
+          }
         }
       }
 
-      let rawResult = rawResponse.body;
       response = {
         id: rawResult._id,
         source: rawResult._source.source,
@@ -686,7 +747,7 @@ class Elastic {
         themes: rawResult._source.themes,
         bulletin: rawResult._source.bulletin,
         files: rawResult._source.files,
-        zones: rawResult._source.zones,
+        zones: highlightedZoning ? highlightedZoning : rawResult._source.zones,
         visa: rawResult._source.visa,
         rapprochements: rawResult._source.rapprochements,
       };
