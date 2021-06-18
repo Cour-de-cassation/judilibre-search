@@ -7,7 +7,6 @@ jobs:
     name: 🐳 Build docker image
     runs-on: ubuntu-latest
     env:
-      DOCKER_USERNAME: opendatajustice
       APP_GROUP: judilibre
       APP_ID: judilibre-search
       APP_HOST: search.judilibre.local
