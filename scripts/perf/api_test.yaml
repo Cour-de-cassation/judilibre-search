@@ -15,6 +15,8 @@ config:
       arrivalRate: 20
     - duration: 60
       arrivalRate: 50
+    - duration: 60
+      arrivalRate: 100
   payload:
     - path: query_vocab_gen.txt
       fields:
@@ -31,7 +33,36 @@ config:
         - word3
       order: random
       skipHeader: true
-
+    - path: query_vocab_gen.txt
+      fields:
+        - word4
+      order: random
+      skipHeader: true
+    - path: query_vocab_gen.txt
+      fields:
+        - word5
+      order: random
+      skipHeader: true
+    - path: query_vocab.txt
+      fields:
+        - word6
+      order: random
+      skipHeader: true
+    - path: query_vocab_gen.txt
+      fields:
+        - word7
+      order: random
+      skipHeader: true
+    - path: query_vocab_gen.txt
+      fields:
+        - word8
+      order: random
+      skipHeader: true
+    - path: query_vocab.txt
+      fields:
+        - word9
+      order: random
+      skipHeader: true
 scenarios:
   - name: ${APP_ID}
     flow:
@@ -44,8 +75,54 @@ scenarios:
       - get:
           url: "/search?query={{ word3 }}"
           capture:
-            - json: $.results[0].id
-              as: "id"
+            - json: $.results
+              as: "decisions1"
       - think: 3
       - get:
-          url: "/decisions?query={{ id }}"
+          url: "/decision?id={{ decisions1[0].id }}"
+      - think: 3
+      - get:
+          url: "/decision?id={{ decisions1[1].id }}"
+      - think: 3
+      - get:
+          url: "/decision?id={{ decisions1[3].id }}"
+      - get:
+          url: "/search?query={{ word4 }}"
+      - think: 3
+      - get:
+          url: "/search?query={{ word5 }}"
+      - think: 3
+      - get:
+          url: "/search?query={{ word6 }}"
+          capture:
+            - json: $.results
+              as: "decisions2"
+      - think: 3
+      - get:
+          url: "/decision?id={{ decisions2[0].id }}"
+      - think: 3
+      - get:
+          url: "/decision?id={{ decisions2[1].id }}"
+      - think: 3
+      - get:
+          url: "/decision?id={{ decisions2[3].id }}"
+      - get:
+          url: "/search?query={{ word7 }}"
+      - think: 3
+      - get:
+          url: "/search?query={{ word8 }}"
+      - think: 3
+      - get:
+          url: "/search?query={{ word9 }}"
+          capture:
+            - json: $.results
+              as: "decisions3"
+      - think: 3
+      - get:
+          url: "/decision?id={{ decisions3[0].id }}"
+      - think: 3
+      - get:
+          url: "/decision?id={{ decisions3[1].id }}"
+      - think: 3
+      - get:
+          url: "/decision?id={{ decisions3[3].id }}"
