@@ -14,10 +14,13 @@ jobs:
       APP_SCHEME: https
       APP_PORT: 443
       API_PORT: 8080
-      ELASTIC_VERSION: 7.13.1
-      ELASTIC_NODES: 1
+      DOCKER_USERNAME: opendatajustice
+      ELASTIC_VERSION: 7.13.2
       ELASTIC_INDEX: judilibre_0
+      ELASTIC_NODES: 1
       ELASTIC_MEM: 512m
+      ELASTIC_STORAGE_POLICY: DeleteOnScaledownAndClusterDeletion
+      ELASTIC_STORAGE_SIZE: 3Gi
       KUBE_TYPE: k3s
       KUBE_ZONE: local
       START_TIMEOUT: 120
@@ -79,13 +82,15 @@ jobs:
       APP_PORT: 443
       API_PORT: 8080
       DOCKER_USERNAME: opendatajustice
-      ELASTIC_VERSION: 7.13.1
-      ELASTIC_NODES: 3
+      ELASTIC_VERSION: 7.13.2
       ELASTIC_INDEX: judilibre_0
+      ELASTIC_NODES: 3
       ELASTIC_MEM: 1024m
+      ELASTIC_STORAGE_POLICY: DeleteOnScaledownOnly
+      ELASTIC_STORAGE_SIZE: 3Gi
       KUBE_TYPE: k8s
       KUBE_ZONE: scw
-      START_TIMEOUT: 120
+      START_TIMEOUT: 240
     steps:
       - uses: actions/checkout@v1
       - name: get version

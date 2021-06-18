@@ -14,10 +14,12 @@ jobs:
       APP_PORT: 443
       API_PORT: 8080
       DOCKER_USERNAME: opendatajustice
-      ELASTIC_VERSION: 7.13.1
-      ELASTIC_NODES: 1
+      ELASTIC_VERSION: 7.13.2
       ELASTIC_INDEX: judilibre_0
+      ELASTIC_NODES: 1
       ELASTIC_MEM: 512m
+      ELASTIC_STORAGE_POLICY: DeleteOnScaledownAndClusterDeletion
+      ELASTIC_STORAGE_SIZE: 3Gi
       KUBE_TYPE: k3s
       KUBE_ZONE: local
       START_TIMEOUT: 120
