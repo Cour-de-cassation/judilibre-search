@@ -1,13 +1,12 @@
 const taxon = {
+  text: 'Texte entier',
+  introduction: 'Introduction',
   expose: 'Exposé du litige',
   moyens: 'Moyens',
   motivations: 'Motivations',
   dispositif: 'Dispositif',
   annexes: 'Moyens annexés',
-  number: 'Numéro de pourvoi',
-  visa: 'Visa',
-  summary: 'Sommaire',
-  themes: 'Titrage',
+  visa: 'Textes appliqués',
 };
 
 module.exports = {

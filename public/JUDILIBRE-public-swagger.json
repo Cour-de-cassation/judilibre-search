@@ -30,7 +30,13 @@
           },
           {
             "name": "query",
-            "description": "Objet facultatif contenant les paramètres complets d'une requête de recherche, tel qu'il est retourné en résultat de `GET /search`. Ce paramètre est utilisé pour surligner en retour, dans le texte intégral de la décision, les termes correspondant avec la recherche (ces termes étant délimitées par des balises `<em>`).",
+            "description": "Chaîne de caractères correspondant à la recherche. Ce paramètre est utilisé pour surligner en retour, dans le texte intégral de la décision, les termes correspondant avec la recherche initiale (ces termes étant délimitées par des balises `<em>`).",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "operator",
+            "description": "Opérateur logique reliant les multiples termes que le paramètre `query` peut contenir (`or` par défaut, `and` ou `exact` – dans ce dernier cas le moteur recherchera exactement le contenu du paramètre `query`).",
             "in": "query",
             "type": "string"
           }
@@ -1073,7 +1079,7 @@
       "type": "object",
       "properties": {
         "key": {
-          "description": "Nom du champ ou de la zone contenant le segment (par exemple : `expose`, `dispositif`, `summary`, etc.). Il peut y avoir plusieurs segments par zone.",
+          "description": "Nom du champ (`text` pour le texte entier) ou de la zone contenant le segment (par exemple : `expose`, `dispositif`, `summary`, etc.). Il peut y avoir plusieurs segments par zone.",
           "type": "string"
         },
         "value": {
@@ -1227,7 +1233,7 @@
               "description": "Date de dernière mise à jour de la décision.",
               "type": "string"
             },
-            "applied": {
+            "visa": {
               "description": "Liste des textes appliqués par la décision, chaque texte étant représenté par un objet de type `attachment` où `label` contient l'intitulé du texte et `URL` contient le lien vers celui-ci.",
               "type": "array",
               "items": {

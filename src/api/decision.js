@@ -5,6 +5,8 @@ const { checkSchema, validationResult } = require('express-validator');
 const Elastic = require('../modules/elastic');
 const route = 'decision';
 
+const taxons = require('../taxons');
+
 api.get(
   `/${route}`,
   checkSchema({
@@ -16,8 +18,17 @@ api.get(
     },
     query: {
       in: 'query',
-      isObject: true,
-      errorMessage: `Value of the query parameter must be an object.`,
+      isString: true,
+      optional: true,
+    },
+    operator: {
+      in: 'query',
+      isString: true,
+      toLowerCase: true,
+      isIn: {
+        options: [taxons.operator.options],
+      },
+      errorMessage: `Value of the operator parameter must be in [${taxons.operator.keys}].`,
       optional: true,
     },
     resolve_references: {
