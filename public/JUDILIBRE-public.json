@@ -117,6 +117,9 @@
           "403": {
             "description": "Permissions insuffisantes."
           },
+          "404": {
+            "description": "Décision introuvable."
+          },
           "423": {
             "description": "Accès bloqué suite à une activité suspecte."
           },
@@ -125,9 +128,14 @@
           }
         },
         "security": [
-          {},
+          {
+            
+          },
           {
             "advanced": []
+          },
+          {
+            "admin": []
           }
         ],
         "operationId": "decision",
@@ -229,7 +237,11 @@
             "description": "Erreur indéfinie côté serveur."
           }
         },
-        "security": [{}],
+        "security": [
+          {
+            
+          }
+        ],
         "operationId": "taxonomy",
         "summary": "Permet de récupérer les listes des termes employés par le processus de recherche.",
         "description": "L'API publique propose la récupération des listes des termes (sous la forme d'un couple clé/valeur) constituants les différents critères et filtres pris en compte par le processus de recherche et les données qu'il restitue, notamment :\n\n* La liste des types de décision (`type`) ;\n* La liste des juridictions dont le système intègre les décisions (`jurisdiction`) ;\n* La liste des chambres (`chamber`) ;\n* La liste des formations (`formation`) ;\n* La liste des commissions (`committee`) ;\n* La liste des niveaux de publication (`publication`) ;\n* La liste des matières (`theme`) ;\n* La liste des solutions (`solution`) ;\n* La liste des champs et des zones de contenu des décisions pouvant être ciblés par la recherche (`field`) ;\n* La liste des zones de contenu des décisions (`zones`) ;\n* etc.\n\nLa publication de cette taxonomie permet principalement au prestataire chargé de l'implémentation du frontend (ainsi qu'à certains réutilisateurs avancés) d'automatiser la constitution des formulaires de recherche et l'enrichissement des résultats retournés."
@@ -296,7 +308,14 @@
             "description": "Erreur indéfinie côté serveur."
           }
         },
-        "security": [{}],
+        "security": [
+          {
+            
+          },
+          {
+            "admin": []
+          }
+        ],
         "operationId": "stats",
         "summary": "Permet de récupérer des statistiques sur le contenu de la base JUDILIBRE.",
         "description": "Ce point d'entrée publiera notamment les statistiques suivantes, mises à jour quotidiennement :\n\n* Nombre de décisions indexées (au total, par année, par juridiction) ;\n* Nombre de requêtes (par jour, par semaine, etc.) ;\n* Date de la décision la plus ancienne, date de la décision la plus récente."
@@ -597,9 +616,14 @@
           }
         },
         "security": [
-          {},
+          {
+            
+          },
           {
             "advanced": []
+          },
+          {
+            "admin": []
           }
         ],
         "operationId": "search",
@@ -884,9 +908,14 @@
           }
         },
         "security": [
-          {},
+          {
+            
+          },
           {
             "advanced": []
+          },
+          {
+            "admin": []
           }
         ],
         "operationId": "export",
@@ -935,7 +964,14 @@
             "description": "Erreur indéfinie côté serveur."
           }
         },
-        "security": [{}],
+        "security": [
+          {
+            
+          },
+          {
+            "admin": []
+          }
+        ],
         "operationId": "healthcheck",
         "summary": "Permet de récupérer l'état de disponibilité du service.",
         "description": "Ce point d'entrée permet de connaître l'état de disponibilité du service (disponible ou indisponible)."
@@ -2090,16 +2126,16 @@
       }
     },
     "securitySchemes": {
-      "advanced": {
-        "type": "apiKey",
-        "description": "Accès avancé (réutilisateurs).",
-        "name": "JUDILIBRE-API-KEY",
-        "in": "header"
-      },
       "admin": {
         "type": "apiKey",
         "description": "Administration (SDER).",
-        "name": "JUDILIBRE-API-KEY",
+        "name": "JUDILIBRE-ADMIN-API-KEY",
+        "in": "header"
+      },
+      "advanced": {
+        "type": "apiKey",
+        "description": "Accès avancé (réutilisateurs).",
+        "name": "JUDILIBRE-ADVANCED-API-KEY",
         "in": "header"
       }
     }
