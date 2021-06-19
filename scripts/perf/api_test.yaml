@@ -5,18 +5,40 @@ config:
   phases:
     - duration: 30
       arrivalRate: 2
-    - duration: 30
-      arrivalRate: 2
+      maxVusers: 20
     - duration: 30
       arrivalRate: 5
-    - duration: 30
+      maxVusers: 30
+    - duration: 60
+      arrivalRate: 5
+      maxVusers: 50
+    - duration: 60
+      arrivalRate: 5
+      maxVusers: 100
+    - duration: 60
       arrivalRate: 10
-    - duration: 30
+      maxVusers: 200
+    - duration: 60
       arrivalRate: 20
+      maxVusers: 400
     - duration: 60
+      arrivalRate: 30
+      maxVusers: 600
+    - duration: 60
+      arrivalRate: 30
+      maxVusers: 800
+    - duration: 90
       arrivalRate: 50
-    - duration: 60
+      maxVusers: 1000
+    - duration: 90
+      arrivalRate: 80
+      maxVusers: 1500
+    - duration: 90
       arrivalRate: 100
+      maxVusers: 2000
+    - duration: 90
+      arrivalRate: 200
+      maxVusers: 3000
   payload:
     - path: query_vocab_gen.txt
       fields:
