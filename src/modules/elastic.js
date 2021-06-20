@@ -7,7 +7,7 @@ class Elastic {
       this.data = null;
     } else {
       const { Client } = require('@elastic/elasticsearch');
-      this.client = new Client({ node: `http://${process.env.ELASTIC_NODE}` });
+      this.client = new Client({ node: `${process.env.ELASTIC_NODE}`, ssl: { rejectUnauthorized: false }});
     }
   }
 
