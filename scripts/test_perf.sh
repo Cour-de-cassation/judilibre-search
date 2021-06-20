@@ -5,7 +5,7 @@ if [ -z "${VERSION}" ];then\
         export VERSION="$(cat package.json | jq -r '.version')-$(git rev-parse --short HEAD)"
 fi
 
-export PERF_ID=${KUBE_ZONE}-${GIT_BRANCH}-${VERSION}_APP_${APP_NODES}_ES_${ELASTIC_NODES}_${ELASTIC_MEM_jvm}
+export PERF_ID=${KUBE_ZONE}-${GIT_BRANCH}-${VERSION}_APP_${APP_NODES}_ES_${ELASTIC_NODES}_${ELASTIC_MEM_JVM}
 
 cat $(pwd)/scripts/perf/api_test.yaml | envsubst > $(pwd)/scripts/perf/api_test_configured.yaml
 
