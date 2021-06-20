@@ -211,6 +211,16 @@ api.get(
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ route: `${req.method} ${req.path}`, errors: errors.array() });
+    } else if (req.query.query && req.query.query.length > 512) {
+      // Does not work in schema (using isLength {min, max}):
+      return res.status(400).json({ route: `${req.method} ${req.path}`, errors: [
+        {
+            value: req.query.query,
+            msg: 'The query parameter must not contain more than 512 characters.',
+            param: 'query',
+            location: 'query'
+        }
+      ]});
     }
     try {
       const result = await getSearch(req.query);

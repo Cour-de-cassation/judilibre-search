@@ -36,7 +36,7 @@ class Elastic {
     let searchPourvoiNumber = [];
     let searchVisa = false;
 
-    if (/articles?\s+.*\d/i.test(string)) {
+    if (/article\D+\d/i.test(string)) {
       searchVisa = true;
     }
 
