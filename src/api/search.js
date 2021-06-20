@@ -211,7 +211,7 @@ api.get(
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ route: `${req.method} ${req.path}`, errors: errors.array() });
-    } else if (req.query.query && req.query.query.length > 512) {
+    } else if (req.query && typeof req.query.query === 'string' && req.query.query.length > 512) {
       // Does not work in schema (using isLength {min, max}):
       return res.status(400).json({ route: `${req.method} ${req.path}`, errors: [
         {
