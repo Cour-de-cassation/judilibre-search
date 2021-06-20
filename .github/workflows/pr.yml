@@ -8,18 +8,20 @@ jobs:
     runs-on: ubuntu-latest
     env:
       APP_GROUP: judilibre
-      APP_ID: judilibre-search
       APP_HOST: search.judilibre.local
-      APP_SCHEME: https
+      APP_ID: judilibre-search
+      APP_NODES: 1
       APP_PORT: 443
       API_PORT: 8080
+      APP_SCHEME: https
       DOCKER_USERNAME: opendatajustice
-      ELASTIC_VERSION: 7.13.2
       ELASTIC_INDEX: judilibre_0
       ELASTIC_NODES: 1
-      ELASTIC_MEM: 512m
+      ELASTIC_MEM: 1024Mi
+      ELASTIC_MEM_JVM: 512m
       ELASTIC_STORAGE_POLICY: DeleteOnScaledownAndClusterDeletion
       ELASTIC_STORAGE_SIZE: 3Gi
+      ELASTIC_VERSION: 7.13.2
       KUBE_TYPE: k3s
       KUBE_ZONE: local
       START_TIMEOUT: 120
