@@ -9,19 +9,19 @@ config:
     - duration: 30
       arrivalRate: 5
       maxVusers: 30
-    - duration: 60
+    - duration: 30
       arrivalRate: 5
       maxVusers: 50
-    - duration: 60
+    - duration: 30
       arrivalRate: 5
       maxVusers: 100
-    - duration: 60
+    - duration: 30
       arrivalRate: 10
       maxVusers: 200
-    - duration: 60
+    - duration: 30
       arrivalRate: 20
       maxVusers: 400
-    - duration: 60
+    - duration: 30
       arrivalRate: 30
       maxVusers: 600
     - duration: 60
