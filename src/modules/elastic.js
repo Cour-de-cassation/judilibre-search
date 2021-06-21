@@ -7,7 +7,7 @@ class Elastic {
       this.data = null;
     } else {
       const { Client } = require('@elastic/elasticsearch');
-      this.client = new Client({ node: `${process.env.ELASTIC_NODE}`, ssl: { rejectUnauthorized: false }});
+      this.client = new Client({ node: `${process.env.ELASTIC_NODE}`, ssl: { rejectUnauthorized: false } });
     }
   }
 
@@ -423,16 +423,6 @@ class Elastic {
       textFields: textFields,
       query: searchQuery,
     };
-  }
-
-  serialize(obj) {
-    let str = [];
-    for (let p in obj) {
-      if (obj.hasOwnProperty(p)) {
-        str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]));
-      }
-    }
-    return str.join('&');
   }
 
   async search(query) {

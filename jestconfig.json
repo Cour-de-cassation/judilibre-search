@@ -1,5 +1,5 @@
 {
   "moduleFileExtensions": ["js"],
   "testEnvironment": "node",
-  "testRegex": ".spec.js$"
+  "testRegex": ".test.js$"
 }
