@@ -2,9 +2,8 @@ require('../modules/env');
 const express = require('express');
 const api = express.Router();
 const { checkSchema, validationResult } = require('express-validator');
-const route = 'taxonomy';
-
 const taxons = require('../taxons');
+const route = 'taxonomy';
 
 api.get(
   `/${route}`,

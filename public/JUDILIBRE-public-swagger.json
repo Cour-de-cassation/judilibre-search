@@ -720,7 +720,7 @@
         },
         {
           "name": "batch_size",
-          "description": "Permet de déterminer le nombre de résultats retournés par lot (100 maximum, vaut 50 par défaut).",
+          "description": "Permet de déterminer le nombre de résultats retournés par lot (1000 maximum, vaut 100 par défaut).",
           "in": "query",
           "type": "integer"
         },
@@ -1649,7 +1649,7 @@
           "type": "string"
         },
         "batch_size": {
-          "description": "Permet de déterminer le nombre de résultats retournés par lot (100 maximum, vaut 50 par défaut).",
+          "description": "Permet de déterminer le nombre de résultats retournés par lot (1000 maximum, vaut 100 par défaut).",
           "type": "integer"
         },
         "batch": {

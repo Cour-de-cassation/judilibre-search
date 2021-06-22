@@ -1,6 +1,7 @@
 const taxonsEntries = [
   'chamber',
   'committee',
+  'date_type',
   'field',
   'formation',
   'jurisdiction',

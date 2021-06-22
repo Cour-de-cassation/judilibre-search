@@ -780,6 +780,30 @@ class Elastic {
 
     return response;
   }
+
+  async export(query) {
+    if (process.env.WITHOUT_ELASTIC) {
+      return this.exportWithoutElastic(query);
+    }
+
+    let batch = query.batch || 0;
+    let batch_size = query.batch_size || 100;
+    let response = {};
+
+    // @TODO
+
+    return response;
+  }
+
+  exportWithoutElastic(query) {
+    let batch = query.batch || 0;
+    let batch_size = query.batch_size || 100;
+    let response = {};
+
+    // @TODO
+
+    return response;
+  }
 }
 
 module.exports = new Elastic();

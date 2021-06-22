@@ -3,9 +3,8 @@ const express = require('express');
 const api = express.Router();
 const { checkSchema, validationResult } = require('express-validator');
 const Elastic = require('../modules/elastic');
-const route = 'decision';
-
 const taxons = require('../taxons');
+const route = 'decision';
 
 api.get(
   `/${route}`,
