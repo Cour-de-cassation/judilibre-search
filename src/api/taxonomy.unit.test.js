@@ -190,5 +190,3 @@ describe('Testing /taxonomy endpoint basic validation', () => {
     expect(test1.statusCode).toEqual(500);
   });
 });
-
-describe('Testing /taxonomy endpoint on static dataset', () => {});
