@@ -13,6 +13,7 @@ api.get(
     query: {
       in: 'query',
       isString: true,
+      errorMessage: `Value of the query parameter must be a string.`,
       optional: true,
     },
     field: {
@@ -151,13 +152,13 @@ api.get(
     date_start: {
       in: 'query',
       isISO8601: true,
-      errorMessage: `Start date must be a ISO-8601 date (e.g. 2021-05-13).`,
+      errorMessage: `Start date must be a valid ISO-8601 date (e.g. 2021-05-13).`,
       optional: true,
     },
     date_end: {
       in: 'query',
       isISO8601: true,
-      errorMessage: `End date must be a ISO-8601 date (e.g. 2021-05-13).`,
+      errorMessage: `End date must be a valid ISO-8601 date (e.g. 2021-05-13).`,
       optional: true,
     },
     sort: {
@@ -194,9 +195,13 @@ api.get(
     },
     page: {
       in: 'query',
-      isInt: true,
+      isInt: {
+        options: {
+          min: 0,
+        },
+      },
       toInt: true,
-      errorMessage: `Value of the page parameter must be an integer.`,
+      errorMessage: `Value of the page parameter must be an integer greater or equal than 0.`,
       optional: true,
     },
     resolve_references: {
@@ -213,14 +218,17 @@ api.get(
       return res.status(400).json({ route: `${req.method} ${req.path}`, errors: errors.array() });
     } else if (req.query && typeof req.query.query === 'string' && req.query.query.length > 512) {
       // Does not work in schema (using isLength {min, max}):
-      return res.status(400).json({ route: `${req.method} ${req.path}`, errors: [
-        {
+      return res.status(400).json({
+        route: `${req.method} ${req.path}`,
+        errors: [
+          {
             value: req.query.query,
             msg: 'The query parameter must not contain more than 512 characters.',
             param: 'query',
-            location: 'query'
-        }
-      ]});
+            location: 'query',
+          },
+        ],
+      });
     }
     try {
       const result = await getSearch(req.query);

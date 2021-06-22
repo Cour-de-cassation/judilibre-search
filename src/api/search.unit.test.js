@@ -4,9 +4,25 @@ const Server = require('../modules/server');
 const taxons = require('../taxons');
 
 describe('Testing /search endpoint basic validation', () => {
-  it('GET /search withoutout any parameter must pass', async () => {
+  it('GET /search without any parameter should pass', async () => {
     const { statusCode } = await request(Server.app).get('/search');
     expect(statusCode).toEqual(200);
+  });
+
+  it('GET /search with a wrong "query" parameter must fail', async () => {
+    const { statusCode, body } = await request(Server.app).get('/search?query[]=foo');
+    expect(statusCode).toEqual(400);
+    expect(body).toEqual({
+      route: `GET /search`,
+      errors: [
+        {
+          location: 'query',
+          msg: `Value of the query parameter must be a string.`,
+          param: 'query',
+          value: ['foo'],
+        },
+      ],
+    });
   });
 
   it('GET /search with a "query" parameter longer than 512 chars must fail', async () => {
@@ -269,6 +285,271 @@ describe('Testing /search endpoint basic validation', () => {
     expect(test2.statusCode).toEqual(200);
   });
 
+  it('GET /search with a wrong "solution" parameter must fail', async () => {
+    const test1 = await request(Server.app).get('/search?solution=foo');
+    expect(test1.statusCode).toEqual(400);
+    expect(test1.body).toEqual({
+      route: `GET /search`,
+      errors: [
+        {
+          location: 'query',
+          msg: `Value of the solution parameter must be in [${taxons.solution.keys}].`,
+          param: 'solution[0]',
+          value: 'foo',
+        },
+      ],
+    });
+    const test2 = await request(Server.app).get('/search?solution[]=cassation&solution[]=foo');
+    expect(test2.statusCode).toEqual(400);
+    expect(test2.body).toEqual({
+      route: `GET /search`,
+      errors: [
+        {
+          location: 'query',
+          msg: `Value of the solution parameter must be in [${taxons.solution.keys}].`,
+          param: 'solution[1]',
+          value: 'foo',
+        },
+      ],
+    });
+  });
+
+  it('GET /search with a good "solution" parameter should pass', async () => {
+    const test1 = await request(Server.app).get(`/search?solution=cassation`);
+    expect(test1.statusCode).toEqual(200);
+    const test2 = await request(Server.app).get(`/search?solution[]=cassation&solution[]=rejet`);
+    expect(test2.statusCode).toEqual(200);
+  });
+
+  it('GET /search with a wrong "date_start" parameter must fail', async () => {
+    const test1 = await request(Server.app).get('/search?date_start=foo');
+    expect(test1.statusCode).toEqual(400);
+    expect(test1.body).toEqual({
+      route: `GET /search`,
+      errors: [
+        {
+          location: 'query',
+          msg: 'Start date must be a valid ISO-8601 date (e.g. 2021-05-13).',
+          param: 'date_start',
+          value: 'foo',
+        },
+      ],
+    });
+    const test2 = await request(Server.app).get('/search?date_start=2021-20-31');
+    expect(test2.statusCode).toEqual(400);
+    expect(test2.body).toEqual({
+      route: `GET /search`,
+      errors: [
+        {
+          location: 'query',
+          msg: 'Start date must be a valid ISO-8601 date (e.g. 2021-05-13).',
+          param: 'date_start',
+          value: '2021-20-31',
+        },
+      ],
+    });
+  });
+
+  it('GET /search with a good "date_start" parameter should pass', async () => {
+    const test1 = await request(Server.app).get(`/search?date_start=2021-07-27`);
+    expect(test1.statusCode).toEqual(200);
+  });
+
+  it('GET /search with a wrong "date_end" parameter must fail', async () => {
+    const test1 = await request(Server.app).get('/search?date_end=foo');
+    expect(test1.statusCode).toEqual(400);
+    expect(test1.body).toEqual({
+      route: `GET /search`,
+      errors: [
+        {
+          location: 'query',
+          msg: 'End date must be a valid ISO-8601 date (e.g. 2021-05-13).',
+          param: 'date_end',
+          value: 'foo',
+        },
+      ],
+    });
+    const test2 = await request(Server.app).get('/search?date_end=6666-66-66');
+    expect(test2.statusCode).toEqual(400);
+    expect(test2.body).toEqual({
+      route: `GET /search`,
+      errors: [
+        {
+          location: 'query',
+          msg: 'End date must be a valid ISO-8601 date (e.g. 2021-05-13).',
+          param: 'date_end',
+          value: '6666-66-66',
+        },
+      ],
+    });
+  });
+
+  it('GET /search with a good "date_end" parameter should pass', async () => {
+    const test1 = await request(Server.app).get(`/search?date_end=2021-05-13`);
+    expect(test1.statusCode).toEqual(200);
+  });
+
+  it('GET /search with a wrong "sort" parameter must fail', async () => {
+    const test1 = await request(Server.app).get('/search?sort=foo');
+    expect(test1.statusCode).toEqual(400);
+    expect(test1.body).toEqual({
+      route: `GET /search`,
+      errors: [
+        {
+          location: 'query',
+          msg: `Value of the sort parameter must be in [${taxons.sort.keys}].`,
+          param: 'sort',
+          value: 'foo',
+        },
+      ],
+    });
+    const test2 = await request(Server.app).get('/search?sort[]=score');
+    expect(test2.statusCode).toEqual(400);
+    expect(test2.body).toEqual({
+      route: `GET /search`,
+      errors: [
+        {
+          location: 'query',
+          msg: `Value of the sort parameter must be in [${taxons.sort.keys}].`,
+          param: 'sort',
+          value: ['score'],
+        },
+      ],
+    });
+  });
+
+  it('GET /search with a good "sort" parameter should pass', async () => {
+    const test1 = await request(Server.app).get(`/search?sort=score`);
+    expect(test1.statusCode).toEqual(200);
+    const test2 = await request(Server.app).get(`/search?sort=date`);
+    expect(test2.statusCode).toEqual(200);
+  });
+
+  it('GET /search with a wrong "order" parameter must fail', async () => {
+    const test1 = await request(Server.app).get('/search?order=foo');
+    expect(test1.statusCode).toEqual(400);
+    expect(test1.body).toEqual({
+      route: `GET /search`,
+      errors: [
+        {
+          location: 'query',
+          msg: `Value of the order parameter must be in [${taxons.order.keys}].`,
+          param: 'order',
+          value: 'foo',
+        },
+      ],
+    });
+    const test2 = await request(Server.app).get('/search?order[]=asc');
+    expect(test2.statusCode).toEqual(400);
+    expect(test2.body).toEqual({
+      route: `GET /search`,
+      errors: [
+        {
+          location: 'query',
+          msg: `Value of the order parameter must be in [${taxons.order.keys}].`,
+          param: 'order',
+          value: ['asc'],
+        },
+      ],
+    });
+  });
+
+  it('GET /search with a good "order" parameter should pass', async () => {
+    const test1 = await request(Server.app).get(`/search?order=asc`);
+    expect(test1.statusCode).toEqual(200);
+    const test2 = await request(Server.app).get(`/search?order=desc`);
+    expect(test2.statusCode).toEqual(200);
+  });
+
+  it('GET /search with a wrong "page_size" parameter must fail', async () => {
+    const test1 = await request(Server.app).get('/search?page_size=foo');
+    expect(test1.statusCode).toEqual(400);
+    expect(test1.body).toEqual({
+      route: `GET /search`,
+      errors: [
+        {
+          location: 'query',
+          msg: `Value of the page_size parameter must be an integer between 10 and 50.`,
+          param: 'page_size',
+          value: 'foo',
+        },
+      ],
+    });
+    const test2 = await request(Server.app).get('/search?page_size=0');
+    expect(test2.statusCode).toEqual(400);
+    expect(test2.body).toEqual({
+      route: `GET /search`,
+      errors: [
+        {
+          location: 'query',
+          msg: `Value of the page_size parameter must be an integer between 10 and 50.`,
+          param: 'page_size',
+          value: '0',
+        },
+      ],
+    });
+    const test3 = await request(Server.app).get('/search?page_size=6666');
+    expect(test3.statusCode).toEqual(400);
+    expect(test3.body).toEqual({
+      route: `GET /search`,
+      errors: [
+        {
+          location: 'query',
+          msg: `Value of the page_size parameter must be an integer between 10 and 50.`,
+          param: 'page_size',
+          value: '6666',
+        },
+      ],
+    });
+  });
+
+  it('GET /search with a good "page_size" parameter should pass', async () => {
+    const test1 = await request(Server.app).get(`/search?page_size=10`);
+    expect(test1.statusCode).toEqual(200);
+    const test2 = await request(Server.app).get(`/search?page_size=50`);
+    expect(test2.statusCode).toEqual(200);
+    const test3 = await request(Server.app).get(`/search?page_size[]=42`);
+    expect(test3.statusCode).toEqual(200);
+  });
+
+  it('GET /search with a wrong "page" parameter must fail', async () => {
+    const test1 = await request(Server.app).get('/search?page=foo');
+    expect(test1.statusCode).toEqual(400);
+    expect(test1.body).toEqual({
+      route: `GET /search`,
+      errors: [
+        {
+          location: 'query',
+          msg: `Value of the page parameter must be an integer greater or equal than 0.`,
+          param: 'page',
+          value: 'foo',
+        },
+      ],
+    });
+    const test2 = await request(Server.app).get('/search?page=-10');
+    expect(test2.statusCode).toEqual(400);
+    expect(test2.body).toEqual({
+      route: `GET /search`,
+      errors: [
+        {
+          location: 'query',
+          msg: `Value of the page parameter must be an integer greater or equal than 0.`,
+          param: 'page',
+          value: '-10',
+        },
+      ],
+    });
+  });
+
+  it('GET /search with a good "page" parameter should pass', async () => {
+    const test1 = await request(Server.app).get(`/search?page=0`);
+    expect(test1.statusCode).toEqual(200);
+    const test2 = await request(Server.app).get(`/search?page=100`);
+    expect(test2.statusCode).toEqual(200);
+    const test3 = await request(Server.app).get(`/search?page[]=42`);
+    expect(test3.statusCode).toEqual(200);
+  });
+
   it('GET /search with a non boolean "resolve_references" parameter must fail', async () => {
     const { body, statusCode } = await request(Server.app).get('/search?resolve_references=foo');
     expect(statusCode).toEqual(400);
@@ -291,4 +572,104 @@ describe('Testing /search endpoint basic validation', () => {
   });
 });
 
-describe('Testing /search endpoint on static dataset', () => {});
+describe('Testing /search endpoint on static dataset', () => {
+  it('GET /search with an empty query must return an empty result', async () => {
+    const baseObject = {
+      max_score: 0,
+      next_page: null,
+      page: 0,
+      page_size: 10,
+      previous_page: null,
+      total: 0,
+      results: [],
+    };
+    const test1 = await request(Server.app).get(`/search`);
+    expect(test1.statusCode).toEqual(200);
+    expect(test1.body).toEqual(expect.objectContaining(baseObject));
+    const test2 = await request(Server.app).get(`/search?query=&`);
+    expect(test2.statusCode).toEqual(200);
+    expect(test2.body).toEqual(expect.objectContaining(baseObject));
+  });
+
+  it('GET /search with a falsy "resolve_references" parameter must return an unresolved content', async () => {
+    const baseObject = {
+      chamber: 'soc',
+      jurisdiction: 'cc',
+      publication: ['b', 'c'],
+      solution: 'rejet',
+      type: 'arret',
+      formation: 'fs',
+    };
+    const test1 = await request(Server.app).get(`/search?query=foo&resolve_references=false`);
+    expect(test1.statusCode).toEqual(200);
+    expect(test1.body).toEqual(
+      expect.objectContaining({
+        max_score: 10,
+        next_page:
+          'query=foo&resolve_references=false&field=&type=&theme=&chamber=&formation=&jurisdiction=&committee=&publication=&solution=&page=1',
+        page: 0,
+        page_size: 10,
+        previous_page: null,
+        total: 928,
+      }),
+    );
+    expect(test1.body.results).toHaveLength(10);
+    expect(test1.body.results[0]).toEqual(expect.objectContaining(baseObject));
+    const test2 = await request(Server.app).get(`/search?query=foo&`);
+    expect(test2.statusCode).toEqual(200);
+    expect(test2.body).toEqual(
+      expect.objectContaining({
+        max_score: 10,
+        next_page:
+          'query=foo&field=&type=&theme=&chamber=&formation=&jurisdiction=&committee=&publication=&solution=&page=1',
+        page: 0,
+        page_size: 10,
+        previous_page: null,
+        total: 928,
+      }),
+    );
+    expect(test2.body.results).toHaveLength(10);
+    expect(test2.body.results[0]).toEqual(expect.objectContaining(baseObject));
+  });
+
+  it('GET /search with a truthy "resolve_references" parameter must return a resolved content', async () => {
+    const baseObject = {
+      chamber: 'Chambre sociale',
+      jurisdiction: 'Cour de cassation',
+      publication: ['Publié au Bulletin', 'Communiqué de presse'],
+      solution: 'Rejet',
+      type: 'Arrêt',
+      formation: 'Formation de section',
+    };
+    const test1 = await request(Server.app).get(`/search?query=foo&resolve_references=true`);
+    expect(test1.statusCode).toEqual(200);
+    expect(test1.body).toEqual(
+      expect.objectContaining({
+        max_score: 10,
+        next_page:
+          'query=foo&resolve_references=true&field=&type=&theme=&chamber=&formation=&jurisdiction=&committee=&publication=&solution=&page=1',
+        page: 0,
+        page_size: 10,
+        previous_page: null,
+        total: 928,
+      }),
+    );
+    expect(test1.body.results).toHaveLength(10);
+    expect(test1.body.results[0]).toEqual(expect.objectContaining(baseObject));
+    const test2 = await request(Server.app).get(`/search?query=foo&resolve_references=1`);
+    expect(test2.statusCode).toEqual(200);
+    expect(test2.body).toEqual(
+      expect.objectContaining({
+        max_score: 10,
+        next_page:
+          'query=foo&resolve_references=true&field=&type=&theme=&chamber=&formation=&jurisdiction=&committee=&publication=&solution=&page=1',
+        page: 0,
+        page_size: 10,
+        previous_page: null,
+        total: 928,
+      }),
+    );
+    expect(test2.body.results).toHaveLength(10);
+    expect(test2.body.results[0]).toEqual(expect.objectContaining(baseObject));
+  });
+});

@@ -19,6 +19,7 @@ api.get(
     query: {
       in: 'query',
       isString: true,
+      errorMessage: `Value of the query parameter must be a string.`,
       optional: true,
     },
     operator: {
