@@ -12,23 +12,27 @@ api.get(
     id: {
       in: 'query',
       isString: true,
+      errorMessage: `Value of the id parameter must be a string.`,
       toLowerCase: true,
       optional: true,
     },
     key: {
       in: 'query',
       isString: true,
+      errorMessage: `Value of the key parameter must be a string.`,
       toLowerCase: true,
       optional: true,
     },
     value: {
       in: 'query',
       isString: true,
+      errorMessage: `Value parameter must be a string.`,
       optional: true,
     },
     context_value: {
       in: 'query',
       isString: true,
+      errorMessage: `Value of the context_value parameter must be a string.`,
       toLowerCase: true,
       optional: true,
     },
@@ -67,7 +71,7 @@ api.get(
     try {
       const result = await getTaxonomy(req.query);
       if (result.errors) {
-        return res.status(400).json({
+        return res.status(404).json({
           route: `${req.method} ${req.path}`,
           errors: result.errors,
         });

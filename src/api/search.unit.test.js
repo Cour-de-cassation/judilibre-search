@@ -348,6 +348,19 @@ describe('Testing /search endpoint basic validation', () => {
         },
       ],
     });
+    const test3 = await request(Server.app).get('/search?date_start[]=2021-05-13');
+    expect(test3.statusCode).toEqual(400);
+    expect(test3.body).toEqual({
+      route: `GET /search`,
+      errors: [
+        {
+          location: 'query',
+          msg: 'Start date must be a valid ISO-8601 date (e.g. 2021-05-13).',
+          param: 'date_start',
+          value: ['2021-05-13'],
+        },
+      ],
+    });
   });
 
   it('GET /search with a good "date_start" parameter should pass', async () => {
@@ -379,6 +392,19 @@ describe('Testing /search endpoint basic validation', () => {
           msg: 'End date must be a valid ISO-8601 date (e.g. 2021-05-13).',
           param: 'date_end',
           value: '6666-66-66',
+        },
+      ],
+    });
+    const test3 = await request(Server.app).get('/search?date_end[]=2021-05-13');
+    expect(test3.statusCode).toEqual(400);
+    expect(test3.body).toEqual({
+      route: `GET /search`,
+      errors: [
+        {
+          location: 'query',
+          msg: 'End date must be a valid ISO-8601 date (e.g. 2021-05-13).',
+          param: 'date_end',
+          value: ['2021-05-13'],
         },
       ],
     });

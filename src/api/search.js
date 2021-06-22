@@ -151,12 +151,14 @@ api.get(
     },
     date_start: {
       in: 'query',
+      isString: true,
       isISO8601: true,
       errorMessage: `Start date must be a valid ISO-8601 date (e.g. 2021-05-13).`,
       optional: true,
     },
     date_end: {
       in: 'query',
+      isString: true,
       isISO8601: true,
       errorMessage: `End date must be a valid ISO-8601 date (e.g. 2021-05-13).`,
       optional: true,

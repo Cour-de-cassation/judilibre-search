@@ -19,6 +19,22 @@ describe('Testing /decision endpoint basic validation', () => {
     });
   });
 
+  it('GET /decision with an invalid "id" parameter must fail', async () => {
+    const { body, statusCode } = await request(Server.app).get('/decision?id[]=foobar');
+    expect(statusCode).toEqual(400);
+    expect(body).toEqual({
+      route: `GET /decision`,
+      errors: [
+        {
+          location: 'query',
+          msg: 'Value of the id parameter must be a string.',
+          param: 'id',
+          value: ['foobar'],
+        },
+      ],
+    });
+  });
+
   it('GET /decision with an "id" parameter should pass', async () => {
     const { statusCode } = await request(Server.app).get('/decision?id=foobar');
     expect(statusCode).toEqual(200);
@@ -64,9 +80,9 @@ describe('Testing /decision endpoint basic validation', () => {
   });
 
   it('GET /decision with a wrong "operator" parameter must fail', async () => {
-    const { body, statusCode } = await request(Server.app).get('/decision?id=foobar&operator=foo');
-    expect(statusCode).toEqual(400);
-    expect(body).toEqual({
+    const test1 = await request(Server.app).get('/decision?id=foobar&operator=foo');
+    expect(test1.statusCode).toEqual(400);
+    expect(test1.body).toEqual({
       route: `GET /decision`,
       errors: [
         {
@@ -74,6 +90,19 @@ describe('Testing /decision endpoint basic validation', () => {
           msg: `Value of the operator parameter must be in [${taxons.operator.keys}].`,
           param: 'operator',
           value: 'foo',
+        },
+      ],
+    });
+    const test2 = await request(Server.app).get('/decision?id=foobar&operator[]=and');
+    expect(test2.statusCode).toEqual(400);
+    expect(test2.body).toEqual({
+      route: `GET /decision`,
+      errors: [
+        {
+          location: 'query',
+          msg: `Value of the operator parameter must be in [${taxons.operator.keys}].`,
+          param: 'operator',
+          value: ['and'],
         },
       ],
     });
