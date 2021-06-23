@@ -11,7 +11,7 @@ class Elastic {
     }
   }
 
-  buildQuery(query, forDecision) {
+  buildQuery(query, target) {
     const queryField = {
       text: 'text',
       introduction: 'zoneIntroduction',
@@ -22,26 +22,28 @@ class Elastic {
       annexes: 'zoneAnnexes',
       visa: 'visa', // Not affected by 'exact' match
     };
-    let page = query.page || 0;
-    let page_size = query.page_size || 10;
-    let string = query.query || '';
     let searchQuery;
     let textFields = [];
+    let boostedFields = [];
+    let page = query.page || 0;
+    let page_size = query.page_size || 10;
+    let string = query.query ? query.query.trim() : '';
+    if (target === 'export') {
+      // No search query when exporting data:
+      string = '';
+    }
 
-    if (string && string.trim()) {
-      let splitString = string.trim().split(/[\s,;/?!]+/gm);
-      let boostedFields = [];
-
-      // Detect some special data in query string:
-      let searchString = [];
-      let searchECLI = [];
-      let searchPourvoiNumber = [];
-      let searchVisa = false;
-
+    // Detect some special data in query string:
+    let splitString = [];
+    let searchVisa = false;
+    let searchECLI = [];
+    let searchPourvoiNumber = [];
+    let searchString = [];
+    if (string) {
+      splitString = string.split(/[\s,;/?!]+/gm);
       if (/article\D+\d/i.test(string)) {
         searchVisa = true;
       }
-
       for (let i = 0; i < splitString.length; i++) {
         if (/^ecli:\w+:\w+:\d+:[a-z0-9.]+$/i.test(splitString[i])) {
           searchECLI.push(splitString[i]);
@@ -51,220 +53,239 @@ class Elastic {
           searchString.push(splitString[i]);
         }
       }
+    }
 
-      if (forDecision !== true) {
-        // Base query for regular search:
-        searchQuery = {
-          index: process.env.ELASTIC_INDEX,
-          explain: false,
-          from: page * page_size,
-          size: page_size,
-          _source: true,
-          body: {
-            track_scores: true,
-            query: {
-              function_score: {
-                query: {
-                  bool: {},
+    if (target === 'search' || target === 'export') {
+      if (target === 'export') {
+        page = query.batch || 0;
+        page_size = query.batch_size || 100;
+      }
+
+      // Base query for regular search:
+      searchQuery = {
+        index: process.env.ELASTIC_INDEX,
+        explain: false,
+        from: page * page_size,
+        size: page_size,
+        _source: true,
+        body: {
+          track_scores: true,
+          query: {
+            function_score: {
+              query: {
+                bool: {},
+              },
+              boost: 5,
+              functions: [
+                {
+                  filter: {
+                    match: {
+                      publication: 'b',
+                    },
+                  },
+                  weight: 10,
                 },
-                boost: 5,
-                functions: [
-                  {
-                    filter: {
-                      match: {
-                        publication: 'b',
-                      },
+                {
+                  filter: {
+                    match: {
+                      publication: 'r',
                     },
-                    weight: 10,
                   },
-                  {
-                    filter: {
-                      match: {
-                        publication: 'r',
-                      },
+                  weight: 10,
+                },
+                {
+                  filter: {
+                    match: {
+                      publication: 'c',
                     },
-                    weight: 10,
                   },
-                  {
-                    filter: {
-                      match: {
-                        publication: 'c',
-                      },
+                  weight: 5,
+                },
+                {
+                  filter: {
+                    match: {
+                      publication: 'l',
                     },
-                    weight: 5,
                   },
-                  {
-                    filter: {
-                      match: {
-                        publication: 'l',
-                      },
-                    },
-                    weight: 1,
-                  },
-                ],
-                score_mode: 'max',
-                boost_mode: 'multiply',
-              },
-            },
-            sort: [
-              {
-                _score: 'desc',
-              },
-            ],
-            highlight: {
-              fields: {},
+                  weight: 1,
+                },
+              ],
+              score_mode: 'max',
+              boost_mode: 'multiply',
             },
           },
+          sort: [
+            {
+              _score: 'desc',
+            },
+          ],
+          highlight: {
+            fields: {},
+          },
+        },
+      };
+
+      // Sort and order:
+      if (target === 'export') {
+        // Cleanup base query:
+        searchQuery.body.track_scores = false;
+        delete searchQuery.body.query.function_score.boost;
+        delete searchQuery.body.query.function_score.functions;
+        delete searchQuery.body.query.function_score.score_mode;
+        delete searchQuery.body.query.function_score.boost_mode;
+        searchQuery.body.sort[0] = {
+          decision_date: query.order || 'desc',
         };
+        delete searchQuery.body.query.highlight;
+      } else if (query.sort && query.order) {
+        searchQuery.body.sort[0] = {};
+        searchQuery.body.sort[0][query.sort] = query.order;
+      }
 
-        // Sort and order:
-        if (query.sort && query.order) {
-          searchQuery.body.sort[0] = {};
-          searchQuery.body.sort[0][query.sort] = query.order;
+      // ECLI (filter):
+      if (searchECLI.length > 0) {
+        if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
+          searchQuery.body.query.function_score.query.bool.filter = [];
         }
+        searchQuery.body.query.function_score.query.bool.filter.push({
+          terms: {
+            ecli: searchECLI,
+          },
+        });
+      }
 
-        // ECLI (filter):
-        if (searchECLI.length > 0) {
-          if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
-            searchQuery.body.query.function_score.query.bool.filter = [];
-          }
-          searchQuery.body.query.function_score.query.bool.filter.push({
-            terms: {
-              ecli: searchECLI,
-            },
-          });
+      // "Pourvoi" number (filter):
+      if (searchPourvoiNumber.length > 0) {
+        if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
+          searchQuery.body.query.function_score.query.bool.filter = [];
         }
+        searchQuery.body.query.function_score.query.bool.filter.push({
+          terms: {
+            number: searchPourvoiNumber,
+          },
+        });
+      }
 
-        // "Pourvoi" number (filter):
-        if (searchPourvoiNumber.length > 0) {
-          if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
-            searchQuery.body.query.function_score.query.bool.filter = [];
-          }
-          searchQuery.body.query.function_score.query.bool.filter.push({
-            terms: {
-              number: searchPourvoiNumber,
-            },
-          });
+      // Publication (filter):
+      if (query.publication && Array.isArray(query.publication) && query.publication.length > 0) {
+        if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
+          searchQuery.body.query.function_score.query.bool.filter = [];
         }
+        searchQuery.body.query.function_score.query.bool.filter.push({
+          terms: {
+            publication: query.publication,
+          },
+        });
+      }
 
-        // Publication (filter):
-        if (query.publication && Array.isArray(query.publication) && query.publication.length > 0) {
-          if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
-            searchQuery.body.query.function_score.query.bool.filter = [];
-          }
-          searchQuery.body.query.function_score.query.bool.filter.push({
-            terms: {
-              publication: query.publication,
-            },
-          });
+      // Formation (filter):
+      if (query.formation && Array.isArray(query.formation) && query.formation.length > 0) {
+        if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
+          searchQuery.body.query.function_score.query.bool.filter = [];
         }
+        searchQuery.body.query.function_score.query.bool.filter.push({
+          terms: {
+            formation: query.formation,
+          },
+        });
+      }
 
-        // Formation (filter):
-        if (query.formation && Array.isArray(query.formation) && query.formation.length > 0) {
-          if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
-            searchQuery.body.query.function_score.query.bool.filter = [];
-          }
-          searchQuery.body.query.function_score.query.bool.filter.push({
-            terms: {
-              formation: query.formation,
-            },
-          });
+      // Chamber (filter):
+      if (query.chamber && Array.isArray(query.chamber) && query.chamber.length > 0) {
+        if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
+          searchQuery.body.query.function_score.query.bool.filter = [];
         }
+        searchQuery.body.query.function_score.query.bool.filter.push({
+          terms: {
+            chamber: query.chamber,
+          },
+        });
+      }
 
-        // Chamber (filter):
-        if (query.chamber && Array.isArray(query.chamber) && query.chamber.length > 0) {
-          if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
-            searchQuery.body.query.function_score.query.bool.filter = [];
-          }
-          searchQuery.body.query.function_score.query.bool.filter.push({
-            terms: {
-              chamber: query.chamber,
-            },
-          });
+      // Type (filter):
+      if (query.type && Array.isArray(query.type) && query.type.length > 0) {
+        if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
+          searchQuery.body.query.function_score.query.bool.filter = [];
         }
+        searchQuery.body.query.function_score.query.bool.filter.push({
+          terms: {
+            type: query.type,
+          },
+        });
+      }
 
-        // Type (filter):
-        if (query.type && Array.isArray(query.type) && query.type.length > 0) {
-          if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
-            searchQuery.body.query.function_score.query.bool.filter = [];
-          }
-          searchQuery.body.query.function_score.query.bool.filter.push({
-            terms: {
-              type: query.type,
-            },
-          });
+      // Solution (filter):
+      if (query.solution && Array.isArray(query.solution) && query.solution.length > 0) {
+        if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
+          searchQuery.body.query.function_score.query.bool.filter = [];
         }
+        searchQuery.body.query.function_score.query.bool.filter.push({
+          terms: {
+            solution: query.solution,
+          },
+        });
+      }
 
-        // Solution (filter):
-        if (query.solution && Array.isArray(query.solution) && query.solution.length > 0) {
-          if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
-            searchQuery.body.query.function_score.query.bool.filter = [];
-          }
-          searchQuery.body.query.function_score.query.bool.filter.push({
-            terms: {
-              solution: query.solution,
-            },
-          });
+      // Jurisdiction (filter):
+      if (query.jurisdiction && Array.isArray(query.jurisdiction) && query.jurisdiction.length > 0) {
+        if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
+          searchQuery.body.query.function_score.query.bool.filter = [];
         }
+        searchQuery.body.query.function_score.query.bool.filter.push({
+          terms: {
+            jurisdiction: query.jurisdiction,
+          },
+        });
+      }
 
-        // Jurisdiction (filter):
-        if (query.jurisdiction && Array.isArray(query.jurisdiction) && query.jurisdiction.length > 0) {
-          if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
-            searchQuery.body.query.function_score.query.bool.filter = [];
-          }
-          searchQuery.body.query.function_score.query.bool.filter.push({
-            terms: {
-              jurisdiction: query.jurisdiction,
-            },
-          });
+      // Committee (filter):
+      if (query.committee && Array.isArray(query.committee) && query.committee.length > 0) {
+        if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
+          searchQuery.body.query.function_score.query.bool.filter = [];
         }
+        searchQuery.body.query.function_score.query.bool.filter.push({
+          terms: {
+            committee: query.committee,
+          },
+        });
+      }
 
-        // Committee (filter):
-        if (query.committee && Array.isArray(query.committee) && query.committee.length > 0) {
-          if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
-            searchQuery.body.query.function_score.query.bool.filter = [];
-          }
-          searchQuery.body.query.function_score.query.bool.filter.push({
-            terms: {
-              committee: query.committee,
-            },
-          });
+      // Themes (filter):
+      if (query.theme && Array.isArray(query.theme) && query.theme.length > 0) {
+        if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
+          searchQuery.body.query.function_score.query.bool.filter = [];
         }
+        searchQuery.body.query.function_score.query.bool.filter.push({
+          terms: {
+            themes: query.theme,
+          },
+        });
+      }
 
-        // Themes (filter):
-        if (query.theme && Array.isArray(query.theme) && query.theme.length > 0) {
-          if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
-            searchQuery.body.query.function_score.query.bool.filter = [];
-          }
-          searchQuery.body.query.function_score.query.bool.filter.push({
-            terms: {
-              themes: query.theme,
-            },
-          });
+      // Date start/end (filter):
+      if (query.date_start || query.date_end) {
+        let date_field = 'decision_date';
+        if (target === 'export' && query.date_type) {
+          date_field = query.date_type === 'creation' ? 'decision_date' : 'update_date';
         }
-
-        // Date start/end (filter):
-        if (query.date_start || query.date_end) {
-          if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
-            searchQuery.body.query.function_score.query.bool.filter = [];
-          }
-          let range = {
-            range: {
-              decision_date: {
-                boost: 10,
-              },
-            },
-          };
-          if (query.date_start) {
-            range.range.decision_date.gte = query.date_start;
-          }
-          if (query.date_end) {
-            range.range.decision_date.lte = query.date_end;
-          }
-          searchQuery.body.query.function_score.query.bool.filter.push(range);
+        let range = {
+          range: {},
+        };
+        range.range[date_field] = {};
+        if (query.date_start) {
+          range.range[date_field].gte = query.date_start;
         }
+        if (query.date_end) {
+          range.range[date_field].lte = query.date_end;
+        }
+        if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
+          searchQuery.body.query.function_score.query.bool.filter = [];
+        }
+        searchQuery.body.query.function_score.query.bool.filter.push(range);
+      }
 
-        // Specific text fields to target:
+      if (target !== 'export') {
+        // Specific and default text fields to search in:
         if (query.field && Array.isArray(query.field) && query.field.length > 0) {
           query.field.forEach((field) => {
             if (queryField[field] && textFields.indexOf(queryField[field]) === -1) {
@@ -303,120 +324,122 @@ class Elastic {
         textFields.forEach((field) => {
           searchQuery.body.highlight.fields[field] = {};
         });
+      }
 
-        // Finalize search in  text fields:
-        if (searchString.length > 0) {
-          let operator = taxons.operator.default.toUpperCase();
-          let fuzzy = true;
-          let finalSearchString = searchString.join(' ');
-          if (query.operator) {
-            if (query.operator === 'exact') {
-              operator = 'AND';
-              fuzzy = false;
-              finalSearchString = `"${finalSearchString}"`.replace(/"+/gm, '"');
-            } else {
-              operator = query.operator.toUpperCase();
-            }
+      // Finalize search in  text fields:
+      if (searchString.length > 0) {
+        let operator = taxons.operator.default.toUpperCase();
+        let fuzzy = true;
+        let finalSearchString = searchString.join(' ');
+        if (query.operator) {
+          if (query.operator === 'exact') {
+            operator = 'AND';
+            fuzzy = false;
+            finalSearchString = `"${finalSearchString}"`.replace(/"+/gm, '"');
+          } else {
+            operator = query.operator.toUpperCase();
           }
-          searchQuery.body.query.function_score.query.bool.must = {
-            simple_query_string: {
-              query: finalSearchString,
-              fields: boostedFields,
-              default_operator: operator,
-              auto_generate_synonyms_phrase_query: fuzzy,
-              fuzzy_max_expansions: fuzzy ? 50 : 0,
-              fuzzy_transpositions: fuzzy,
-            },
-          };
         }
-      } else {
-        // Base query for single decision highlighting:
-        searchQuery = {
-          index: process.env.ELASTIC_INDEX,
-          explain: false,
-          from: 0,
-          size: 1,
-          _source: false,
-          body: {
-            query: {
-              function_score: {
-                query: {
-                  bool: {
-                    filter: [
-                      {
-                        ids: {
-                          values: [query.id],
-                        },
+        searchQuery.body.query.function_score.query.bool.must = {
+          simple_query_string: {
+            query: finalSearchString,
+            fields: boostedFields,
+            default_operator: operator,
+            auto_generate_synonyms_phrase_query: fuzzy,
+            fuzzy_max_expansions: fuzzy ? 50 : 0,
+            fuzzy_transpositions: fuzzy,
+          },
+        };
+      }
+    } else if (target === 'decision') {
+      // Base query for single decision highlighting:
+      searchQuery = {
+        index: process.env.ELASTIC_INDEX,
+        explain: false,
+        from: 0,
+        size: 1,
+        _source: false,
+        body: {
+          query: {
+            function_score: {
+              query: {
+                bool: {
+                  filter: [
+                    {
+                      ids: {
+                        values: [query.id],
                       },
-                    ],
-                  },
+                    },
+                  ],
                 },
               },
             },
-            highlight: {
-              fields: {},
-            },
+          },
+          highlight: {
+            fields: {},
+          },
+        },
+      };
+
+      // Specific text fields to target:
+      if (query.field && Array.isArray(query.field) && query.field.length > 0) {
+        query.field.forEach((field) => {
+          if (queryField[field] && textFields.indexOf(queryField[field]) === -1) {
+            textFields.push(queryField[field]);
+          }
+        });
+      } else {
+        textFields.push('text');
+      }
+
+      if (searchVisa === true && textFields.indexOf('visa') === -1) {
+        textFields.push('visa');
+      }
+
+      // Handle 'exact' match:
+      if (query.operator && query.operator === 'exact') {
+        textFields = textFields.map((item) => {
+          if (item !== 'visa') {
+            return item + '.exact';
+          }
+          return item;
+        });
+      }
+
+      // Highlight text fields:
+      textFields.forEach((field) => {
+        searchQuery.body.highlight.fields[field] = {
+          number_of_fragments: 0,
+        };
+      });
+
+      // Finalize search in  text fields:
+      if (searchString.length > 0) {
+        let operator = taxons.operator.default.toUpperCase();
+        let fuzzy = true;
+        let finalSearchString = searchString.join(' ');
+        if (query.operator) {
+          if (query.operator === 'exact') {
+            operator = 'AND';
+            fuzzy = false;
+            finalSearchString = `"${finalSearchString}"`.replace(/"+/gm, '"');
+          } else {
+            operator = query.operator.toUpperCase();
+          }
+        }
+        searchQuery.body.query.function_score.query.bool.must = {
+          simple_query_string: {
+            query: finalSearchString,
+            fields: textFields,
+            default_operator: operator,
+            auto_generate_synonyms_phrase_query: fuzzy,
+            fuzzy_max_expansions: fuzzy ? 50 : 0,
+            fuzzy_transpositions: fuzzy,
           },
         };
-
-        // Specific text fields to target:
-        if (query.field && Array.isArray(query.field) && query.field.length > 0) {
-          query.field.forEach((field) => {
-            if (queryField[field] && textFields.indexOf(queryField[field]) === -1) {
-              textFields.push(queryField[field]);
-            }
-          });
-        } else {
-          textFields.push('text');
-        }
-
-        if (searchVisa === true && textFields.indexOf('visa') === -1) {
-          textFields.push('visa');
-        }
-
-        // Handle 'exact' match:
-        if (query.operator && query.operator === 'exact') {
-          textFields = textFields.map((item) => {
-            if (item !== 'visa') {
-              return item + '.exact';
-            }
-            return item;
-          });
-        }
-
-        // Highlight text fields:
-        textFields.forEach((field) => {
-          searchQuery.body.highlight.fields[field] = {
-            number_of_fragments: 0,
-          };
-        });
-
-        // Finalize search in  text fields:
-        if (searchString.length > 0) {
-          let operator = taxons.operator.default.toUpperCase();
-          let fuzzy = true;
-          let finalSearchString = searchString.join(' ');
-          if (query.operator) {
-            if (query.operator === 'exact') {
-              operator = 'AND';
-              fuzzy = false;
-              finalSearchString = `"${finalSearchString}"`.replace(/"+/gm, '"');
-            } else {
-              operator = query.operator.toUpperCase();
-            }
-          }
-          searchQuery.body.query.function_score.query.bool.must = {
-            simple_query_string: {
-              query: finalSearchString,
-              fields: textFields,
-              default_operator: operator,
-              auto_generate_synonyms_phrase_query: fuzzy,
-              fuzzy_max_expansions: fuzzy ? 50 : 0,
-              fuzzy_transpositions: fuzzy,
-            },
-          };
-        }
       }
+    } else {
+      throw new Error(`${process.env.APP_ID}.Elastic.buildQuery: unknown target "${target}".`);
     }
 
     return {
@@ -433,7 +456,7 @@ class Elastic {
       return this.searchWithoutElastic(query);
     }
 
-    const searchQuery = this.buildQuery(query, false);
+    const searchQuery = this.buildQuery(query, 'search');
 
     let response = {
       page: searchQuery.page,
@@ -550,7 +573,7 @@ class Elastic {
       this.data = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'sample_list.json')).toString());
     }
 
-    let string = query.query || '';
+    let string = query.query ? query.query.trim() : '';
     const page = query.page || 0;
     const page_size = query.page_size || 10;
 
@@ -568,7 +591,7 @@ class Elastic {
         : this.data.unresolved.slice(page * page_size, (page + 1) * page_size),
     };
 
-    if (string && string.trim()) {
+    if (string) {
       if (page > 0) {
         let previous_page_params = new URLSearchParams(query);
         previous_page_params.set('page', page - 1);
@@ -622,7 +645,7 @@ class Elastic {
 
       if (query.query) {
         // Actual search query is required for hightlighting:
-        const searchQuery = this.buildQuery(query, true);
+        const searchQuery = this.buildQuery(query, 'decision');
         const queryResponse = await this.client.search(searchQuery.query);
         if (
           queryResponse &&
@@ -786,11 +809,85 @@ class Elastic {
       return this.exportWithoutElastic(query);
     }
 
-    let batch = query.batch || 0;
-    let batch_size = query.batch_size || 100;
-    let response = {};
+    const searchQuery = this.buildQuery(query, 'export');
 
-    // @TODO
+    let response = {
+      batch: searchQuery.page,
+      batch_size: searchQuery.page_size,
+      query: query,
+      total: 0,
+      previous_batch: null,
+      next_batch: null,
+      took: 0,
+      results: [],
+    };
+
+    if (searchQuery.query) {
+      const rawResponse = await this.client.search(searchQuery.query);
+      if (rawResponse && rawResponse.body) {
+        if (rawResponse.body.hits && rawResponse.body.hits.total && rawResponse.body.hits.total.value > 0) {
+          response.total = rawResponse.body.hits.total.value;
+          if (searchQuery.page > 0) {
+            let previous_page_params = new URLSearchParams(query);
+            previous_page_params.set('batch', searchQuery.page - 1);
+            response.previous_batch = previous_page_params.toString();
+          }
+          if ((searchQuery.page + 1) * searchQuery.page_size < rawResponse.body.hits.total.value) {
+            let next_page_params = new URLSearchParams(query);
+            next_page_params.set('batch', searchQuery.page + 1);
+            response.next_batch = next_page_params.toString();
+          }
+          rawResponse.body.hits.hits.forEach((rawResult) => {
+            let result = {
+              id: rawResult._id,
+              source: rawResult._source.source,
+              text: rawResult._source.text,
+              jurisdiction:
+                query.resolve_references && taxons.jurisdiction.taxonomy[rawResult._source.jurisdiction]
+                  ? taxons.jurisdiction.taxonomy[rawResult._source.jurisdiction]
+                  : rawResult._source.jurisdiction,
+              chamber:
+                query.resolve_references && taxons.chamber.taxonomy[rawResult._source.chamber]
+                  ? taxons.chamber.taxonomy[rawResult._source.chamber]
+                  : rawResult._source.chamber,
+              number: rawResult._source.numberFull,
+              ecli: rawResult._source.ecli,
+              formation:
+                query.resolve_references && taxons.formation.taxonomy[rawResult._source.formation]
+                  ? taxons.formation.taxonomy[rawResult._source.formation]
+                  : rawResult._source.formation,
+              publication: query.resolve_references
+                ? rawResult._source.publication.map((key) => {
+                    if (taxons.publication.taxonomy[key]) {
+                      return taxons.publication.taxonomy[key];
+                    }
+                    return key;
+                  })
+                : rawResult._source.publication,
+              decision_date: rawResult._source.decision_date,
+              update_date: rawResult._source.update_date,
+              solution:
+                query.resolve_references && taxons.solution.taxonomy[rawResult._source.solution]
+                  ? taxons.solution.taxonomy[rawResult._source.solution]
+                  : rawResult._source.solution,
+              solution_alt: rawResult._source.solution_alt,
+              type:
+                query.resolve_references && taxons.type.taxonomy[rawResult._source.type]
+                  ? taxons.type.taxonomy[rawResult._source.type]
+                  : rawResult._source.type,
+              summary: rawResult._source.summary,
+              themes: rawResult._source.themes,
+              bulletin: rawResult._source.bulletin,
+              files: rawResult._source.files,
+              zones: rawResult._source.zones,
+              visa: rawResult._source.visa,
+              rapprochements: rawResult._source.rapprochements,
+            };
+            response.results.push(result);
+          });
+        }
+      }
+    }
 
     return response;
   }
@@ -798,9 +895,19 @@ class Elastic {
   exportWithoutElastic(query) {
     let batch = query.batch || 0;
     let batch_size = query.batch_size || 100;
-    let response = {};
 
-    // @TODO
+    let response = {
+      batch: batch,
+      batch_size: batch_size,
+      query: query,
+      total: 0,
+      previous_batch: null,
+      next_batch: null,
+      took: 0,
+      results: [],
+    };
+
+    // @TODO using static dataset
 
     return response;
   }
