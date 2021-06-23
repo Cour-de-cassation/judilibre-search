@@ -886,6 +886,9 @@ class Elastic {
             response.results.push(result);
           });
         }
+        if (rawResponse.body.took) {
+          response.took = rawResponse.body.took;
+        }
       }
     }
 
