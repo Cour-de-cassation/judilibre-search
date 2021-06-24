@@ -183,8 +183,6 @@ describe('Testing /taxonomy endpoint basic validation', () => {
     });
   });
 
-  // @TODO context_value parameter is still ignored
-
   it('GET /taxonomy with any other combination of parameters must fail', async () => {
     const test1 = await request(Server.app).get('/taxonomy?id=publication&value=Communiqu%C3%A9%20de%20presse&key=c');
     expect(test1.statusCode).toEqual(500);

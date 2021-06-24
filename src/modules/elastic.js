@@ -910,8 +910,6 @@ class Elastic {
       results: [],
     };
 
-    // @TODO using static dataset
-
     return response;
   }
 }

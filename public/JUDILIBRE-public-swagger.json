@@ -800,11 +800,11 @@
           "type": "integer"
         },
         "next_page": {
-          "description": "URL de la page de résultats suivante (propriété absente si la page courante est la dernière).",
+          "description": "URL de la page de résultats suivante (propriété `null` si la page courante est la dernière).",
           "type": "string"
         },
         "previous_page": {
-          "description": "URL de la page de résultats précédente (propriété absente si la page courante est la première).",
+          "description": "URL de la page de résultats précédente (propriété `null` si la page courante est la première).",
           "type": "string"
         },
         "took": {
@@ -817,7 +817,7 @@
           "type": "number"
         },
         "results": {
-          "description": "Liste des résultats retournés, chaque résultat étant un objet de type `searchResult`. La propriété est absente si la recherche n'a retourné aucun résultat.",
+          "description": "Liste des résultats retournés, chaque résultat étant un objet de type `searchResult`. La liste est vide si la recherche n'a retourné aucun résultat.",
           "type": "array",
           "items": {
             "$ref": "#/definitions/searchResult"
@@ -1167,7 +1167,7 @@
           "type": "string"
         },
         "files": {
-          "description": "Liste des fichiers associés à la décision, chaque document étant représenté par un objet de type `fileLink` où `type` contient le type de document (communiqué, note explicative, traduction, rapport, avis de l'avocat général, etc.), `label` son intitulé et `URL` contient le lien vers celui-ci.",
+          "description": "Liste des fichiers associés à la décision, chaque document étant représenté par un objet de type `fileLink` où `type` contient le type de document (communiqué, note explicative, traduction, rapport, avis de l'avocat général, etc.), `title` son intitulé et `URL` contient le lien vers celui-ci.",
           "type": "array",
           "items": {
             "$ref": "#/definitions/fileLink"
@@ -1234,14 +1234,21 @@
               "type": "string"
             },
             "visa": {
-              "description": "Liste des textes appliqués par la décision, chaque texte étant représenté par un objet de type `attachment` où `label` contient l'intitulé du texte et `URL` contient le lien vers celui-ci.",
+              "description": "Liste des textes appliqués par la décision, chaque texte étant représenté par un objet de type `textLink` où `title` contient l'intitulé du texte et `URL` contient le lien vers celui-ci.",
               "type": "array",
               "items": {
                 "$ref": "#/definitions/textLink"
               }
             },
+            "contested": {
+              "description": "Liste des décisions attaquées, chaque décision étant représenté par un objet de type `decisionLink` où `title` contient son intitulé, `number` son numéro, `description` son court texte descriptif, `theme` la liste de ses matières (ou éléments de titrage) et `URL` le lien vers celui-ci.",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/decisionLink"
+              }
+            },
             "rapprochements": {
-              "description": "Liste des rapprochements de jurisprudence, chaque rapprochement étant représenté par un objet de type `attachment` où `label` contient son numéro de pourvoi, `description` son court texte descriptif, `theme` la liste de ses matières (ou éléments de titrage) et `URL` le lien vers celui-ci.",
+              "description": "Liste des rapprochements de jurisprudence, chaque rapprochement étant représenté par un objet de type `decisionLink` où `title` contient son intitulé, `number` son numéro, `description` son court texte descriptif, `theme` la liste de ses matières (ou éléments de titrage) et `URL` le lien vers celui-ci.",
               "type": "array",
               "items": {
                 "$ref": "#/definitions/decisionLink"
@@ -1360,7 +1367,7 @@
     "fileLink": {
       "title": "Type d'objet `fileLink`.",
       "description": "Objet décrivant un lien vers un fichier pouvant être associé à une décision.",
-      "required": ["id", "label", "URL", "type"],
+      "required": ["id", "title", "URL", "type"],
       "type": "object",
       "properties": {
         "id": {
@@ -1375,7 +1382,7 @@
           "description": "Type du fichier lié (par exemple : communiqué, note explicative, traduction, rapport, avis de l'avocat général, etc.).",
           "type": "string"
         },
-        "label": {
+        "title": {
           "description": "Intitulé du fichier lié.",
           "type": "string"
         }
@@ -1390,11 +1397,15 @@
     "decisionLink": {
       "title": "Type d'objet `decisionLink`.",
       "description": "Objet décrivant un lien vers une décision.",
-      "required": ["id", "number", "URL", "description"],
+      "required": ["id", "title", "number", "URL", "description"],
       "type": "object",
       "properties": {
         "id": {
           "description": "Identifiant de la décision.",
+          "type": "string"
+        },
+        "title": {
+          "description": "Intitulé de la décision.",
           "type": "string"
         },
         "URL": {
@@ -1413,12 +1424,13 @@
           }
         },
         "number": {
-          "description": "Numéro de pourvoi de la décision.",
+          "description": "Numéro de la décision.",
           "type": "string"
         }
       },
       "example": {
         "id": "fb43",
+        "title": "some text",
         "URL": "some text",
         "description": "some text",
         "theme": ["some text", "some text"],
@@ -1469,14 +1481,14 @@
           "type": "integer"
         },
         "results": {
-          "description": "Liste des résultats retournés, chaque résultat étant un objet de type `searchResult`. La propriété est absente si la recherche n'a retourné aucun résultat.",
+          "description": "Liste des résultats retournés, chaque résultat étant un objet de type `decisionFull`. La liste est vide si l'export n'a retourné aucun résultat.",
           "type": "array",
           "items": {
             "$ref": "#/definitions/decisionFull"
           }
         },
         "next_batch": {
-          "description": "URL du lot suivant (propriété absente si le lot courant est le dernier).",
+          "description": "URL du lot suivant (propriété `null` si le lot courant est le dernier).",
           "type": "string"
         },
         "batch": {
@@ -1488,7 +1500,7 @@
           "type": "integer"
         },
         "previous_batch": {
-          "description": "URL du lot précédent (propriété absente si le lot courant est le premier).",
+          "description": "URL du lot précédent (propriété `null` si le lot courant est le premier).",
           "type": "string"
         }
       },
