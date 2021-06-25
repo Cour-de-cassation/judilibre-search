@@ -989,8 +989,7 @@
             "type": "integer"
           },
           "query": {
-            "$ref": "#/components/schemas/searchQuery",
-            "description": "Objet contenant les paramètres de la requête originelle."
+            "$ref": "#/components/schemas/searchQuery"
           },
           "total": {
             "description": "Nombre total de décisions retournées par la requête.",
@@ -1412,8 +1411,7 @@
             "type": "object",
             "properties": {
               "zones": {
-                "$ref": "#/components/schemas/zone",
-                "description": "Objet de type `zone` énumérant les différentes zones détectées dans le texte intégral de la décision. Chaque zone contient une liste d'objets `{ start, end }` indiquant respectivement l'indice de début et de fin des caractères (relativement au texte intégral) contenus dans chaque segment de la zone (une zone pouvant contenir plusieurs segments)."
+                "$ref": "#/components/schemas/zone"
               },
               "text": {
                 "description": "Texte intégral et pseudonymisé de la décision (texte brut).",
@@ -1515,7 +1513,6 @@
       "zone": {
         "title": "Type d'objet `zone`.",
         "description": "Décrit l'objet définissant une zone détectée dans le texte intégral de la décision. Chaque zone (`introduction` : introduction de la décision, `expose` : exposé du litige, `moyens` : moyens, `motivations`, motivations,`dispositif` : dispositifs, `annexes` : moyens annexés) contient une liste d'objets de type `zoneSegment`, chacun contenant un objet `{ start, end }` indiquant respectivement l'indice de début et de fin des caractères (relativement au texte intégral) contenus dans chaque segment de la zone (une zone pouvant contenir plusieurs segments).",
-        "required": [],
         "type": "object",
         "properties": {
           "introduction": {
@@ -1699,8 +1696,7 @@
         "type": "object",
         "properties": {
           "query": {
-            "$ref": "#/components/schemas/exportQuery",
-            "description": "Objet contenant les paramètres de la requête originelle."
+            "$ref": "#/components/schemas/exportQuery"
           },
           "total": {
             "description": "Nombre total de décisions retournées par la requête.",
@@ -1967,13 +1963,7 @@
             "type": "string"
           },
           "result": {
-            "$ref": "#/components/schemas/taxonItem",
-            "description": "Liste des résultats retournés, chaque résultat étant un objet contenant un couple clé/valeur (appel par `id` seul), ou seulement une clé ou une valeur (appel par `key` ou `value`).",
-            "properties": {
-              "value": {
-                "type": "string"
-              }
-            }
+            "$ref": "#/components/schemas/taxonItem"
           },
           "value": {
             "description": "Intitulé complet dont on veut récupérer la clé (pour une requête avec `value`).",
@@ -2090,79 +2080,6 @@
         "example": {
           "label": "Cour de cassation",
           "value": 1500000
-        }
-      },
-      "importBatch": {
-        "title": "Type d'objet `importBatch`.",
-        "description": "Décrit un lot de décisions importées.",
-        "required": ["id"],
-        "type": "object",
-        "properties": {
-          "decisions": {
-            "description": "Liste des décisions à importer, chaque décision étant un objet de type `decisionFull`.",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/decisionFull"
-            }
-          },
-          "id": {
-            "description": "Identifiant de l'import.",
-            "type": "integer"
-          }
-        },
-        "example": {
-          "id": 12345678,
-          "decisions": [
-            {
-              "id": "5fca7d162a251e6bf9c78514",
-              "jurisdiction": "cc",
-              "chamber": "civ3",
-              "number": "17-18.194",
-              "ecli": "ECLI:FR:CCASS:2018:C301117",
-              "formation": "fs",
-              "publication": ["c", "b"],
-              "decision_date": "2018-12-20",
-              "type": "arret",
-              "solution": "rejet",
-              "summary": "Le titulaire d'une autorisation temporaire d'occupation, en vigueur au moment de la procédure d'expropriation, est en droit d'obtenir l'indemnisation de son préjudice résultant de l'expropriation",
-              "themes": [
-                "Expropriation pour cause d'utilité publique",
-                "Indemnité",
-                "Préjudice",
-                "Réparation",
-                "Cas",
-                "Titulaire d'une autorisation temporaire d'occupation en vigueur"
-              ],
-              "text": "CIV.3 \r\nCH.B\r\n\r\n\r\n\r\nCOUR DE CASSATION\r\n______________________\r\n\r\n\r\nAudience publique du 20 décembre 2018\r\n\r\n\r\n\r\n\r\nRejet\r\n\r\n\r\nM. CHAUVIN, président\r\n\r\n\r\n\r\nArrêt n° 1117 FS-P+B+I\r\n\r\nPourvoi n° C 17-18.194\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nR É P U B L I Q U E F R A N Ç A I S E\r\n\r\n_________________________\r\n\r\nAU NOM DU PEUPLE FRANÇAIS\r\n_________________________\r\n\r\n\r\nLA COUR DE CASSATION, TROISIÈME CHAMBRE CIVILE, a rendu l'arrêt suivant :\r\n\r\nStatuant sur le pourvoi (...) la cour d'appel n'a pas mis la Cour de cassation en mesure d'exercer son contrôle, violant ainsi les articles 455 du code de procédure civile, ensemble les articles L. 322-1 L. 322-2 du code de l'expropriation.",
-              "zones": {
-                "introduction": [
-                  {
-                    "start": 0,
-                    "end": 2309
-                  }
-                ],
-                "motivations": [
-                  {
-                    "start": 2309,
-                    "end": 4834
-                  }
-                ],
-                "dispositif": [
-                  {
-                    "start": 4834,
-                    "end": 5199
-                  }
-                ],
-                "annexes": [
-                  {
-                    "start": 5199,
-                    "end": 16798
-                  }
-                ]
-              }
-            },
-            {}
-          ]
         }
       }
     },
