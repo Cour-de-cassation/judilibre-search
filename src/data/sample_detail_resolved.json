@@ -26,9 +26,15 @@
     "cas",
     "candidatures libres présentées au second tour des élections professionnelles"
   ],
-  "visa": ["article L. 2314-30 du code du travail."],
+  "visa": [
+    {
+      "title": "article L. 2314-30 du code du travail."
+    }
+  ],
   "rapprochements": [
-    "Sur les conditions de dérogation à la règle d'ordre public de publicité des débats, à rapprocher :\r\nCrim., 28 mars 2018, pourvoi n° 17-82.138, Bull. crim. 2018, n° 59 (cassation), et l'arrêt cité"
+    {
+      "title": "Sur les conditions de dérogation à la règle d'ordre public de publicité des débats, à rapprocher :\r\nCrim., 28 mars 2018, pourvoi n° 17-82.138, Bull. crim. 2018, n° 59 (cassation), et l'arrêt cité"
+    }
   ],
   "zones": {
     "introduction": [

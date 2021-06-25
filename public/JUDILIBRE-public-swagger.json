@@ -1301,16 +1301,47 @@
     },
     "zone": {
       "title": "Type d'objet `zone`.",
-      "description": "Décrit l'objet définissant une zone détectée dans le texte intégral de la décision. Chaque zone contient une liste d'objets de type `zoneSegment`, chacun contenant un objet `{ start, end }` indiquant respectivement l'indice de début et de fin des caractères (relativement au texte intégral) contenus dans chaque segment de la zone (une zone pouvant contenir plusieurs segments).",
-      "required": ["key", "value"],
+      "description": "Décrit l'objet définissant une zone détectée dans le texte intégral de la décision. Chaque zone (`introduction` : introduction de la décision, `expose` : exposé du litige, `moyens` : moyens, `motivations`, motivations,`dispositif` : dispositifs, `annexes` : moyens annexés) contient une liste d'objets de type `zoneSegment`, chacun contenant un objet `{ start, end }` indiquant respectivement l'indice de début et de fin des caractères (relativement au texte intégral) contenus dans chaque segment de la zone (une zone pouvant contenir plusieurs segments).",
+      "required": [],
       "type": "object",
       "properties": {
-        "key": {
-          "description": "Identifiant de la zone :\n* `introduction` : introduction de la décision\n* `expose` : exposé du litige\n* `moyens` : moyens\n* `motivations` : motivations\n* `dispositif` : dispositifs\n* `annexes` : moyens annexés.",
-          "type": "string"
+        "introduction": {
+          "description": "Une liste d'objets de type `zoneSegment`, chacun content un objet `{ start, end }` indiquant respectivement l'indice de début et de fin des caractères (relativement au texte intégral) contenus dans chaque segment de la zone 'introduction'.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/zoneSegment"
+          }
         },
-        "value": {
-          "description": "Une liste d'objets de type `zoneSegment`, chacun content un objet `{ start, end }` indiquant respectivement l'indice de début et de fin des caractères (relativement au texte intégral) contenus dans chaque segment de la zone.",
+        "expose": {
+          "description": "Une liste d'objets de type `zoneSegment`, chacun content un objet `{ start, end }` indiquant respectivement l'indice de début et de fin des caractères (relativement au texte intégral) contenus dans chaque segment de la zone 'exposé du litige'.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/zoneSegment"
+          }
+        },
+        "moyens": {
+          "description": "Une liste d'objets de type `zoneSegment`, chacun content un objet `{ start, end }` indiquant respectivement l'indice de début et de fin des caractères (relativement au texte intégral) contenus dans chaque segment de la zone 'moyens'.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/zoneSegment"
+          }
+        },
+        "motivations": {
+          "description": "Une liste d'objets de type `zoneSegment`, chacun content un objet `{ start, end }` indiquant respectivement l'indice de début et de fin des caractères (relativement au texte intégral) contenus dans chaque segment de la zone 'motivations'.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/zoneSegment"
+          }
+        },
+        "dispositif": {
+          "description": "Une liste d'objets de type `zoneSegment`, chacun content un objet `{ start, end }` indiquant respectivement l'indice de début et de fin des caractères (relativement au texte intégral) contenus dans chaque segment de la zone 'dispositifs'.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/zoneSegment"
+          }
+        },
+        "annexes": {
+          "description": "Une liste d'objets de type `zoneSegment`, chacun content un objet `{ start, end }` indiquant respectivement l'indice de début et de fin des caractères (relativement au texte intégral) contenus dans chaque segment de la zone 'moyens annexés'.",
           "type": "array",
           "items": {
             "$ref": "#/definitions/zoneSegment"
@@ -1383,7 +1414,7 @@
     "decisionLink": {
       "title": "Type d'objet `decisionLink`.",
       "description": "Objet décrivant un lien vers une décision.",
-      "required": ["id", "title", "number", "URL", "description"],
+      "required": ["title"],
       "type": "object",
       "properties": {
         "id": {
@@ -1426,7 +1457,7 @@
     "textLink": {
       "title": "Type d'objet `textLink`.",
       "description": "Objet décrivant un lien vers un texte appliqué.",
-      "required": ["id", "title", "URL"],
+      "required": ["title"],
       "type": "object",
       "properties": {
         "id": {

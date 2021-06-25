@@ -156,8 +156,12 @@ async function decision(query) {
       bulletin: rawResult._source.bulletin,
       files: rawResult._source.files,
       zones: highlightedZoning ? highlightedZoning : rawResult._source.zones,
-      visa: rawResult._source.visa,
-      rapprochements: rawResult._source.rapprochements,
+      visa: {
+        title: rawResult._source.visa,
+      },
+      rapprochements: {
+        title: rawResult._source.rapprochements,
+      },
     };
   }
 
