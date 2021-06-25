@@ -77,12 +77,16 @@ async function batchexport(query) {
             bulletin: rawResult._source.bulletin,
             files: rawResult._source.files,
             zones: rawResult._source.zones,
-            visa: {
-              title: rawResult._source.visa,
-            },
-            rapprochements: {
-              title: rawResult._source.rapprochements,
-            },
+            visa: [
+              {
+                title: rawResult._source.visa,
+              },
+            ],
+            rapprochements: [
+              {
+                title: rawResult._source.rapprochements,
+              },
+            ],
           };
           response.results.push(result);
         });
