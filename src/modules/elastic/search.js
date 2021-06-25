@@ -8,6 +8,8 @@ async function search(query) {
 
   const searchQuery = this.buildQuery(query, 'search');
 
+  let string = query.query ? query.query.trim() : '';
+
   let response = {
     page: searchQuery.page,
     page_size: searchQuery.page_size,
@@ -20,7 +22,7 @@ async function search(query) {
     results: [],
   };
 
-  if (searchQuery.query) {
+  if (string && searchQuery.query) {
     const rawResponse = await this.client.search(searchQuery.query);
     if (rawResponse && rawResponse.body) {
       if (rawResponse.body.hits && rawResponse.body.hits.total && rawResponse.body.hits.total.value > 0) {

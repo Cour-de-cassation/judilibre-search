@@ -118,9 +118,7 @@
           }
         },
         "security": [
-          {
-            
-          },
+          {},
           {
             "advanced": []
           },
@@ -187,11 +185,7 @@
             "description": "Erreur indéfinie côté serveur."
           }
         },
-        "security": [
-          {
-            
-          }
-        ],
+        "security": [{}],
         "operationId": "taxonomy",
         "summary": "Permet de récupérer les listes des termes employés par le processus de recherche.",
         "description": "L'API publique propose la récupération des listes des termes (sous la forme d'un couple clé/valeur) constituants les différents critères et filtres pris en compte par le processus de recherche et les données qu'il restitue, notamment :\n\n* La liste des types de décision (`type`) ;\n* La liste des juridictions dont le système intègre les décisions (`jurisdiction`) ;\n* La liste des chambres (`chamber`) ;\n* La liste des formations (`formation`) ;\n* La liste des commissions (`committee`) ;\n* La liste des niveaux de publication (`publication`) ;\n* La liste des matières (`theme`) ;\n* La liste des solutions (`solution`) ;\n* La liste des champs et des zones de contenu des décisions pouvant être ciblés par la recherche (`field`) ;\n* La liste des zones de contenu des décisions (`zones`) ;\n* etc.\n\nLa publication de cette taxonomie permet principalement au prestataire chargé de l'implémentation du frontend (ainsi qu'à certains réutilisateurs avancés) d'automatiser la constitution des formulaires de recherche et l'enrichissement des résultats retournés."
@@ -247,9 +241,7 @@
           }
         },
         "security": [
-          {
-            
-          },
+          {},
           {
             "admin": []
           }
@@ -488,9 +480,7 @@
           }
         },
         "security": [
-          {
-            
-          },
+          {},
           {
             "advanced": []
           },
@@ -605,9 +595,7 @@
           }
         },
         "security": [
-          {
-            
-          },
+          {},
           {
             "advanced": []
           },
@@ -763,9 +751,7 @@
           }
         },
         "security": [
-          {
-            
-          },
+          {},
           {
             "admin": []
           }
@@ -903,7 +889,7 @@
             },
             "highlights": {
               "description": "Liste des segments de la décision ayant des correspondances avec la requête saisie, les correspondances étant délimitées par des balises `<em>`. Chaque segment est un objet de type `searchHighlight`.",
-              "type": "array",
+              "type": "object",
               "items": {
                 "$ref": "#/definitions/searchHighlight"
               }
