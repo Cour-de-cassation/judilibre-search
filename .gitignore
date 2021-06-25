@@ -108,7 +108,7 @@ k8s
 
 # git deps
 judilibre-*
-elastic
+/elastic
 
 # MacOS
 .DS_Store

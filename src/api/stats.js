@@ -1,6 +1,7 @@
 require('../modules/env');
 const express = require('express');
 const api = express.Router();
+const Elastic = require('../modules/elastic');
 const route = 'stats';
 
 api.get(`/${route}`, async (req, res) => {
@@ -21,10 +22,7 @@ api.get(`/${route}`, async (req, res) => {
 });
 
 async function getStats(query) {
-  return {
-    route: `GET /${route}`,
-    query: query,
-  };
+  return await Elastic.stats(query);
 }
 
 module.exports = api;
