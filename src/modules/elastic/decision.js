@@ -156,16 +156,16 @@ async function decision(query) {
       bulletin: rawResult._source.bulletin,
       files: rawResult._source.files,
       zones: highlightedZoning ? highlightedZoning : rawResult._source.zones,
-      visa: [
-        {
-          title: rawResult._source.visa,
-        },
-      ],
-      rapprochements: [
-        {
-          title: rawResult._source.rapprochements,
-        },
-      ],
+      visa: rawResult._source.visa.map((item) => {
+        return {
+          title: item,
+        };
+      }),
+      rapprochements: rawResult._source.rapprochements.map((item) => {
+        return {
+          title: item,
+        };
+      }),
     };
   }
 
