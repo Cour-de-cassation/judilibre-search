@@ -1963,7 +1963,17 @@
             "type": "string"
           },
           "result": {
-            "$ref": "#/components/schemas/taxonItem"
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/taxonItem"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
           },
           "value": {
             "description": "Intitulé complet dont on veut récupérer la clé (pour une requête avec `value`).",
