@@ -495,7 +495,7 @@ describe('Testing /search endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the page_size parameter must be an integer between 10 and 50.`,
+          msg: `Value of the page_size parameter must be an integer between 1 and 50.`,
           param: 'page_size',
           value: 'foo',
         },
@@ -508,7 +508,7 @@ describe('Testing /search endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the page_size parameter must be an integer between 10 and 50.`,
+          msg: `Value of the page_size parameter must be an integer between 1 and 50.`,
           param: 'page_size',
           value: '0',
         },
@@ -521,7 +521,7 @@ describe('Testing /search endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the page_size parameter must be an integer between 10 and 50.`,
+          msg: `Value of the page_size parameter must be an integer between 1 and 50.`,
           param: 'page_size',
           value: '6666',
         },
