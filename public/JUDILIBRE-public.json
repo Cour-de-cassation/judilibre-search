@@ -1631,6 +1631,10 @@
             "description": "Identifiant de la décision.",
             "type": "string"
           },
+          "date": {
+            "description": "Date de la décision, au format ISO-8601 (par exemple 2021-05-13).",
+            "type": "string"
+          },
           "title": {
             "description": "Intitulé de la décision.",
             "type": "string"
