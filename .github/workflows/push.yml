@@ -70,8 +70,8 @@ jobs:
           DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
           GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
           VERSION: ${{ steps.extract_version.outputs.version }}
-  deploy:
-    name: 🚀 Deploy, update ☸️
+  deploy-scw:
+    name: 🚀 Deploy, update on Scaleway ☸️
     needs: build
     if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
@@ -114,10 +114,10 @@ jobs:
           mkdir -p ${HOME}/.kube
           cat k8s/kubeconfig.yaml | envsubst > ~/.kube/config
         env:
-          KUBE_CA: ${{ secrets.KUBE_CA }}
-          KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
-          KUBE_URL: ${{ secrets.KUBE_URL }}
-          KUBE_USER: ${{ secrets.KUBE_USER }}
+          KUBE_CA: ${{ secrets.KUBE_SCW_CA }}
+          KUBE_TOKEN: ${{ secrets.KUBE_SCW_TOKEN }}
+          KUBE_URL: ${{ secrets.KUBE_SCW_URL }}
+          KUBE_USER: ${{ secrets.KUBE_SCW_USER }}
       - name: ☸️  Deploy remote k8s services
         run: |
           if [ "${GIT_BRANCH}" != "master" ];then
@@ -132,6 +132,82 @@ jobs:
         run: |
           if [ "${GIT_BRANCH}" != "master" ];then
             export APP_HOST=search.${GIT_BRANCH}.judilibre.io;
+            export ELASTIC_MEM=512m;
+          fi;
+          export KUBE_NAMESPACE=${APP_GROUP}-${KUBE_ZONE}-${GIT_BRANCH}
+          kubectl set image --namespace=${KUBE_NAMESPACE} deployments/${APP_ID}-deployment ${APP_ID}=${DOCKER_USERNAME}/${APP_ID}:${VERSION}
+          ./scripts/wait_services_readiness.sh
+          kubectl get pods --namespace=${KUBE_NAMESPACE}
+          kubectl logs service/${APP_ID}-svc --namespace=${KUBE_NAMESPACE}
+          ./scripts/test_minimal.sh || (kubectl rollout undo deployments/${APP_ID}-deployment && exit 1)
+        env:
+          GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
+          START_TIMEOUT: 20
+          VERSION: ${{ steps.extract_version.outputs.version }}
+  deploy-ovh-sopra:
+    name: 🚀 Deploy, update on OVH Sopra (openshift) ☸️
+    needs: build
+    if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    env:
+      APP_GROUP: judilibre
+      APP_HOST: search-${{ secrets.KUBE_OVH_SOPRA_APPS_DNS }}
+      APP_ID: judilibre-search
+      APP_NODES: 3
+      APP_SCHEME: https
+      APP_PORT: 443
+      API_PORT: 8080
+      DOCKER_USERNAME: opendatajustice
+      ELASTIC_INDEX: judilibre_0
+      ELASTIC_NODES: 3
+      ELASTIC_MEM: 2048Mi
+      ELASTIC_MEM_JVM: 1024m
+      ELASTIC_SEARCH_PASSWORD: ${{ secrets.ELASTIC_SEARCH_PASSWORD }}
+      ELASTIC_STORAGE_POLICY: DeleteOnScaledownOnly
+      ELASTIC_STORAGE_SIZE: 3Gi
+      ELASTIC_VERSION: 7.13.2
+      HTTP_PASSWD: ${{ secrets.HTTP_PASSWD }}
+      KUBE_TYPE: openshift
+      KUBE_ZONE: ovh-sopra
+      KUBE_APPS_DNS: ${{ secrets.KUBE_OVH_SOPRA_APPS_DNS }}
+      KUBECTL: /usr/local/bin/oc
+      START_TIMEOUT: 240
+    steps:
+      - uses: actions/checkout@v1
+      - name: get version
+        run: echo "##[set-output name=version;]$(cat package.json | jq -r '.version')-$(git rev-parse --short HEAD)"
+        id: extract_version
+      - name: extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF} | sed 's|^refs/heads/||;' | tr '/' '-')"
+        id: extract_branch
+      - name: init deps
+        run: ./scripts/init_deps.sh
+        env:
+          GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
+          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+      - name: kube prerequisites
+        run: |
+          cd /usr/local/bin; sudo curl -s https://downloads-openshift-console.${KUBE_APPS_DNS}/amd64/linux/oc.tar -o - | sudo tar xf -
+          oc login --token=${KUBE_TOKEN} --server=${KUBE_URL}
+        env:
+          KUBE_TOKEN: ${{ secrets.KUBE_OVH_SOPRA_TOKEN }}
+          KUBE_URL: ${{ secrets.KUBE_OVH_SOPRA_URL }}
+      - name: ☸️  Deploy remote k8s services
+        run: |
+          if [ "${GIT_BRANCH}" != "master" ];then
+            export APP_HOST=search-${GIT_BRANCH}.${KUBE_APPS_DNS};
+            export ELASTIC_MEM=512m;
+            export ELASTIC_STORAGE_POLICY=DeleteOnScaledownAndClusterDeletion;
+          fi;
+          ./scripts/deploy_k8s_services.sh
+        env:
+          VERSION: ${{ steps.extract_version.outputs.version }}
+          GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
+      - name: 🚀 update ☸️
+        run: |
+          if [ "${GIT_BRANCH}" != "master" ];then
+            export APP_HOST=search-${GIT_BRANCH}.${KUBE_APPS_DNS};
             export ELASTIC_MEM=512m;
           fi;
           export KUBE_NAMESPACE=${APP_GROUP}-${KUBE_ZONE}-${GIT_BRANCH}
