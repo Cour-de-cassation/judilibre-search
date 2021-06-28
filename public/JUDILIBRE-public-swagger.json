@@ -605,7 +605,7 @@
         ],
         "operationId": "export",
         "summary": "Permet d'effectuer un export par lot de décisions de justice.",
-        "description": "Destiné aux utilisateurs désirant procéder à leur propre indexation et mise à disposition du contenu, ce point d'entrée leur permet de récupérer des lots de décisions complètes suivant des paramètres et critères simples :\n\n* Nature de décision (filtre) ;\n* Matière (filtre) ;\n* Chambre et formation (filtre) ;\n* Juridiction et commission (filtre) ;\n* Niveau de publication (filtre) ;\n* Type de solution (filtre) ;\n* Intervalle de dates (date de création ou de mise à jour) (filtre) ;\n* Date (tri) ;\n* Nombre de décisions par lot, index du lot (navigation).\n\nL'export par lots est limité par défaut (pour une connexion non authentifiée) à 100 résultats par lot, pour un maximum de 10 000 résultats au total."
+        "description": "Destiné aux utilisateurs désirant procéder à leur propre indexation et mise à disposition du contenu, ce point d'entrée leur permet de récupérer des lots de décisions complètes suivant des paramètres et critères simples :\n\n* Nature de décision (filtre) ;\n* Matière (filtre) ;\n* Chambre et formation (filtre) ;\n* Juridiction et commission (filtre) ;\n* Niveau de publication (filtre) ;\n* Type de solution (filtre) ;\n* Intervalle de dates (date de création ou de mise à jour) (filtre) ;\n* Date (tri) ;\n* Nombre de décisions par lot, index du lot (navigation).\n\nL'export par lots est limité par défaut (pour une connexion non authentifiée) à 10 résultats par lot, pour un maximum de 1000 résultats au total."
       },
       "parameters": [
         {
@@ -708,7 +708,7 @@
         },
         {
           "name": "batch_size",
-          "description": "Permet de déterminer le nombre de résultats retournés par lot (1000 maximum, vaut 100 par défaut).",
+          "description": "Permet de déterminer le nombre de résultats retournés par lot (1000 maximum, vaut 10 par défaut).",
           "in": "query",
           "type": "integer"
         },
@@ -1674,7 +1674,7 @@
           "type": "string"
         },
         "batch_size": {
-          "description": "Permet de déterminer le nombre de résultats retournés par lot (1000 maximum, vaut 100 par défaut).",
+          "description": "Permet de déterminer le nombre de résultats retournés par lot (1000 maximum, vaut 10 par défaut).",
           "type": "integer"
         },
         "batch": {

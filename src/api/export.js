@@ -156,12 +156,12 @@ api.get(
       in: 'query',
       isInt: {
         options: {
-          min: 10,
+          min: 1,
           max: 1000,
         },
       },
       toInt: true,
-      errorMessage: `Value of the batch_size parameter must be an integer between 10 and 1000.`,
+      errorMessage: `Value of the batch_size parameter must be an integer between 1 and 1000.`,
       optional: true,
     },
     batch: {
@@ -173,7 +173,7 @@ api.get(
       },
       toInt: true,
       errorMessage: `Value of the batch parameter must be an integer greater or equal than 0.`,
-      optional: true,
+      optional: false,
     },
     resolve_references: {
       in: 'query',

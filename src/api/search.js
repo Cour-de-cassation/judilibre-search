@@ -186,12 +186,12 @@ api.get(
       in: 'query',
       isInt: {
         options: {
-          min: 10,
+          min: 1,
           max: 50,
         },
       },
       toInt: true,
-      errorMessage: `Value of the page_size parameter must be an integer between 10 and 50.`,
+      errorMessage: `Value of the page_size parameter must be an integer between 1 and 50.`,
       optional: true,
     },
     page: {

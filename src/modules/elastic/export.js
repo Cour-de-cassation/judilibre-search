@@ -106,7 +106,7 @@ async function batchexport(query) {
 
 function exportWithoutElastic(query) {
   let batch = query.batch || 0;
-  let batch_size = query.batch_size || 100;
+  let batch_size = query.batch_size || 10;
 
   let response = {
     batch: batch,
