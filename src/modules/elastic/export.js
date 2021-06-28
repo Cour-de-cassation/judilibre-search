@@ -77,6 +77,13 @@ async function batchexport(query) {
             bulletin: rawResult._source.bulletin,
             files: rawResult._source.files,
             zones: rawResult._source.zones,
+            contested: rawResult._source.contested
+              ? rawResult._source.contested.map((item) => {
+                  return {
+                    title: item,
+                  };
+                })
+              : [],
             visa: rawResult._source.visa
               ? rawResult._source.visa.map((item) => {
                   return {

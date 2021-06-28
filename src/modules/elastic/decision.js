@@ -156,16 +156,27 @@ async function decision(query) {
       bulletin: rawResult._source.bulletin,
       files: rawResult._source.files,
       zones: highlightedZoning ? highlightedZoning : rawResult._source.zones,
-      visa: rawResult._source.visa.map((item) => {
-        return {
-          title: item,
-        };
-      }),
-      rapprochements: rawResult._source.rapprochements.map((item) => {
-        return {
-          title: item,
-        };
-      }),
+      contested: rawResult._source.contested
+        ? rawResult._source.contested.map((item) => {
+            return {
+              title: item,
+            };
+          })
+        : [],
+      visa: rawResult._source.visa
+        ? rawResult._source.visa.map((item) => {
+            return {
+              title: item,
+            };
+          })
+        : [],
+      rapprochements: rawResult._source.rapprochements
+        ? rawResult._source.rapprochements.map((item) => {
+            return {
+              title: item,
+            };
+          })
+        : [],
     };
   }
 
