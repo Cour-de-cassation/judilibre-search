@@ -9,8 +9,8 @@ async function batchexport(query) {
   const searchQuery = this.buildQuery(query, 'export');
 
   let response = {
-    batch: searchQuery.batch,
-    batch_size: searchQuery.batch_size,
+    batch: searchQuery.page,
+    batch_size: searchQuery.page_size,
     query: query,
     total: 0,
     previous_batch: null,
@@ -24,14 +24,14 @@ async function batchexport(query) {
     if (rawResponse && rawResponse.body) {
       if (rawResponse.body.hits && rawResponse.body.hits.total && rawResponse.body.hits.total.value > 0) {
         response.total = rawResponse.body.hits.total.value;
-        if (searchQuery.batch > 0) {
+        if (searchQuery.page > 0) {
           let previous_batch_params = new URLSearchParams(query);
-          previous_batch_params.set('batch', searchQuery.batch - 1);
+          previous_batch_params.set('batch', searchQuery.page - 1);
           response.previous_batch = previous_batch_params.toString();
         }
-        if ((searchQuery.batch + 1) * searchQuery.batch_size < rawResponse.body.hits.total.value) {
+        if ((searchQuery.page + 1) * searchQuery.page_size < rawResponse.body.hits.total.value) {
           let next_batch_params = new URLSearchParams(query);
-          next_batch_params.set('batch', searchQuery.batch + 1);
+          next_batch_params.set('batch', searchQuery.page + 1);
           response.next_batch = next_batch_params.toString();
         }
         rawResponse.body.hits.hits.forEach((rawResult) => {
