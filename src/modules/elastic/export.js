@@ -9,8 +9,8 @@ async function batchexport(query) {
   const searchQuery = this.buildQuery(query, 'export');
 
   let response = {
-    batch: searchQuery.page,
-    batch_size: searchQuery.page_size,
+    batch: searchQuery.batch,
+    batch_size: searchQuery.batch_size,
     query: query,
     total: 0,
     previous_batch: null,
@@ -24,15 +24,15 @@ async function batchexport(query) {
     if (rawResponse && rawResponse.body) {
       if (rawResponse.body.hits && rawResponse.body.hits.total && rawResponse.body.hits.total.value > 0) {
         response.total = rawResponse.body.hits.total.value;
-        if (searchQuery.page > 0) {
-          let previous_page_params = new URLSearchParams(query);
-          previous_page_params.set('batch', searchQuery.page - 1);
-          response.previous_batch = previous_page_params.toString();
+        if (searchQuery.batch > 0) {
+          let previous_batch_params = new URLSearchParams(query);
+          previous_batch_params.set('batch', searchQuery.batch - 1);
+          response.previous_batch = previous_batch_params.toString();
         }
-        if ((searchQuery.page + 1) * searchQuery.page_size < rawResponse.body.hits.total.value) {
-          let next_page_params = new URLSearchParams(query);
-          next_page_params.set('batch', searchQuery.page + 1);
-          response.next_batch = next_page_params.toString();
+        if ((searchQuery.batch + 1) * searchQuery.batch_size < rawResponse.body.hits.total.value) {
+          let next_batch_params = new URLSearchParams(query);
+          next_batch_params.set('batch', searchQuery.batch + 1);
+          response.next_batch = next_batch_params.toString();
         }
         rawResponse.body.hits.hits.forEach((rawResult) => {
           let result = {
@@ -100,6 +100,13 @@ async function batchexport(query) {
 }
 
 function exportWithoutElastic(query) {
+  const fs = require('fs');
+  const path = require('path');
+
+  if (this.data === null) {
+    this.data = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'sample_list.json')).toString());
+  }
+
   let batch = query.batch || 0;
   let batch_size = query.batch_size || 10;
 
@@ -107,12 +114,53 @@ function exportWithoutElastic(query) {
     batch: batch,
     batch_size: batch_size,
     query: query,
-    total: 0,
+    total: query.resolve_references ? this.data.resolved.length : this.data.unresolved.length,
     previous_batch: null,
     next_batch: null,
-    took: 0,
-    results: [],
+    took: 42,
+    results: query.resolve_references
+      ? this.data.resolved.slice(batch * batch_size, (batch + 1) * batch_size)
+      : this.data.unresolved.slice(batch * batch_size, (batch + 1) * batch_size),
   };
+
+  if (batch > 0) {
+    let previous_batch_params = new URLSearchParams(query);
+    previous_batch_params.set('batch', batch - 1);
+    response.previous_batch = previous_batch_params.toString();
+  }
+
+  if (query.resolve_references) {
+    if ((batch + 1) * batch_size < this.data.resolved.length) {
+      let next_batch_params = new URLSearchParams(query);
+      next_batch_params.set('batch', batch + 1);
+      response.next_batch = next_batch_params.toString();
+    }
+  } else {
+    if ((batch + 1) * batch_size < this.data.unresolved.length) {
+      let next_batch_params = new URLSearchParams(query);
+      next_batch_params.set('batch', batch + 1);
+      response.next_batch = next_batch_params.toString();
+    }
+  }
+
+  let sample = null;
+
+  if (query.resolve_references) {
+    sample = JSON.parse(
+      fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'sample_detail_resolved.json')).toString(),
+    );
+  } else {
+    sample = JSON.parse(
+      fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'sample_detail_unresolved.json')).toString(),
+    );
+  }
+
+  for (let i = 0; i < response.results.length; i++) {
+    delete response.results[i].score;
+    delete response.results[i].highlights;
+  }
+
+  // @TODO Augment data, cf. decision.
 
   return response;
 }
