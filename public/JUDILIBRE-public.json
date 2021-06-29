@@ -1724,8 +1724,7 @@
           },
           "batch": {
             "description": "Indice du lot courant (le premier lot valant 0).",
-            "type": "integer",
-            "nullable": true
+            "type": "integer"
           },
           "batch_size": {
             "description": "Nombre de résultats retournés par lot.",
@@ -1733,7 +1732,8 @@
           },
           "previous_batch": {
             "description": "URL du lot précédent (propriété `null` si le lot courant est le premier).",
-            "type": "string"
+            "type": "string",
+            "nullable": true
           }
         },
         "example": {

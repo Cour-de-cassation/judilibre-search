@@ -158,9 +158,17 @@ function exportWithoutElastic(query) {
   for (let i = 0; i < response.results.length; i++) {
     delete response.results[i].score;
     delete response.results[i].highlights;
+    response.results[i].source = sample.source;
+    response.results[i].text = sample.text;
+    response.results[i].solution_alt = sample.solution_alt;
+    response.results[i].update_date = sample.update_date;
+    response.results[i].bulletin = sample.bulletin;
+    response.results[i].files = sample.files;
+    response.results[i].zones = sample.zones;
+    response.results[i].contested = sample.contested;
+    response.results[i].visa = sample.visa;
+    response.results[i].rapprochements = sample.rapprochements;
   }
-
-  // @TODO Augment data, cf. decision.
 
   return response;
 }
