@@ -48,7 +48,7 @@ function buildQuery(query, target) {
   if (target === 'search' || target === 'export') {
     if (target === 'export') {
       page = query.batch || 0;
-      page_size = query.batch_size || 100;
+      page_size = query.batch_size || 10;
     }
 
     // Base query for regular search:
