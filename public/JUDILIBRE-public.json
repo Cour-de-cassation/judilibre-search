@@ -1438,11 +1438,9 @@
                 }
               },
               "contested": {
-                "description": "Liste des décisions attaquées, chaque décision étant représenté par un objet de type `decisionLink` où `title` contient son intitulé, `number` son numéro, `description` son court texte descriptif, `theme` la liste de ses matières (ou éléments de titrage) et `URL` le lien vers celui-ci.",
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/decisionLink"
-                }
+                "description": "Objet décrivant la décision attaquée, de type `decisionLink` où `title` contient son intitulé, `number` son numéro, `description` son court texte descriptif, `theme` la liste de ses matières (ou éléments de titrage) et `URL` le lien vers celle-ci.",
+                "$ref": "#/components/schemas/decisionLink",
+                "nullable": true
               },
               "rapprochements": {
                 "description": "Liste des rapprochements de jurisprudence, chaque rapprochement étant représenté par un objet de type `decisionLink` où `title` contient son intitulé, `number` son numéro, `description` son court texte descriptif, `theme` la liste de ses matières (ou éléments de titrage) et `URL` le lien vers celui-ci.",

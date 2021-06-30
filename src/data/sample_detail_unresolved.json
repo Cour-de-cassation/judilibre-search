@@ -26,6 +26,7 @@
     "cas",
     "candidatures libres présentées au second tour des élections professionnelles"
   ],
+  "contested": null,
   "visa": [{ "title": "article L. 2314-30 du code du travail." }],
   "rapprochements": [
     {

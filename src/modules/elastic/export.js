@@ -77,7 +77,7 @@ async function batchexport(query) {
             bulletin: rawResult._source.bulletin,
             files: rawResult._source.files,
             zones: rawResult._source.zones,
-            contested: rawResult._source.contested ? rawResult._source.contested : [],
+            contested: rawResult._source.contested ? rawResult._source.contested : null,
             visa: rawResult._source.visa
               ? rawResult._source.visa.map((item) => {
                   return {
@@ -85,7 +85,10 @@ async function batchexport(query) {
                   };
                 })
               : [],
-            rapprochements: rawResult._source.rapprochements ? rawResult._source.rapprochements : [],
+            rapprochements:
+              rawResult._source.rapprochements && rawResult._source.rapprochements.value
+                ? rawResult._source.rapprochements.value
+                : [],
           };
           response.results.push(result);
         });
