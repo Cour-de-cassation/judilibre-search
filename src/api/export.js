@@ -175,6 +175,13 @@ api.get(
       errorMessage: `Value of the batch parameter must be an integer greater or equal than 0.`,
       optional: false,
     },
+    abridged: {
+      in: 'query',
+      isBoolean: true,
+      toBoolean: true,
+      errorMessage: `Value of the abridged parameter must be a boolean.`,
+      optional: true,
+    },
     resolve_references: {
       in: 'query',
       isBoolean: true,

@@ -90,6 +90,15 @@ async function batchexport(query) {
                 ? rawResult._source.rapprochements.value
                 : [],
           };
+          if (query.abridged) {
+            delete result.source;
+            delete result.text;
+            delete result.update_date;
+            delete result.zones;
+            delete result.contested;
+            delete result.visa;
+            delete result.rapprochements;
+          }
           response.results.push(result);
         });
       }

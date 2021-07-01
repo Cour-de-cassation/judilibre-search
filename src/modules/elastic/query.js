@@ -123,13 +123,32 @@ function buildQuery(query, target) {
       delete searchQuery.body.query.function_score.functions;
       delete searchQuery.body.query.function_score.score_mode;
       delete searchQuery.body.query.function_score.boost_mode;
-      searchQuery.body.sort[0] = {
-        decision_date: query.order || 'desc',
-      };
+      if (query.date_type === 'update') {
+        searchQuery.body.sort[0] = {
+          update_date: query.order || 'desc',
+        };
+      } else {
+        searchQuery.body.sort[0] = {
+          decision_date: query.order || 'desc',
+        };
+      }
       delete searchQuery.body.query.highlight;
     } else if (query.sort && query.order) {
-      searchQuery.body.sort[0] = {};
-      searchQuery.body.sort[0][query.sort] = query.order;
+      switch (query.sort) {
+        case 'score':
+          delete searchQuery.body.query.function_score.functions;
+          searchQuery.body.sort[0]._score = query.order;
+          break;
+        case 'scorepub':
+          searchQuery.body.sort[0]._score = query.order;
+          break;
+        case 'date':
+          delete searchQuery.body.query.function_score.functions;
+          searchQuery.body.sort[0] = {
+            decision_date: query.order,
+          };
+          break;
+      }
     }
 
     // ECLI (filter):

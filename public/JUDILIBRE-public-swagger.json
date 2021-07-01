@@ -695,6 +695,12 @@
           "format": "date"
         },
         {
+          "name": "abridged",
+          "description": "Lorsque ce paramètre vaut `true`, le résultat de la requête contiendra la version abrégée des décisions (sans texte intégral ni métadonnées détaillées, vaut `false` par défaut).",
+          "in": "query",
+          "type": "boolean"
+        },
+        {
           "name": "date_type",
           "description": "Type de date à prendre en compte pour l’intervalle de dates fourni pour l’export (vaut `creation` ou `update`).",
           "in": "query",
@@ -1082,17 +1088,7 @@
     "decisionShort": {
       "title": "Type d'objet `decisionShort`.",
       "description": "Décrit la version courte d'un décision, telle qu'elle apparait en tant qu'item de résultat de recherche.\n\nRappel : le texte intégral et les zones qu'il contient ne sont pas inclus dans les résultats de la recherche. La récupération d'une décision complète (incluant les zones) repose sur le point d'entrée `GET /decision`.",
-      "required": [
-        "jurisdiction",
-        "id",
-        "chamber",
-        "number",
-        "ecli",
-        "formation",
-        "publication",
-        "decision_date",
-        "solution"
-      ],
+      "required": ["jurisdiction", "id", "chamber", "number", "ecli", "publication", "decision_date", "solution"],
       "type": "object",
       "properties": {
         "id": {
@@ -1194,7 +1190,6 @@
       "type": "object",
       "allOf": [
         {
-          "required": ["text"],
           "type": "object",
           "properties": {
             "zones": {
@@ -1668,6 +1663,10 @@
         },
         "resolve_references": {
           "description": "Lorsque ce paramètre vaut `true`, le résultat de la requête contiendra, pour chaque information retournée par défaut sous forme de clé, l'intitulé complet de celle-ci (vaut `false` par défaut).",
+          "type": "boolean"
+        },
+        "abridged": {
+          "description": "Lorsque ce paramètre vaut `true`, le résultat de la requête contiendra la version abrégée des décisions (sans texte intégral ni métadonnées détaillées, vaut `false` par défaut).",
           "type": "boolean"
         },
         "date_type": {
