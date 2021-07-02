@@ -7,8 +7,8 @@ const taxon = {
   comm: 'Chambre commerciale, financière et économique',
   soc: 'Chambre sociale',
   cr: 'Chambre criminelle',
-  creun: 'Chambres réunies',
   ordo: 'Première présidence (Ordonnance)',
+  creun: 'Chambres réunies',
 };
 
 module.exports = {
