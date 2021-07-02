@@ -1,6 +1,6 @@
 const taxon = {
-  asc: 'Ascendant',
-  desc: 'Descendant',
+  asc: 'Croissant',
+  desc: 'Décroissant',
 };
 
 module.exports = {
