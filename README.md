@@ -73,7 +73,7 @@ Chaque zone contient une liste de fragments, dont les items `start` et `end` con
 
 **Attention :** chaque zone peut contenir plusieurs fragments et ceux-ci ne sont pas forcément séquentiels ! Autrement dit : il peut y avoir dans la zone `moyens` des fragments qui se situent, dans le texte, _après_ certains fragments définis dans la zone `motivations` !
 
-Afin de faciliter le traitement et l'affichage des zones côté _front_, il est recommander de procéder à leur linéarisation préalable, comme suit (exemple en javascript) :
+Afin de faciliter le traitement et l'affichage des zones côté _front_, il est recommandé de procéder à leur linéarisation préalable, comme suit (exemple en javascript) :
 
 ```javascript
 const text = result.text;
