@@ -1,7 +1,7 @@
 const taxon = {
-  b: 'Publié au Bulletin',
-  l: 'Publié aux Lettres de chambre',
+  b: 'Publié aux Bulletins',
   r: 'Publié au Rapport',
+  l: 'Publié aux Lettres de chambre',
   c: 'Communiqué de presse',
 };
 

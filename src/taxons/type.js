@@ -5,6 +5,7 @@ const taxon = {
   // qpj: 'Question préjudicielle',
   ordonnance: 'Ordonnance',
   saisie: 'Saisie',
+  other: 'Autre',
 };
 
 module.exports = {

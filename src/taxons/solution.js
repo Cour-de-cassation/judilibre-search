@@ -1,7 +1,8 @@
 const taxon = {
+  cassation: 'Cassation',
+  rejet: 'Rejet',
   annulation: 'Annulation',
   avis: 'Avis',
-  cassation: 'Cassation',
   decheance: 'Déchéance',
   designation: 'Désignation de juridiction',
   irrecevabilite: 'Irrecevabilité',
@@ -9,7 +10,6 @@ const taxon = {
   qpc: 'QPC',
   rabat: 'Rabat',
   reglement: 'Règlement des juges',
-  rejet: 'Rejet',
   renvoi: 'Renvoi',
   other: 'Autre',
 };

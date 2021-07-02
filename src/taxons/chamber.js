@@ -1,14 +1,14 @@
 const taxon = {
+  pl: 'Assemblée plénière',
+  mi: 'Chambre mixte',
   civ1: 'Première chambre civile',
   civ2: 'Deuxième chambre civile',
   civ3: 'Troisième chambre civile',
-  comm: 'Chambre commerciale, économique et financière',
-  cr: 'Chambre criminelle',
+  comm: 'Chambre commerciale, financière et économique',
   soc: 'Chambre sociale',
-  mi: 'Chambre mixte',
-  pl: 'Assemblée plénière',
-  ordo: 'Première présidence (Ordonnance)',
+  cr: 'Chambre criminelle',
   creun: 'Chambres réunies',
+  ordo: 'Première présidence (Ordonnance)',
 };
 
 module.exports = {
