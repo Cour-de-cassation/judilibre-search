@@ -76,6 +76,7 @@ jobs:
     if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     env:
+      ACME: acme
       APP_GROUP: judilibre
       APP_HOST: search.judilibre.io
       APP_ID: judilibre-search
@@ -86,14 +87,15 @@ jobs:
       DOCKER_USERNAME: opendatajustice
       ELASTIC_INDEX: judilibre_0
       ELASTIC_NODES: 3
-      ELASTIC_MEM: 2048Mi
-      ELASTIC_MEM_JVM: 1024m
+      ELASTIC_MEM: 6144Mi
+      ELASTIC_MEM_JVM: 3072m
       ELASTIC_SEARCH_PASSWORD: ${{ secrets.ELASTIC_SEARCH_PASSWORD }}
       ELASTIC_STORAGE_POLICY: DeleteOnScaledownOnly
-      ELASTIC_STORAGE_SIZE: 3Gi
+      ELASTIC_STORAGE_SIZE: 5Gi
       ELASTIC_VERSION: 7.13.2
+      KUBE_INGRESS: nginx
       KUBE_TYPE: k8s
-      KUBE_ZONE: scw
+      KUBE_ZONE: scw-dev-par1
       START_TIMEOUT: 240
     steps:
       - uses: actions/checkout@v1
@@ -115,6 +117,7 @@ jobs:
           cat k8s/kubeconfig.yaml | envsubst > ~/.kube/config
         env:
           KUBE_CA: ${{ secrets.KUBE_SCW_CA }}
+          KUBE_NAME: ${{ secrets.KUBE_SCW_NAME }}
           KUBE_TOKEN: ${{ secrets.KUBE_SCW_TOKEN }}
           KUBE_URL: ${{ secrets.KUBE_SCW_URL }}
           KUBE_USER: ${{ secrets.KUBE_SCW_USER }}
@@ -122,7 +125,11 @@ jobs:
         run: |
           if [ "${GIT_BRANCH}" != "master" ];then
             export APP_HOST=search.${GIT_BRANCH}.judilibre.io;
-            export ELASTIC_MEM=512m;
+            if [ "${GIT_BRANCH}" != "dev" ];then
+              export ELASTIC_MEM=1024Mi;
+              export ELASTIC_MEM_JVM=512m;
+              export ELASTIC_STORAGE_POLICY=DeleteOnScaledownAndClusterDeletion;
+            fi;
           fi;
           ./scripts/deploy_k8s_services.sh
         env:
@@ -132,7 +139,6 @@ jobs:
         run: |
           if [ "${GIT_BRANCH}" != "master" ];then
             export APP_HOST=search.${GIT_BRANCH}.judilibre.io;
-            export ELASTIC_MEM=512m;
           fi;
           export KUBE_NAMESPACE=${APP_GROUP}-${KUBE_ZONE}-${GIT_BRANCH}
           kubectl set image --namespace=${KUBE_NAMESPACE} deployments/${APP_ID}-deployment ${APP_ID}=${DOCKER_USERNAME}/${APP_ID}:${VERSION}
