@@ -1088,7 +1088,7 @@
     "decisionShort": {
       "title": "Type d'objet `decisionShort`.",
       "description": "Décrit la version courte d'un décision, telle qu'elle apparait en tant qu'item de résultat de recherche.\n\nRappel : le texte intégral et les zones qu'il contient ne sont pas inclus dans les résultats de la recherche. La récupération d'une décision complète (incluant les zones) repose sur le point d'entrée `GET /decision`.",
-      "required": ["jurisdiction", "id", "chamber", "number", "ecli", "publication", "decision_date", "solution"],
+      "required": ["jurisdiction", "id", "chamber", "number", "publication", "decision_date", "solution"],
       "type": "object",
       "properties": {
         "id": {
