@@ -29,11 +29,20 @@ function buildQuery(query, target) {
   let searchECLI = [];
   let searchPourvoiNumber = [];
   let searchString = [];
+  let searchDate = null;
   if (string) {
-    splitString = string.split(/[\s,;/?!]+/gm);
     if (/article\D+\d/i.test(string)) {
       searchVisa = true;
     }
+    if (/"[^"]+"/.test(string)) {
+      query.operator = 'exact';
+    }
+    if (/\d\d\/\d\d\/\d\d\d\d/.test(string)) {
+      let inputDate = /(\d\d)\/(\d\d)\/(\d\d\d\d)/.exec(string);
+      searchDate = `${inputDate[3]}-${inputDate[2]}-${inputDate[1]}`;
+      string = string.replace(`${inputDate[1]}/${inputDate[2]}/${inputDate[3]}`, '');
+    }
+    splitString = string.split(/[\s,;/?!]+/gm);
     for (let i = 0; i < splitString.length; i++) {
       if (/^ecli:\w+:\w+:\d+:[a-z0-9.]+$/i.test(splitString[i])) {
         searchECLI.push(splitString[i]);
@@ -291,6 +300,19 @@ function buildQuery(query, target) {
         searchQuery.body.query.function_score.query.bool.filter = [];
       }
       searchQuery.body.query.function_score.query.bool.filter.push(range);
+    } else if (searchDate !== null) {
+      let range = {
+        range: {
+          decision_date: {
+            gte: searchDate,
+            lte: searchDate,
+          },
+        },
+      };
+      if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
+        searchQuery.body.query.function_score.query.bool.filter = [];
+      }
+      searchQuery.body.query.function_score.query.bool.filter.push(range);
     }
 
     if (target !== 'export') {
@@ -344,7 +366,7 @@ function buildQuery(query, target) {
         if (query.operator === 'exact') {
           operator = 'AND';
           fuzzy = false;
-          finalSearchString = `"${finalSearchString}"`.replace(/"+/gm, '"');
+          finalSearchString = `"${string}"`.replace(/"+/gm, '"');
         } else {
           operator = query.operator.toUpperCase();
         }

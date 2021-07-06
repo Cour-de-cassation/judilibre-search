@@ -17,21 +17,12 @@ async function stats(query) {
     indexedByYear: [], // @TODO
   };
 
-  let stats = await this.client.indices.stats({
+  let statsData = await this.client.count({
     index: process.env.ELASTIC_INDEX,
   });
 
-  if (
-    stats &&
-    stats.body &&
-    stats.body.indices &&
-    stats.body.indices[process.env.ELASTIC_INDEX] &&
-    stats.body.indices[process.env.ELASTIC_INDEX].total
-  ) {
-    stats = stats.body.indices[process.env.ELASTIC_INDEX].total;
-    if (stats.docs && stats.docs.count) {
-      response.indexedTotal = stats.docs.count;
-    }
+  if (statsData && statsData.body && statsData.body.count) {
+    response.indexedTotal = statsData.body.count;
   }
 
   let content = await this.client.search({
