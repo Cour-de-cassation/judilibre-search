@@ -3,7 +3,7 @@ const taxon = {
   introduction: 'Introduction',
   expose: 'Exposé du litige',
   moyens: 'Moyens',
-  motivations: 'Motivations',
+  motivations: 'Motivation',
   dispositif: 'Dispositif',
   annexes: 'Moyens annexés',
   visa: 'Textes appliqués',
