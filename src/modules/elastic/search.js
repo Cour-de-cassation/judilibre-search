@@ -81,9 +81,13 @@ async function search(query) {
             files: rawResult._source.files,
           };
 
+          let hasHitsInSpecificZone = false;
           for (let key in searchQuery.queryField) {
             let field = searchQuery.queryField[key];
             if (rawResult.highlight && rawResult.highlight[field] && rawResult.highlight[field].length > 0) {
+              if (key !== 'text') {
+                hasHitsInSpecificZone = true;
+              }
               result.highlights[key] = [];
               rawResult.highlight[field].forEach(function (hit) {
                 hit = hit.replace(/^[^a-z<>]*/i, '');
@@ -96,6 +100,9 @@ async function search(query) {
               rawResult.highlight[field + '.exact'] &&
               rawResult.highlight[field + '.exact'].length > 0
             ) {
+              if (key !== 'text') {
+                hasHitsInSpecificZone = true;
+              }
               result.highlights[key] = [];
               rawResult.highlight[field + '.exact'].forEach(function (hit) {
                 hit = hit.replace(/^[^a-z<>]*/i, '');
@@ -103,6 +110,11 @@ async function search(query) {
                 result.highlights[key].push(hit.trim());
               });
             }
+          }
+
+          // Don't add highlights from the whole text when some specific zones are already highlighted:
+          if (hasHitsInSpecificZone === true && result.highlights['text']) {
+            delete result.highlights['text'];
           }
 
           response.results.push(result);

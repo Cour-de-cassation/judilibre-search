@@ -323,7 +323,10 @@ function buildQuery(query, target) {
             textFields.push(queryField[field]);
           }
         });
-      } else {
+      }
+
+      // Add search on 'text' anyway:
+      if (textFields.indexOf('text') === -1) {
         textFields.push('text');
       }
 
@@ -345,8 +348,12 @@ function buildQuery(query, target) {
       boostedFields = textFields.map((item) => {
         if (item === 'visa') {
           return item + '^10';
-        } else if (item.indexOf('zoneMotivations') !== -1 || item.indexOf('zoneDispositif') !== -1) {
-          return item + '^5';
+        } else if (item === 'zoneMotivations' || item === 'zoneDispositif') {
+          return item + '^6';
+        } else if (item === 'zoneExpose' || item === 'zoneMoyens') {
+          return item + '^3';
+        } else if (item === 'zoneIntroduction' || item === 'zoneAnnexes') {
+          return item + '^2';
         }
         return item;
       });
@@ -412,14 +419,17 @@ function buildQuery(query, target) {
       },
     };
 
-    // Specific text fields to target:
+    // Specific and default text fields to search in:
     if (query.field && Array.isArray(query.field) && query.field.length > 0) {
       query.field.forEach((field) => {
         if (queryField[field] && textFields.indexOf(queryField[field]) === -1) {
           textFields.push(queryField[field]);
         }
       });
-    } else {
+    }
+
+    // Add search on 'text' anyway:
+    if (textFields.indexOf('text') === -1) {
       textFields.push('text');
     }
 
@@ -453,7 +463,7 @@ function buildQuery(query, target) {
         if (query.operator === 'exact') {
           operator = 'AND';
           fuzzy = false;
-          finalSearchString = `"${finalSearchString}"`.replace(/"+/gm, '"');
+          finalSearchString = `"${string}"`.replace(/"+/gm, '"');
         } else {
           operator = query.operator.toUpperCase();
         }
