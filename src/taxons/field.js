@@ -1,6 +1,6 @@
 const taxon = {
   text: 'Texte entier',
-  introduction: 'Introduction',
+  introduction: 'Chapeau',
   expose: 'Exposé du litige',
   moyens: 'Moyens',
   motivations: 'Motivation',
