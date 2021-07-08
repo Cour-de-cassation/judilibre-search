@@ -46,7 +46,10 @@ function buildQuery(query, target) {
     for (let i = 0; i < splitString.length; i++) {
       if (/^ecli:\w+:\w+:\d+:[a-z0-9.]+$/i.test(splitString[i])) {
         searchECLI.push(splitString[i]);
-      } else if (/^\d\d[^\w\d]\d\d[^\w\d]\d\d\d$/.test(splitString[i])) {
+      } else if (
+        /^\d\d[^\w\d]\d\d[^\w\d]\d\d\d$/.test(splitString[i]) ||
+        /^\d\d[^\w\d]\d\d\d\d\d$/.test(splitString[i])
+      ) {
         searchPourvoiNumber.push(splitString[i].replace(/[^\w\d]/gm, ''));
       } else {
         searchString.push(splitString[i]);
