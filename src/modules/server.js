@@ -9,6 +9,12 @@ class Server {
     this.app.use(cors());
     this.app.use(express.json({ limit: '50mb' }));
     this.app.use(express.urlencoded({ extended: true }));
+    this.app.use((req, res, next) => {
+      res.setHeader('X-Content-Type-Options', 'nosniff');
+      res.setHeader('X-Frame-Options', 'deny');
+      res.setHeader('Content-Security-Policy', "default-src 'none'");
+      next();
+    });
     this.app.use(express.static(path.join(__dirname, '..', '..', 'public')));
     this.app.use((err, req, res, next) => {
       if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
