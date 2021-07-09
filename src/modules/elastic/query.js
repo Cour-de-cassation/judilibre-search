@@ -46,12 +46,9 @@ function buildQuery(query, target) {
     for (let i = 0; i < splitString.length; i++) {
       if (/^ecli:\w+:\w+:\d+:[a-z0-9.]+$/i.test(splitString[i])) {
         searchECLI.push(splitString[i]);
-      } else if (
-        /^\d\d[^\w\d]\d\d[^\w\d]\d\d\d$/.test(splitString[i]) ||
-        /^\d\d[^\w\d]\d\d\d\d\d$/.test(splitString[i])
-      ) {
-        searchPourvoiNumber.push(splitString[i].replace(/[^\w\d]/gm, ''));
-      } else {
+      } else if (/\D?\d\d\D?\d\d\D?\d\d\d\D?/.test(splitString[i])) {
+        searchPourvoiNumber.push(splitString[i].replace(/\D/gm, '').trim());
+      } else if (splitString[i]) {
         searchString.push(splitString[i]);
       }
     }
@@ -120,6 +117,9 @@ function buildQuery(query, target) {
           {
             _score: 'desc',
           },
+          {
+            decision_date: 'desc',
+          },
         ],
         highlight: {
           fields: {},
@@ -156,6 +156,7 @@ function buildQuery(query, target) {
           break;
         case 'date':
           delete searchQuery.body.query.function_score.functions;
+          searchQuery.body.sort.pop();
           searchQuery.body.sort[0] = {
             decision_date: query.order,
           };
@@ -180,10 +181,14 @@ function buildQuery(query, target) {
       if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
         searchQuery.body.query.function_score.query.bool.filter = [];
       }
-      searchQuery.body.query.function_score.query.bool.filter.push({
-        terms: {
-          number: searchPourvoiNumber,
-        },
+      searchPourvoiNumber.forEach((pourvoiNumber) => {
+        searchQuery.body.query.function_score.query.bool.filter.push({
+          wildcard: {
+            number: {
+              value: `*${pourvoiNumber}`,
+            },
+          },
+        });
       });
     }
 
@@ -318,7 +323,7 @@ function buildQuery(query, target) {
       searchQuery.body.query.function_score.query.bool.filter.push(range);
     }
 
-    if (target !== 'export') {
+    if (target !== 'export' && searchString.length > 0) {
       // Specific and default text fields to search in:
       if (query.field && Array.isArray(query.field) && query.field.length > 0) {
         query.field.forEach((field) => {

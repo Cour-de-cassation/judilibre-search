@@ -131,6 +131,9 @@
           "423": {
             "description": "Accès bloqué suite à une activité suspecte."
           },
+          "429": {
+            "description": "Trop de requêtes."
+          },
           "500": {
             "description": "Erreur indéfinie côté serveur."
           }
@@ -239,6 +242,9 @@
           "423": {
             "description": "Accès bloqué suite à une activité suspecte."
           },
+          "429": {
+            "description": "Trop de requêtes."
+          },
           "500": {
             "description": "Erreur indéfinie côté serveur."
           }
@@ -305,6 +311,9 @@
           },
           "423": {
             "description": "Accès bloqué suite à une activité suspecte."
+          },
+          "429": {
+            "description": "Trop de requêtes."
           },
           "500": {
             "description": "Erreur indéfinie côté serveur."
@@ -611,6 +620,9 @@
           "423": {
             "description": "Accès bloqué suite à une activité suspecte."
           },
+          "429": {
+            "description": "Trop de requêtes."
+          },
           "500": {
             "description": "Erreur indéfinie côté serveur."
           }
@@ -910,6 +922,9 @@
           "423": {
             "description": "Accès bloqué suite à une activité suspecte."
           },
+          "429": {
+            "description": "Trop de requêtes."
+          },
           "500": {
             "description": "Erreur indéfinie côté serveur."
           }
@@ -964,6 +979,9 @@
           },
           "423": {
             "description": "Accès bloqué suite à une activité suspecte."
+          },
+          "429": {
+            "description": "Trop de requêtes."
           },
           "500": {
             "description": "Erreur indéfinie côté serveur."
