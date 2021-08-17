@@ -1,18 +1,34 @@
 #!/bin/bash
-echo Test GET routes on ${APP_SCHEME}://${APP_HOST}:${APP_PORT}
-if curl -s -k --retry 5 --retry-delay 2 -XGET ${APP_SCHEME}://${APP_HOST}:${APP_PORT}/healthcheck | grep -q '"status":' ; then
-    echo "✅ healthcheck"
+
+export CURL="curl -s --retry 5 --retry-delay 2"
+
+if [ ! -z "${APP_SELF_SIGNED}" ];then
+  export CURL="${CURL} -k"
+fi;
+
+if ${CURL} ${APP_SCHEME}://${APP_HOST}:${APP_PORT}/healthcheck | grep -q '"status":' ; then
+    echo "✅  test api ${APP_HOST}/healthcheck"
 else
-    echo -e "\e[31m❌ healthcheck !\e[0m"
-    echo curl -k -XGET ${APP_SCHEME}://${APP_HOST}:${APP_PORT}/healthcheck
-    curl -k -XGET ${APP_SCHEME}://${APP_HOST}:${APP_PORT}/healthcheck
-    exit 1
+    if ${CURL} -k ${APP_SCHEME}://${APP_HOST}:${APP_PORT}/healthcheck | grep -q '"status":' ; then
+        echo -e "\e[33m⚠️  test api ${APP_HOST}/healthcheck (invalid SSL cert)\e[0m"
+    else
+        echo -e "\e[31m❌ test api ${APP_HOST}/healthcheck !\e[0m"
+        echo ${CURL} ${APP_SCHEME}://${APP_HOST}:${APP_PORT}/healthcheck
+        ${CURL} ${APP_SCHEME}://${APP_HOST}:${APP_PORT}/healthcheck
+        exit 1
+    fi
 fi
-if curl -s -k --retry 5 --retry-delay 2 -XGET ${APP_SCHEME}://${APP_HOST}:${APP_PORT}/search | grep -q '"results":' ; then
-    echo "✅ search"
+
+if ${CURL} ${APP_SCHEME}://${APP_HOST}:${APP_PORT}/search | grep -q '"results":' ; then
+    echo "✅  test api ${APP_HOST}/search"
 else
-    echo -e "\e[31m❌ search !\e[0m"
-    echo curl -k -XGET ${APP_SCHEME}://${APP_HOST}:${APP_PORT}/search
-    curl -k -XGET ${APP_SCHEME}://${APP_HOST}:${APP_PORT}/search
-    exit 1
+    if ${CURL} -k ${APP_SCHEME}://${APP_HOST}:${APP_PORT}/search | grep -q '"results":' ;then
+        echo -e "\e[33m⚠️   test api ${APP_HOST}/search (invalid SSL cert)\e[0m";
+        exit 2;
+    else
+        echo -e "\e[31m❌ test api ${APP_HOST}/search !\e[0m";
+        echo ${CURL} ${APP_SCHEME}://${APP_HOST}:${APP_PORT}/search;
+        ${CURL} ${APP_SCHEME}://${APP_HOST}:${APP_PORT}/search;
+        exit 1;
+    fi;
 fi
