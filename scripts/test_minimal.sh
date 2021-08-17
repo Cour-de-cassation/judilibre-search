@@ -10,7 +10,7 @@ if ${CURL} ${APP_SCHEME}://${APP_HOST}:${APP_PORT}/healthcheck | grep -q '"statu
     echo "✅  test api ${APP_HOST}/healthcheck"
 else
     if ${CURL} -k ${APP_SCHEME}://${APP_HOST}:${APP_PORT}/healthcheck | grep -q '"status":' ; then
-        echo -e "\e[33m⚠️  test api ${APP_HOST}/healthcheck (invalid SSL cert)\e[0m"
+        echo -e "\e[33m⚠️   test api ${APP_HOST}/healthcheck (invalid SSL cert)\e[0m"
     else
         echo -e "\e[31m❌ test api ${APP_HOST}/healthcheck !\e[0m"
         echo ${CURL} ${APP_SCHEME}://${APP_HOST}:${APP_PORT}/healthcheck

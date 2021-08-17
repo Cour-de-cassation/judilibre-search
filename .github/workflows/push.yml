@@ -14,6 +14,7 @@ jobs:
       APP_PORT: 443
       API_PORT: 8080
       APP_SCHEME: https
+      APP_SELF_SIGNED: true
       DOCKER_USERNAME: opendatajustice
       ELASTIC_INDEX: judilibre_0
       ELASTIC_NODES: 1
