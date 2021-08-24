@@ -3,6 +3,7 @@ const taxonsEntries = [
   'committee',
   'date_type',
   'field',
+  'filetype',
   'formation',
   'jurisdiction',
   'operator',
