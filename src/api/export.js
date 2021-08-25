@@ -189,6 +189,16 @@ api.get(
       errorMessage: `Value of the resolve_references parameter must be a boolean.`,
       optional: true,
     },
+    withFileOfType: {
+      in: 'query',
+      isString: true,
+      toLowerCase: true,
+      isIn: {
+        options: [taxons.filetype.options],
+      },
+      errorMessage: `Value of the withFileOfType parameter must be in [${taxons.filetype.keys}].`,
+      optional: false,
+    },
   }),
   async (req, res) => {
     const errors = validationResult(req);
