@@ -2,7 +2,7 @@
   "openapi": "3.0.2",
   "info": {
     "title": "JUDILIBRE-public",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "La Cour de cassation, dans le cadre de la refonte de son site Web, a initié le projet JUDILIBRE visant à la conception et au développement en interne d'un moteur de recherche dans le corpus jurisprudentiel, mettant celui-ci à disposition du public dans l'esprit du décret sur l'Open Data des décisions de justice.",
     "contact": {
       "name": "Sébastien COURVOISIER",
@@ -1607,32 +1607,42 @@
       },
       "fileLink": {
         "title": "Type d'objet `fileLink`.",
-        "description": "Objet décrivant un lien vers un fichier pouvant être associé à une décision.",
-        "required": ["id", "title", "URL", "type"],
+        "description": "Objet décrivant un lien vers un document pouvant être associé à une décision.",
+        "required": ["id", "name", "url", "type", "isCommunication"],
         "type": "object",
         "properties": {
           "id": {
-            "description": "Identifiant du fichier lié.",
-            "type": "integer"
+            "description": "Identifiant du document associé.",
+            "type": "string"
           },
-          "URL": {
-            "description": "URL du fichier lié.",
+          "name": {
+            "description": "Intitulé du document associé.",
+            "type": "string"
+          },
+          "url": {
+            "description": "URL du document associé.",
             "type": "string"
           },
           "type": {
-            "description": "Type du fichier lié (par exemple : communiqué, note explicative, traduction, rapport, avis de l'avocat général, etc.).",
+            "description": "Code correspondant au type de document associé (par exemple : 'comm_comm', 'comm_note', 'comm_trad', 'prep_rapp', etc.). Par défaut, utiliser `GET /taxonomy?id=filetype&key={type}` pour récupérer l'intitulé complet de celui-ci. Si la requête utilise `resolve_references=true`, alors cette propriété contient l'intitulé complet du type de document associé (par exemple : 'Communiqué', 'Note explicative', 'Arrêt traduit', 'Rapport du rapporteur', etc.).",
             "type": "string"
           },
-          "title": {
-            "description": "Intitulé du fichier lié.",
+          "isCommunication": {
+            "description": "Vaut `true` lorsque le document associé est un document de communication (sinon il s'agit d'un document préparatoire).",
+            "type": "boolean"
+          },
+          "size": {
+            "description": "Taille du fichier, dans un format \"humainement lisible\" (par exemple : `41.34 kB`)",
             "type": "string"
           }
         },
         "example": {
-          "id": 7,
-          "URL": "some text",
-          "type": "some text",
-          "label": "some text"
+          "id": "5fca7d162a251e6bf9c78514",
+          "url": "https://judilibre.io/traduction-5fca7d162a251e6bf9c78514.pdf",
+          "name": "traduction.pdf",
+          "type": "comm_trad",
+          "isCommunication": true,
+          "size": "952 kB"
         }
       },
       "decisionLink": {
