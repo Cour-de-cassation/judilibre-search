@@ -288,6 +288,18 @@ function buildQuery(query, target) {
       });
     }
 
+    // withFileOfType (filter):
+    if (query.withFileOfType && Array.isArray(query.withFileOfType) && query.withFileOfType.length > 0) {
+      if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
+        searchQuery.body.query.function_score.query.bool.filter = [];
+      }
+      searchQuery.body.query.function_score.query.bool.filter.push({
+        terms: {
+          fileType: query.withFileOfType,
+        },
+      });
+    }
+
     // Date start/end (filter):
     if (query.date_start || query.date_end) {
       let date_field = 'decision_date';

@@ -554,9 +554,7 @@
     background-color: #4c8eca;
     color: #fff;
   }
-  
-  
-  
+    
   .sidenav > .active > a {
     position: relative;
     z-index: 2;
@@ -1073,6 +1071,13 @@
         "type" : "string"
       }
     },
+    "withFileOfType" : {
+      "type" : "array",
+      "description" : "Filtre les résultats suivant le type de documents associés aux décisions, parmi les valeurs : `prep_rapp` (Rapport du rapporteur), `prep_avis` (Avis de l’avocat général), `prep_oral` (Avis oral de l’avocat général), `comm_comm` (Communiqué), `comm_note` (Note explicative), `comm_lett` (Lettre de chambre), `comm_trad` (Arrêt traduit). Les valeurs disponibles sont accessibles via `GET /taxonomy?id=filetype`.",
+      "items" : {
+        "type" : "string"
+      }
+    },
     "date_start" : {
       "type" : "string",
       "description" : "Combiné avec le paramètre `date_end`, permet de restreindre les résultats à un intervalle de dates, au format ISO-8601 (par exemple 2021-05-13)."
@@ -1369,6 +1374,13 @@
     "solution" : {
       "type" : "array",
       "description" : "Filtre les résultats suivant le type de solution des décisions (parmi les valeurs : `annulation`, `avis`, `cassation`, `decheance`, `designation`, `irrecevabilite`, `nonlieu`, `qpc`, `rabat`, etc. - les valeurs disponibles sont accessibles via `GET /taxonomy?id=solution`). Une recherche avec un paramètre `solution` vide retourne des décisions ayant n'importe quel type de solution.",
+      "items" : {
+        "type" : "string"
+      }
+    },
+    "withFileOfType" : {
+      "type" : "array",
+      "description" : "Filtre les résultats suivant le type de documents associés aux décisions, parmi les valeurs : `prep_rapp` (Rapport du rapporteur), `prep_avis` (Avis de l’avocat général), `prep_oral` (Avis oral de l’avocat général), `comm_comm` (Communiqué), `comm_note` (Note explicative), `comm_lett` (Lettre de chambre), `comm_trad` (Arrêt traduit). Les valeurs disponibles sont accessibles via `GET /taxonomy?id=filetype`.",
       "items" : {
         "type" : "string"
       }
@@ -1769,7 +1781,8 @@
         </div>
         <div id="sections">
                 <section id="api-Default">
-                  <h1>Méthodes</h1>
+                                    <h1>Méthodes</h1>
+
                     <div id="api-Default-decision">
                       <article id="api-Default-decision-0" data-group="User" data-name="decision" data-version="0">
                         <div class="pull-left">
@@ -2395,6 +2408,25 @@ L&#x27;export par lots est limité par défaut (pour une connexion non authentif
                                 
                                                     <div class="inner description">
                                                         Lorsque ce paramètre vaut &#x60;true&#x60;, le résultat de la requête contiendra, pour chaque information retournée par défaut sous forme de clé, l&#x27;intitulé complet de celle-ci (vaut &#x60;false&#x60; par défaut).
+                                                    </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                                <tr><td style="width:150px;">withFileOfType</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_export_withFileOfType">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    array[String]
+                                                </span>
+                                
+                                                    <div class="inner description">
+                                                        Filtre les résultats suivant le type de documents associés aux décisions, parmi les valeurs : &#x60;prep_rapp&#x60; (Rapport du rapporteur), &#x60;prep_avis&#x60; (Avis de l’avocat général), &#x60;prep_oral&#x60; (Avis oral de l’avocat général), &#x60;comm_comm&#x60; (Communiqué), &#x60;comm_note&#x60; (Note explicative), &#x60;comm_lett&#x60; (Lettre de chambre), &#x60;comm_trad&#x60; (Arrêt traduit). Les valeurs disponibles sont accessibles via &#x60;GET /taxonomy?id&#x3D;filetype&#x60;.
                                                     </div>
                                             </div>
                                         </div>
@@ -3099,6 +3131,25 @@ La récupération d&#x27;une décision complète (incluant son texte et les zone
                                     </div>
                                 </td>
                                 </tr>
+                                <tr><td style="width:150px;">withFileOfType</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_search_withFileOfType">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    array[String]
+                                                </span>
+                                
+                                                    <div class="inner description">
+                                                        Filtre les résultats suivant le type de documents associés aux décisions, parmi les valeurs : &#x60;prep_rapp&#x60; (Rapport du rapporteur), &#x60;prep_avis&#x60; (Avis de l’avocat général), &#x60;prep_oral&#x60; (Avis oral de l’avocat général), &#x60;comm_comm&#x60; (Communiqué), &#x60;comm_note&#x60; (Note explicative), &#x60;comm_lett&#x60; (Lettre de chambre), &#x60;comm_trad&#x60; (Arrêt traduit). Les valeurs disponibles sont accessibles via &#x60;GET /taxonomy?id&#x3D;filetype&#x60;.
+                                                    </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
                             </table>
 
                           <h2>Responses</h2>
@@ -3275,6 +3326,7 @@ La récupération d&#x27;une décision complète (incluant son texte et les zone
                         <br />
                         <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/stats</span></code></pre>
                         
+
 
                           <h2>Parameters</h2>
 

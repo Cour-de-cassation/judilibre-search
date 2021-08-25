@@ -191,13 +191,17 @@ api.get(
     },
     withFileOfType: {
       in: 'query',
+      toArray: true,
+    },
+    'withFileOfType.*': {
+      in: 'query',
       isString: true,
       toLowerCase: true,
       isIn: {
         options: [taxons.filetype.options],
       },
-      errorMessage: `Value of the withFileOfType parameter must be in [${taxons.filetype.keys}].`,
-      optional: false,
+      errorMessage: `Value(s) of the withFileOfType parameter must be in [${taxons.filetype.keys}].`,
+      optional: true,
     },
   }),
   async (req, res) => {

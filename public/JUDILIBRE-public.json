@@ -529,6 +529,18 @@
             },
             "in": "query",
             "required": false
+          },
+          {
+            "name": "withFileOfType",
+            "description": "Filtre les résultats suivant le type de documents associés aux décisions, parmi les valeurs : `prep_rapp` (Rapport du rapporteur), `prep_avis` (Avis de l’avocat général), `prep_oral` (Avis oral de l’avocat général), `comm_comm` (Communiqué), `comm_note` (Note explicative), `comm_lett` (Lettre de chambre), `comm_trad` (Arrêt traduit). Les valeurs disponibles sont accessibles via `GET /taxonomy?id=filetype`.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "in": "query",
+            "required": false
           }
         ],
         "responses": {
@@ -816,6 +828,18 @@
             "description": "Lorsque ce paramètre vaut `true`, le résultat de la requête contiendra, pour chaque information retournée par défaut sous forme de clé, l'intitulé complet de celle-ci (vaut `false` par défaut).",
             "schema": {
               "type": "boolean"
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "withFileOfType",
+            "description": "Filtre les résultats suivant le type de documents associés aux décisions, parmi les valeurs : `prep_rapp` (Rapport du rapporteur), `prep_avis` (Avis de l’avocat général), `prep_oral` (Avis oral de l’avocat général), `comm_comm` (Communiqué), `comm_note` (Note explicative), `comm_lett` (Lettre de chambre), `comm_trad` (Arrêt traduit). Les valeurs disponibles sont accessibles via `GET /taxonomy?id=filetype`.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             },
             "in": "query",
             "required": false
@@ -1242,6 +1266,13 @@
           },
           "solution": {
             "description": "Filtre les résultats suivant le type de solution des décisions (parmi les valeurs : `annulation`, `avis`, `cassation`, `decheance`, `designation`, `irrecevabilite`, `nonlieu`, `qpc`, `rabat`, etc. - les valeurs disponibles sont accessibles via `GET /taxonomy?id=solution`). Une recherche avec un paramètre `solution` vide retourne des décisions ayant n'importe quel type de solution.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "withFileOfType": {
+            "description": "Filtre les résultats suivant le type de documents associés aux décisions, parmi les valeurs : `prep_rapp` (Rapport du rapporteur), `prep_avis` (Avis de l’avocat général), `prep_oral` (Avis oral de l’avocat général), `comm_comm` (Communiqué), `comm_note` (Note explicative), `comm_lett` (Lettre de chambre), `comm_trad` (Arrêt traduit). Les valeurs disponibles sont accessibles via `GET /taxonomy?id=filetype`.",
             "type": "array",
             "items": {
               "type": "string"
@@ -1891,6 +1922,13 @@
           },
           "solution": {
             "description": "Filtre les résultats suivant le type de solution des décisions (parmi les valeurs : `annulation`, `avis`, `cassation`, `decheance`, `designation`, `irrecevabilite`, `nonlieu`, `qpc`, `rabat`, etc. - les valeurs disponibles sont accessibles via `GET /taxonomy?id=solution`). Une recherche avec un paramètre `solution` vide retourne des décisions ayant n'importe quel type de solution.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "withFileOfType": {
+            "description": "Filtre les résultats suivant le type de documents associés aux décisions, parmi les valeurs : `prep_rapp` (Rapport du rapporteur), `prep_avis` (Avis de l’avocat général), `prep_oral` (Avis oral de l’avocat général), `comm_comm` (Communiqué), `comm_note` (Note explicative), `comm_lett` (Lettre de chambre), `comm_trad` (Arrêt traduit). Les valeurs disponibles sont accessibles via `GET /taxonomy?id=filetype`.",
             "type": "array",
             "items": {
               "type": "string"
