@@ -1489,6 +1489,10 @@
         "number": {
           "description": "Numéro de la décision.",
           "type": "string"
+        },
+        "content": {
+          "description": "Contenu de la décision (propriété présente pour les décisions qui ne seraient pas indexées dans la base JUDILIBRE).",
+          "type": "string"
         }
       },
       "example": {

@@ -554,7 +554,10 @@
     background-color: #4c8eca;
     color: #fff;
   }
-    
+  
+  
+  
+  
   .sidenav > .active > a {
     position: relative;
     z-index: 2;
@@ -807,6 +810,10 @@
     "number" : {
       "type" : "string",
       "description" : "Numéro de la décision."
+    },
+    "content" : {
+      "type" : "string",
+      "description" : "Contenu de la décision (propriété présente pour les décisions qui ne seraient pas indexées dans la base JUDILIBRE)."
     }
   },
   "description" : "Objet décrivant un lien vers une décision.",
@@ -1740,7 +1747,7 @@
 
               </div>
             -->
-            <li class="nav-fixed nav-header active" data-group="_"><a href="#api-_">Résumé</a></li>
+            <li class="nav-fixed nav-header active" data-group="_"><a href="#api-_">Résumé de l'API</a></li>
 
                   <li class="nav-header" data-group="Default"><a href="#api-Default">Méthodes de l'API</a></li>
                     <li data-group="Default" data-name="decision" class="">
@@ -1781,8 +1788,7 @@
         </div>
         <div id="sections">
                 <section id="api-Default">
-                                    <h1>Méthodes</h1>
-
+                  <h1>Méthodes</h1>
                     <div id="api-Default-decision">
                       <article id="api-Default-decision-0" data-group="User" data-name="decision" data-version="0">
                         <div class="pull-left">
@@ -1817,6 +1823,7 @@ Certaines des informations ne sont retournées que sous forme de clé ou d&#x27;
                         <br />
                         <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/decision</span></code></pre>
                         
+
 
                           <h2>Parameters</h2>
 
@@ -3326,7 +3333,6 @@ La récupération d&#x27;une décision complète (incluant son texte et les zone
                         <br />
                         <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/stats</span></code></pre>
                         
-
 
                           <h2>Parameters</h2>
 
