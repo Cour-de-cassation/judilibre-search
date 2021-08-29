@@ -71,32 +71,36 @@ jobs:
           DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
           GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
           VERSION: ${{ steps.extract_version.outputs.version }}
-  deploy-scw:
-    name: 🚀 Deploy, update on Scaleway ☸️
+  deploy-scw-dev:
+    name: 🚀 Deploy, update on Scaleway (dev) ☸️
     needs: build
-    if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
     env:
       ACME: acme
       APP_GROUP: judilibre
-      APP_HOST: search.judilibre.io
+      APP_HOST: search.dev-par1.judilibre.io
+      APP_HOST_ALTER: search.dev.judilibre.io
       APP_ID: judilibre-search
-      APP_NODES: 3
+      APP_NODES: 1
+      APP_SCHEME: https
       APP_PORT: 443
       API_PORT: 8080
-      APP_SCHEME: https
       DOCKER_USERNAME: opendatajustice
       ELASTIC_INDEX: judilibre_0
       ELASTIC_NODES: 3
-      ELASTIC_MEM: 6144Mi
-      ELASTIC_MEM_JVM: 3072m
+      ELASTIC_MEM: 2048Mi
+      ELASTIC_MEM_JVM: 1024m
       ELASTIC_SEARCH_PASSWORD: ${{ secrets.ELASTIC_SEARCH_PASSWORD }}
       ELASTIC_STORAGE_POLICY: DeleteOnScaledownOnly
-      ELASTIC_STORAGE_SIZE: 5Gi
-      ELASTIC_VERSION: 7.13.2
+      ELASTIC_STORAGE_SIZE: 20Gi
+      HTTP_PASSWD: ${{ secrets.HTTP_PASSWD }}
       KUBE_INGRESS: nginx
+      KUBE_NAMESPACE: judilibre-scw-dev-par1-dev
       KUBE_TYPE: k8s
       KUBE_ZONE: scw-dev-par1
+      SCW_ZONE: fr-par-1
+      SCW_KUBE_NODES: 1
       START_TIMEOUT: 240
     steps:
       - uses: actions/checkout@v1
@@ -122,62 +126,46 @@ jobs:
           KUBE_TOKEN: ${{ secrets.KUBE_SCW_TOKEN }}
           KUBE_URL: ${{ secrets.KUBE_SCW_URL }}
           KUBE_USER: ${{ secrets.KUBE_SCW_USER }}
-      - name: ☸️  Deploy remote k8s services
+      - name: 🚀 Update remote app ☸️
         run: |
-          if [ "${GIT_BRANCH}" != "master" ];then
-            export APP_HOST=search.${GIT_BRANCH}.judilibre.io;
-            if [ "${GIT_BRANCH}" != "dev" ];then
-              export ELASTIC_MEM=1024Mi;
-              export ELASTIC_MEM_JVM=512m;
-              export ELASTIC_STORAGE_POLICY=DeleteOnScaledownAndClusterDeletion;
-            fi;
-          fi;
-          ./scripts/deploy_k8s_services.sh
-        env:
-          VERSION: ${{ steps.extract_version.outputs.version }}
-          GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
-      - name: 🚀 update ☸️
-        run: |
-          if [ "${GIT_BRANCH}" != "master" ];then
-            export APP_HOST=search.${GIT_BRANCH}.judilibre.io;
-          fi;
           export KUBE_NAMESPACE=${APP_GROUP}-${KUBE_ZONE}-${GIT_BRANCH}
-          kubectl set image --namespace=${KUBE_NAMESPACE} deployments/${APP_ID}-deployment ${APP_ID}=${DOCKER_USERNAME}/${APP_ID}:${VERSION}
-          ./scripts/wait_services_readiness.sh
+          ./scripts/update_app.sh
           kubectl get pods --namespace=${KUBE_NAMESPACE}
           kubectl logs service/${APP_ID}-svc --namespace=${KUBE_NAMESPACE}
-          ./scripts/test_minimal.sh || (kubectl rollout undo deployments/${APP_ID}-deployment && exit 1)
         env:
           GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
           START_TIMEOUT: 20
           VERSION: ${{ steps.extract_version.outputs.version }}
-  deploy-ovh-sopra:
-    name: 🚀 Deploy, update on OVH Sopra (openshift) ☸️
+  deploy-scw-prod-par1:
+    name: 🚀 Deploy, update on Scaleway (master on prod fr-par-1) ☸️
     needs: build
-    if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     env:
+      ACME: acme
       APP_GROUP: judilibre
-      APP_HOST: search-${{ secrets.KUBE_OVH_SOPRA_APPS_DNS }}
+      APP_HOST: search.prod-par1.judilibre.io
+      APP_HOST_ALTER: search.judilibre.io
       APP_ID: judilibre-search
-      APP_NODES: 3
+      APP_NODES: 1
       APP_SCHEME: https
       APP_PORT: 443
       API_PORT: 8080
       DOCKER_USERNAME: opendatajustice
       ELASTIC_INDEX: judilibre_0
       ELASTIC_NODES: 3
-      ELASTIC_MEM: 2048Mi
-      ELASTIC_MEM_JVM: 1024m
-      ELASTIC_SEARCH_PASSWORD: ${{ secrets.ELASTIC_SEARCH_PASSWORD }}
+      ELASTIC_MEM: 12288Mi
+      ELASTIC_MEM_JVM: 6144m
+      ELASTIC_SEARCH_PASSWORD: ${{ secrets.ELASTIC_SEARCH_PASSWORD_PROD }}
       ELASTIC_STORAGE_POLICY: DeleteOnScaledownOnly
-      ELASTIC_STORAGE_SIZE: 3Gi
-      ELASTIC_VERSION: 7.13.2
-      HTTP_PASSWD: ${{ secrets.HTTP_PASSWD }}
-      KUBE_TYPE: openshift
-      KUBE_ZONE: ovh-sopra
-      KUBE_APPS_DNS: ${{ secrets.KUBE_OVH_SOPRA_APPS_DNS }}
-      KUBECTL: /usr/local/bin/oc
+      ELASTIC_STORAGE_SIZE: 20Gi
+      HTTP_PASSWD: ${{ secrets.HTTP_PASSWD_PROD }}
+      KUBE_INGRESS: nginx
+      KUBE_NAMESPACE: judilibre-scw-prod-par1-master
+      KUBE_TYPE: k8s
+      KUBE_ZONE: scw-prod-par1
+      SCW_ZONE: fr-par-1
+      SCW_KUBE_NODES: 3
       START_TIMEOUT: 240
     steps:
       - uses: actions/checkout@v1
@@ -195,34 +183,85 @@ jobs:
           GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
       - name: kube prerequisites
         run: |
-          cd /usr/local/bin; sudo curl -s https://downloads-openshift-console.${KUBE_APPS_DNS}/amd64/linux/oc.tar -o - | sudo tar xf -
-          oc login --token=${KUBE_TOKEN} --server=${KUBE_URL}
+          mkdir -p ${HOME}/.kube
+          cat k8s/kubeconfig.yaml | envsubst > ~/.kube/config
         env:
-          KUBE_TOKEN: ${{ secrets.KUBE_OVH_SOPRA_TOKEN }}
-          KUBE_URL: ${{ secrets.KUBE_OVH_SOPRA_URL }}
-      - name: ☸️  Deploy remote k8s services
+          KUBE_CA: ${{ secrets.KUBE_SCW_CA_PROD_PAR1 }}
+          KUBE_NAME: ${{ secrets.KUBE_SCW_NAME_PROD_PAR1 }}
+          KUBE_TOKEN: ${{ secrets.KUBE_SCW_TOKEN_PROD_PAR1 }}
+          KUBE_URL: ${{ secrets.KUBE_SCW_URL_PROD_PAR1 }}
+          KUBE_USER: ${{ secrets.KUBE_SCW_USER_PROD_PAR1 }}
+      - name: 🚀 Update remote app ☸️
         run: |
-          if [ "${GIT_BRANCH}" != "master" ];then
-            export APP_HOST=search-${GIT_BRANCH}.${KUBE_APPS_DNS};
-            export ELASTIC_MEM=512m;
-            export ELASTIC_STORAGE_POLICY=DeleteOnScaledownAndClusterDeletion;
-          fi;
-          ./scripts/deploy_k8s_services.sh
-        env:
-          VERSION: ${{ steps.extract_version.outputs.version }}
-          GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
-      - name: 🚀 update ☸️
-        run: |
-          if [ "${GIT_BRANCH}" != "master" ];then
-            export APP_HOST=search-${GIT_BRANCH}.${KUBE_APPS_DNS};
-            export ELASTIC_MEM=512m;
-          fi;
           export KUBE_NAMESPACE=${APP_GROUP}-${KUBE_ZONE}-${GIT_BRANCH}
-          kubectl set image --namespace=${KUBE_NAMESPACE} deployments/${APP_ID}-deployment ${APP_ID}=${DOCKER_USERNAME}/${APP_ID}:${VERSION}
-          ./scripts/wait_services_readiness.sh
+          ./scripts/update_app.sh
           kubectl get pods --namespace=${KUBE_NAMESPACE}
           kubectl logs service/${APP_ID}-svc --namespace=${KUBE_NAMESPACE}
-          ./scripts/test_minimal.sh || (kubectl rollout undo deployments/${APP_ID}-deployment && exit 1)
+        env:
+          GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
+          START_TIMEOUT: 20
+          VERSION: ${{ steps.extract_version.outputs.version }}
+  deploy-scw-prod-par2:
+    name: 🚀 Deploy, update on Scaleway (master on prod fr-par-2) ☸️
+    needs: deploy-scw-prod-par1
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    env:
+      ACME: acme
+      APP_GROUP: judilibre
+      APP_HOST: search.prod-par2.judilibre.io
+      APP_HOST_ALTER: search.judilibre.io
+      APP_ID: judilibre-search
+      APP_NODES: 1
+      APP_SCHEME: https
+      APP_PORT: 443
+      API_PORT: 8080
+      DOCKER_USERNAME: opendatajustice
+      ELASTIC_INDEX: judilibre_0
+      ELASTIC_NODES: 3
+      ELASTIC_MEM: 12288Mi
+      ELASTIC_MEM_JVM: 6144m
+      ELASTIC_SEARCH_PASSWORD: ${{ secrets.ELASTIC_SEARCH_PASSWORD_PROD }}
+      ELASTIC_STORAGE_POLICY: DeleteOnScaledownOnly
+      ELASTIC_STORAGE_SIZE: 20Gi
+      HTTP_PASSWD: ${{ secrets.HTTP_PASSWD_PROD }}
+      KUBE_INGRESS: nginx
+      KUBE_NAMESPACE: judilibre-scw-prod-par2-master
+      KUBE_TYPE: k8s
+      KUBE_ZONE: scw-prod-par2
+      SCW_ZONE: fr-par-2
+      SCW_KUBE_NODES: 3
+      START_TIMEOUT: 240
+    steps:
+      - uses: actions/checkout@v1
+      - name: get version
+        run: echo "##[set-output name=version;]$(cat package.json | jq -r '.version')-$(git rev-parse --short HEAD)"
+        id: extract_version
+      - name: extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF} | sed 's|^refs/heads/||;' | tr '/' '-')"
+        id: extract_branch
+      - name: init deps
+        run: ./scripts/init_deps.sh
+        env:
+          GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
+          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+      - name: kube prerequisites
+        run: |
+          mkdir -p ${HOME}/.kube
+          cat k8s/kubeconfig.yaml | envsubst > ~/.kube/config
+        env:
+          KUBE_CA: ${{ secrets.KUBE_SCW_CA_PROD_PAR2 }}
+          KUBE_NAME: ${{ secrets.KUBE_SCW_NAME_PROD_PAR2 }}
+          KUBE_TOKEN: ${{ secrets.KUBE_SCW_TOKEN_PROD_PAR2 }}
+          KUBE_URL: ${{ secrets.KUBE_SCW_URL_PROD_PAR2 }}
+          KUBE_USER: ${{ secrets.KUBE_SCW_USER_PROD_PAR2 }}
+      - name: 🚀 Update remote app ☸️
+        run: |
+          export KUBE_NAMESPACE=${APP_GROUP}-${KUBE_ZONE}-${GIT_BRANCH}
+          ./scripts/update_app.sh
+          kubectl get pods --namespace=${KUBE_NAMESPACE}
+          kubectl logs service/${APP_ID}-svc --namespace=${KUBE_NAMESPACE}
         env:
           GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
           START_TIMEOUT: 20
