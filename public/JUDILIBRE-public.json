@@ -532,7 +532,7 @@
           },
           {
             "name": "withFileOfType",
-            "description": "Filtre les résultats suivant le type de documents associés aux décisions, parmi les valeurs : `prep_rapp` (Rapport du rapporteur), `prep_avis` (Avis de l’avocat général), `prep_oral` (Avis oral de l’avocat général), `comm_comm` (Communiqué), `comm_note` (Note explicative), `comm_lett` (Lettre de chambre), `comm_trad` (Arrêt traduit). Les valeurs disponibles sont accessibles via `GET /taxonomy?id=filetype`.",
+            "description": "Filtre les résultats suivant le type de documents associés aux décisions, parmi les valeurs : `prep_rapp` (Rapport du rapporteur), `prep_avis` (Avis de l’avocat général), `prep_oral` (Avis oral de l’avocat général), `comm_comm` (Communiqué), `comm_note` (Note explicative), `comm_nora` (Notice au rapport annuel), `comm_lett` (Lettre de chambre), `comm_trad` (Arrêt traduit). Les valeurs disponibles sont accessibles via `GET /taxonomy?id=filetype`.",
             "schema": {
               "type": "array",
               "items": {
@@ -834,7 +834,7 @@
           },
           {
             "name": "withFileOfType",
-            "description": "Filtre les résultats suivant le type de documents associés aux décisions, parmi les valeurs : `prep_rapp` (Rapport du rapporteur), `prep_avis` (Avis de l’avocat général), `prep_oral` (Avis oral de l’avocat général), `comm_comm` (Communiqué), `comm_note` (Note explicative), `comm_lett` (Lettre de chambre), `comm_trad` (Arrêt traduit). Les valeurs disponibles sont accessibles via `GET /taxonomy?id=filetype`.",
+            "description": "Filtre les résultats suivant le type de documents associés aux décisions, parmi les valeurs : `prep_rapp` (Rapport du rapporteur), `prep_avis` (Avis de l’avocat général), `prep_oral` (Avis oral de l’avocat général), `comm_comm` (Communiqué), `comm_note` (Note explicative), `comm_nora` (Notice au rapport annuel), `comm_lett` (Lettre de chambre), `comm_trad` (Arrêt traduit). Les valeurs disponibles sont accessibles via `GET /taxonomy?id=filetype`.",
             "schema": {
               "type": "array",
               "items": {
@@ -1272,7 +1272,7 @@
             }
           },
           "withFileOfType": {
-            "description": "Filtre les résultats suivant le type de documents associés aux décisions, parmi les valeurs : `prep_rapp` (Rapport du rapporteur), `prep_avis` (Avis de l’avocat général), `prep_oral` (Avis oral de l’avocat général), `comm_comm` (Communiqué), `comm_note` (Note explicative), `comm_lett` (Lettre de chambre), `comm_trad` (Arrêt traduit). Les valeurs disponibles sont accessibles via `GET /taxonomy?id=filetype`.",
+            "description": "Filtre les résultats suivant le type de documents associés aux décisions, parmi les valeurs : `prep_rapp` (Rapport du rapporteur), `prep_avis` (Avis de l’avocat général), `prep_oral` (Avis oral de l’avocat général), `comm_comm` (Communiqué), `comm_note` (Note explicative), `comm_nora` (Notice au rapport annuel), `comm_lett` (Lettre de chambre), `comm_trad` (Arrêt traduit). Les valeurs disponibles sont accessibles via `GET /taxonomy?id=filetype`.",
             "type": "array",
             "items": {
               "type": "string"
@@ -1932,7 +1932,7 @@
             }
           },
           "withFileOfType": {
-            "description": "Filtre les résultats suivant le type de documents associés aux décisions, parmi les valeurs : `prep_rapp` (Rapport du rapporteur), `prep_avis` (Avis de l’avocat général), `prep_oral` (Avis oral de l’avocat général), `comm_comm` (Communiqué), `comm_note` (Note explicative), `comm_lett` (Lettre de chambre), `comm_trad` (Arrêt traduit). Les valeurs disponibles sont accessibles via `GET /taxonomy?id=filetype`.",
+            "description": "Filtre les résultats suivant le type de documents associés aux décisions, parmi les valeurs : `prep_rapp` (Rapport du rapporteur), `prep_avis` (Avis de l’avocat général), `prep_oral` (Avis oral de l’avocat général), `comm_comm` (Communiqué), `comm_note` (Note explicative), `comm_nora` (Notice au rapport annuel), `comm_lett` (Lettre de chambre), `comm_trad` (Arrêt traduit). Les valeurs disponibles sont accessibles via `GET /taxonomy?id=filetype`.",
             "type": "array",
             "items": {
               "type": "string"

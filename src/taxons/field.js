@@ -7,6 +7,8 @@ const taxon = {
   dispositif: 'Dispositif',
   annexes: 'Moyens annexés',
   visa: 'Textes appliqués',
+  summary: 'Sommaire',
+  themes: 'Titre',
 };
 
 module.exports = {

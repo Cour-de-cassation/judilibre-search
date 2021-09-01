@@ -9,6 +9,7 @@ const taxon = {
   cr: 'Chambre criminelle',
   creun: 'Chambres réunies',
   ordo: 'Première présidence (Ordonnance)',
+  allciv: 'Toutes les chambres civiles',
 };
 
 module.exports = {
