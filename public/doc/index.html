@@ -7323,7 +7323,7 @@
     };
     defs["decisionShort"] = {
       "title": "Type d'objet `decisionShort`.",
-      "required": ["chamber", "decision_date", "id", "jurisdiction", "number", "publication", "solution"],
+      "required": ["chamber", "decision_date", "id", "jurisdiction", "number", "numbers", "publication", "solution"],
       "type": "object",
       "properties": {
         "id": {
@@ -7339,8 +7339,15 @@
           "description": "Clé de la chambre. Par défaut, utiliser `GET /taxonomy?id=chamber&context_value={jurisdiction}&key={chamber}` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété contient l'intitulé complet de celle-ci."
         },
         "number": {
-          "type": "string",
-          "description": "Numéro de pourvoi de la décision."
+          "description": "Numéro de pourvoi principal de la décision.",
+          "type": "string"
+        },
+        "numbers": {
+          "description": "Tous les numéros de pourvoi de la décision.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         },
         "ecli": {
           "type": "string",
@@ -7403,6 +7410,7 @@
         "jurisdiction": "cc",
         "chamber": "civ3",
         "number": "17-18.194",
+        "numbers": ["17-18.194", "16-21.165"],
         "ecli": "ECLI:FR:CCASS:2018:C301117",
         "formation": "fs",
         "publication": ["c", "b"],
@@ -7483,6 +7491,7 @@
           "jurisdiction": "cc",
           "chamber": "civ3",
           "number": "17-18.194",
+          "numbers": ["17-18.194", "16-21.165"],
           "ecli": "ECLI:FR:CCASS:2018:C301117",
           "formation": "fs",
           "publication": ["c", "b"],
@@ -7794,6 +7803,7 @@
           "jurisdiction": "cc",
           "chamber": "civ3",
           "number": "17-18.194",
+          "numbers": ["17-18.194", "16-21.165"],
           "ecli": "ECLI:FR:CCASS:2018:C301117",
           "formation": "fs",
           "publication": ["c", "b"],
@@ -7951,6 +7961,7 @@
         "jurisdiction": "cc",
         "chamber": "civ3",
         "number": "17-18.194",
+        "numbers": ["17-18.194", "16-21.165"],
         "ecli": "ECLI:FR:CCASS:2018:C301117",
         "formation": "fs",
         "publication": ["c", "b"],
@@ -8467,6 +8478,7 @@
                                       "jurisdiction": "cc",
                                       "chamber": "civ3",
                                       "number": "17-18.194",
+                                      "numbers": ["17-18.194", "16-21.165"],
                                       "ecli": "ECLI:FR:CCASS:2018:C301117",
                                       "formation": "fs",
                                       "publication": ["c", "b"],
@@ -9081,6 +9093,7 @@
                                         "jurisdiction": "cc",
                                         "chamber": "civ3",
                                         "number": "17-18.194",
+                                        "numbers": ["17-18.194", "16-21.165"],
                                         "ecli": "ECLI:FR:CCASS:2018:C301117",
                                         "formation": "fs",
                                         "publication": ["c", "b"],
@@ -9900,6 +9913,7 @@
                                         "jurisdiction": "cc",
                                         "chamber": "civ3",
                                         "number": "17-18.194",
+                                        "numbers": ["17-18.194", "16-21.165"],
                                         "ecli": "ECLI:FR:CCASS:2018:C301117",
                                         "formation": "fs",
                                         "publication": ["c", "b"],

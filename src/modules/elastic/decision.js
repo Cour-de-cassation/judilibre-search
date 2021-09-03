@@ -128,7 +128,12 @@ async function decision(query) {
         query.resolve_references && taxons.jurisdiction.taxonomy[rawResult._source.jurisdiction]
           ? taxons.jurisdiction.taxonomy[rawResult._source.jurisdiction]
           : rawResult._source.jurisdiction,
-      number: rawResult._source.numberFull,
+      number: Array.isArray(rawResult._source.numberFull)
+        ? rawResult._source.numberFull[0]
+        : rawResult._source.numberFull,
+      numbers: Array.isArray(rawResult._source.numberFull)
+        ? rawResult._source.numberFull
+        : [rawResult._source.numberFull],
       publication: query.resolve_references
         ? rawResult._source.publication.map((key) => {
             if (taxons.publication.taxonomy[key]) {

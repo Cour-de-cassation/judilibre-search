@@ -67,6 +67,7 @@
                       "jurisdiction": "cc",
                       "chamber": "civ3",
                       "number": "17-18.194",
+                      "numbers": ["17-18.194", "16-21.165"],
                       "ecli": "ECLI:FR:CCASS:2018:C301117",
                       "formation": "fs",
                       "publication": ["c", "b"],
@@ -595,6 +596,7 @@
                           "jurisdiction": "cc",
                           "chamber": "civ3",
                           "number": "17-18.194",
+                          "numbers": ["17-18.194", "16-21.165"],
                           "ecli": "ECLI:FR:CCASS:2018:C301117",
                           "formation": "fs",
                           "publication": ["c", "b"],
@@ -882,6 +884,7 @@
                           "jurisdiction": "cc",
                           "chamber": "civ3",
                           "number": "17-18.194",
+                          "numbers": ["17-18.194", "16-21.165"],
                           "ecli": "ECLI:FR:CCASS:2018:C301117",
                           "formation": "fs",
                           "publication": ["c", "b"],
@@ -1116,6 +1119,7 @@
               "jurisdiction": "cc",
               "chamber": "civ3",
               "number": "17-18.194",
+              "numbers": ["17-18.194", "16-21.165"],
               "ecli": "ECLI:FR:CCASS:2018:C301117",
               "formation": "fs",
               "publication": ["c", "b"],
@@ -1178,6 +1182,7 @@
           "jurisdiction": "cc",
           "chamber": "civ3",
           "number": "17-18.194",
+          "numbers": ["17-18.194", "16-21.165"],
           "ecli": "ECLI:FR:CCASS:2018:C301117",
           "formation": "fs",
           "publication": ["c", "b"],
@@ -1353,7 +1358,7 @@
       "decisionShort": {
         "title": "Type d'objet `decisionShort`.",
         "description": "Décrit la version courte d'un décision, telle qu'elle apparait en tant qu'item de résultat de recherche.\n\nRappel : le texte intégral et les zones qu'il contient ne sont pas inclus dans les résultats de la recherche. La récupération d'une décision complète (incluant les zones) repose sur le point d'entrée `GET /decision`.",
-        "required": ["jurisdiction", "id", "chamber", "number", "publication", "decision_date", "solution"],
+        "required": ["jurisdiction", "id", "chamber", "number", "numbers", "publication", "decision_date", "solution"],
         "type": "object",
         "properties": {
           "id": {
@@ -1369,8 +1374,15 @@
             "type": "string"
           },
           "number": {
-            "description": "Numéro de pourvoi de la décision.",
+            "description": "Numéro de pourvoi principal de la décision.",
             "type": "string"
+          },
+          "numbers": {
+            "description": "Tous les numéros de pourvoi de la décision.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "ecli": {
             "description": "Code ECLI de la décision.",
@@ -1432,6 +1444,7 @@
           "jurisdiction": "cc",
           "chamber": "civ3",
           "number": "17-18.194",
+          "numbers": ["17-18.194", "16-21.165"],
           "ecli": "ECLI:FR:CCASS:2018:C301117",
           "formation": "fs",
           "publication": ["c", "b"],
@@ -1511,6 +1524,7 @@
           "jurisdiction": "cc",
           "chamber": "civ3",
           "number": "17-18.194",
+          "numbers": ["17-18.194", "16-21.165"],
           "ecli": "ECLI:FR:CCASS:2018:C301117",
           "formation": "fs",
           "publication": ["c", "b"],
@@ -1823,6 +1837,7 @@
               "jurisdiction": "cc",
               "chamber": "civ3",
               "number": "17-18.194",
+              "numbers": ["17-18.194", "16-21.165"],
               "ecli": "ECLI:FR:CCASS:2018:C301117",
               "formation": "fs",
               "publication": ["c", "b"],
