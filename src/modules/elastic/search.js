@@ -51,7 +51,12 @@ async function search(query) {
               query.resolve_references && taxons.chamber.taxonomy[rawResult._source.chamber]
                 ? taxons.chamber.taxonomy[rawResult._source.chamber]
                 : rawResult._source.chamber,
-            number: rawResult._source.numberFull,
+            number: Array.isArray(rawResult._source.numberFull)
+              ? rawResult._source.numberFull[0]
+              : rawResult._source.numberFull,
+            numbers: Array.isArray(rawResult._source.numberFull)
+              ? rawResult._source.numberFull
+              : [rawResult._source.numberFull],
             ecli: rawResult._source.ecli,
             formation:
               query.resolve_references && taxons.formation.taxonomy[rawResult._source.formation]
@@ -85,7 +90,7 @@ async function search(query) {
           for (let key in searchQuery.queryField) {
             let field = searchQuery.queryField[key];
             if (rawResult.highlight && rawResult.highlight[field] && rawResult.highlight[field].length > 0) {
-              if (key !== 'text') {
+              if (key !== 'text' && /zone/i.test(field)) {
                 hasHitsInSpecificZone = true;
               }
               result.highlights[key] = [];
@@ -100,7 +105,7 @@ async function search(query) {
               rawResult.highlight[field + '.exact'] &&
               rawResult.highlight[field + '.exact'].length > 0
             ) {
-              if (key !== 'text') {
+              if (key !== 'text' && /zone/i.test(field)) {
                 hasHitsInSpecificZone = true;
               }
               result.highlights[key] = [];

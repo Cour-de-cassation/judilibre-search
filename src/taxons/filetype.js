@@ -4,6 +4,7 @@ const taxon = {
   prep_oral: 'Avis oral de l’avocat général',
   comm_comm: 'Communiqué',
   comm_note: 'Note explicative',
+  comm_nora: 'Notice au rapport annuel',
   comm_lett: 'Lettre de chambre',
   comm_trad: 'Arrêt traduit',
 };

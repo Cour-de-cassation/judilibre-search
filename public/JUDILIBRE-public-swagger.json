@@ -53,6 +53,7 @@
                 "jurisdiction": "cc",
                 "chamber": "civ3",
                 "number": "17-18.194",
+                "numbers": ["17-18.194", "16-21.165"],
                 "ecli": "ECLI:FR:CCASS:2018:C301117",
                 "formation": "fs",
                 "publication": ["c", "b"],
@@ -402,7 +403,7 @@
           },
           {
             "name": "withFileOfType",
-            "description": "Filtre les résultats suivant le type de documents associés aux décisions, parmi les valeurs : `prep_rapp` (Rapport du rapporteur), `prep_avis` (Avis de l’avocat général), `prep_oral` (Avis oral de l’avocat général), `comm_comm` (Communiqué), `comm_note` (Note explicative), `comm_lett` (Lettre de chambre), `comm_trad` (Arrêt traduit). Les valeurs disponibles sont accessibles via `GET /taxonomy?id=filetype`.",
+            "description": "Filtre les résultats suivant le type de documents associés aux décisions, parmi les valeurs : `prep_rapp` (Rapport du rapporteur), `prep_avis` (Avis de l’avocat général), `prep_oral` (Avis oral de l’avocat général), `comm_comm` (Communiqué), `comm_note` (Note explicative), `comm_nora` (Notice au rapport annuel), `comm_lett` (Lettre de chambre), `comm_trad` (Arrêt traduit). Les valeurs disponibles sont accessibles via `GET /taxonomy?id=filetype`.",
             "in": "query",
             "type": "array",
             "items": {
@@ -460,6 +461,7 @@
                     "jurisdiction": "cc",
                     "chamber": "civ3",
                     "number": "17-18.194",
+                    "numbers": ["17-18.194", "16-21.165"],
                     "ecli": "ECLI:FR:CCASS:2018:C301117",
                     "formation": "fs",
                     "publication": ["c", "b"],
@@ -551,6 +553,7 @@
                     "jurisdiction": "cc",
                     "chamber": "civ3",
                     "number": "17-18.194",
+                    "numbers": ["17-18.194", "16-21.165"],
                     "ecli": "ECLI:FR:CCASS:2018:C301117",
                     "formation": "fs",
                     "publication": ["c", "b"],
@@ -756,7 +759,7 @@
         },
         {
           "name": "withFileOfType",
-          "description": "Filtre les résultats suivant le type de documents associés aux décisions, parmi les valeurs : `prep_rapp` (Rapport du rapporteur), `prep_avis` (Avis de l’avocat général), `prep_oral` (Avis oral de l’avocat général), `comm_comm` (Communiqué), `comm_note` (Note explicative), `comm_lett` (Lettre de chambre), `comm_trad` (Arrêt traduit). Les valeurs disponibles sont accessibles via `GET /taxonomy?id=filetype`.",
+          "description": "Filtre les résultats suivant le type de documents associés aux décisions, parmi les valeurs : `prep_rapp` (Rapport du rapporteur), `prep_avis` (Avis de l’avocat général), `prep_oral` (Avis oral de l’avocat général), `comm_comm` (Communiqué), `comm_note` (Note explicative), `comm_nora` (Notice au rapport annuel), `comm_lett` (Lettre de chambre), `comm_trad` (Arrêt traduit). Les valeurs disponibles sont accessibles via `GET /taxonomy?id=filetype`.",
           "in": "query",
           "type": "array",
           "items": {
@@ -894,6 +897,7 @@
             "jurisdiction": "cc",
             "chamber": "civ3",
             "number": "17-18.194",
+            "numbers": ["17-18.194", "16-21.165"],
             "ecli": "ECLI:FR:CCASS:2018:C301117",
             "formation": "fs",
             "publication": ["c", "b"],
@@ -956,6 +960,7 @@
         "jurisdiction": "cc",
         "chamber": "civ3",
         "number": "17-18.194",
+        "numbers": ["17-18.194", "16-21.165"],
         "ecli": "ECLI:FR:CCASS:2018:C301117",
         "formation": "fs",
         "publication": ["c", "b"],
@@ -1078,7 +1083,7 @@
           "type": "boolean"
         },
         "withFileOfType": {
-          "description": "Filtre les résultats suivant le type de documents associés aux décisions, parmi les valeurs : `prep_rapp` (Rapport du rapporteur), `prep_avis` (Avis de l’avocat général), `prep_oral` (Avis oral de l’avocat général), `comm_comm` (Communiqué), `comm_note` (Note explicative), `comm_lett` (Lettre de chambre), `comm_trad` (Arrêt traduit). Les valeurs disponibles sont accessibles via `GET /taxonomy?id=filetype`.",
+          "description": "Filtre les résultats suivant le type de documents associés aux décisions, parmi les valeurs : `prep_rapp` (Rapport du rapporteur), `prep_avis` (Avis de l’avocat général), `prep_oral` (Avis oral de l’avocat général), `comm_comm` (Communiqué), `comm_note` (Note explicative), `comm_nora` (Notice au rapport annuel), `comm_lett` (Lettre de chambre), `comm_trad` (Arrêt traduit). Les valeurs disponibles sont accessibles via `GET /taxonomy?id=filetype`.",
           "type": "array",
           "items": {
             "type": "string"
@@ -1131,7 +1136,7 @@
     "decisionShort": {
       "title": "Type d'objet `decisionShort`.",
       "description": "Décrit la version courte d'un décision, telle qu'elle apparait en tant qu'item de résultat de recherche.\n\nRappel : le texte intégral et les zones qu'il contient ne sont pas inclus dans les résultats de la recherche. La récupération d'une décision complète (incluant les zones) repose sur le point d'entrée `GET /decision`.",
-      "required": ["jurisdiction", "id", "chamber", "number", "publication", "decision_date", "solution"],
+      "required": ["jurisdiction", "id", "chamber", "number", "numbers", "publication", "decision_date", "solution"],
       "type": "object",
       "properties": {
         "id": {
@@ -1147,8 +1152,15 @@
           "type": "string"
         },
         "number": {
-          "description": "Numéro de pourvoi de la décision.",
+          "description": "Numéro de pourvoi principal de la décision.",
           "type": "string"
+        },
+        "numbers": {
+          "description": "Tous les numéros de pourvoi de la décision.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         },
         "ecli": {
           "description": "Code ECLI de la décision.",
@@ -1210,6 +1222,7 @@
         "jurisdiction": "cc",
         "chamber": "civ3",
         "number": "17-18.194",
+        "numbers": ["17-18.194", "16-21.165"],
         "ecli": "ECLI:FR:CCASS:2018:C301117",
         "formation": "fs",
         "publication": ["c", "b"],
@@ -1288,6 +1301,7 @@
         "jurisdiction": "cc",
         "chamber": "civ3",
         "number": "17-18.194",
+        "numbers": ["17-18.194", "16-21.165"],
         "ecli": "ECLI:FR:CCASS:2018:C301117",
         "formation": "fs",
         "publication": ["c", "b"],
@@ -1598,6 +1612,7 @@
             "jurisdiction": "cc",
             "chamber": "civ3",
             "number": "17-18.194",
+            "numbers": ["17-18.194", "16-21.165"],
             "ecli": "ECLI:FR:CCASS:2018:C301117",
             "formation": "fs",
             "publication": ["c", "b"],
@@ -1739,7 +1754,7 @@
           "type": "integer"
         },
         "withFileOfType": {
-          "description": "Filtre les résultats suivant le type de documents associés aux décisions, parmi les valeurs : `prep_rapp` (Rapport du rapporteur), `prep_avis` (Avis de l’avocat général), `prep_oral` (Avis oral de l’avocat général), `comm_comm` (Communiqué), `comm_note` (Note explicative), `comm_lett` (Lettre de chambre), `comm_trad` (Arrêt traduit). Les valeurs disponibles sont accessibles via `GET /taxonomy?id=filetype`.",
+          "description": "Filtre les résultats suivant le type de documents associés aux décisions, parmi les valeurs : `prep_rapp` (Rapport du rapporteur), `prep_avis` (Avis de l’avocat général), `prep_oral` (Avis oral de l’avocat général), `comm_comm` (Communiqué), `comm_note` (Note explicative), `comm_nora` (Notice au rapport annuel), `comm_lett` (Lettre de chambre), `comm_trad` (Arrêt traduit). Les valeurs disponibles sont accessibles via `GET /taxonomy?id=filetype`.",
           "type": "array",
           "items": {
             "type": "string"

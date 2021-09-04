@@ -11,6 +11,8 @@ function buildQuery(query, target) {
     dispositif: 'zoneDispositif',
     annexes: 'zoneAnnexes',
     visa: 'visa', // Not affected by 'exact' match
+    summary: 'summary',
+    themes: 'themes',
   };
   let searchQuery;
   let textFields = [];
@@ -221,11 +223,25 @@ function buildQuery(query, target) {
       if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
         searchQuery.body.query.function_score.query.bool.filter = [];
       }
-      searchQuery.body.query.function_score.query.bool.filter.push({
-        terms: {
-          chamber: query.chamber,
-        },
-      });
+      if (query.chamber.indexOf('allciv') !== -1) {
+        const chamberTerms = ['civ1', 'civ2', 'civ3'];
+        query.chamber.forEach((chamberItem) => {
+          if (chamberItem.indexOf('civ') === -1) {
+            chamberTerms.push(chamberItem);
+          }
+        });
+        searchQuery.body.query.function_score.query.bool.filter.push({
+          terms: {
+            chamber: chamberTerms,
+          },
+        });
+      } else {
+        searchQuery.body.query.function_score.query.bool.filter.push({
+          terms: {
+            chamber: query.chamber,
+          },
+        });
+      }
     }
 
     // Type (filter):
@@ -366,7 +382,7 @@ function buildQuery(query, target) {
 
       // Boosts text fields:
       boostedFields = textFields.map((item) => {
-        if (item === 'visa') {
+        if (item === 'visa' || item === 'summary' || item === 'themes') {
           return item + '^10';
         } else if (item === 'zoneMotivations' || item === 'zoneDispositif') {
           return item + '^6';

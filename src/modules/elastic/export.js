@@ -47,7 +47,12 @@ async function batchexport(query) {
               query.resolve_references && taxons.chamber.taxonomy[rawResult._source.chamber]
                 ? taxons.chamber.taxonomy[rawResult._source.chamber]
                 : rawResult._source.chamber,
-            number: rawResult._source.numberFull,
+            number: Array.isArray(rawResult._source.numberFull)
+              ? rawResult._source.numberFull[0]
+              : rawResult._source.numberFull,
+            numbers: Array.isArray(rawResult._source.numberFull)
+              ? rawResult._source.numberFull
+              : [rawResult._source.numberFull],
             ecli: rawResult._source.ecli,
             formation:
               query.resolve_references && taxons.formation.taxonomy[rawResult._source.formation]
