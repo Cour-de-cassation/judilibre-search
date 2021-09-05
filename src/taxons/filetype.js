@@ -16,6 +16,7 @@ const importCode = {
   comm_comm: 4,
   comm_lett: 6,
   comm_note: 5,
+  comm_nora: 8,
   prep_rapp: 1,
 };
 
