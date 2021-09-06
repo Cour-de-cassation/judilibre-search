@@ -299,7 +299,7 @@ function buildQuery(query, target) {
       }
       searchQuery.body.query.function_score.query.bool.filter.push({
         terms: {
-          themes: query.theme,
+          themesFilter: query.theme,
         },
       });
     }
