@@ -110,6 +110,14 @@ function buildQuery(query, target) {
                 },
                 weight: 1,
               },
+              {
+                filter: {
+                  match: {
+                    lowInterest: true,
+                  },
+                },
+                weight: 0.1,
+              },
             ],
             score_mode: 'max',
             boost_mode: 'multiply',
