@@ -180,6 +180,24 @@ function searchWithoutElastic(query) {
         response.next_page = next_page_params.toString();
       }
     }
+
+    let sample = null;
+
+    if (query.resolve_references) {
+      sample = JSON.parse(
+        fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'sample_detail_resolved.json')).toString(),
+      );
+    } else {
+      sample = JSON.parse(
+        fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'sample_detail_unresolved.json')).toString(),
+      );
+    }
+
+    for (let i = 0; i < response.results.length; i++) {
+      if (i % 5 === 0) {
+        response.results[i].files = sample.files;
+      }
+    }
   } else {
     response.total = 0;
     response.max_score = 0;
