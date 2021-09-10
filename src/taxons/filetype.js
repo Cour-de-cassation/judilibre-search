@@ -39,6 +39,7 @@ function isCommunicationDoc(type) {
 
 function buildFilesList(files, resolve_references) {
   const filesList = [];
+  const path = require('path');
 
   if (Array.isArray(files) && files.length > 0) {
     for (let i = 0; i < files.length; i++) {
@@ -53,7 +54,7 @@ function buildFilesList(files, resolve_references) {
         file.size = files[i].size;
         file.url = files[i].location;
       } else {
-        file.name = files[i].name;
+        file.name = path.parse(files[i].name).name;
         file.url = files[i].name;
       }
       filesList.push(file);

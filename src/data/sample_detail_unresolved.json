@@ -7,6 +7,7 @@
   "ecli": "ECLI:FR:CCASS:2020:SO01153",
   "jurisdiction": "cc",
   "number": "19-60.222",
+  "numbers": ["19-60.222", "19-70.333"],
   "publication": ["b", "c"],
   "solution": "rejet",
   "type": "arret",
@@ -26,11 +27,70 @@
     "cas",
     "candidatures libres présentées au second tour des élections professionnelles"
   ],
-  "contested": null,
-  "visa": [{ "title": "article L. 2314-30 du code du travail." }],
+  "bulletin": null,
+  "files": [
+    {
+      "id": "613b11b78652a6",
+      "type": "comm_trad",
+      "isCommunication": true,
+      "name": "traduction.pdf",
+      "size": "42.5 kB",
+      "url": "https://api.courdecassation.fr/cassation/judilibre/v1.0/file?id=613b11b78652a6"
+    },
+    {
+      "id": "613b123ac1762",
+      "type": "comm_comm",
+      "isCommunication": true,
+      "name": "communiqué.pdf",
+      "size": "68.5 kB",
+      "url": "https://api.courdecassation.fr/cassation/judilibre/v1.0/file?id=613b123ac1762"
+    },
+    {
+      "id": "613b126628aaa",
+      "type": "prep_rapp",
+      "isCommunication": false,
+      "name": "rapport.pdf",
+      "size": "1.8 MB",
+      "url": "https://api.courdecassation.fr/cassation/judilibre/v1.0/file?id=613b126628aaa"
+    },
+    {
+      "id": "613b127159cef",
+      "type": "prep_avis",
+      "isCommunication": false,
+      "name": "avis de l'avocat.pdf",
+      "size": "380.2 kB",
+      "url": "https://api.courdecassation.fr/cassation/judilibre/v1.0/file?id=613b127159cef"
+    },
+    {
+      "id": "613b17b189db4",
+      "type": "comm_note",
+      "isCommunication": true,
+      "name": "relative_arret_47239",
+      "url": "https://www.courdecassation.fr/jurisprudence_2/notes_explicatives_7002/relative_arret_47239.html"
+    }
+  ],
+  "contested": {
+    "id": "5fdbc5ac225abda4c812ba74",
+    "date": "2019-01-31",
+    "title": "cour d'appel d'Aix en Provence\nChambre 1-8",
+    "number": "17/10888"
+  },
+  "visa": [
+    {
+      "title": "article L. 2314-30 du code du travail",
+      "URL": "https://www.legifrance.gouv.fr/codes/section_lc/LEGITEXT000006072050/LEGISCTA000006195699#LEGIARTI000035651024"
+    },
+    {
+      "title": "article 6, § ,1 de la Convention de sauvegarde des droits de l'homme et des libertés fondamentales"
+    }
+  ],
   "rapprochements": [
     {
-      "title": "Sur les conditions de dérogation à la règle d'ordre public de publicité des débats, à rapprocher :\r\nCrim., 28 mars 2018, pourvoi n° 17-82.138, Bull. crim. 2018, n° 59 (cassation), et l'arrêt cité"
+      "id": "JURITEXT000036780011",
+      "date": "2018-03-28",
+      "title": "Crim., 28 mars 2018, pourvoi n° 17-82.138, Bull. crim. 2018, n° 59 (cassation), et l'arrêt cité",
+      "URL": "https://www.legifrance.gouv.fr/juri/id/JURITEXT000036780011",
+      "number": "17-82.138"
     }
   ],
   "zones": {
