@@ -196,6 +196,8 @@ function searchWithoutElastic(query) {
     for (let i = 0; i < response.results.length; i++) {
       if (i % 5 === 0) {
         response.results[i].files = sample.files;
+      } else {
+        response.results[i].files = [];
       }
     }
   } else {
