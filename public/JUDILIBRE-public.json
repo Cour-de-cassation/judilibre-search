@@ -1425,7 +1425,7 @@
             "type": "string"
           },
           "files": {
-            "description": "Liste des fichiers associés à la décision, chaque document étant représenté par un objet de type `fileLink` où `type` contient le type de document (communiqué, note explicative, traduction, rapport, avis de l'avocat général, etc.), `title` son intitulé et `URL` contient le lien vers celui-ci.",
+            "description": "Liste des fichiers associés à la décision, chaque document étant représenté par un objet de type `fileLink` où `type` contient le type de document (communiqué, note explicative, traduction, rapport, avis de l'avocat général, etc.), `title` son intitulé et `url` contient le lien vers celui-ci.",
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/fileLink"
@@ -1491,19 +1491,19 @@
                 "type": "string"
               },
               "visa": {
-                "description": "Liste des textes appliqués par la décision, chaque texte étant représenté par un objet de type `textLink` où `title` contient l'intitulé du texte et `URL` contient le lien vers celui-ci.",
+                "description": "Liste des textes appliqués par la décision, chaque texte étant représenté par un objet de type `textLink` où `title` contient l'intitulé du texte et `url` contient le lien vers celui-ci.",
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/textLink"
                 }
               },
               "contested": {
-                "description": "Objet décrivant la décision attaquée, de type `decisionLink` où `title` contient son intitulé, `number` son numéro, `description` son court texte descriptif, `theme` la liste de ses matières (ou éléments de titrage) et `URL` le lien vers celle-ci.",
+                "description": "Objet décrivant la décision attaquée, de type `decisionLink` où `title` contient son intitulé, `number` son numéro, `description` son court texte descriptif, `theme` la liste de ses matières (ou éléments de titrage) et `url` le lien vers celle-ci.",
                 "$ref": "#/components/schemas/decisionLink",
                 "nullable": true
               },
               "rapprochements": {
-                "description": "Liste des rapprochements de jurisprudence, chaque rapprochement étant représenté par un objet de type `decisionLink` où `title` contient son intitulé, `number` son numéro, `description` son court texte descriptif, `theme` la liste de ses matières (ou éléments de titrage) et `URL` le lien vers celui-ci.",
+                "description": "Liste des rapprochements de jurisprudence, chaque rapprochement étant représenté par un objet de type `decisionLink` où `title` contient son intitulé, `number` son numéro, `description` son court texte descriptif, `theme` la liste de ses matières (ou éléments de titrage) et `url` le lien vers celui-ci.",
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/decisionLink"
@@ -1708,7 +1708,7 @@
             "description": "Intitulé de la décision.",
             "type": "string"
           },
-          "URL": {
+          "url": {
             "description": "URL de la décision.",
             "type": "string"
           },
@@ -1735,7 +1735,7 @@
         "example": {
           "id": "fb43",
           "title": "some text",
-          "URL": "some text",
+          "url": "some text",
           "description": "some text",
           "theme": ["some text", "some text"],
           "number": "some text"
@@ -1751,7 +1751,7 @@
             "description": "Identifiant du texte.",
             "type": "integer"
           },
-          "URL": {
+          "url": {
             "description": "URL du texte.",
             "type": "string"
           },
@@ -1762,7 +1762,7 @@
         },
         "example": {
           "id": 70,
-          "URL": "some text",
+          "url": "some text",
           "title": "some text"
         }
       },
