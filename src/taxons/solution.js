@@ -7,14 +7,13 @@ const taxon = {
   designation: 'Désignation de juridiction',
   irrecevabilite: 'Irrecevabilité',
   nonlieu: 'Non-lieu à statuer',
-  qpc: 'QPC',
+  qpc: 'QPC renvoi',
+  qpcother: 'QPC autres',
   rabat: 'Rabat',
   reglement: 'Règlement des juges',
   renvoi: 'Renvoi',
   other: 'Autre',
 };
-
-// @TODO : ++Renvoi (QPC) ++Non-lieu à renvoi (QPC) --QPC
 
 module.exports = {
   options: [''].concat(Object.keys(taxon)),
