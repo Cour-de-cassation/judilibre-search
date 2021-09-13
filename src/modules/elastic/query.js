@@ -36,7 +36,7 @@ function buildQuery(query, target) {
     if (/article\D+\d/i.test(string)) {
       searchVisa = true;
     }
-    if (/"[^"]+"/.test(string)) {
+    if (/^"[^"]+"$/.test(string)) {
       query.operator = 'exact';
     }
     if (/\d\d\/\d\d\/\d\d\d\d/.test(string)) {
@@ -417,10 +417,17 @@ function buildQuery(query, target) {
         if (query.operator === 'exact') {
           operator = 'AND';
           fuzzy = false;
-          finalSearchString = `"${string}"`.replace(/"+/gm, '"');
+          if (/^"/.test(string) === false || /"$/.test(string) === false) {
+            finalSearchString = `"${string}"`.replace(/"+/gm, '"');
+          }
         } else {
           operator = query.operator.toUpperCase();
         }
+      }
+      if (/[*()~|+-]/.test(string)) {
+        operator = 'AND';
+        fuzzy = false;
+        finalSearchString = string;
       }
       searchQuery.body.query.function_score.query.bool.must = {
         simple_query_string: {
@@ -507,10 +514,17 @@ function buildQuery(query, target) {
         if (query.operator === 'exact') {
           operator = 'AND';
           fuzzy = false;
-          finalSearchString = `"${string}"`.replace(/"+/gm, '"');
+          if (/^"/.test(string) === false || /"$/.test(string) === false) {
+            finalSearchString = `"${string}"`.replace(/"+/gm, '"');
+          }
         } else {
           operator = query.operator.toUpperCase();
         }
+      }
+      if (/[*()~|+-]/.test(string)) {
+        operator = 'AND';
+        fuzzy = false;
+        finalSearchString = string;
       }
       searchQuery.body.query.function_score.query.bool.must = {
         simple_query_string: {
