@@ -36,7 +36,7 @@ function buildQuery(query, target) {
     if (/article\D+\d/i.test(string)) {
       searchVisa = true;
     }
-    if (/^"[^"]+"$/.test(string)) {
+    if (/"[^"]+"/.test(string)) {
       query.operator = 'exact';
     }
     if (/\d\d\/\d\d\/\d\d\d\d/.test(string)) {
