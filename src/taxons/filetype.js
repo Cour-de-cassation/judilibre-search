@@ -48,6 +48,7 @@ function buildFilesList(files, resolve_references) {
         id: files[i].id,
         type: resolve_references && taxon[code] ? taxon[code] : code,
         isCommunication: isCommunicationDoc(files[i].type),
+        date: files[i].date, // @TODO format
       };
       if (files[i].size && files[i].location) {
         file.name = files[i].name;

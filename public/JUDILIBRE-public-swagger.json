@@ -1430,7 +1430,7 @@
     "fileLink": {
       "title": "Type d'objet `fileLink`.",
       "description": "Objet décrivant un lien vers un document pouvant être associé à une décision.",
-      "required": ["id", "name", "url", "type", "isCommunication"],
+      "required": ["id", "name", "url", "type", "isCommunication", "date"],
       "type": "object",
       "properties": {
         "id": {
@@ -1456,6 +1456,11 @@
         "size": {
           "description": "Taille du fichier, dans un format \"humainement lisible\" (par exemple : `41.34 kB`)",
           "type": "string"
+        },
+        "date": {
+          "format": "date",
+          "description": "Date d'ajout du document, au format ISO-8601 (par exemple 2021-05-13).",
+          "type": "string"
         }
       },
       "example": {
@@ -1464,7 +1469,8 @@
         "name": "traduction.pdf",
         "type": "comm_trad",
         "isCommunication": true,
-        "size": "952 kB"
+        "size": "952 kB",
+        "date": "2020-01-14"
       }
     },
     "decisionLink": {

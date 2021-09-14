@@ -35,6 +35,7 @@
       "isCommunication": true,
       "name": "traduction.pdf",
       "size": "42.5 kB",
+      "date": "2020-01-12",
       "url": "https://api.courdecassation.fr/cassation/judilibre/v1.0/file?id=613b11b78652a6"
     },
     {
@@ -43,6 +44,7 @@
       "isCommunication": true,
       "name": "communiqué.pdf",
       "size": "68.5 kB",
+      "date": "2020-01-14",
       "url": "https://api.courdecassation.fr/cassation/judilibre/v1.0/file?id=613b123ac1762"
     },
     {
@@ -51,6 +53,7 @@
       "isCommunication": false,
       "name": "rapport.pdf",
       "size": "1.8 MB",
+      "date": "2020-01-16",
       "url": "https://api.courdecassation.fr/cassation/judilibre/v1.0/file?id=613b126628aaa"
     },
     {
@@ -59,6 +62,7 @@
       "isCommunication": false,
       "name": "avis de l'avocat.pdf",
       "size": "380.2 kB",
+      "date": "2020-01-18",
       "url": "https://api.courdecassation.fr/cassation/judilibre/v1.0/file?id=613b127159cef"
     },
     {
@@ -66,6 +70,7 @@
       "type": "comm_note",
       "isCommunication": true,
       "name": "relative_arret_47239",
+      "date": "2020-01-20",
       "url": "https://www.courdecassation.fr/jurisprudence_2/notes_explicatives_7002/relative_arret_47239.html"
     }
   ],
