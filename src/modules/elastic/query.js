@@ -108,6 +108,14 @@ function buildQuery(query, target) {
                     publication: 'l',
                   },
                 },
+                weight: 2,
+              },
+              {
+                filter: {
+                  match: {
+                    publication: 'n',
+                  },
+                },
                 weight: 1,
               },
               {

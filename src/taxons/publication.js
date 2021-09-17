@@ -3,6 +3,7 @@ const taxon = {
   r: 'Publié au Rapport',
   l: 'Publié aux Lettres de chambre',
   c: 'Communiqué',
+  n: 'Non publié',
 };
 
 module.exports = {
