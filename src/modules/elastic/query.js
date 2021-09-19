@@ -57,7 +57,7 @@ function buildQuery(query, target, relaxed) {
   }
 
   if (relaxed) {
-    // query.operator = 'or';
+    query.operator = 'or';
   }
 
   if (target === 'search' || target === 'export') {
