@@ -57,7 +57,7 @@ function buildQuery(query, target, relaxed) {
   }
 
   if (relaxed) {
-    query.operator = 'or';
+    // query.operator = 'or';
   }
 
   if (target === 'search' || target === 'export') {
@@ -191,11 +191,6 @@ function buildQuery(query, target, relaxed) {
       if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
         searchQuery.body.query.function_score.query.bool.filter = [];
       }
-      /*
-      if (relaxed) {
-        searchString = [];
-      }
-      */
       searchQuery.body.query.function_score.query.bool.filter.push({
         terms: {
           ecli: searchECLI,
@@ -208,11 +203,6 @@ function buildQuery(query, target, relaxed) {
       if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
         searchQuery.body.query.function_score.query.bool.filter = [];
       }
-      /*
-      if (relaxed) {
-        searchString = [];
-      }
-      */
       searchPourvoiNumber.forEach((pourvoiNumber) => {
         searchQuery.body.query.function_score.query.bool.filter.push({
           wildcard: {
