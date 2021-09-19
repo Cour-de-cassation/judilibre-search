@@ -7721,7 +7721,7 @@
     };
     defs["searchPage"] = {
       "title": "Type d'objet `searchPage`.",
-      "required": ["max_score", "page", "page_size", "query", "took", "total"],
+      "required": ["max_score", "page", "page_size", "query", "relaxed", "took", "total"],
       "type": "object",
       "properties": {
         "page": {
@@ -7757,6 +7757,10 @@
           "type": "number",
           "description": "Score maximal obtenu sur l'ensemble des résultats.",
           "format": "float"
+        },
+        "relaxed": {
+          "description": "Vaut `true` si les résulats proviennent d'une requête plus \"lâche\", exécutée automatiquement dans le cas où la requête initiale ne retourne aucun résultat.",
+          "type": "boolean"
         },
         "results": {
           "type": "array",
@@ -7794,6 +7798,7 @@
         "next_page": "http://.../...&page=1",
         "took": 14,
         "max_score": 2428.1362,
+        "relaxed": false,
         "results": [{
           "score": 0.6848325044168517,
           "highlights": {
@@ -9904,6 +9909,7 @@
                                       "next_page": "http://.../...&page=1",
                                       "took": 14,
                                       "max_score": 2428.1362,
+                                      "relaxed": false,
                                       "results": [{
                                         "score": 0.6848325044168517,
                                         "highlights": {

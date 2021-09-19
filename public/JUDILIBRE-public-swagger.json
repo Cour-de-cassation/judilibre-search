@@ -445,6 +445,7 @@
                 "next_page": "http://.../...&page=1",
                 "took": 14,
                 "max_score": 2428.1362,
+                "relaxed": false,
                 "results": [
                   {
                     "score": 0.6848325044168517,
@@ -811,7 +812,7 @@
     "searchPage": {
       "title": "Type d'objet `searchPage`.",
       "description": "Décrit une page de résultats de recherche.",
-      "required": ["page", "page_size", "query", "total", "took", "max_score"],
+      "required": ["page", "page_size", "query", "total", "took", "max_score", "relaxed"],
       "type": "object",
       "properties": {
         "page": {
@@ -845,6 +846,10 @@
           "format": "float",
           "description": "Score maximal obtenu sur l'ensemble des résultats.",
           "type": "number"
+        },
+        "relaxed": {
+          "description": "Vaut `true` si les résulats proviennent d'une requête plus \"lâche\", exécutée automatiquement dans le cas où la requête initiale ne retourne aucun résultat.",
+          "type": "boolean"
         },
         "results": {
           "description": "Liste des résultats retournés, chaque résultat étant un objet de type `searchResult`. La liste est vide si la recherche n'a retourné aucun résultat.",
@@ -881,6 +886,7 @@
         "next_page": "http://.../...&page=1",
         "took": 14,
         "max_score": 2428.1362,
+        "relaxed": false,
         "results": [
           {
             "score": 0.6848325044168517,
