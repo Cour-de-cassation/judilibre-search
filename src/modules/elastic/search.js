@@ -21,14 +21,16 @@ async function search(query) {
     max_score: 0,
     results: [],
     relaxed: false,
+    debug: searchQuery,
   };
 
   if (string && searchQuery.query) {
     let rawResponse = await this.client.search(searchQuery.query);
     if (rawResponse && rawResponse.body) {
       if (!rawResponse.body.hits || !rawResponse.body.hits.total || !rawResponse.body.hits.total.value) {
-        response.relaxed = true;
         searchQuery = this.buildQuery(query, 'search', true);
+        response.relaxed = true;
+        response.debug = searchQuery;
         rawResponse = await this.client.search(searchQuery.query);
       }
       if (rawResponse && rawResponse.body) {
