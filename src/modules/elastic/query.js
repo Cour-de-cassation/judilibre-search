@@ -192,7 +192,7 @@ function buildQuery(query, target, relaxed) {
         searchQuery.body.query.function_score.query.bool.filter = [];
       }
       if (relaxed) {
-        searchString = '';
+        searchString = [];
       }
       searchQuery.body.query.function_score.query.bool.filter.push({
         terms: {
@@ -207,7 +207,7 @@ function buildQuery(query, target, relaxed) {
         searchQuery.body.query.function_score.query.bool.filter = [];
       }
       if (relaxed) {
-        searchString = '';
+        searchString = [];
       }
       searchPourvoiNumber.forEach((pourvoiNumber) => {
         searchQuery.body.query.function_score.query.bool.filter.push({
