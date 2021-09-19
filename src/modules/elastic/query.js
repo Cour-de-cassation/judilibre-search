@@ -191,6 +191,9 @@ function buildQuery(query, target, relaxed) {
       if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
         searchQuery.body.query.function_score.query.bool.filter = [];
       }
+      if (relaxed) {
+        searchString = '';
+      }
       searchQuery.body.query.function_score.query.bool.filter.push({
         terms: {
           ecli: searchECLI,
@@ -202,6 +205,9 @@ function buildQuery(query, target, relaxed) {
     if (searchPourvoiNumber.length > 0) {
       if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
         searchQuery.body.query.function_score.query.bool.filter = [];
+      }
+      if (relaxed) {
+        searchString = '';
       }
       searchPourvoiNumber.forEach((pourvoiNumber) => {
         searchQuery.body.query.function_score.query.bool.filter.push({
