@@ -214,6 +214,12 @@ api.get(
     },
   }),
   async (req, res) => {
+    if (process.env.APP_SCHEME === undefined) {
+      process.env.APP_SCHEME = req.protocol;
+    }
+    if (process.env.APP_HOST_ALTER === undefined) {
+      process.env.APP_HOST_ALTER = req.hostname;
+    }
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ route: `${req.method} ${req.path}`, errors: errors.array() });
