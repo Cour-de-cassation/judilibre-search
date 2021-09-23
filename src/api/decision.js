@@ -1,6 +1,7 @@
 require('../modules/env');
 const express = require('express');
 const api = express.Router();
+const request = require('request');
 const { checkSchema, validationResult } = require('express-validator');
 const Elastic = require('../modules/elastic');
 const taxons = require('../taxons');
@@ -14,6 +15,12 @@ api.get(
       isString: true,
       errorMessage: `Value of the id parameter must be a string.`,
       optional: false,
+    },
+    fileId: {
+      in: 'query',
+      isString: true,
+      errorMessage: `Value of the fileId parameter must be a string.`,
+      optional: true,
     },
     query: {
       in: 'query',
@@ -70,7 +77,26 @@ api.get(
           errors: result.errors,
         });
       }
-      return res.status(200).json(result);
+      if (req.query.fileId) {
+        const file = getFile(result, req.query.fileId);
+        if (file && file.rawUrl) {
+          req.pipe(request(file.rawUrl)).pipe(res);
+        } else {
+          return res.status(404).json({
+            route: `${req.method} ${req.path}`,
+            errors: [{ msg: 'Not Found', error: `File '${req.query.fileId}' not found.` }],
+          });
+        }
+      } else {
+        if (result && result.files && Array.isArray(result.files)) {
+          for (let i = 0; i < result.files.length; i++) {
+            if (result.files[i].rawUrl) {
+              delete result.files[i].rawUrl;
+            }
+          }
+        }
+        return res.status(200).json(result);
+      }
     } catch (e) {
       return res
         .status(500)
@@ -78,6 +104,19 @@ api.get(
     }
   },
 );
+
+function getFile(decision, fileId) {
+  let file = null;
+  if (decision && decision.files && Array.isArray(decision.files)) {
+    for (let i = 0; i < decision.files.length; i++) {
+      if (decision.files[i].id === fileId) {
+        file = decision.files[i];
+        break;
+      }
+    }
+  }
+  return file;
+}
 
 async function getDecision(query) {
   return await Elastic.decision(query);

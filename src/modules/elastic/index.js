@@ -10,8 +10,8 @@ class Elastic {
     }
   }
 
-  buildQuery(query, target) {
-    return require('./query').apply(this, [query, target]);
+  buildQuery(query, target, relaxed) {
+    return require('./query').apply(this, [query, target, relaxed]);
   }
 
   async search(query) {

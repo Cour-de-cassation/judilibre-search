@@ -445,6 +445,7 @@
                 "next_page": "http://.../...&page=1",
                 "took": 14,
                 "max_score": 2428.1362,
+                "relaxed": false,
                 "results": [
                   {
                     "score": 0.6848325044168517,
@@ -811,7 +812,7 @@
     "searchPage": {
       "title": "Type d'objet `searchPage`.",
       "description": "Décrit une page de résultats de recherche.",
-      "required": ["page", "page_size", "query", "total", "took", "max_score"],
+      "required": ["page", "page_size", "query", "total", "took", "max_score", "relaxed"],
       "type": "object",
       "properties": {
         "page": {
@@ -845,6 +846,10 @@
           "format": "float",
           "description": "Score maximal obtenu sur l'ensemble des résultats.",
           "type": "number"
+        },
+        "relaxed": {
+          "description": "Vaut `true` si les résulats proviennent d'une requête plus \"lâche\", exécutée automatiquement dans le cas où la requête initiale ne retourne aucun résultat.",
+          "type": "boolean"
         },
         "results": {
           "description": "Liste des résultats retournés, chaque résultat étant un objet de type `searchResult`. La liste est vide si la recherche n'a retourné aucun résultat.",
@@ -881,6 +886,7 @@
         "next_page": "http://.../...&page=1",
         "took": 14,
         "max_score": 2428.1362,
+        "relaxed": false,
         "results": [
           {
             "score": 0.6848325044168517,
@@ -1203,7 +1209,7 @@
           "type": "string"
         },
         "files": {
-          "description": "Liste des fichiers associés à la décision, chaque document étant représenté par un objet de type `fileLink` où `type` contient le type de document (communiqué, note explicative, traduction, rapport, avis de l'avocat général, etc.), `title` son intitulé et `URL` contient le lien vers celui-ci.",
+          "description": "Liste des fichiers associés à la décision, chaque document étant représenté par un objet de type `fileLink` où `type` contient le type de document (communiqué, note explicative, traduction, rapport, avis de l'avocat général, etc.), `title` son intitulé et `url` contient le lien vers celui-ci.",
           "type": "array",
           "items": {
             "$ref": "#/definitions/fileLink"
@@ -1269,18 +1275,18 @@
               "type": "string"
             },
             "visa": {
-              "description": "Liste des textes appliqués par la décision, chaque texte étant représenté par un objet de type `textLink` où `title` contient l'intitulé du texte et `URL` contient le lien vers celui-ci.",
+              "description": "Liste des textes appliqués par la décision, chaque texte étant représenté par un objet de type `textLink` où `title` contient l'intitulé du texte et `url` contient le lien vers celui-ci.",
               "type": "array",
               "items": {
                 "$ref": "#/definitions/textLink"
               }
             },
             "contested": {
-              "description": "Objet décrivant la décision attaquée, de type `decisionLink` où `title` contient son intitulé, `number` son numéro, `description` son court texte descriptif, `theme` la liste de ses matières (ou éléments de titrage) et `URL` le lien vers celle-ci.",
+              "description": "Objet décrivant la décision attaquée, de type `decisionLink` où `title` contient son intitulé, `number` son numéro, `description` son court texte descriptif, `theme` la liste de ses matières (ou éléments de titrage) et `url` le lien vers celle-ci.",
               "$ref": "#/definitions/decisionLink"
             },
             "rapprochements": {
-              "description": "Liste des rapprochements de jurisprudence, chaque rapprochement étant représenté par un objet de type `decisionLink` où `title` contient son intitulé, `number` son numéro, `description` son court texte descriptif, `theme` la liste de ses matières (ou éléments de titrage) et `URL` le lien vers celui-ci.",
+              "description": "Liste des rapprochements de jurisprudence, chaque rapprochement étant représenté par un objet de type `decisionLink` où `title` contient son intitulé, `number` son numéro, `description` son court texte descriptif, `theme` la liste de ses matières (ou éléments de titrage) et `url` le lien vers celui-ci.",
               "type": "array",
               "items": {
                 "$ref": "#/definitions/decisionLink"
@@ -1430,7 +1436,7 @@
     "fileLink": {
       "title": "Type d'objet `fileLink`.",
       "description": "Objet décrivant un lien vers un document pouvant être associé à une décision.",
-      "required": ["id", "name", "url", "type", "isCommunication"],
+      "required": ["id", "name", "url", "type", "isCommunication", "date"],
       "type": "object",
       "properties": {
         "id": {
@@ -1456,6 +1462,11 @@
         "size": {
           "description": "Taille du fichier, dans un format \"humainement lisible\" (par exemple : `41.34 kB`)",
           "type": "string"
+        },
+        "date": {
+          "format": "date",
+          "description": "Date d'ajout du document, au format ISO-8601 (par exemple 2021-05-13).",
+          "type": "string"
         }
       },
       "example": {
@@ -1464,7 +1475,8 @@
         "name": "traduction.pdf",
         "type": "comm_trad",
         "isCommunication": true,
-        "size": "952 kB"
+        "size": "952 kB",
+        "date": "2020-01-14"
       }
     },
     "decisionLink": {
@@ -1485,7 +1497,7 @@
           "description": "Intitulé de la décision.",
           "type": "string"
         },
-        "URL": {
+        "url": {
           "description": "URL de la décision.",
           "type": "string"
         },
@@ -1512,7 +1524,7 @@
       "example": {
         "id": "fb43",
         "title": "some text",
-        "URL": "some text",
+        "url": "some text",
         "description": "some text",
         "theme": ["some text", "some text"],
         "number": "some text"
@@ -1528,7 +1540,7 @@
           "description": "Identifiant du texte.",
           "type": "integer"
         },
-        "URL": {
+        "url": {
           "description": "URL du texte.",
           "type": "string"
         },
@@ -1539,7 +1551,7 @@
       },
       "example": {
         "id": 70,
-        "URL": "some text",
+        "url": "some text",
         "title": "some text"
       }
     },

@@ -1,7 +1,7 @@
 require('../env');
 const taxons = require('../../taxons');
 
-function buildQuery(query, target) {
+function buildQuery(query, target, relaxed) {
   const queryField = {
     text: 'text',
     introduction: 'zoneIntroduction',
@@ -56,6 +56,10 @@ function buildQuery(query, target) {
     }
   }
 
+  if (relaxed) {
+    query.operator = 'or';
+  }
+
   if (target === 'search' || target === 'export') {
     if (target === 'export') {
       page = query.batch || 0;
@@ -108,7 +112,23 @@ function buildQuery(query, target) {
                     publication: 'l',
                   },
                 },
+                weight: 2,
+              },
+              {
+                filter: {
+                  match: {
+                    publication: 'n',
+                  },
+                },
                 weight: 1,
+              },
+              {
+                filter: {
+                  match: {
+                    lowInterest: true,
+                  },
+                },
+                weight: 0.1,
               },
             ],
             score_mode: 'max',
@@ -299,7 +319,7 @@ function buildQuery(query, target) {
       }
       searchQuery.body.query.function_score.query.bool.filter.push({
         terms: {
-          themes: query.theme,
+          themesFilter: query.theme,
         },
       });
     }
@@ -409,21 +429,42 @@ function buildQuery(query, target) {
         if (query.operator === 'exact') {
           operator = 'AND';
           fuzzy = false;
-          finalSearchString = `"${string}"`.replace(/"+/gm, '"');
+          if (/^"/.test(string) === false || /"$/.test(string) === false) {
+            finalSearchString = `"${string}"`.replace(/"+/gm, '"');
+          }
         } else {
           operator = query.operator.toUpperCase();
         }
       }
-      searchQuery.body.query.function_score.query.bool.must = {
-        simple_query_string: {
-          query: finalSearchString,
-          fields: boostedFields,
-          default_operator: operator,
-          auto_generate_synonyms_phrase_query: fuzzy,
-          fuzzy_max_expansions: fuzzy ? 50 : 0,
-          fuzzy_transpositions: fuzzy,
-        },
-      };
+      if (/[*()~|+-]/.test(string) && !relaxed) {
+        operator = 'AND';
+        fuzzy = false;
+        finalSearchString = string;
+      }
+
+      if (relaxed) {
+        searchQuery.body.query.function_score.query.bool.should = {
+          simple_query_string: {
+            query: finalSearchString,
+            fields: boostedFields,
+            default_operator: operator,
+            auto_generate_synonyms_phrase_query: fuzzy,
+            fuzzy_max_expansions: fuzzy ? 50 : 0,
+            fuzzy_transpositions: fuzzy,
+          },
+        };
+      } else {
+        searchQuery.body.query.function_score.query.bool.must = {
+          simple_query_string: {
+            query: finalSearchString,
+            fields: boostedFields,
+            default_operator: operator,
+            auto_generate_synonyms_phrase_query: fuzzy,
+            fuzzy_max_expansions: fuzzy ? 50 : 0,
+            fuzzy_transpositions: fuzzy,
+          },
+        };
+      }
     }
   } else if (target === 'decision') {
     // Base query for single decision highlighting:
@@ -499,21 +540,42 @@ function buildQuery(query, target) {
         if (query.operator === 'exact') {
           operator = 'AND';
           fuzzy = false;
-          finalSearchString = `"${string}"`.replace(/"+/gm, '"');
+          if (/^"/.test(string) === false || /"$/.test(string) === false) {
+            finalSearchString = `"${string}"`.replace(/"+/gm, '"');
+          }
         } else {
           operator = query.operator.toUpperCase();
         }
       }
-      searchQuery.body.query.function_score.query.bool.must = {
-        simple_query_string: {
-          query: finalSearchString,
-          fields: textFields,
-          default_operator: operator,
-          auto_generate_synonyms_phrase_query: fuzzy,
-          fuzzy_max_expansions: fuzzy ? 50 : 0,
-          fuzzy_transpositions: fuzzy,
-        },
-      };
+      if (/[*()~|+-]/.test(string) && !relaxed) {
+        operator = 'AND';
+        fuzzy = false;
+        finalSearchString = string;
+      }
+
+      if (relaxed) {
+        searchQuery.body.query.function_score.query.bool.should = {
+          simple_query_string: {
+            query: finalSearchString,
+            fields: textFields,
+            default_operator: operator,
+            auto_generate_synonyms_phrase_query: fuzzy,
+            fuzzy_max_expansions: fuzzy ? 50 : 0,
+            fuzzy_transpositions: fuzzy,
+          },
+        };
+      } else {
+        searchQuery.body.query.function_score.query.bool.must = {
+          simple_query_string: {
+            query: finalSearchString,
+            fields: textFields,
+            default_operator: operator,
+            auto_generate_synonyms_phrase_query: fuzzy,
+            fuzzy_max_expansions: fuzzy ? 50 : 0,
+            fuzzy_transpositions: fuzzy,
+          },
+        };
+      }
     }
   } else {
     throw new Error(`${process.env.APP_ID}.Elastic.buildQuery: unknown target "${target}".`);

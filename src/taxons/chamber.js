@@ -10,6 +10,7 @@ const taxon = {
   creun: 'Chambres réunies',
   ordo: 'Première présidence (Ordonnance)',
   allciv: 'Toutes les chambres civiles',
+  other: 'Autre',
 };
 
 module.exports = {

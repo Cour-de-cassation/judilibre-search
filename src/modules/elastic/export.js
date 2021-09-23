@@ -80,7 +80,7 @@ async function batchexport(query) {
             summary: rawResult._source.summary,
             themes: rawResult._source.themes,
             bulletin: rawResult._source.bulletin,
-            files: taxons.filetype.buildFilesList(rawResult._source.files, query.resolve_references),
+            files: taxons.filetype.buildFilesList(rawResult._id, rawResult._source.files, query.resolve_references),
             zones: rawResult._source.zones,
             contested: rawResult._source.contested ? rawResult._source.contested : null,
             visa: rawResult._source.visa

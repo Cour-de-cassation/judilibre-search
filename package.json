@@ -15,11 +15,12 @@
     "url": "git+https://github.com/Cour-de-cassation/judilibre-search.git"
   },
   "dependencies": {
-    "@elastic/elasticsearch": "^7.14.0",
+    "@elastic/elasticsearch": "^7.14.1",
     "cors": "^2.8.5",
     "dotenv": "^9.0.2",
     "express": "^4.17.1",
-    "express-validator": "^6.12.1"
+    "express-validator": "^6.12.1",
+    "request": "^2.88.2"
   },
   "devDependencies": {
     "jest": "^27.0.4",

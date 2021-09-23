@@ -7246,7 +7246,7 @@
           },
           "visa": {
             "type": "array",
-            "description": "Liste des textes appliqués par la décision, chaque texte étant représenté par un objet de type `textLink` où `title` contient l'intitulé du texte et `URL` contient le lien vers celui-ci.",
+            "description": "Liste des textes appliqués par la décision, chaque texte étant représenté par un objet de type `textLink` où `title` contient l'intitulé du texte et `url` contient le lien vers celui-ci.",
             "items": {
               "$ref": "#/components/schemas/textLink"
             }
@@ -7256,7 +7256,7 @@
           },
           "rapprochements": {
             "type": "array",
-            "description": "Liste des rapprochements de jurisprudence, chaque rapprochement étant représenté par un objet de type `decisionLink` où `title` contient son intitulé, `number` son numéro, `description` son court texte descriptif, `theme` la liste de ses matières (ou éléments de titrage) et `URL` le lien vers celui-ci.",
+            "description": "Liste des rapprochements de jurisprudence, chaque rapprochement étant représenté par un objet de type `decisionLink` où `title` contient son intitulé, `number` son numéro, `description` son court texte descriptif, `theme` la liste de ses matières (ou éléments de titrage) et `url` le lien vers celui-ci.",
             "items": {
               "$ref": "#/components/schemas/decisionLink"
             }
@@ -7287,7 +7287,7 @@
           "type": "string",
           "description": "Intitulé de la décision."
         },
-        "URL": {
+        "url": {
           "type": "string",
           "description": "URL de la décision."
         },
@@ -7315,7 +7315,7 @@
       "example": {
         "id": "fb43",
         "title": "some text",
-        "URL": "some text",
+        "url": "some text",
         "description": "some text",
         "theme": ["some text", "some text"],
         "number": "some text"
@@ -7391,7 +7391,7 @@
         },
         "files": {
           "type": "array",
-          "description": "Liste des fichiers associés à la décision, chaque document étant représenté par un objet de type `fileLink` où `type` contient le type de document (communiqué, note explicative, traduction, rapport, avis de l'avocat général, etc.), `title` son intitulé et `URL` contient le lien vers celui-ci.",
+          "description": "Liste des fichiers associés à la décision, chaque document étant représenté par un objet de type `fileLink` où `type` contient le type de document (communiqué, note explicative, traduction, rapport, avis de l'avocat général, etc.), `title` son intitulé et `url` contient le lien vers celui-ci.",
           "items": {
             "$ref": "#/components/schemas/fileLink"
           }
@@ -7721,7 +7721,7 @@
     };
     defs["searchPage"] = {
       "title": "Type d'objet `searchPage`.",
-      "required": ["max_score", "page", "page_size", "query", "took", "total"],
+      "required": ["max_score", "page", "page_size", "query", "relaxed", "took", "total"],
       "type": "object",
       "properties": {
         "page": {
@@ -7757,6 +7757,10 @@
           "type": "number",
           "description": "Score maximal obtenu sur l'ensemble des résultats.",
           "format": "float"
+        },
+        "relaxed": {
+          "description": "Vaut `true` si les résulats proviennent d'une requête plus \"lâche\", exécutée automatiquement dans le cas où la requête initiale ne retourne aucun résultat.",
+          "type": "boolean"
         },
         "results": {
           "type": "array",
@@ -7794,6 +7798,7 @@
         "next_page": "http://.../...&page=1",
         "took": 14,
         "max_score": 2428.1362,
+        "relaxed": false,
         "results": [{
           "score": 0.6848325044168517,
           "highlights": {
@@ -8145,7 +8150,7 @@
           "type": "integer",
           "description": "Identifiant du texte."
         },
-        "URL": {
+        "url": {
           "type": "string",
           "description": "URL du texte."
         },
@@ -8157,7 +8162,7 @@
       "description": "Objet décrivant un lien vers un texte appliqué.",
       "example": {
         "id": 70,
-        "URL": "some text",
+        "url": "some text",
         "title": "some text"
       }
     };
@@ -9904,6 +9909,7 @@
                                       "next_page": "http://.../...&page=1",
                                       "took": 14,
                                       "max_score": 2428.1362,
+                                      "relaxed": false,
                                       "results": [{
                                         "score": 0.6848325044168517,
                                         "highlights": {

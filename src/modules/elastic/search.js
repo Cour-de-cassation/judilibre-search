@@ -6,7 +6,7 @@ async function search(query) {
     return searchWithoutElastic.apply(this, [query]);
   }
 
-  const searchQuery = this.buildQuery(query, 'search');
+  let searchQuery = this.buildQuery(query, 'search');
 
   let string = query.query ? query.query.trim() : '';
 
@@ -20,113 +20,123 @@ async function search(query) {
     took: 0,
     max_score: 0,
     results: [],
+    relaxed: false,
+    debug: searchQuery,
   };
 
   if (string && searchQuery.query) {
-    const rawResponse = await this.client.search(searchQuery.query);
+    let rawResponse = await this.client.search(searchQuery.query);
     if (rawResponse && rawResponse.body) {
-      if (rawResponse.body.hits && rawResponse.body.hits.total && rawResponse.body.hits.total.value > 0) {
-        response.total = rawResponse.body.hits.total.value;
-        response.max_score = rawResponse.body.hits.max_score;
-        if (searchQuery.page > 0) {
-          let previous_page_params = new URLSearchParams(query);
-          previous_page_params.set('page', searchQuery.page - 1);
-          response.previous_page = previous_page_params.toString();
-        }
-        if ((searchQuery.page + 1) * searchQuery.page_size < rawResponse.body.hits.total.value) {
-          let next_page_params = new URLSearchParams(query);
-          next_page_params.set('page', searchQuery.page + 1);
-          response.next_page = next_page_params.toString();
-        }
-        rawResponse.body.hits.hits.forEach((rawResult) => {
-          let result = {
-            score: rawResult._score ? rawResult._score / response.max_score : 0,
-            highlights: {},
-            id: rawResult._id,
-            jurisdiction:
-              query.resolve_references && taxons.jurisdiction.taxonomy[rawResult._source.jurisdiction]
-                ? taxons.jurisdiction.taxonomy[rawResult._source.jurisdiction]
-                : rawResult._source.jurisdiction,
-            chamber:
-              query.resolve_references && taxons.chamber.taxonomy[rawResult._source.chamber]
-                ? taxons.chamber.taxonomy[rawResult._source.chamber]
-                : rawResult._source.chamber,
-            number: Array.isArray(rawResult._source.numberFull)
-              ? rawResult._source.numberFull[0]
-              : rawResult._source.numberFull,
-            numbers: Array.isArray(rawResult._source.numberFull)
-              ? rawResult._source.numberFull
-              : [rawResult._source.numberFull],
-            ecli: rawResult._source.ecli,
-            formation:
-              query.resolve_references && taxons.formation.taxonomy[rawResult._source.formation]
-                ? taxons.formation.taxonomy[rawResult._source.formation]
-                : rawResult._source.formation,
-            publication: query.resolve_references
-              ? rawResult._source.publication.map((key) => {
-                  if (taxons.publication.taxonomy[key]) {
-                    return taxons.publication.taxonomy[key];
-                  }
-                  return key;
-                })
-              : rawResult._source.publication,
-            decision_date: rawResult._source.decision_date,
-            solution:
-              query.resolve_references && taxons.solution.taxonomy[rawResult._source.solution]
-                ? taxons.solution.taxonomy[rawResult._source.solution]
-                : rawResult._source.solution,
-            solution_alt: rawResult._source.solution_alt,
-            type:
-              query.resolve_references && taxons.type.taxonomy[rawResult._source.type]
-                ? taxons.type.taxonomy[rawResult._source.type]
-                : rawResult._source.type,
-            summary: rawResult._source.summary,
-            themes: rawResult._source.themes,
-            bulletin: rawResult._source.bulletin,
-            files: taxons.filetype.buildFilesList(rawResult._source.files, query.resolve_references),
-          };
-
-          let hasHitsInSpecificZone = false;
-          for (let key in searchQuery.queryField) {
-            let field = searchQuery.queryField[key];
-            if (rawResult.highlight && rawResult.highlight[field] && rawResult.highlight[field].length > 0) {
-              if (key !== 'text' && /zone/i.test(field)) {
-                hasHitsInSpecificZone = true;
-              }
-              result.highlights[key] = [];
-              rawResult.highlight[field].forEach(function (hit) {
-                hit = hit.replace(/^[^a-z<>]*/i, '');
-                hit = hit.replace(/[^a-z<>]*$/i, '');
-                result.highlights[key].push(hit.trim());
-              });
-            }
-            if (
-              rawResult.highlight &&
-              rawResult.highlight[field + '.exact'] &&
-              rawResult.highlight[field + '.exact'].length > 0
-            ) {
-              if (key !== 'text' && /zone/i.test(field)) {
-                hasHitsInSpecificZone = true;
-              }
-              result.highlights[key] = [];
-              rawResult.highlight[field + '.exact'].forEach(function (hit) {
-                hit = hit.replace(/^[^a-z<>]*/i, '');
-                hit = hit.replace(/[^a-z<>]*$/i, '');
-                result.highlights[key].push(hit.trim());
-              });
-            }
-          }
-
-          // Don't add highlights from the whole text when some specific zones are already highlighted:
-          if (hasHitsInSpecificZone === true && result.highlights['text']) {
-            delete result.highlights['text'];
-          }
-
-          response.results.push(result);
-        });
+      if (!rawResponse.body.hits || !rawResponse.body.hits.total || !rawResponse.body.hits.total.value) {
+        searchQuery = this.buildQuery(query, 'search', true);
+        response.relaxed = true;
+        response.debug = searchQuery;
+        rawResponse = await this.client.search(searchQuery.query);
       }
-      if (rawResponse.body.took) {
-        response.took = rawResponse.body.took;
+      if (rawResponse && rawResponse.body) {
+        if (rawResponse.body.hits && rawResponse.body.hits.total && rawResponse.body.hits.total.value > 0) {
+          response.total = rawResponse.body.hits.total.value;
+          response.max_score = rawResponse.body.hits.max_score;
+          if (searchQuery.page > 0) {
+            let previous_page_params = new URLSearchParams(query);
+            previous_page_params.set('page', searchQuery.page - 1);
+            response.previous_page = previous_page_params.toString();
+          }
+          if ((searchQuery.page + 1) * searchQuery.page_size < rawResponse.body.hits.total.value) {
+            let next_page_params = new URLSearchParams(query);
+            next_page_params.set('page', searchQuery.page + 1);
+            response.next_page = next_page_params.toString();
+          }
+          rawResponse.body.hits.hits.forEach((rawResult) => {
+            let result = {
+              score: rawResult._score ? rawResult._score / response.max_score : 0,
+              highlights: {},
+              id: rawResult._id,
+              jurisdiction:
+                query.resolve_references && taxons.jurisdiction.taxonomy[rawResult._source.jurisdiction]
+                  ? taxons.jurisdiction.taxonomy[rawResult._source.jurisdiction]
+                  : rawResult._source.jurisdiction,
+              chamber:
+                query.resolve_references && taxons.chamber.taxonomy[rawResult._source.chamber]
+                  ? taxons.chamber.taxonomy[rawResult._source.chamber]
+                  : rawResult._source.chamber,
+              number: Array.isArray(rawResult._source.numberFull)
+                ? rawResult._source.numberFull[0]
+                : rawResult._source.numberFull,
+              numbers: Array.isArray(rawResult._source.numberFull)
+                ? rawResult._source.numberFull
+                : [rawResult._source.numberFull],
+              ecli: rawResult._source.ecli,
+              formation:
+                query.resolve_references && taxons.formation.taxonomy[rawResult._source.formation]
+                  ? taxons.formation.taxonomy[rawResult._source.formation]
+                  : rawResult._source.formation,
+              publication: query.resolve_references
+                ? rawResult._source.publication.map((key) => {
+                    if (taxons.publication.taxonomy[key]) {
+                      return taxons.publication.taxonomy[key];
+                    }
+                    return key;
+                  })
+                : rawResult._source.publication,
+              decision_date: rawResult._source.decision_date,
+              solution:
+                query.resolve_references && taxons.solution.taxonomy[rawResult._source.solution]
+                  ? taxons.solution.taxonomy[rawResult._source.solution]
+                  : rawResult._source.solution,
+              solution_alt: rawResult._source.solution_alt,
+              type:
+                query.resolve_references && taxons.type.taxonomy[rawResult._source.type]
+                  ? taxons.type.taxonomy[rawResult._source.type]
+                  : rawResult._source.type,
+              summary: rawResult._source.summary,
+              themes: rawResult._source.themes,
+              bulletin: rawResult._source.bulletin,
+              files: taxons.filetype.buildFilesList(rawResult._id, rawResult._source.files, query.resolve_references),
+            };
+
+            let hasHitsInSpecificZone = false;
+            for (let key in searchQuery.queryField) {
+              let field = searchQuery.queryField[key];
+              if (rawResult.highlight && rawResult.highlight[field] && rawResult.highlight[field].length > 0) {
+                if (key !== 'text' && /zone/i.test(field)) {
+                  hasHitsInSpecificZone = true;
+                }
+                result.highlights[key] = [];
+                rawResult.highlight[field].forEach(function (hit) {
+                  hit = hit.replace(/^[^a-z<>]*/i, '');
+                  hit = hit.replace(/[^a-z<>]*$/i, '');
+                  result.highlights[key].push(hit.trim());
+                });
+              }
+              if (
+                rawResult.highlight &&
+                rawResult.highlight[field + '.exact'] &&
+                rawResult.highlight[field + '.exact'].length > 0
+              ) {
+                if (key !== 'text' && /zone/i.test(field)) {
+                  hasHitsInSpecificZone = true;
+                }
+                result.highlights[key] = [];
+                rawResult.highlight[field + '.exact'].forEach(function (hit) {
+                  hit = hit.replace(/^[^a-z<>]*/i, '');
+                  hit = hit.replace(/[^a-z<>]*$/i, '');
+                  result.highlights[key].push(hit.trim());
+                });
+              }
+            }
+
+            // Don't add highlights from the whole text when some specific zones are already highlighted:
+            if (hasHitsInSpecificZone === true && result.highlights['text']) {
+              delete result.highlights['text'];
+            }
+
+            response.results.push(result);
+          });
+        }
+        if (rawResponse.body.took) {
+          response.took = rawResponse.body.took;
+        }
       }
     }
   }
@@ -178,6 +188,26 @@ function searchWithoutElastic(query) {
         let next_page_params = new URLSearchParams(query);
         next_page_params.set('page', page + 1);
         response.next_page = next_page_params.toString();
+      }
+    }
+
+    let sample = null;
+
+    if (query.resolve_references) {
+      sample = JSON.parse(
+        fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'sample_detail_resolved.json')).toString(),
+      );
+    } else {
+      sample = JSON.parse(
+        fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'sample_detail_unresolved.json')).toString(),
+      );
+    }
+
+    for (let i = 0; i < response.results.length; i++) {
+      if (i % 5 === 0) {
+        response.results[i].files = sample.files;
+      } else {
+        response.results[i].files = [];
       }
     }
   } else {
