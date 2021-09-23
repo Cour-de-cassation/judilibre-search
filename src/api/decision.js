@@ -78,9 +78,9 @@ api.get(
         });
       }
       if (req.query.fileId) {
-        const file = await getFile(req.query.id, req.query.fileId);
-        if (file && file.location) {
-          req.pipe(request(file.location)).pipe(res);
+        const file = getFile(result, req.query.fileId);
+        if (file && file.rawUrl) {
+          req.pipe(request(file.rawUrl)).pipe(res);
         } else {
           return res.status(404).json({
             route: `${req.method} ${req.path}`,
@@ -88,6 +88,13 @@ api.get(
           });
         }
       } else {
+        if (result && result.files && Array.isArray(result.files)) {
+          for (let i = 0; i < result.files.length; i++) {
+            if (result.files[i].rawUrl) {
+              delete result.files[i].rawUrl;
+            }
+          }
+        }
         return res.status(200).json(result);
       }
     } catch (e) {
@@ -97,6 +104,19 @@ api.get(
     }
   },
 );
+
+function getFile(decision, fileId) {
+  let file = null;
+  if (decision && decision.files && Array.isArray(decision.files)) {
+    for (let i = 0; i < decision.files.length; i++) {
+      if (decision.files[i].id === fileId) {
+        file = decision.files[i];
+        break;
+      }
+    }
+  }
+  return file;
+}
 
 async function getDecision(query) {
   return await Elastic.decision(query);
