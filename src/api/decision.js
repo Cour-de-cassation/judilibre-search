@@ -1,6 +1,7 @@
 require('../modules/env');
 const express = require('express');
 const api = express.Router();
+const request = require('request');
 const { checkSchema, validationResult } = require('express-validator');
 const Elastic = require('../modules/elastic');
 const taxons = require('../taxons');
@@ -14,6 +15,12 @@ api.get(
       isString: true,
       errorMessage: `Value of the id parameter must be a string.`,
       optional: false,
+    },
+    fileId: {
+      in: 'query',
+      isString: true,
+      errorMessage: `Value of the fileId parameter must be a string.`,
+      optional: true,
     },
     query: {
       in: 'query',
@@ -70,7 +77,19 @@ api.get(
           errors: result.errors,
         });
       }
-      return res.status(200).json(result);
+      if (req.query.fileId) {
+        const file = await getFile(req.query.id, req.query.fileId);
+        if (file && file.location) {
+          req.pipe(request(file.location)).pipe(res);
+        } else {
+          return res.status(404).json({
+            route: `${req.method} ${req.path}`,
+            errors: [{ msg: 'Not Found', error: `File '${req.query.fileId}' not found.` }],
+          });
+        }
+      } else {
+        return res.status(200).json(result);
+      }
     } catch (e) {
       return res
         .status(500)

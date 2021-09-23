@@ -37,23 +37,27 @@ function isCommunicationDoc(type) {
   return key && key.indexOf('comm') !== -1;
 }
 
-function buildFilesList(files, resolve_references) {
+function buildFilesList(decisionId, files, resolve_references) {
   const filesList = [];
   const path = require('path');
 
   if (Array.isArray(files) && files.length > 0) {
     for (let i = 0; i < files.length; i++) {
       const code = getCodeFromImportType(files[i].type);
+      let fileDate = new Date(files[i].date);
+      let fileDateForDisplay = fileDate.getFullYear() + '-';
+      fileDateForDisplay += (fileDate.getMonth() < 9 ? '0' + (fileDate.getMonth() + 1) : fileDate.getMonth() + 1) + '-';
+      fileDateForDisplay += fileDate.getDate() < 10 ? '0' + fileDate.getDate() : fileDate.getDate();
       let file = {
         id: files[i].id,
         type: resolve_references && taxon[code] ? taxon[code] : code,
         isCommunication: isCommunicationDoc(files[i].type),
-        date: files[i].date, // @TODO format
+        date: fileDateForDisplay,
       };
       if (files[i].size && files[i].location) {
         file.name = files[i].name;
         file.size = files[i].size;
-        file.url = files[i].location;
+        file.url = `${process.env.APP_SCHEME}://${process.env.APP_HOST_ALTER}/decision?id=${decisionId}&fileId=${files[i].id}`;
       } else {
         file.name = path.parse(files[i].name).name;
         file.url = files[i].name;
