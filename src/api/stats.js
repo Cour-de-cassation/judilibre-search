@@ -13,6 +13,11 @@ api.get(`/${route}`, async (req, res) => {
         errors: result.errors,
       });
     }
+    result.hostname = req.hostname;
+    result.protocol = req.protocol;
+    result.baseUrl = req.baseUrl;
+    result.originalUrl = req.originalUrl;
+    result.path = req.path;
     return res.status(200).json(result);
   } catch (e) {
     return res
