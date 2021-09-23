@@ -86,6 +86,10 @@ api.get(
       if (req.query.fileId) {
         const file = getFile(result, req.query.fileId);
         if (file && file.rawUrl) {
+          const filename = encodeURIComponent(file.name);
+          // res.setHeader('Content-Length', stat.size);
+          res.setHeader('Content-Type', 'application/pdf');
+          res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
           req.pipe(request(file.rawUrl)).pipe(res);
         } else {
           return res.status(404).json({
