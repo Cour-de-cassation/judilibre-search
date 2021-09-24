@@ -88,7 +88,7 @@ function buildQuery(query, target, relaxed) {
                     publication: 'b',
                   },
                 },
-                weight: 10,
+                weight: 50,
               },
               {
                 filter: {
@@ -120,7 +120,7 @@ function buildQuery(query, target, relaxed) {
                     publication: 'n',
                   },
                 },
-                weight: 1,
+                weight: 0.1,
               },
               {
                 filter: {
@@ -170,9 +170,11 @@ function buildQuery(query, target, relaxed) {
     } else if (query.sort && query.order) {
       switch (query.sort) {
         case 'score':
-          delete searchQuery.body.query.function_score.functions;
-          searchQuery.body.sort[0]._score = query.order;
-          break;
+        /*
+        delete searchQuery.body.query.function_score.functions;
+        searchQuery.body.sort[0]._score = query.order;
+        break;
+        */
         case 'scorepub':
           searchQuery.body.sort[0]._score = query.order;
           break;

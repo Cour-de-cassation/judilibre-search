@@ -47,6 +47,9 @@ api.get(
     },
   }),
   async (req, res) => {
+    if (process.env.APP_HOST_ALTER === undefined) {
+      process.env.APP_HOST_ALTER = req.hostname;
+    }
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ route: `${req.method} ${req.path}`, errors: errors.array() });
@@ -80,6 +83,10 @@ api.get(
       if (req.query.fileId) {
         const file = getFile(result, req.query.fileId);
         if (file && file.rawUrl) {
+          const filename = encodeURIComponent(file.name);
+          // res.setHeader('Content-Length', stat.size);
+          res.setHeader('Content-Type', 'application/pdf');
+          res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
           req.pipe(request(file.rawUrl)).pipe(res);
         } else {
           return res.status(404).json({
