@@ -88,7 +88,7 @@ function buildQuery(query, target, relaxed) {
                     publication: 'b',
                   },
                 },
-                weight: 20,
+                weight: 100,
               },
               {
                 filter: {
@@ -120,7 +120,7 @@ function buildQuery(query, target, relaxed) {
                     publication: 'n',
                   },
                 },
-                weight: 0.1,
+                weight: 0.01,
               },
               {
                 filter: {
