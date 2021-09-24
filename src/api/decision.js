@@ -47,9 +47,6 @@ api.get(
     },
   }),
   async (req, res) => {
-    if (process.env.APP_SCHEME === undefined) {
-      process.env.APP_SCHEME = req.protocol;
-    }
     if (process.env.APP_HOST_ALTER === undefined) {
       process.env.APP_HOST_ALTER = req.hostname;
     }

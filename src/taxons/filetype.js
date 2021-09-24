@@ -57,7 +57,7 @@ function buildFilesList(decisionId, files, resolve_references) {
       if (files[i].size && files[i].location) {
         file.name = files[i].name;
         file.size = files[i].size;
-        file.url = `${process.env.APP_SCHEME}://${process.env.APP_HOST_ALTER}/decision?id=${decisionId}&fileId=${files[i].id}`;
+        file.url = `https://${process.env.APP_HOST_ALTER}/decision?id=${decisionId}&fileId=${files[i].id}`;
         file.rawUrl = files[i].location;
       } else {
         file.name = path.parse(files[i].name).name;
