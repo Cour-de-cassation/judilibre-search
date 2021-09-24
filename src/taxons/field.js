@@ -1,4 +1,5 @@
 const taxon = {
+  themes: 'Titre',
   text: 'Texte entier',
   introduction: 'Entête',
   expose: 'Exposé du litige',
@@ -8,7 +9,6 @@ const taxon = {
   annexes: 'Moyens annexés',
   visa: 'Textes appliqués',
   summary: 'Sommaire',
-  themes: 'Titre',
 };
 
 module.exports = {

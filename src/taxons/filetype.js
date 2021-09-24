@@ -1,5 +1,5 @@
 const taxon = {
-  prep_rapp: 'Rapport du rapporteur',
+  prep_rapp: 'Rapport du conseiller rapporteur',
   prep_avis: 'Avis de l’avocat général',
   prep_oral: 'Avis oral de l’avocat général',
   comm_comm: 'Communiqué',
