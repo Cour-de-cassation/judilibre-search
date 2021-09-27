@@ -1,7 +1,6 @@
 require('../modules/env');
 const express = require('express');
 const api = express.Router();
-const request = require('request');
 const fetch = require('node-fetch');
 const { checkSchema, validationResult } = require('express-validator');
 const Elastic = require('../modules/elastic');
@@ -85,25 +84,6 @@ api.get(
         const file = getFile(result, req.query.fileId);
         if (file && file.rawUrl) {
           const filename = encodeURIComponent(file.name);
-          /*
-          if (file.rawSize) {
-            res.setHeader('Content-Length', file.rawSize);
-          }
-          res.setHeader('Content-Type', 'application/pdf');
-          res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
-          req
-            .pipe(
-              request({
-                url: file.rawUrl,
-                // Set headers again, since request can overwrite some:
-                headers: {
-                  'Content-Type': 'application/pdf',
-                  'Content-Disposition': `inline; filename="${filename}"`,
-                },
-              }),
-            )
-            .pipe(res);
-            */
           fetch(file.rawUrl).then((fileStream) => {
             res.setHeader('Content-Length', fileStream.headers.get('content-length'));
             res.setHeader('Content-Type', 'application/pdf');
