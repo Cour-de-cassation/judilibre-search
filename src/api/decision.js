@@ -84,10 +84,22 @@ api.get(
         const file = getFile(result, req.query.fileId);
         if (file && file.rawUrl) {
           const filename = encodeURIComponent(file.name);
-          // res.setHeader('Content-Length', stat.size);
+          if (file.rawSize) {
+            res.setHeader('Content-Length', file.rawSize);
+          }
           res.setHeader('Content-Type', 'application/pdf');
           res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
-          req.pipe(request(file.rawUrl)).pipe(res);
+          req
+            .pipe(
+              request(file.rawUrl, {
+                // Set headers again, since request can overwrite some:
+                header: {
+                  'Content-Type': 'application/pdf',
+                  'Content-Disposition': `inline; filename="${filename}"`,
+                },
+              }),
+            )
+            .pipe(res);
         } else {
           return res.status(404).json({
             route: `${req.method} ${req.path}`,
