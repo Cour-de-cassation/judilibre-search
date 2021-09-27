@@ -93,7 +93,7 @@ api.get(
             .pipe(
               request(file.rawUrl, {
                 // Set headers again, since request can overwrite some:
-                header: {
+                headers: {
                   'Content-Type': 'application/pdf',
                   'Content-Disposition': `inline; filename="${filename}"`,
                 },
