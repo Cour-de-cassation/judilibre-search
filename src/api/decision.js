@@ -1,7 +1,7 @@
 require('../modules/env');
 const express = require('express');
 const api = express.Router();
-const request = require('request');
+const fetch = require('node-fetch');
 const { checkSchema, validationResult } = require('express-validator');
 const Elastic = require('../modules/elastic');
 const taxons = require('../taxons');
@@ -84,10 +84,12 @@ api.get(
         const file = getFile(result, req.query.fileId);
         if (file && file.rawUrl) {
           const filename = encodeURIComponent(file.name);
-          // res.setHeader('Content-Length', stat.size);
-          res.setHeader('Content-Type', 'application/pdf');
-          res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
-          req.pipe(request(file.rawUrl)).pipe(res);
+          fetch(file.rawUrl).then((fileStream) => {
+            res.setHeader('Content-Length', fileStream.headers.get('content-length'));
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
+            fileStream.body.pipe(res);
+          });
         } else {
           return res.status(404).json({
             route: `${req.method} ${req.path}`,
