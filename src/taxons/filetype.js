@@ -63,7 +63,11 @@ function buildFilesList(decisionId, files, resolve_references) {
         file.name = path.parse(files[i].name).name;
         file.url = files[i].name;
       }
-      filesList.push(file);
+      if (code === 'prep_rapp') {
+        filesList.unshift(file);
+      } else {
+        filesList.push(file);
+      }
     }
   }
 
