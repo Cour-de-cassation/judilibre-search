@@ -2,6 +2,7 @@ require('../env');
 const taxons = require('../../taxons');
 
 async function decision(query) {
+  const t0 = Date.now();
   if (process.env.WITHOUT_ELASTIC) {
     return decisionWithoutElastic.apply(this, [query]);
   }
@@ -18,6 +19,8 @@ async function decision(query) {
   } catch (e) {
     rawResponse = null;
   }
+
+  const t1 = Date.now();
 
   if (rawResponse && rawResponse.body && rawResponse.body.found) {
     let rawResult = rawResponse.body;
@@ -114,6 +117,8 @@ async function decision(query) {
       }
     }
 
+    const t2 = Date.now();
+
     response = {
       id: rawResult._id,
       source: rawResult._source.source,
@@ -173,6 +178,9 @@ async function decision(query) {
         rawResult._source.rapprochements && rawResult._source.rapprochements.value
           ? rawResult._source.rapprochements.value
           : [],
+      took_q1: t1 - t0,
+      took_q2: t2 - t1,
+      took_post: Date.now() - t2,
     };
   }
 
