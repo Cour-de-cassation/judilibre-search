@@ -8,6 +8,8 @@ ARG no_proxy
 ARG npm_registry
 ARG NPM_LATEST
 
+RUN apk add curl
+
 # use proxy & private npm registry
 RUN if [ ! -z "$http_proxy" ] ; then \
         npm config delete proxy; \
