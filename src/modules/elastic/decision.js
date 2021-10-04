@@ -52,6 +52,7 @@ async function decision(query) {
         }
         if (highlightedText !== null) {
           // Rebuild zoning to integrate highlights:
+          let zoningRebuildFailed = false;
           let flattenZones = [];
           for (let zone in rawResult._source.zones) {
             rawResult._source.zones[zone].forEach((fragment) => {
@@ -71,8 +72,13 @@ async function decision(query) {
             }
             return 0;
           });
-          let highlightedFlattenZones = JSON.parse(JSON.stringify(flattenZones));
+          let highlightedFlattenZones = [];
           for (let i = 0; i < flattenZones.length; i++) {
+            highlightedFlattenZones[i] = {
+              zone: flattenZones[i].zone,
+              start: flattenZones[i].start,
+              end: flattenZones[i].end,
+            };
             let start = flattenZones[i].start;
             let end = flattenZones[i].end;
             let sourceIndex = start;
@@ -83,36 +89,51 @@ async function decision(query) {
               highlightedFlattenZones[i].end += offset;
             }
             let highlightIndex = highlightedFlattenZones[i].start;
-
-            while (sourceIndex < end) {
+            let tagLength = 0;
+            while (zoningRebuildFailed === false && sourceIndex < end) {
               if (!inTag && rawResult._source.text[sourceIndex] === highlightedText[highlightIndex]) {
                 sourceIndex++;
                 highlightIndex++;
               } else {
                 if (inTag) {
+                  tagLength++;
+                  if (tagLength > 5) {
+                    zoningRebuildFailed = true;
+                  }
                   if (highlightedText[highlightIndex] === '>') {
                     inTag = false;
                   }
                 } else {
                   if (highlightedText[highlightIndex] === '<') {
+                    tagLength = 0;
                     inTag = true;
+                  } else {
+                    zoningRebuildFailed = true;
                   }
                 }
                 highlightIndex++;
                 highlightedFlattenZones[i].end++;
               }
             }
-          }
-          highlightedZoning = {};
-          highlightedFlattenZones.forEach((zone) => {
-            if (highlightedZoning[zone.zone] === undefined) {
-              highlightedZoning[zone.zone] = [];
+            if (zoningRebuildFailed === true) {
+              break;
             }
-            highlightedZoning[zone.zone].push({
-              start: zone.start,
-              end: zone.end,
+          }
+          if (zoningRebuildFailed === true) {
+            highlightedText = null;
+            highlightedZoning = null;
+          } else {
+            highlightedZoning = {};
+            highlightedFlattenZones.forEach((zone) => {
+              if (highlightedZoning[zone.zone] === undefined) {
+                highlightedZoning[zone.zone] = [];
+              }
+              highlightedZoning[zone.zone].push({
+                start: zone.start,
+                end: zone.end,
+              });
             });
-          });
+          }
         }
       }
     }
