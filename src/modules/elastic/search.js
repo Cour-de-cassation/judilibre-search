@@ -2,11 +2,14 @@ require('../env');
 const taxons = require('../../taxons');
 
 async function search(query) {
+  const t0 = Date.now();
   if (process.env.WITHOUT_ELASTIC) {
     return searchWithoutElastic.apply(this, [query]);
   }
 
   let searchQuery = this.buildQuery(query, 'search');
+
+  const t1 = Date.now();
 
   let string = query.query ? query.query.trim() : '';
 
@@ -18,21 +21,30 @@ async function search(query) {
     previous_page: null,
     next_page: null,
     took: 0,
+    took_pre1: t1 - t0,
+    took_q1: 0,
+    took_pre2: 0,
+    took_q2: 0,
+    took_post: 0,
     max_score: 0,
     results: [],
     relaxed: false,
-    debug: searchQuery,
   };
 
   if (string && searchQuery.query) {
     let rawResponse = await this.client.search(searchQuery.query);
+    const t2 = Date.now();
+    response.took_q1 = t2 - t1;
     if (rawResponse && rawResponse.body) {
       if (!rawResponse.body.hits || !rawResponse.body.hits.total || !rawResponse.body.hits.total.value) {
         searchQuery = this.buildQuery(query, 'search', true);
+        const t1b = Date.now();
+        response.took_pre2 = t1b - t2;
         response.relaxed = true;
-        response.debug = searchQuery;
         rawResponse = await this.client.search(searchQuery.query);
+        response.took_q2 = Date.now() - t1b;
       }
+      const t3 = Date.now();
       if (rawResponse && rawResponse.body) {
         if (rawResponse.body.hits && rawResponse.body.hits.total && rawResponse.body.hits.total.value > 0) {
           response.total = rawResponse.body.hits.total.value;
@@ -138,6 +150,7 @@ async function search(query) {
           response.took = rawResponse.body.took;
         }
       }
+      response.took_post = Date.now() - t3;
     }
   }
 
