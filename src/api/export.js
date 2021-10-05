@@ -211,6 +211,38 @@ api.get(
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ route: `${req.method} ${req.path}`, errors: errors.array() });
+    } else if (
+      req.query &&
+      typeof req.query.date_start === 'string' &&
+      /^\d\d\d\d-\d\d-\d\d$/.test(req.query.date_start) === false
+    ) {
+      return res.status(400).json({
+        route: `${req.method} ${req.path}`,
+        errors: [
+          {
+            value: req.query.date_start,
+            msg: 'Start date must be a valid ISO-8601 date (e.g. 2021-05-13).',
+            param: 'date_start',
+            location: 'query',
+          },
+        ],
+      });
+    } else if (
+      req.query &&
+      typeof req.query.date_end === 'string' &&
+      /^\d\d\d\d-\d\d-\d\d$/.test(req.query.date_end) === false
+    ) {
+      return res.status(400).json({
+        route: `${req.method} ${req.path}`,
+        errors: [
+          {
+            value: req.query.date_end,
+            msg: 'End date must be a valid ISO-8601 date (e.g. 2021-05-13).',
+            param: 'date_end',
+            location: 'query',
+          },
+        ],
+      });
     }
     try {
       const result = await getExport(req.query);

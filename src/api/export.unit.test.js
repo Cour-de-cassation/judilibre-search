@@ -265,6 +265,19 @@ describe('Testing /export endpoint basic validation', () => {
         },
       ],
     });
+    const test4 = await request(Server.app).get('/export?batch=0&date_start=2018');
+    expect(test4.statusCode).toEqual(400);
+    expect(test4.body).toEqual({
+      route: `GET /export`,
+      errors: [
+        {
+          location: 'query',
+          msg: 'Start date must be a valid ISO-8601 date (e.g. 2021-05-13).',
+          param: 'date_start',
+          value: '2018',
+        },
+      ],
+    });
   });
 
   it('GET /export with a good "date_start" parameter should pass', async () => {
@@ -309,6 +322,19 @@ describe('Testing /export endpoint basic validation', () => {
           msg: 'End date must be a valid ISO-8601 date (e.g. 2021-05-13).',
           param: 'date_end',
           value: ['2021-05-13'],
+        },
+      ],
+    });
+    const test4 = await request(Server.app).get('/export?batch=0&date_end=2018');
+    expect(test4.statusCode).toEqual(400);
+    expect(test4.body).toEqual({
+      route: `GET /export`,
+      errors: [
+        {
+          location: 'query',
+          msg: 'End date must be a valid ISO-8601 date (e.g. 2021-05-13).',
+          param: 'date_end',
+          value: '2018',
         },
       ],
     });
