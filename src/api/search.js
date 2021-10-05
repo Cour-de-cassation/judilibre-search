@@ -233,6 +233,51 @@ api.get(
           },
         ],
       });
+    } else if (
+      req.query &&
+      typeof req.query.date_start === 'string' &&
+      /^\d\d\d\d-\d\d-\d\d$/.test(req.query.date_start) === false
+    ) {
+      return res.status(400).json({
+        route: `${req.method} ${req.path}`,
+        errors: [
+          {
+            value: req.query.date_start,
+            msg: 'Start date must be a valid ISO-8601 date (e.g. 2021-05-13).',
+            param: 'date_start',
+            location: 'query',
+          },
+        ],
+      });
+    } else if (
+      req.query &&
+      typeof req.query.date_end === 'string' &&
+      /^\d\d\d\d-\d\d-\d\d$/.test(req.query.date_end) === false
+    ) {
+      return res.status(400).json({
+        route: `${req.method} ${req.path}`,
+        errors: [
+          {
+            value: req.query.date_end,
+            msg: 'End date must be a valid ISO-8601 date (e.g. 2021-05-13).',
+            param: 'date_end',
+            location: 'query',
+          },
+        ],
+      });
+    }
+    if (req.query && req.query.page) {
+      let page_size = req.query.page_size || 10;
+      if (req.query.page * page_size + page_size > 10000) {
+        return res.status(416).json({
+          route: `${req.method} ${req.path}`,
+          errors: [
+            {
+              msg: 'Range Not Satisfiable',
+            },
+          ],
+        });
+      }
     }
     try {
       const result = await getSearch(req.query);

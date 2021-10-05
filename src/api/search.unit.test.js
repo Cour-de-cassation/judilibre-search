@@ -361,6 +361,19 @@ describe('Testing /search endpoint basic validation', () => {
         },
       ],
     });
+    const test4 = await request(Server.app).get('/search?date_start=2018');
+    expect(test4.statusCode).toEqual(400);
+    expect(test4.body).toEqual({
+      route: `GET /search`,
+      errors: [
+        {
+          location: 'query',
+          msg: 'Start date must be a valid ISO-8601 date (e.g. 2021-05-13).',
+          param: 'date_start',
+          value: '2018',
+        },
+      ],
+    });
   });
 
   it('GET /search with a good "date_start" parameter should pass', async () => {
@@ -405,6 +418,19 @@ describe('Testing /search endpoint basic validation', () => {
           msg: 'End date must be a valid ISO-8601 date (e.g. 2021-05-13).',
           param: 'date_end',
           value: ['2021-05-13'],
+        },
+      ],
+    });
+    const test4 = await request(Server.app).get('/search?date_end=2018');
+    expect(test4.statusCode).toEqual(400);
+    expect(test4.body).toEqual({
+      route: `GET /search`,
+      errors: [
+        {
+          location: 'query',
+          msg: 'End date must be a valid ISO-8601 date (e.g. 2021-05-13).',
+          param: 'date_end',
+          value: '2018',
         },
       ],
     });
@@ -524,6 +550,16 @@ describe('Testing /search endpoint basic validation', () => {
           msg: `Value of the page_size parameter must be an integer between 1 and 50.`,
           param: 'page_size',
           value: '6666',
+        },
+      ],
+    });
+    const test4 = await request(Server.app).get('/search?page=333&page_size=30');
+    expect(test4.statusCode).toEqual(416);
+    expect(test4.body).toEqual({
+      route: `GET /search`,
+      errors: [
+        {
+          msg: `Range Not Satisfiable`,
         },
       ],
     });

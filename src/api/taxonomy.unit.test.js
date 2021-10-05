@@ -147,13 +147,13 @@ describe('Testing /taxonomy endpoint basic validation', () => {
         },
       ],
     });
-    const test2 = await request(Server.app).get('/taxonomy?id=publication&value[]=Communiqu%C3%A9%20de%20presse');
+    const test2 = await request(Server.app).get('/taxonomy?id=publication&value[]=Communiqu%C3%A9');
     expect(test2.statusCode).toEqual(400);
     expect(test2.body).toEqual({
       route: `GET /taxonomy`,
       errors: [
         {
-          value: ['Communiqué de presse'],
+          value: ['Communiqué'],
           msg: `Value parameter must be a string.`,
           param: 'value',
           location: 'query',
@@ -163,11 +163,11 @@ describe('Testing /taxonomy endpoint basic validation', () => {
   });
 
   it('GET /taxonomy with a good "value" parameter should pass', async () => {
-    const test1 = await request(Server.app).get('/taxonomy?id=publication&value=Communiqu%C3%A9%20de%20presse');
+    const test1 = await request(Server.app).get('/taxonomy?id=publication&value=Communiqu%C3%A9');
     expect(test1.statusCode).toEqual(200);
     expect(test1.body).toEqual({
       id: 'publication',
-      value: 'Communiqué de presse',
+      value: 'Communiqué',
       result: {
         key: 'c',
       },
@@ -184,7 +184,7 @@ describe('Testing /taxonomy endpoint basic validation', () => {
   });
 
   it('GET /taxonomy with any other combination of parameters must fail', async () => {
-    const test1 = await request(Server.app).get('/taxonomy?id=publication&value=Communiqu%C3%A9%20de%20presse&key=c');
+    const test1 = await request(Server.app).get('/taxonomy?id=publication&value=Communiqu%C3%A9&key=c');
     expect(test1.statusCode).toEqual(500);
   });
 });
