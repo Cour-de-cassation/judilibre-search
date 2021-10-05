@@ -553,6 +553,16 @@ describe('Testing /search endpoint basic validation', () => {
         },
       ],
     });
+    const test4 = await request(Server.app).get('/search?page=333&page_size=30');
+    expect(test4.statusCode).toEqual(416);
+    expect(test4.body).toEqual({
+      route: `GET /search`,
+      errors: [
+        {
+          msg: `Range Not Satisfiable`,
+        },
+      ],
+    });
   });
 
   it('GET /search with a good "page_size" parameter should pass', async () => {

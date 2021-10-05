@@ -266,6 +266,19 @@ api.get(
         ],
       });
     }
+    if (req.query && req.query.page) {
+      let page_size = req.query.page_size || 10;
+      if (req.query.page * page_size + page_size > 10000) {
+        return res.status(416).json({
+          route: `${req.method} ${req.path}`,
+          errors: [
+            {
+              msg: 'Range Not Satisfiable',
+            },
+          ],
+        });
+      }
+    }
     try {
       const result = await getSearch(req.query);
       if (result.errors) {
