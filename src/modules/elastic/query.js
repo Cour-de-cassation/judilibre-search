@@ -56,11 +56,9 @@ function buildQuery(query, target, relaxed) {
     }
   }
 
-  /*
   if (relaxed) {
     query.operator = 'or';
   }
-  */
 
   if (target === 'search' || target === 'export') {
     if (target === 'export') {
@@ -445,7 +443,7 @@ function buildQuery(query, target, relaxed) {
         fuzzy = false;
         finalSearchString = string;
       }
-
+      /*
       if (relaxed) {
         searchQuery.body.query.function_score.query.bool.should = {
           simple_query_string: {
@@ -469,6 +467,17 @@ function buildQuery(query, target, relaxed) {
           },
         };
       }
+      */
+      searchQuery.body.query.function_score.query.bool.must = {
+        simple_query_string: {
+          query: finalSearchString,
+          fields: boostedFields,
+          default_operator: operator,
+          auto_generate_synonyms_phrase_query: fuzzy,
+          fuzzy_max_expansions: fuzzy ? 50 : 0,
+          fuzzy_transpositions: fuzzy,
+        },
+      };
     }
   } else if (target === 'decision') {
     // Base query for single decision highlighting:
