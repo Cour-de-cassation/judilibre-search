@@ -29,7 +29,6 @@ async function search(query) {
     max_score: 0,
     results: [],
     relaxed: false,
-    debug: searchQuery,
   };
 
   if (string && searchQuery.query) {
@@ -42,7 +41,6 @@ async function search(query) {
         const t1b = Date.now();
         response.took_pre2 = t1b - t2;
         response.relaxed = true;
-        response.debug = searchQuery;
         rawResponse = await this.client.search(searchQuery.query);
         response.took_q2 = Date.now() - t1b;
       }
