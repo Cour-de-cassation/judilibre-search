@@ -5,7 +5,7 @@
 
 L'API Judilibre assure la publication des données produites par les juridictions judiciaires qui ont vocation à être diffusées en open data après leur pseudonymisation.
 
-Cette API est mise à disposition via le portail [PISTE](https://piste.gouv.fr) à partir du 30 septembre 2021. Cette API est accessible gratuitement, après inscription.
+Cette API est mise à disposition via le portail [PISTE](https://piste.gouv.fr) depuis le 1er octobre 2021. Cette API est accessible gratuitement, après inscription.
 
 Cette version de l'API est une version bêta. Elle permet de recueillir vos remarques et vos suggestions d’amélioration. Elle est donc suceptible d'évoluer les prochains mois.
 
