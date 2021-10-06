@@ -97,6 +97,7 @@ jobs:
       HTTP_PASSWD: ${{ secrets.HTTP_PASSWD }}
       KUBE_INGRESS: nginx
       KUBE_NAMESPACE: judilibre-scw-dev-par2-dev
+      KUBE_SERVICES_FORCE_UPDATE: ${{ secrets.KUBE_SERVICES_FORCE_UPDATE }}
       KUBE_TYPE: k8s
       KUBE_ZONE: scw-dev-par1
       SCW_ZONE: fr-par-1
@@ -126,6 +127,11 @@ jobs:
           KUBE_TOKEN: ${{ secrets.KUBE_SCW_TOKEN }}
           KUBE_URL: ${{ secrets.KUBE_SCW_URL }}
           KUBE_USER: ${{ secrets.KUBE_SCW_USER }}
+      - name: 🚀 Update remote kube services (if needed) ☸️
+        run: ./scripts/deploy_k8s_services.sh
+        env:
+          GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
+          VERSION: ${{ steps.extract_version.outputs.version }}
       - name: 🚀 Update remote app ☸️
         run: |
           export KUBE_NAMESPACE=${APP_GROUP}-${KUBE_ZONE}-${GIT_BRANCH}
@@ -162,6 +168,7 @@ jobs:
       HTTP_PASSWD: ${{ secrets.HTTP_PASSWD_PROD }}
       KUBE_INGRESS: nginx
       KUBE_NAMESPACE: judilibre-scw-prod-par1-master
+      KUBE_SERVICES_FORCE_UPDATE: ${{ secrets.KUBE_SERVICES_FORCE_UPDATE }}
       KUBE_TYPE: k8s
       KUBE_ZONE: scw-prod-par1
       SCW_ZONE: fr-par-1
@@ -191,6 +198,11 @@ jobs:
           KUBE_TOKEN: ${{ secrets.KUBE_SCW_TOKEN_PROD_PAR1 }}
           KUBE_URL: ${{ secrets.KUBE_SCW_URL_PROD_PAR1 }}
           KUBE_USER: ${{ secrets.KUBE_SCW_USER_PROD_PAR1 }}
+      - name: 🚀 Update remote kube services (if needed) ☸️
+        run: ./scripts/deploy_k8s_services.sh
+        env:
+          GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
+          VERSION: ${{ steps.extract_version.outputs.version }}
       - name: 🚀 Update remote app ☸️
         run: |
           export KUBE_NAMESPACE=${APP_GROUP}-${KUBE_ZONE}-${GIT_BRANCH}
@@ -227,6 +239,7 @@ jobs:
       HTTP_PASSWD: ${{ secrets.HTTP_PASSWD_PROD }}
       KUBE_INGRESS: nginx
       KUBE_NAMESPACE: judilibre-scw-prod-par2-master
+      KUBE_SERVICES_FORCE_UPDATE: ${{ secrets.KUBE_SERVICES_FORCE_UPDATE }}
       KUBE_TYPE: k8s
       KUBE_ZONE: scw-prod-par2
       SCW_ZONE: fr-par-2
@@ -256,6 +269,11 @@ jobs:
           KUBE_TOKEN: ${{ secrets.KUBE_SCW_TOKEN_PROD_PAR2 }}
           KUBE_URL: ${{ secrets.KUBE_SCW_URL_PROD_PAR2 }}
           KUBE_USER: ${{ secrets.KUBE_SCW_USER_PROD_PAR2 }}
+      - name: 🚀 Update remote kube services (if needed) ☸️
+        run: ./scripts/deploy_k8s_services.sh
+        env:
+          GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
+          VERSION: ${{ steps.extract_version.outputs.version }}
       - name: 🚀 Update remote app ☸️
         run: |
           export KUBE_NAMESPACE=${APP_GROUP}-${KUBE_ZONE}-${GIT_BRANCH}
