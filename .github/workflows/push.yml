@@ -134,13 +134,17 @@ jobs:
           VERSION: ${{ steps.extract_version.outputs.version }}
       - name: 🚀 Update remote app ☸️
         run: |
-          export KUBE_NAMESPACE=${APP_GROUP}-${KUBE_ZONE}-${GIT_BRANCH}
           ./scripts/update_app.sh
           kubectl get pods --namespace=${KUBE_NAMESPACE}
           kubectl logs service/${APP_ID}-svc --namespace=${KUBE_NAMESPACE}
         env:
           GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
           START_TIMEOUT: 20
+          VERSION: ${{ steps.extract_version.outputs.version }}
+      - name: 🧹 Clean old replicas ☸️
+        run: ./scripts/clean_old_replicas.sh
+        env:
+          GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
           VERSION: ${{ steps.extract_version.outputs.version }}
   deploy-scw-prod-par1:
     name: 🚀 Deploy, update on Scaleway (master on prod fr-par-1) ☸️
@@ -205,13 +209,17 @@ jobs:
           VERSION: ${{ steps.extract_version.outputs.version }}
       - name: 🚀 Update remote app ☸️
         run: |
-          export KUBE_NAMESPACE=${APP_GROUP}-${KUBE_ZONE}-${GIT_BRANCH}
           ./scripts/update_app.sh
           kubectl get pods --namespace=${KUBE_NAMESPACE}
           kubectl logs service/${APP_ID}-svc --namespace=${KUBE_NAMESPACE}
         env:
           GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
           START_TIMEOUT: 20
+          VERSION: ${{ steps.extract_version.outputs.version }}
+      - name: 🧹 Clean old replicas ☸️
+        run: ./scripts/clean_old_replicas.sh
+        env:
+          GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
           VERSION: ${{ steps.extract_version.outputs.version }}
   deploy-scw-prod-par2:
     name: 🚀 Deploy, update on Scaleway (master on prod fr-par-2) ☸️
@@ -283,4 +291,9 @@ jobs:
         env:
           GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
           START_TIMEOUT: 20
+          VERSION: ${{ steps.extract_version.outputs.version }}
+      - name: 🧹 Clean old replicas ☸️
+        run: ./scripts/clean_old_replicas.sh
+        env:
+          GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
           VERSION: ${{ steps.extract_version.outputs.version }}
