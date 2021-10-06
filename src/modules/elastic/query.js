@@ -318,15 +318,8 @@ function buildQuery(query, target, relaxed) {
         searchQuery.body.query.function_score.query.bool.filter = [];
       }
       searchQuery.body.query.function_score.query.bool.filter.push({
-        /*
         terms: {
           themesFilter: query.theme,
-        },
-        */
-        regexp: {
-          themesFilter: query.theme.map((item) => {
-            return `${item.replace(/([.()\/])/gm, '\\$1')}.*`;
-          }),
         },
       });
     }
