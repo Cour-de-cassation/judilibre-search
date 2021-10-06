@@ -96,7 +96,7 @@ jobs:
       ELASTIC_STORAGE_SIZE: 20Gi
       HTTP_PASSWD: ${{ secrets.HTTP_PASSWD }}
       KUBE_INGRESS: nginx
-      KUBE_NAMESPACE: judilibre-scw-dev-par2-dev
+      KUBE_NAMESPACE: judilibre-scw-dev-par1-dev
       KUBE_SERVICES_FORCE_UPDATE: ${{ secrets.KUBE_SERVICES_FORCE_UPDATE }}
       KUBE_TYPE: k8s
       KUBE_ZONE: scw-dev-par1
