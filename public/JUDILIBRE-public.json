@@ -14,7 +14,7 @@
       "get": {
         "servers": [
           {
-            "url": "http://sandbox-api.piste.gouv.fr",
+            "url": "https://sandbox-api.piste.gouv.fr/cassation/judilibre/v1.0",
             "description": "Serveur de recherche."
           }
         ],
@@ -153,7 +153,7 @@
       "get": {
         "servers": [
           {
-            "url": "http://sandbox-api.piste.gouv.fr",
+            "url": "https://sandbox-api.piste.gouv.fr/cassation/judilibre/v1.0",
             "description": "Serveur de recherche."
           }
         ],
@@ -260,7 +260,7 @@
       "get": {
         "servers": [
           {
-            "url": "http://sandbox-api.piste.gouv.fr",
+            "url": "https://sandbox-api.piste.gouv.fr/cassation/judilibre/v1.0",
             "description": "Serveur de recherche."
           }
         ],
@@ -334,7 +334,7 @@
       "get": {
         "servers": [
           {
-            "url": "http://sandbox-api.piste.gouv.fr",
+            "url": "https://sandbox-api.piste.gouv.fr/cassation/judilibre/v1.0",
             "description": "Serveur de recherche."
           }
         ],
@@ -655,7 +655,7 @@
       "get": {
         "servers": [
           {
-            "url": "http://sandbox-api.piste.gouv.fr",
+            "url": "https://sandbox-api.piste.gouv.fr/cassation/judilibre/v1.0",
             "description": "Serveur de recherche."
           }
         ],
@@ -966,7 +966,7 @@
       "get": {
         "servers": [
           {
-            "url": "http://sandbox-api.piste.gouv.fr",
+            "url": "https://sandbox-api.piste.gouv.fr/cassation/judilibre/v1.0",
             "description": "Serveur de recherche."
           }
         ],
