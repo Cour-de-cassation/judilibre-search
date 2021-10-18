@@ -3,19 +3,23 @@
 
 *La documentation présente est disponibles sur le [Github du code source de l'API Judilibre](https://github.com/Cour-de-cassation/judilibre-search)*
 
-L'API Judilibre assure la publication des données produites par les juridictions judiciaires qui ont vocation à être diffusées en open data après leur pseudonymisation.
+L'API Judilibre assure la publication des décisions rendues publiquement par la Cour de cassation, enrichies et pseudonymisées.
 
-Cette API est mise à disposition via le portail [PISTE](https://piste.gouv.fr) depuis le 1er octobre 2021. Cette API est accessible gratuitement, après inscription.
+Au fur et à mesure du calendrier établi par l’arrêté du 28 avril 2021 s’ajouteront les décisions rendues par d’autres juridictions de l’ordre judiciaire, telles les décisions civiles, sociales et commerciales des cours d’appel (mars 2022).
+
+L’API Judilibre, mise à disposition via [le portail PISTE](https://developer.aife.economie.gouv.fr/) et accessible gratuitement après inscription, permet notamment de rechercher en plein texte ou suivant des critères spécifiques parmi l’ensemble de ces décisions.
+
+Les données disponibles via l'API sont celles de la version du site de la Cour de cassation (https://courdecassation.fr).
 
 Cette version de l'API est une version bêta. Elle permet de recueillir vos remarques et vos suggestions d’amélioration. Elle est donc suceptible d'évoluer les prochains mois.
 
-Les données disponibles via l'API sont celles de la version du site de la Cour de cassation (https://courdecassation.fr).
+## Conditions d'utilisation
 
 L'utilisation de ces données est soumise :
 
 - à la licence ouverte 2.0 ;
 - aux [conditions générales d'utilisation de PISTE](https://developer.aife.economie.gouv.fr/images/com_apiportal/CGU/cgu_portal_FR.pdf) ;
-- aux [conditions générales d'utilisation pour la réutilisation des données issues des décisions de justice de l'ordre judiciaire diffusées en opendata par la Cour de cassation](CGU.md) ;
+- aux [conditions générales d'utilisation pour la réutilisation des données issues des décisions de justice de l'ordre judiciaire diffusées en opendata par la Cour de cassation](https://www.courdecassation.fr/conditions-generales-dutilisation-pour-la-reutilisation-des-donnees-issues-des-decisions-de-justice) ;
 - à des quotas qui seront prochainement sur le portail PISTE.
 
 ## Premiers pas sur Piste et sur l'API
