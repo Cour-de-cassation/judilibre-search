@@ -36,7 +36,7 @@ L'utilisation de ces données est soumise :
 
 ### API Endpoints
 
-La documentation technique sur chaque méthode de l'API est disponible sur le portail [PISTE (Swagger)](https://github.com/Cour-de-cassation/judilibre-search) ou sur le [Github](https://github.com/Cour-de-cassation/judilibre-search/), au format [Swagger](https://raw.githubusercontent.com/Cour-de-cassation/judilibre-search/master/public/JUDILIBRE-public-swagger.json) ou [OpenAPI 3.0.2](https://raw.githubusercontent.com/Cour-de-cassation/judilibre-search/master/public/JUDILIBRE-public.json).
+La documentation technique sur chaque méthode de l'API est disponible sur le portail [api.gouv.fr (OpenAPI 3.0.2)](https://staging.api.gouv.fr/documentation/api-judilibre) [PISTE (Swagger)](https://github.com/Cour-de-cassation/judilibre-search) ou sur le [Github](https://github.com/Cour-de-cassation/judilibre-search/).
 
 Les endpoints racine sont disponibles pour deux environnement (nécessitent donc l'enrôlement préalable et l'obtention d'un `KeyId`):
 - bac à sable: https://sandbox-api.piste.gouv.fr/cassation/judilibre/v1.0
