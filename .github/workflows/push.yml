@@ -1,6 +1,8 @@
 name: Publish Docker image
 
-on: [push]
+on:
+  push:
+    branches: [dev,master]
 
 jobs:
   build:
@@ -22,7 +24,6 @@ jobs:
       ELASTIC_MEM_JVM: 512m
       ELASTIC_STORAGE_POLICY: DeleteOnScaledownAndClusterDeletion
       ELASTIC_STORAGE_SIZE: 3Gi
-      ELASTIC_VERSION: 7.14.1
       KUBE_TYPE: k3s
       KUBE_ZONE: local
       START_TIMEOUT: 120
