@@ -36,6 +36,8 @@ jobs:
         shell: bash
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF} | sed 's|^refs/heads/||;' | sed 's/[^a-zA-Z0-9]/-/g')"
         id: extract_branch
+      - name: unit test
+        run: npm ci && npm run test
       - name: init deps
         run: ./scripts/init_deps.sh
         env:
