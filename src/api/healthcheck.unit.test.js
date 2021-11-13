@@ -9,7 +9,7 @@ describe('Testing /healthcheck endpoint', () => {
     expect(statusCode).toEqual(200);
     expect(body).toEqual({
       status: 'indisponible',
-      reason: "Cannot read property 'ping' of undefined",
+      reason: "Cannot read properties of undefined (reading 'ping')",
     });
   });
 });
