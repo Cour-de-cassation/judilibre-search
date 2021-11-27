@@ -29,31 +29,43 @@ jobs:
       START_TIMEOUT: 120
     steps:
       - uses: actions/checkout@v1
-      - name: get version
-        run: echo "##[set-output name=version;]$(cat package.json | jq -r '.version')-$(git rev-parse --short HEAD)"
-        id: extract_version
       - name: extract branch name
         shell: bash
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF} | sed 's|^refs/heads/||;' | sed 's/[^a-zA-Z0-9]/-/g')"
         id: extract_branch
-      - name: unit test
-        run: npm ci && npm run test
       - name: init deps
         run: ./scripts/init_deps.sh
         env:
           GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
           GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+      - name: get version
+        run: echo "##[set-output name=version;]$(./scripts/version.sh)"
+        id: extract_version
+      - name: 🐋 Check if build is needed
+        run: |
+          ./scripts/check_install.sh
+          echo "##[set-output name=status;]$(./scripts/docker-check.sh || echo build_needed)"
+        id: docker_check
+        env:
+          GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
+          VERSION: ${{ steps.extract_version.outputs.version }}
+      - name: unit test
+        if: steps.docker_check.outputs.status == 'build_needed'
+        run: npm ci && npm run test
       - name: 🐋 Build the master docker image
+        if: steps.docker_check.outputs.status == 'build_needed'
         run: ./scripts/docker-build.sh
         env:
           GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
           VERSION: ${{ steps.extract_version.outputs.version }}
       - name: ☸️  Deploy local k8s services
+        if: steps.docker_check.outputs.status == 'build_needed'
         run: ./scripts/deploy_k8s_services.sh
         env:
           GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
           VERSION: ${{ steps.extract_version.outputs.version }}
       - name: ✅ Execute minimal tests
+        if: steps.docker_check.outputs.status == 'build_needed'
         run: |
           export KUBE_NAMESPACE=${APP_GROUP}-${KUBE_ZONE}-${GIT_BRANCH}
           kubectl get pods --namespace=${KUBE_NAMESPACE}
