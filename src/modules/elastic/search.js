@@ -116,8 +116,9 @@ async function search(query) {
                 }
                 result.highlights[key] = [];
                 rawResult.highlight[field].forEach(function (hit) {
-                  hit = hit.replace(/^[^a-z<>]*/i, '');
-                  hit = hit.replace(/[^a-z<>]*$/i, '');
+                  hit = hit.replace(/^[^a-z<>]*/gim, '');
+                  hit = hit.replace(/[^a-z<>]*$/gim, '');
+                  hit = hit.replace(/X+/gm, '…');
                   result.highlights[key].push(hit.trim());
                 });
               }
@@ -131,8 +132,9 @@ async function search(query) {
                 }
                 result.highlights[key] = [];
                 rawResult.highlight[field + '.exact'].forEach(function (hit) {
-                  hit = hit.replace(/^[^a-z<>]*/i, '');
-                  hit = hit.replace(/[^a-z<>]*$/i, '');
+                  hit = hit.replace(/^[^a-z<>]*/gim, '');
+                  hit = hit.replace(/[^a-z<>]*$/gim, '');
+                  hit = hit.replace(/X+/gm, '…');
                   result.highlights[key].push(hit.trim());
                 });
               }

@@ -40,15 +40,15 @@ async function decision(query) {
         queryResponse.body.hits.hits[0].highlight
       ) {
         if (
-          queryResponse.body.hits.hits[0].highlight['text'] &&
-          queryResponse.body.hits.hits[0].highlight['text'].length > 0
+          queryResponse.body.hits.hits[0].highlight['displayText'] &&
+          queryResponse.body.hits.hits[0].highlight['displayText'].length > 0
         ) {
-          highlightedText = queryResponse.body.hits.hits[0].highlight['text'][0];
+          highlightedText = queryResponse.body.hits.hits[0].highlight['displayText'][0];
         } else if (
-          queryResponse.body.hits.hits[0].highlight['text.exact'] &&
-          queryResponse.body.hits.hits[0].highlight['text.exact'].length > 0
+          queryResponse.body.hits.hits[0].highlight['displayText.exact'] &&
+          queryResponse.body.hits.hits[0].highlight['displayText.exact'].length > 0
         ) {
-          highlightedText = queryResponse.body.hits.hits[0].highlight['text.exact'][0];
+          highlightedText = queryResponse.body.hits.hits[0].highlight['displayText.exact'][0];
         }
         if (highlightedText !== null) {
           // Rebuild zoning to integrate highlights:
@@ -91,7 +91,7 @@ async function decision(query) {
             let highlightIndex = highlightedFlattenZones[i].start;
             let tagLength = 0;
             while (zoningRebuildFailed === false && sourceIndex < end) {
-              if (!inTag && rawResult._source.text[sourceIndex] === highlightedText[highlightIndex]) {
+              if (!inTag && rawResult._source.displayText[sourceIndex] === highlightedText[highlightIndex]) {
                 sourceIndex++;
                 highlightIndex++;
               } else {
@@ -143,7 +143,7 @@ async function decision(query) {
     response = {
       id: rawResult._id,
       source: rawResult._source.source,
-      text: highlightedText ? highlightedText : rawResult._source.text,
+      text: highlightedText ? highlightedText : rawResult._source.displayText,
       chamber:
         query.resolve_references && taxons.chamber.taxonomy[rawResult._source.chamber]
           ? taxons.chamber.taxonomy[rawResult._source.chamber]
@@ -203,6 +203,13 @@ async function decision(query) {
       took_q2: t2 - t1,
       took_post: Date.now() - t2,
     };
+
+    if (response.contested !== null && response.contested.content) {
+      let show_contested_params = new URLSearchParams(query);
+      show_contested_params.set('showContested', true);
+      response.contested.url = show_contested_params.toString();
+      // response.contested.url = `https://${process.env.APP_HOST_ALTER}/decision?id=${decisionId}&showContested=true`;
+    }
   }
 
   return response;
