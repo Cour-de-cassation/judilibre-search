@@ -298,6 +298,15 @@ function buildQuery(query, target, relaxed) {
           jurisdiction: query.jurisdiction,
         },
       });
+    } else {
+      if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
+        searchQuery.body.query.function_score.query.bool.filter = [];
+      }
+      searchQuery.body.query.function_score.query.bool.filter.push({
+        terms: {
+          jurisdiction: ['cc'],
+        },
+      });
     }
 
     // Committee (filter):
@@ -492,8 +501,8 @@ function buildQuery(query, target, relaxed) {
     }
 
     // Add search on 'text' anyway:
-    if (textFields.indexOf('text') === -1) {
-      textFields.push('text');
+    if (textFields.indexOf('displayText') === -1) {
+      textFields.push('displayText');
     }
 
     if (searchVisa === true && textFields.indexOf('visa') === -1) {
@@ -512,9 +521,19 @@ function buildQuery(query, target, relaxed) {
 
     // Highlight text fields:
     textFields.forEach((field) => {
-      searchQuery.body.highlight.fields[field] = {
-        number_of_fragments: 0,
-      };
+      if (field === 'text') {
+        searchQuery.body.highlight.fields['displayText'] = {
+          number_of_fragments: 0,
+        };
+      } else if (field === 'text.exact') {
+        searchQuery.body.highlight.fields['displayText.exact'] = {
+          number_of_fragments: 0,
+        };
+      } else {
+        searchQuery.body.highlight.fields[field] = {
+          number_of_fragments: 0,
+        };
+      }
     });
 
     // Finalize search in  text fields:

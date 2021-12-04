@@ -1,7 +1,7 @@
 require('../modules/env');
 const express = require('express');
 const api = express.Router();
-const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 const { checkSchema, validationResult } = require('express-validator');
 const Elastic = require('../modules/elastic');
 const taxons = require('../taxons');
@@ -20,6 +20,13 @@ api.get(
       in: 'query',
       isString: true,
       errorMessage: `Value of the fileId parameter must be a string.`,
+      optional: true,
+    },
+    showContested: {
+      in: 'query',
+      isBoolean: true,
+      toBoolean: true,
+      errorMessage: `Value of the showContested parameter must be a boolean.`,
       optional: true,
     },
     query: {
@@ -96,6 +103,28 @@ api.get(
             errors: [{ msg: 'Not Found', error: `File '${req.query.fileId}' not found.` }],
           });
         }
+      } else if (req.query.showContested) {
+        if (result && result.contested !== null && result.contested.content) {
+          let contest_params = new URLSearchParams(req.query);
+          contest_params.delete('showContested');
+          const response = {
+            id: result.contested.id,
+            source: 'jurica',
+            text: result.contested.content,
+            chamber: result.contested.title.split('\n')[1],
+            decision_date: result.contested.date,
+            jurisdiction: result.contested.title.split('\n')[0],
+            number: result.contested.number,
+            numbers: [result.contested.number],
+            contest: contest_params.toString(),
+          };
+          return res.status(200).json(response);
+        } else {
+          return res.status(404).json({
+            route: `${req.method} ${req.path}`,
+            errors: [{ msg: 'Not Found', error: `Contested decision not found for decision '${req.query.id}'.` }],
+          });
+        }
       } else {
         if (result && result.files && Array.isArray(result.files)) {
           for (let i = 0; i < result.files.length; i++) {
@@ -103,6 +132,9 @@ api.get(
               delete result.files[i].rawUrl;
             }
           }
+        }
+        if (result && result.contested !== null && result.contested.content) {
+          delete result.contested.content;
         }
         return res.status(200).json(result);
       }
