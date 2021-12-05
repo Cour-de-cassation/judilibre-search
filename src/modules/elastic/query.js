@@ -494,7 +494,7 @@ function buildQuery(query, target, relaxed) {
     // Specific and default text fields to search in:
     if (query.field && Array.isArray(query.field) && query.field.length > 0) {
       query.field.forEach((field) => {
-        if (queryField[field] && textFields.indexOf(queryField[field]) === -1) {
+        if (field !== 'text' && queryField[field] && textFields.indexOf(queryField[field]) === -1) {
           textFields.push(queryField[field]);
         }
       });
@@ -521,19 +521,9 @@ function buildQuery(query, target, relaxed) {
 
     // Highlight text fields:
     textFields.forEach((field) => {
-      if (field === 'text') {
-        searchQuery.body.highlight.fields['displayText'] = {
-          number_of_fragments: 0,
-        };
-      } else if (field === 'text.exact') {
-        searchQuery.body.highlight.fields['displayText.exact'] = {
-          number_of_fragments: 0,
-        };
-      } else {
-        searchQuery.body.highlight.fields[field] = {
-          number_of_fragments: 0,
-        };
-      }
+      searchQuery.body.highlight.fields[field] = {
+        number_of_fragments: 0,
+      };
     });
 
     // Finalize search in  text fields:
