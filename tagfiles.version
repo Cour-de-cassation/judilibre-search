@@ -1,0 +1,6 @@
+Dockerfile
+package.json
+package-lock.json
+scripts/docker-build.sh
+src
+tagfiles.version
