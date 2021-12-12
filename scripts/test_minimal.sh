@@ -6,6 +6,11 @@ if [ ! -z "${APP_SELF_SIGNED}" ];then
   export CURL="${CURL} -k"
 fi;
 
+if [ "${ACME}" == "acme-staging" ];then
+  curl -s https://letsencrypt.org/certs/fakelerootx1.pem -o fakelerootx1.pem
+  export CURL="${CURL} --cacert fakelerootx1.pem"
+fi;
+
 if ${CURL} ${APP_SCHEME}://${APP_HOST}:${APP_PORT}/healthcheck | grep -q '"status":' ; then
     echo "✅  test api ${APP_HOST}/healthcheck"
 else
