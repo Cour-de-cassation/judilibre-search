@@ -7,8 +7,8 @@ if [ ! -z "${APP_SELF_SIGNED}" ];then
 fi;
 
 if [ "${ACME}" == "acme-staging" ];then
-  curl -s https://letsencrypt.org/certs/fakelerootx1.pem -o fakelerootx1.pem
-  export CURL="${CURL} --cacert fakelerootx1.pem"
+  curl -s https://letsencrypt.org/certs/staging/letsencrypt-stg-root-x1.pem -o letsencrypt-stg-root-x1.pem
+  export CURL="${CURL} --cacert letsencrypt-stg-root-x1.pem"
 fi;
 
 if ${CURL} ${APP_SCHEME}://${APP_HOST}:${APP_PORT}/healthcheck | grep -q '"status":' ; then
