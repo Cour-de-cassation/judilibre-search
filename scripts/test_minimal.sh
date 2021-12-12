@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export CURL="curl -s --retry 5 --retry-delay 2"
+export CURL="curl -s --retry 5 --retry-delay 2 --max-time 5"
 
 if [ ! -z "${APP_SELF_SIGNED}" ];then
   export CURL="${CURL} -k"
