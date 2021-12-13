@@ -46,7 +46,7 @@ async function batchexport(query) {
           let result = {
             id: rawResult._id,
             source: rawResult._source.source,
-            text: rawResult._source.text,
+            text: rawResult._source.displayText,
             jurisdiction:
               query.resolve_references && taxons.jurisdiction.taxonomy[rawResult._source.jurisdiction]
                 ? taxons.jurisdiction.taxonomy[rawResult._source.jurisdiction]
