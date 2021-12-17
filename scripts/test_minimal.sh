@@ -1,9 +1,14 @@
 #!/bin/bash
 
-export CURL="curl -s --retry 5 --retry-delay 2"
+export CURL="curl -s --retry 5 --retry-delay 2 --max-time 5"
 
 if [ ! -z "${APP_SELF_SIGNED}" ];then
   export CURL="${CURL} -k"
+fi;
+
+if [ "${ACME}" == "acme-staging" ];then
+  curl -s https://letsencrypt.org/certs/staging/letsencrypt-stg-root-x1.pem -o letsencrypt-stg-root-x1.pem
+  export CURL="${CURL} --cacert letsencrypt-stg-root-x1.pem"
 fi;
 
 if ${CURL} ${APP_SCHEME}://${APP_HOST}:${APP_PORT}/healthcheck | grep -q '"status":' ; then
