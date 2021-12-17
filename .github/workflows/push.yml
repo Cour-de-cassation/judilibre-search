@@ -154,7 +154,7 @@ jobs:
           kubectl logs service/${APP_ID}-svc --namespace=${KUBE_NAMESPACE}
         env:
           GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
-          START_TIMEOUT: 20
+          START_TIMEOUT: 30
           VERSION: ${{ steps.extract_version.outputs.version }}
       - name: 🧹 Clean old replicas ☸️
         run: ./scripts/clean_old_replicas.sh
