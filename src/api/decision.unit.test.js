@@ -138,38 +138,52 @@ describe('Testing /decision endpoint basic validation', () => {
 describe('Testing /decision endpoint on static dataset', () => {
   it('GET /decision should return the same base content no matter what the "id" parameter is', async () => {
     const baseObject = {
-      decision_date: '2020-11-25',
-      ecli: 'ECLI:FR:CCASS:2020:SO01153',
-      number: '19-60.222',
+      decision_date: '2020-11-18',
+      ecli: 'ECLI:FR:CCASS:2020:CO00740',
+      number: '19-19.463',
       zones: {
         introduction: [
           {
             start: 0,
-            end: 1933,
+            end: 41508,
           },
         ],
         expose: [
           {
-            start: 1933,
-            end: 2732,
+            start: 41508,
+            end: 42538,
           },
         ],
         moyens: [
           {
-            start: 2732,
-            end: 3396,
+            start: 42538,
+            end: 43434,
+          },
+          {
+            start: 43783,
+            end: 45612,
           },
         ],
         motivations: [
           {
-            start: 3396,
-            end: 4757,
+            start: 43434,
+            end: 43783,
+          },
+          {
+            start: 45612,
+            end: 46458,
           },
         ],
         dispositif: [
           {
-            start: 4757,
-            end: 5055,
+            start: 46458,
+            end: 47082,
+          },
+        ],
+        annexes: [
+          {
+            start: 47082,
+            end: 60689,
           },
         ],
       },
@@ -186,11 +200,11 @@ describe('Testing /decision endpoint on static dataset', () => {
 
   it('GET /decision with a falsy "resolve_references" parameter must return an unresolved content', async () => {
     const baseObject = {
-      chamber: 'soc',
+      chamber: 'comm',
       jurisdiction: 'cc',
-      publication: ['b', 'c'],
+      publication: ['b'],
       solution: 'rejet',
-      type: 'arret',
+      type: 'other',
       formation: 'fs',
     };
     const test1 = await request(Server.app).get(`/decision?id=foobar&resolve_references=false`);
@@ -203,11 +217,11 @@ describe('Testing /decision endpoint on static dataset', () => {
 
   it('GET /decision with a truthy "resolve_references" parameter must return a resolved content', async () => {
     const baseObject = {
-      chamber: 'Chambre sociale',
+      chamber: 'Chambre commerciale financière et économique',
       jurisdiction: 'Cour de cassation',
-      publication: ['Publié au Bulletin', 'Communiqué de presse'],
+      publication: ['Publié au Bulletin'],
       solution: 'Rejet',
-      type: 'Arrêt',
+      type: 'Autre',
       formation: 'Formation de section',
     };
     const test1 = await request(Server.app).get(`/decision?id=foobar&resolve_references=true`);
