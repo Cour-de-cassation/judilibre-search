@@ -37,7 +37,6 @@ jobs:
         run: ./scripts/init_deps.sh
         env:
           GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
-          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
       - name: get version
         run: echo "##[set-output name=version;]$(./scripts/version.sh)"
         id: extract_version
@@ -73,7 +72,6 @@ jobs:
           ./scripts/test_minimal.sh
         env:
           GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
-          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
           KUBECONFIG: /home/runner/.kube/config-local-k3s.yaml
       - name: 🚀 Push docker image
         if: (steps.docker_check.outputs.status == 'build_needed') && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/master')
@@ -128,7 +126,6 @@ jobs:
         run: ./scripts/init_deps.sh
         env:
           GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
-          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
       - name: get version
         run: echo "##[set-output name=version;]$(./scripts/version.sh)"
         id: extract_version
@@ -203,7 +200,6 @@ jobs:
         run: ./scripts/init_deps.sh
         env:
           GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
-          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
       - name: get version
         run: echo "##[set-output name=version;]$(./scripts/version.sh)"
         id: extract_version
@@ -278,7 +274,6 @@ jobs:
         run: ./scripts/init_deps.sh
         env:
           GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
-          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
       - name: get version
         run: echo "##[set-output name=version;]$(./scripts/version.sh)"
         id: extract_version
