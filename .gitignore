@@ -103,12 +103,26 @@ dist
 # TernJS port file
 .tern-port
 
-# Kubernetes config (are imported in judilibre-admin)
-k8s
-
-# git deps
-judilibre-*
-/elastic
-
 # MacOS
 .DS_Store
+
+# judilibre ops
+k8s*
+judilibre-*
+/elastic
+.env*
+scripts/clean_old_replicas.sh
+scripts/clone_data.sh
+scripts/create_environment.sh
+scripts/create_k8s_cluster.sh
+scripts/decision_xml_to_json.sh
+scripts/docker-check.sh
+scripts/generate-certificate.sh
+scripts/prepare_old_opendata.sh
+scripts/update_app.sh
+scripts/update_dns.sh
+scripts/update_dns_dynamic.sh
+scripts/update_dns_local.sh
+scripts/upgrade_elasticsearch.sh
+scripts/version.sh
+scripts/whitelist.sh
