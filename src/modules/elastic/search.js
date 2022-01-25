@@ -2,14 +2,11 @@ require('../env');
 const taxons = require('../../taxons');
 
 async function search(query) {
-  const t0 = Date.now();
   if (process.env.WITHOUT_ELASTIC) {
     return searchWithoutElastic.apply(this, [query]);
   }
 
   let searchQuery = this.buildQuery(query, 'search');
-
-  const t1 = Date.now();
 
   let string = query.query ? query.query.trim() : '';
 
@@ -21,11 +18,6 @@ async function search(query) {
     previous_page: null,
     next_page: null,
     took: 0,
-    took_pre1: t1 - t0,
-    took_q1: 0,
-    took_pre2: 0,
-    took_q2: 0,
-    took_post: 0,
     max_score: 0,
     results: [],
     relaxed: false,
@@ -33,18 +25,12 @@ async function search(query) {
 
   if (string && searchQuery.query) {
     let rawResponse = await this.client.search(searchQuery.query);
-    const t2 = Date.now();
-    response.took_q1 = t2 - t1;
     if (rawResponse && rawResponse.body) {
       if (!rawResponse.body.hits || !rawResponse.body.hits.total || !rawResponse.body.hits.total.value) {
         searchQuery = this.buildQuery(query, 'search', true);
-        const t1b = Date.now();
-        response.took_pre2 = t1b - t2;
         response.relaxed = true;
         rawResponse = await this.client.search(searchQuery.query);
-        response.took_q2 = Date.now() - t1b;
       }
-      const t3 = Date.now();
       if (rawResponse && rawResponse.body) {
         if (rawResponse.body.hits && rawResponse.body.hits.total && rawResponse.body.hits.total.value > 0) {
           response.total = rawResponse.body.hits.total.value;
@@ -152,7 +138,6 @@ async function search(query) {
           response.took = rawResponse.body.took;
         }
       }
-      response.took_post = Date.now() - t3;
     }
   }
 
@@ -183,6 +168,7 @@ function searchWithoutElastic(query) {
     results: query.resolve_references
       ? this.data.resolved.slice(page * page_size, (page + 1) * page_size)
       : this.data.unresolved.slice(page * page_size, (page + 1) * page_size),
+    relaxed: false,
   };
 
   if (string) {
@@ -219,11 +205,24 @@ function searchWithoutElastic(query) {
     }
 
     for (let i = 0; i < response.results.length; i++) {
+      if (Array.isArray(response.results[i].number)) {
+        response.results[i].numbers = response.results[i].number;
+        response.results[i].number = response.results[i].number[0];
+      } else {
+        response.results[i].numbers = [response.results[i].number];
+      }
+      response.results[i].files = taxons.filetype.buildFilesList(
+        response.results[i].id,
+        response.results[i].files,
+        query.resolve_references,
+      );
+      /*
       if (i % 5 === 0) {
         response.results[i].files = sample.files;
       } else {
         response.results[i].files = [];
       }
+      */
     }
   } else {
     response.total = 0;

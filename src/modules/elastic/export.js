@@ -2,14 +2,11 @@ require('../env');
 const taxons = require('../../taxons');
 
 async function batchexport(query) {
-  const t0 = Date.now();
   if (process.env.WITHOUT_ELASTIC) {
     return exportWithoutElastic.apply(this, [query]);
   }
 
   const searchQuery = this.buildQuery(query, 'export');
-
-  const t1 = Date.now();
 
   let response = {
     batch: searchQuery.page,
@@ -19,16 +16,11 @@ async function batchexport(query) {
     previous_batch: null,
     next_batch: null,
     took: 0,
-    took_pre: t1 - t0,
-    took_q: 0,
-    took_post: 0,
     results: [],
   };
 
   if (searchQuery.query) {
     const rawResponse = await this.client.search(searchQuery.query);
-    const t2 = Date.now();
-    response.took_q = t2 - t1;
     if (rawResponse && rawResponse.body) {
       if (rawResponse.body.hits && rawResponse.body.hits.total && rawResponse.body.hits.total.value > 0) {
         response.total = rawResponse.body.hits.total.value;
@@ -118,7 +110,6 @@ async function batchexport(query) {
       if (rawResponse.body.took) {
         response.took = rawResponse.body.took;
       }
-      response.took_post = Date.now() - t2;
     }
   }
 

@@ -659,7 +659,7 @@ describe('Testing /search endpoint on static dataset', () => {
       jurisdiction: 'cc',
       publication: ['b', 'c'],
       solution: 'rejet',
-      type: 'arret',
+      type: 'other',
       formation: 'fs',
     };
     const test1 = await request(Server.app).get(`/search?query=foo&resolve_references=false`);
@@ -698,7 +698,7 @@ describe('Testing /search endpoint on static dataset', () => {
     const baseObject = {
       chamber: 'Chambre sociale',
       jurisdiction: 'Cour de cassation',
-      publication: ['Publié au Bulletin', 'Communiqué de presse'],
+      publication: ['Publié au Bulletin', 'Communiqué'],
       solution: 'Rejet',
       type: 'Arrêt',
       formation: 'Formation de section',
