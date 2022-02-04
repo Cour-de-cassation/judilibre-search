@@ -135,6 +135,10 @@ async function decision(query) {
       }
     }
 
+    rawResult._source.publication = rawResult._source.publication.filter((item) => {
+      return /[br]/i.test(item);
+    });
+
     response = {
       id: rawResult._id,
       source: rawResult._source.source,
