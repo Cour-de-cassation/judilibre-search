@@ -251,6 +251,8 @@ describe('Testing /search endpoint basic validation', () => {
     expect(test3.statusCode).toEqual(200);
     const test4 = await request(Server.app).get(`/search?jurisdiction[]=ca`);
     expect(test4.statusCode).toEqual(200);
+    const test5 = await request(Server.app).get(`/search?jurisdiction[]=ca&jurisdiction[]=cc`);
+    expect(test5.statusCode).toEqual(200);
   });
 
   it('GET /search with a wrong "publication" parameter must fail', async () => {
@@ -636,6 +638,42 @@ describe('Testing /search endpoint basic validation', () => {
     const { statusCode } = await request(Server.app).get(`/search?resolve_references=true`);
     expect(statusCode).toEqual(200);
   });
+
+  it('GET /search with a wrong "location" parameter must fail', async () => {
+    const test1 = await request(Server.app).get('/search?location=foo');
+    expect(test1.statusCode).toEqual(400);
+    expect(test1.body).toEqual({
+      route: `GET /search`,
+      errors: [
+        {
+          location: 'query',
+          msg: `Value of the location parameter must be in [${taxons.ca.location.keys}].`,
+          param: 'location[0]',
+          value: 'foo',
+        },
+      ],
+    });
+    const test2 = await request(Server.app).get('/search?location[]=ca_rouen&location[]=foo');
+    expect(test2.statusCode).toEqual(400);
+    expect(test2.body).toEqual({
+      route: `GET /search`,
+      errors: [
+        {
+          location: 'query',
+          msg: `Value of the location parameter must be in [${taxons.ca.location.keys}].`,
+          param: 'location[1]',
+          value: 'foo',
+        },
+      ],
+    });
+  });
+
+  it('GET /search with a good "location" parameter should pass', async () => {
+    const test1 = await request(Server.app).get(`/search?location=ca_rouen`);
+    expect(test1.statusCode).toEqual(200);
+    const test2 = await request(Server.app).get(`/search?location[]=ca_rouen&location[]=ca_nimes`);
+    expect(test2.statusCode).toEqual(200);
+  });
 });
 
 describe('Testing /search endpoint on static dataset', () => {
@@ -696,6 +734,36 @@ describe('Testing /search endpoint on static dataset', () => {
     );
     expect(test2.body.results).toHaveLength(10);
     expect(test2.body.results[0]).toEqual(expect.objectContaining(baseObject));
+    const test3 = await request(Server.app).get(`/search?query=foo&jurisdiction=cc&resolve_references=false`);
+    expect(test3.statusCode).toEqual(200);
+    expect(test3.body).toEqual(
+      expect.objectContaining({
+        max_score: 10,
+        next_page:
+          'query=foo&jurisdiction=cc&resolve_references=false&field=&type=&theme=&chamber=&formation=&location=&publication=&solution=&page=1',
+        page: 0,
+        page_size: 10,
+        previous_page: null,
+        total: 928,
+      }),
+    );
+    expect(test3.body.results).toHaveLength(10);
+    expect(test3.body.results[0]).toEqual(expect.objectContaining(baseObject));
+    const test4 = await request(Server.app).get(`/search?query=foo&jurisdiction=cc&`);
+    expect(test4.statusCode).toEqual(200);
+    expect(test4.body).toEqual(
+      expect.objectContaining({
+        max_score: 10,
+        next_page:
+          'query=foo&jurisdiction=cc&field=&type=&theme=&chamber=&formation=&location=&publication=&solution=&page=1',
+        page: 0,
+        page_size: 10,
+        previous_page: null,
+        total: 928,
+      }),
+    );
+    expect(test4.body.results).toHaveLength(10);
+    expect(test4.body.results[0]).toEqual(expect.objectContaining(baseObject));
   });
 
   it('GET /search with a truthy "resolve_references" parameter must return a resolved content', async () => {
@@ -729,6 +797,118 @@ describe('Testing /search endpoint on static dataset', () => {
         max_score: 10,
         next_page:
           'query=foo&resolve_references=true&field=&type=&theme=&chamber=&formation=&jurisdiction=&location=&publication=&solution=&page=1',
+        page: 0,
+        page_size: 10,
+        previous_page: null,
+        total: 928,
+      }),
+    );
+    expect(test2.body.results).toHaveLength(10);
+    expect(test2.body.results[0]).toEqual(expect.objectContaining(baseObject));
+    const test3 = await request(Server.app).get(`/search?query=foo&resolve_references=true&jurisdiction=cc`);
+    expect(test3.statusCode).toEqual(200);
+    expect(test3.body).toEqual(
+      expect.objectContaining({
+        max_score: 10,
+        next_page:
+          'query=foo&resolve_references=true&jurisdiction=cc&field=&type=&theme=&chamber=&formation=&location=&publication=&solution=&page=1',
+        page: 0,
+        page_size: 10,
+        previous_page: null,
+        total: 928,
+      }),
+    );
+    expect(test3.body.results).toHaveLength(10);
+    expect(test3.body.results[0]).toEqual(expect.objectContaining(baseObject));
+    const test4 = await request(Server.app).get(`/search?query=foo&resolve_references=1&jurisdiction=cc`);
+    expect(test4.statusCode).toEqual(200);
+    expect(test4.body).toEqual(
+      expect.objectContaining({
+        max_score: 10,
+        next_page:
+          'query=foo&resolve_references=true&jurisdiction=cc&field=&type=&theme=&chamber=&formation=&location=&publication=&solution=&page=1',
+        page: 0,
+        page_size: 10,
+        previous_page: null,
+        total: 928,
+      }),
+    );
+    expect(test4.body.results).toHaveLength(10);
+    expect(test4.body.results[0]).toEqual(expect.objectContaining(baseObject));
+  });
+
+  //
+
+  it('GET /search on CA content with a falsy "resolve_references" parameter must return an unresolved content', async () => {
+    const baseObject = {
+      chamber: 'soc',
+      location: 'ca_versailles',
+      jurisdiction: 'ca',
+      solution: "MEE-retrait de l'incident",
+      type: 'ordonnance',
+    };
+    const test1 = await request(Server.app).get(`/search?query=foo&resolve_references=false&jurisdiction=ca`);
+    expect(test1.statusCode).toEqual(200);
+    expect(test1.body).toEqual(
+      expect.objectContaining({
+        max_score: 10,
+        next_page:
+          'query=foo&resolve_references=false&jurisdiction=ca&field=&type=&theme=&chamber=&formation=&location=&publication=&solution=&page=1',
+        page: 0,
+        page_size: 10,
+        previous_page: null,
+        total: 928,
+      }),
+    );
+    expect(test1.body.results).toHaveLength(10);
+    expect(test1.body.results[0]).toEqual(expect.objectContaining(baseObject));
+    const test2 = await request(Server.app).get(`/search?query=foo&jurisdiction=ca&`);
+    expect(test2.statusCode).toEqual(200);
+    expect(test2.body).toEqual(
+      expect.objectContaining({
+        max_score: 10,
+        next_page:
+          'query=foo&jurisdiction=ca&field=&type=&theme=&chamber=&formation=&location=&publication=&solution=&page=1',
+        page: 0,
+        page_size: 10,
+        previous_page: null,
+        total: 928,
+      }),
+    );
+    expect(test2.body.results).toHaveLength(10);
+    expect(test2.body.results[0]).toEqual(expect.objectContaining(baseObject));
+  });
+
+  it('GET /search on CA content with a truthy "resolve_references" parameter must return a resolved content', async () => {
+    const baseObject = {
+      chamber: 'Chambre sociale',
+      location: "Cour d'appel de Versailles",
+      jurisdiction: "Cour d'appel",
+      solution: "MEE-retrait de l'incident",
+      type: 'Ordonnance',
+    };
+    const test1 = await request(Server.app).get(`/search?query=foo&resolve_references=true&jurisdiction=ca`);
+    expect(test1.statusCode).toEqual(200);
+    expect(test1.body).toEqual(
+      expect.objectContaining({
+        max_score: 10,
+        next_page:
+          'query=foo&resolve_references=true&jurisdiction=ca&field=&type=&theme=&chamber=&formation=&location=&publication=&solution=&page=1',
+        page: 0,
+        page_size: 10,
+        previous_page: null,
+        total: 928,
+      }),
+    );
+    expect(test1.body.results).toHaveLength(10);
+    expect(test1.body.results[0]).toEqual(expect.objectContaining(baseObject));
+    const test2 = await request(Server.app).get(`/search?query=foo&resolve_references=1&jurisdiction=ca`);
+    expect(test2.statusCode).toEqual(200);
+    expect(test2.body).toEqual(
+      expect.objectContaining({
+        max_score: 10,
+        next_page:
+          'query=foo&resolve_references=true&jurisdiction=ca&field=&type=&theme=&chamber=&formation=&location=&publication=&solution=&page=1',
         page: 0,
         page_size: 10,
         previous_page: null,

@@ -130,8 +130,48 @@ function exportWithoutElastic(query) {
   const fs = require('fs');
   const path = require('path');
 
-  if (this.data === null) {
+  let taxonFilter = 'cc';
+  if (query.jurisdiction && Array.isArray(query.jurisdiction) && query.jurisdiction.length > 0) {
+    if (query.jurisdiction.length === 1) {
+      taxonFilter = query.jurisdiction[0];
+    } else {
+      taxonFilter = 'all';
+    }
+  } else {
+    taxonFilter = 'cc';
+  }
+
+  if (taxonFilter === 'cc') {
     this.data = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'sample_list.json')).toString());
+  } else if (taxonFilter === 'ca') {
+    this.data = JSON.parse(
+      fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'ca', 'sample_list.json')).toString(),
+    );
+  } else if (taxonFilter === 'all') {
+    this.data = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'sample_list.json')).toString());
+    const additionalData = JSON.parse(
+      fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'ca', 'sample_list.json')).toString(),
+    );
+    this.data.resolved = this.data.resolved.concat(additionalData.resolved);
+    this.data.unresolved = this.data.unresolved.concat(additionalData.unresolved);
+    this.data.resolved.sort((a, b) => {
+      if (a.score > b.score) {
+        return -1;
+      }
+      if (a.score < b.score) {
+        return 1;
+      }
+      return 0;
+    });
+    this.data.unresolved.sort((a, b) => {
+      if (a.score > b.score) {
+        return -1;
+      }
+      if (a.score < b.score) {
+        return 1;
+      }
+      return 0;
+    });
   }
 
   let batch = query.batch || 0;
@@ -172,17 +212,29 @@ function exportWithoutElastic(query) {
 
   let sample = null;
 
-  if (query.resolve_references) {
-    sample = JSON.parse(
-      fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'sample_detail_resolved.json')).toString(),
-    );
-  } else {
-    sample = JSON.parse(
-      fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'sample_detail_unresolved.json')).toString(),
-    );
-  }
-
   for (let i = 0; i < response.results.length; i++) {
+    if (response.results[i].jurisdiction === 'cc' || response.results[i].jurisdiction === 'Cour de cassation') {
+      if (query.resolve_references) {
+        sample = JSON.parse(
+          fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'sample_detail_resolved.json')).toString(),
+        );
+      } else {
+        sample = JSON.parse(
+          fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'sample_detail_unresolved.json')).toString(),
+        );
+      }
+    } else if (response.results[i].jurisdiction === 'ca' || response.results[i].jurisdiction === "Cour d'appel") {
+      if (query.resolve_references) {
+        sample = JSON.parse(
+          fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'ca', 'sample_detail_resolved.json')).toString(),
+        );
+      } else {
+        sample = JSON.parse(
+          fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'ca', 'sample_detail_unresolved.json')).toString(),
+        );
+      }
+    }
+
     delete response.results[i].score;
     delete response.results[i].highlights;
     response.results[i].source = sample.source;
@@ -195,6 +247,8 @@ function exportWithoutElastic(query) {
     response.results[i].contested = sample.contested;
     response.results[i].visa = sample.visa;
     response.results[i].rapprochements = sample.rapprochements;
+    response.results[i].location = sample.location;
+    response.results[i].nac = sample.nac;
   }
 
   return response;

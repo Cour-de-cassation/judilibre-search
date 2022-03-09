@@ -151,6 +151,12 @@ describe('Testing /export endpoint basic validation', () => {
     expect(test1.statusCode).toEqual(200);
     const test2 = await request(Server.app).get(`/export?batch=0&jurisdiction[]=cc`);
     expect(test2.statusCode).toEqual(200);
+    const test3 = await request(Server.app).get(`/export?batch=0&jurisdiction=ca`);
+    expect(test3.statusCode).toEqual(200);
+    const test4 = await request(Server.app).get(`/export?batch=0&jurisdiction[]=ca`);
+    expect(test4.statusCode).toEqual(200);
+    const test5 = await request(Server.app).get(`/export?batch=0&jurisdiction[]=cc&jurisdiction[]=ca`);
+    expect(test5.statusCode).toEqual(200);
   });
 
   it('GET /export with a wrong "publication" parameter must fail', async () => {

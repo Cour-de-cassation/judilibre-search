@@ -226,14 +226,43 @@ function decisionWithoutElastic(query) {
 
   let response = null;
 
-  if (query.resolve_references) {
-    response = JSON.parse(
-      fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'sample_detail_resolved.json')).toString(),
-    );
-  } else {
-    response = JSON.parse(
-      fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'sample_detail_unresolved.json')).toString(),
-    );
+  const allData = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'sample_list.json')).toString());
+  const additionalData = JSON.parse(
+    fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'ca', 'sample_list.json')).toString(),
+  );
+  allData.unresolved = allData.unresolved.concat(additionalData.unresolved);
+
+  let found = null;
+  for (let i = 0; i < allData.unresolved.length; i++) {
+    if (allData.unresolved[i].id === query.id) {
+      found = allData.unresolved[i].jurisdiction;
+      break;
+    }
+  }
+  if (found === null) {
+    found = 'cc';
+  }
+
+  if (found === 'cc') {
+    if (query.resolve_references) {
+      response = JSON.parse(
+        fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'sample_detail_resolved.json')).toString(),
+      );
+    } else {
+      response = JSON.parse(
+        fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'sample_detail_unresolved.json')).toString(),
+      );
+    }
+  } else if (found === 'ca') {
+    if (query.resolve_references) {
+      response = JSON.parse(
+        fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'ca', 'sample_detail_resolved.json')).toString(),
+      );
+    } else {
+      response = JSON.parse(
+        fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'ca', 'sample_detail_unresolved.json')).toString(),
+      );
+    }
   }
 
   response.id = query.id;
