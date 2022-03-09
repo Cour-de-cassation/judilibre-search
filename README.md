@@ -1,7 +1,6 @@
-
 ## L'API Judilibre
 
-*La documentation présente est disponibles sur le [Github du code source de l'API Judilibre](https://github.com/Cour-de-cassation/judilibre-search)*
+_La documentation présente est disponibles sur le [Github du code source de l'API Judilibre](https://github.com/Cour-de-cassation/judilibre-search)_
 
 L'API Judilibre assure la publication des décisions rendues publiquement par la Cour de cassation, enrichies et pseudonymisées.
 
@@ -39,6 +38,7 @@ L'utilisation de ces données est soumise :
 La documentation technique sur chaque méthode de l'API est disponible sur le portail [api.gouv.fr (OpenAPI 3.0.2)](https://staging.api.gouv.fr/documentation/api-judilibre) [PISTE (Swagger)](https://github.com/Cour-de-cassation/judilibre-search) ou sur le [Github](https://github.com/Cour-de-cassation/judilibre-search/).
 
 Les endpoints racine sont disponibles pour deux environnement (nécessitent donc l'enrôlement préalable et l'obtention d'un `KeyId`):
+
 - bac à sable: https://sandbox-api.piste.gouv.fr/cassation/judilibre/v1.0
 - production: https://api.piste.gouv.fr/cassation/judilibre/v1.0
 
@@ -49,16 +49,15 @@ Pour les plus rapides, vous avez identifié que votre `KeyId` dans votre APP_SAN
 ```
 curl -s -H "accept: application/json" -H "KeyId: 4196zzzz-ffff-aaaa-bbbb-6e5d4dc0cccc" -X GET "https://sandbox-api.piste.gouv.fr/cassation/judilibre/v1.0/search?query=brevet"
 
-{"page":0,"page_size":10,"query":{"query":"brevet","field":[],"type":[],"theme":[],"chamber":[],"formation":[],"jurisdiction":[],"committee":[],"publication":[],"solution":[]},"total":2025,"previous_page":null,"next_page":"query=brevet&field=&type=&theme=&chamber=&formation=&jurisdiction=&committee=&publication=&solution=&page=1","took":25,"max_score":2934.1016,"results":[{"score":1,"highlights":{"text":["européen et d'un <em>brevet</em> français se résout par la substitution du <em>brevet</em>...}
+{"page":0,"page_size":10,"query":{"query":"brevet","field":[],"type":[],"theme":[],"chamber":[],"formation":[],"jurisdiction":[],"publication":[],"solution":[]},"total":2025,"previous_page":null,"next_page":"query=brevet&field=&type=&theme=&chamber=&formation=&jurisdiction=&publication=&solution=&page=1","took":25,"max_score":2934.1016,"results":[{"score":1,"highlights":{"text":["européen et d'un <em>brevet</em> français se résout par la substitution du <em>brevet</em>...}
 ```
-
 
 Ou par navigation :
 
 - [Accéder à l'API](https://piste.gouv.fr/api-center)
   - chercher "Judilibre"
   - cliquez sur "Tester l'API"
-  - choisissez dans "Select credentials" la premier clé de votre application Sandbox (APP_SANDBOX_...)
+  - choisissez dans "Select credentials" la premier clé de votre application Sandbox (APP*SANDBOX*...)
 - Tester alors le point d'API `/search`
   - cliquez sur `/search`
   - cliquez sur "Try it out"
@@ -172,4 +171,3 @@ Des données statiques, destinées aux tests fonctionnels de base, sont inclues 
 - Un ensemble représentatif de résultats paginés en retour du point d'entrée `/search` (ne contient que des fragments de décisions) ;
 - Une [décision détaillée](https://www.legifrance.gouv.fr/juri/id/JURITEXT000042619658?tab_selection=all&searchField=ALL&query=19-60.222&searchType=ALL&typePagination=DEFAULT&pageSize=10&page=1&tab_selection=all) (d'autres seront ajoutées plus tard) en retour du point d'entrée `/decision` ;
 - Les termes auxquels correspondent certaines métadonnées en retour du point d'entrée `/taxonomy` (en cours de complétion).
-

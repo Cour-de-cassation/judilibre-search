@@ -50,17 +50,19 @@ async function search(query) {
               return /[br]/i.test(item);
             });
 
+            let taxonFilter = rawResult._source.jurisdiction;
+
             let result = {
               score: rawResult._score ? rawResult._score / response.max_score : 0,
               highlights: {},
               id: rawResult._id,
               jurisdiction:
-                query.resolve_references && taxons.jurisdiction.taxonomy[rawResult._source.jurisdiction]
-                  ? taxons.jurisdiction.taxonomy[rawResult._source.jurisdiction]
+                query.resolve_references && taxons[taxonFilter].jurisdiction.taxonomy[rawResult._source.jurisdiction]
+                  ? taxons[taxonFilter].jurisdiction.taxonomy[rawResult._source.jurisdiction]
                   : rawResult._source.jurisdiction,
               chamber:
-                query.resolve_references && taxons.chamber.taxonomy[rawResult._source.chamber]
-                  ? taxons.chamber.taxonomy[rawResult._source.chamber]
+                query.resolve_references && taxons[taxonFilter].chamber.taxonomy[rawResult._source.chamber]
+                  ? taxons[taxonFilter].chamber.taxonomy[rawResult._source.chamber]
                   : rawResult._source.chamber,
               number: Array.isArray(rawResult._source.numberFull)
                 ? rawResult._source.numberFull[0]
@@ -70,31 +72,39 @@ async function search(query) {
                 : [rawResult._source.numberFull],
               ecli: rawResult._source.ecli,
               formation:
-                query.resolve_references && taxons.formation.taxonomy[rawResult._source.formation]
-                  ? taxons.formation.taxonomy[rawResult._source.formation]
+                query.resolve_references && taxons[taxonFilter].formation.taxonomy[rawResult._source.formation]
+                  ? taxons[taxonFilter].formation.taxonomy[rawResult._source.formation]
                   : rawResult._source.formation,
+              location:
+                query.resolve_references && taxons[taxonFilter].location.taxonomy[rawResult._source.location]
+                  ? taxons[taxonFilter].location.taxonomy[rawResult._source.location]
+                  : rawResult._source.location,
               publication: query.resolve_references
                 ? rawResult._source.publication.map((key) => {
-                    if (taxons.publication.taxonomy[key]) {
-                      return taxons.publication.taxonomy[key];
+                    if (taxons[taxonFilter].publication.taxonomy[key]) {
+                      return taxons[taxonFilter].publication.taxonomy[key];
                     }
                     return key;
                   })
                 : rawResult._source.publication,
               decision_date: rawResult._source.decision_date,
               solution:
-                query.resolve_references && taxons.solution.taxonomy[rawResult._source.solution]
-                  ? taxons.solution.taxonomy[rawResult._source.solution]
+                query.resolve_references && taxons[taxonFilter].solution.taxonomy[rawResult._source.solution]
+                  ? taxons[taxonFilter].solution.taxonomy[rawResult._source.solution]
                   : rawResult._source.solution,
               solution_alt: rawResult._source.solution_alt,
               type:
-                query.resolve_references && taxons.type.taxonomy[rawResult._source.type]
-                  ? taxons.type.taxonomy[rawResult._source.type]
+                query.resolve_references && taxons[taxonFilter].type.taxonomy[rawResult._source.type]
+                  ? taxons[taxonFilter].type.taxonomy[rawResult._source.type]
                   : rawResult._source.type,
               summary: rawResult._source.summary,
               themes: rawResult._source.themes,
               bulletin: rawResult._source.bulletin,
-              files: taxons.filetype.buildFilesList(rawResult._id, rawResult._source.files, query.resolve_references),
+              files: taxons[taxonFilter].filetype.buildFilesList(
+                rawResult._id,
+                rawResult._source.files,
+                query.resolve_references,
+              ),
             };
 
             let hasHitsInSpecificZone = false;
@@ -175,6 +185,17 @@ function searchWithoutElastic(query) {
     relaxed: false,
   };
 
+  let taxonFilter = 'cc';
+  if (query.jurisdiction && Array.isArray(query.jurisdiction) && query.jurisdiction.length > 0) {
+    if (query.jurisdiction.length === 1) {
+      taxonFilter = query.jurisdiction[0];
+    } else {
+      taxonFilter = 'all';
+    }
+  } else {
+    taxonFilter = 'cc';
+  }
+
   if (string) {
     if (page > 0) {
       let previous_page_params = new URLSearchParams(query);
@@ -215,18 +236,11 @@ function searchWithoutElastic(query) {
       } else {
         response.results[i].numbers = [response.results[i].number];
       }
-      response.results[i].files = taxons.filetype.buildFilesList(
+      response.results[i].files = taxons[taxonFilter].filetype.buildFilesList(
         response.results[i].id,
         response.results[i].files,
         query.resolve_references,
       );
-      /*
-      if (i % 5 === 0) {
-        response.results[i].files = sample.files;
-      } else {
-        response.results[i].files = [];
-      }
-      */
     }
   } else {
     response.total = 0;

@@ -18,9 +18,9 @@ api.get(
       isString: true,
       toLowerCase: true,
       isIn: {
-        options: [taxons.type.options],
+        options: [taxons.all.type.options],
       },
-      errorMessage: `Value of the type parameter must be in [${taxons.type.keys}].`,
+      errorMessage: `Value of the type parameter must be in [${taxons.all.type.keys}].`,
       optional: true,
     },
     theme: {
@@ -43,9 +43,9 @@ api.get(
       isString: true,
       toLowerCase: true,
       isIn: {
-        options: [taxons.chamber.options],
+        options: [taxons.all.chamber.options],
       },
-      errorMessage: `Value of the chamber parameter must be in [${taxons.chamber.keys}].`,
+      errorMessage: `Value of the chamber parameter must be in [${taxons.all.chamber.keys}].`,
       optional: true,
     },
     formation: {
@@ -57,9 +57,9 @@ api.get(
       isString: true,
       toLowerCase: true,
       isIn: {
-        options: [taxons.formation.options],
+        options: [taxons.all.formation.options],
       },
-      errorMessage: `Value of the formation parameter must be in [${taxons.formation.keys}].`,
+      errorMessage: `Value of the formation parameter must be in [${taxons.all.formation.keys}].`,
       optional: true,
     },
     jurisdiction: {
@@ -71,23 +71,23 @@ api.get(
       isString: true,
       toLowerCase: true,
       isIn: {
-        options: [taxons.jurisdiction.options],
+        options: [taxons.all.jurisdiction.options],
       },
-      errorMessage: `Value of the jurisdiction parameter must be in [${taxons.jurisdiction.keys}].`,
+      errorMessage: `Value of the jurisdiction parameter must be in [${taxons.all.jurisdiction.keys}].`,
       optional: true,
     },
-    committee: {
+    location: {
       in: 'query',
       toArray: true,
     },
-    'committee.*': {
+    'location.*': {
       in: 'query',
       isString: true,
       toLowerCase: true,
       isIn: {
-        options: [taxons.committee.options],
+        options: [taxons.all.location.options],
       },
-      errorMessage: `Value of the committee parameter must be in [${taxons.committee.keys}].`,
+      errorMessage: `Value of the location parameter must be in [${taxons.all.location.keys}].`,
       optional: true,
     },
     publication: {
@@ -99,9 +99,9 @@ api.get(
       isString: true,
       toLowerCase: true,
       isIn: {
-        options: [taxons.publication.options],
+        options: [taxons.all.publication.options],
       },
-      errorMessage: `Value of the publication parameter must be in [${taxons.publication.keys}].`,
+      errorMessage: `Value of the publication parameter must be in [${taxons.all.publication.keys}].`,
       optional: true,
     },
     solution: {
@@ -113,9 +113,9 @@ api.get(
       isString: true,
       toLowerCase: true,
       isIn: {
-        options: [taxons.solution.options],
+        options: [taxons.all.solution.options],
       },
-      errorMessage: `Value of the solution parameter must be in [${taxons.solution.keys}].`,
+      errorMessage: `Value of the solution parameter must be in [${taxons.all.solution.keys}].`,
       optional: true,
     },
     date_start: {
@@ -137,9 +137,9 @@ api.get(
       isString: true,
       toLowerCase: true,
       isIn: {
-        options: [taxons.date_type.options],
+        options: [taxons.all.date_type.options],
       },
-      errorMessage: `Value of the date_type parameter must be in [${taxons.date_type.keys}].`,
+      errorMessage: `Value of the date_type parameter must be in [${taxons.all.date_type.keys}].`,
       optional: true,
     },
     order: {
@@ -147,9 +147,9 @@ api.get(
       isString: true,
       toLowerCase: true,
       isIn: {
-        options: [taxons.order.options],
+        options: [taxons.all.order.options],
       },
-      errorMessage: `Value of the order parameter must be in [${taxons.order.keys}].`,
+      errorMessage: `Value of the order parameter must be in [${taxons.all.order.keys}].`,
       optional: true,
     },
     batch_size: {
@@ -198,9 +198,9 @@ api.get(
       isString: true,
       toLowerCase: true,
       isIn: {
-        options: [taxons.filetype.options],
+        options: [taxons.all.filetype.options],
       },
-      errorMessage: `Value(s) of the withFileOfType parameter must be in [${taxons.filetype.keys}].`,
+      errorMessage: `Value(s) of the withFileOfType parameter must be in [${taxons.all.filetype.keys}].`,
       optional: true,
     },
   }),

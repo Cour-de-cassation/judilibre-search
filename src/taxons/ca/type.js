@@ -1,11 +1,7 @@
 const taxon = {
-  cc: 'Cour de cassation',
-  ca: "Cours d'appel",
-  /*
-  tc: 'Tribunal des conflits',
-  tgi: 'Tribunal de grande instance de Paris',
+  arret: 'Arrêt',
+  ordonnance: 'Ordonnance',
   other: 'Autre',
-  */
 };
 
 module.exports = {

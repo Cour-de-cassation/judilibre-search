@@ -195,7 +195,7 @@
         "security": [{}],
         "operationId": "taxonomy",
         "summary": "Permet de récupérer les listes des termes employés par le processus de recherche.",
-        "description": "L'API publique propose la récupération des listes des termes (sous la forme d'un couple clé/valeur) constituants les différents critères et filtres pris en compte par le processus de recherche et les données qu'il restitue, notamment :\n\n* La liste des types de décision (`type`) ;\n* La liste des juridictions dont le système intègre les décisions (`jurisdiction`) ;\n* La liste des chambres (`chamber`) ;\n* La liste des formations (`formation`) ;\n* La liste des commissions (`committee`) ;\n* La liste des niveaux de publication (`publication`) ;\n* La liste des matières (`theme`) ;\n* La liste des solutions (`solution`) ;\n* La liste des champs et des zones de contenu des décisions pouvant être ciblés par la recherche (`field`) ;\n* La liste des zones de contenu des décisions (`zones`) ;\n* etc.\n\nLa publication de cette taxonomie permet principalement au prestataire chargé de l'implémentation du frontend (ainsi qu'à certains réutilisateurs avancés) d'automatiser la constitution des formulaires de recherche et l'enrichissement des résultats retournés."
+        "description": "L'API publique propose la récupération des listes des termes (sous la forme d'un couple clé/valeur) constituants les différents critères et filtres pris en compte par le processus de recherche et les données qu'il restitue, notamment :\n\n* La liste des types de décision (`type`) ;\n* La liste des juridictions dont le système intègre les décisions (`jurisdiction`) ;\n* La liste des chambres (`chamber`) ;\n* La liste des formations (`formation`) ;\n* La liste des niveaux de publication (`publication`) ;\n* La liste des matières (`theme`) ;\n* La liste des solutions (`solution`) ;\n* La liste des champs et des zones de contenu des décisions pouvant être ciblés par la recherche (`field`) ;\n* La liste des zones de contenu des décisions (`zones`) ;\n* etc.\n\nLa publication de cette taxonomie permet principalement au prestataire chargé de l'implémentation du frontend (ainsi qu'à certains réutilisateurs avancés) d'automatiser la constitution des formulaires de recherche et l'enrichissement des résultats retournés."
       }
     },
     "/stats": {
@@ -331,15 +331,6 @@
             }
           },
           {
-            "name": "committee",
-            "description": "Filtre les résultats suivant la commission relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=committee`). Une recherche avec un paramètre `committee` vide ou manquant retourne des décisions relatives à toutes les commissions.",
-            "in": "query",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          {
             "name": "publication",
             "description": "Filtre les résultats suivant le niveau de publication des décisions (parmi les valeurs : `b`, `r`, `l`, `c`, etc. - les valeurs disponibles sont accessibles via `GET /taxonomy?id=publication`). Une recherche avec un paramètre `publication` vide ou manquant retourne des décisions de n'importe quel niveau de publication.",
             "in": "query",
@@ -430,7 +421,6 @@
                   "chamber": [],
                   "formation": [],
                   "jurisdiction": [],
-                  "committee": [],
                   "publication": ["c", "b"],
                   "solution": [],
                   "date_start": "1970-01-01",
@@ -535,7 +525,6 @@
                   "chamber": [],
                   "formation": [],
                   "jurisdiction": [],
-                  "committee": [],
                   "publication": ["c", "b"],
                   "solution": [],
                   "date_start": "1970-01-01",
@@ -675,15 +664,6 @@
         {
           "name": "jurisdiction",
           "description": "Filtre les résultats suivant la juridiction relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=jurisdiction`). Un export avec un paramètre `jurisdiction` vide ou manquant retourne des décisions relatives à toutes les juridictions.",
-          "in": "query",
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        {
-          "name": "committee",
-          "description": "Filtre les résultats suivant la commission relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=committee`). Un export avec un paramètre `committee` vide ou manquant retourne des décisions relatives à toutes les commissions.",
           "in": "query",
           "type": "array",
           "items": {
@@ -871,7 +851,6 @@
           "chamber": [],
           "formation": [],
           "jurisdiction": [],
-          "committee": [],
           "publication": ["c", "b"],
           "solution": [],
           "date_start": "1970-01-01",
@@ -1039,13 +1018,6 @@
             "type": "string"
           }
         },
-        "committee": {
-          "description": "Filtre les résultats suivant la commission relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=committee`). Une recherche avec un paramètre `committee` vide ou manquant retourne des décisions relatives à toutes les commissions.",
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
         "publication": {
           "description": "Filtre les résultats suivant le niveau de publication des décisions (parmi les valeurs : `b`, `r`, `l`, `c`, etc. - les valeurs disponibles sont accessibles via `GET /taxonomy?id=publication`). Une recherche avec un paramètre `publication` vide ou manquant retourne des décisions de n'importe quel niveau de publication.",
           "type": "array",
@@ -1105,7 +1077,6 @@
         "chamber": [],
         "formation": [],
         "jurisdiction": [],
-        "committee": [],
         "publication": ["c", "b"],
         "solution": [],
         "date_start": "1970-01-01",
@@ -1605,7 +1576,6 @@
           "chamber": [],
           "formation": [],
           "jurisdiction": [],
-          "committee": [],
           "publication": ["c", "b"],
           "solution": [],
           "date_start": "1970-01-01",
@@ -1712,13 +1682,6 @@
             "type": "string"
           }
         },
-        "committee": {
-          "description": "Filtre les résultats suivant la commission relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=committee`). Une recherche avec un paramètre `committee` vide ou manquant retourne des décisions relatives à toutes les commissions.",
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
         "publication": {
           "description": "Filtre les résultats suivant le niveau de publication des décisions (parmi les valeurs : `b`, `r`, `l`, `c`, etc. - les valeurs disponibles sont accessibles via `GET /taxonomy?id=publication`). Une recherche avec un paramètre `publication` vide ou manquant retourne des décisions de n'importe quel niveau de publication.",
           "type": "array",
@@ -1779,7 +1742,6 @@
         "chamber": [],
         "formation": [],
         "jurisdiction": [],
-        "committee": [],
         "publication": ["c", "b"],
         "solution": [],
         "date_start": "1970-01-01",

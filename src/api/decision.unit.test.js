@@ -87,7 +87,7 @@ describe('Testing /decision endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the operator parameter must be in [${taxons.operator.keys}].`,
+          msg: `Value of the operator parameter must be in [${taxons.all.operator.keys}].`,
           param: 'operator',
           value: 'foo',
         },
@@ -100,7 +100,7 @@ describe('Testing /decision endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the operator parameter must be in [${taxons.operator.keys}].`,
+          msg: `Value of the operator parameter must be in [${taxons.all.operator.keys}].`,
           param: 'operator',
           value: ['and'],
         },

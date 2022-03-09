@@ -118,6 +118,7 @@ describe('Testing /taxonomy endpoint basic validation', () => {
     expect(test1.body).toEqual({
       id: 'publication',
       key: 'b',
+      context_value: 'cc',
       result: {
         value: 'Publié au Bulletin',
       },
@@ -127,6 +128,7 @@ describe('Testing /taxonomy endpoint basic validation', () => {
     expect(test2.body).toEqual({
       id: 'formation',
       key: 'fs',
+      context_value: 'cc',
       result: {
         value: 'Formation de section',
       },
@@ -168,6 +170,7 @@ describe('Testing /taxonomy endpoint basic validation', () => {
     expect(test1.body).toEqual({
       id: 'publication',
       value: 'Communiqué',
+      context_value: 'cc',
       result: {
         key: 'c',
       },
@@ -177,9 +180,65 @@ describe('Testing /taxonomy endpoint basic validation', () => {
     expect(test2.body).toEqual({
       id: 'formation',
       value: 'Formation de section',
+      context_value: 'cc',
       result: {
         key: 'fs',
       },
+    });
+  });
+
+  it('GET /taxonomy with a proper "context_value" parameter should pass', async () => {
+    const test1 = await request(Server.app).get('/taxonomy?id=type&context_value=cc');
+    expect(test1.statusCode).toEqual(200);
+    expect(test1.body).toEqual({
+      id: 'type',
+      context_value: 'cc',
+      result: taxons.cc.type.taxonomy,
+    });
+    const test1b = await request(Server.app).get('/taxonomy?id=type');
+    expect(test1b.statusCode).toEqual(200);
+    expect(test1b.body).toEqual({
+      id: 'type',
+      context_value: 'cc',
+      result: taxons.cc.type.taxonomy,
+    });
+    const test2 = await request(Server.app).get('/taxonomy?id=type&context_value=ca');
+    expect(test2.statusCode).toEqual(200);
+    expect(test2.body).toEqual({
+      id: 'type',
+      context_value: 'ca',
+      result: taxons.ca.type.taxonomy,
+    });
+    const test3 = await request(Server.app).get('/taxonomy?id=location&context_value=cc');
+    expect(test3.statusCode).toEqual(200);
+    expect(test3.body).toEqual({
+      id: 'location',
+      context_value: 'cc',
+      result: taxons.cc.location.taxonomy,
+    });
+    const test4 = await request(Server.app).get('/taxonomy?id=location&context_value=ca');
+    expect(test4.statusCode).toEqual(200);
+    expect(test4.body).toEqual({
+      id: 'location',
+      context_value: 'ca',
+      result: taxons.ca.location.taxonomy,
+    });
+  });
+
+  it('GET /taxonomy on themes with "context_value" (check)', async () => {
+    const test1 = await request(Server.app).get('/taxonomy?id=theme&context_value=cc');
+    expect(test1.statusCode).toEqual(200);
+    expect(test1.body).toEqual({
+      id: 'theme',
+      context_value: 'cc',
+      result: taxons.cc.theme.options,
+    });
+    const test2 = await request(Server.app).get('/taxonomy?id=theme&context_value=ca');
+    expect(test2.statusCode).toEqual(200);
+    expect(test2.body).toEqual({
+      id: 'theme',
+      context_value: 'ca',
+      result: taxons.ca.theme.options,
     });
   });
 

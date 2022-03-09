@@ -139,19 +139,21 @@ async function decision(query) {
       return /[br]/i.test(item);
     });
 
+    let taxonFilter = rawResult._source.jurisdiction;
+
     response = {
       id: rawResult._id,
       source: rawResult._source.source,
       text: highlightedText ? highlightedText : rawResult._source.displayText,
       chamber:
-        query.resolve_references && taxons.chamber.taxonomy[rawResult._source.chamber]
-          ? taxons.chamber.taxonomy[rawResult._source.chamber]
+        query.resolve_references && taxons[taxonFilter].chamber.taxonomy[rawResult._source.chamber]
+          ? taxons[taxonFilter].chamber.taxonomy[rawResult._source.chamber]
           : rawResult._source.chamber,
       decision_date: rawResult._source.decision_date,
       ecli: rawResult._source.ecli,
       jurisdiction:
-        query.resolve_references && taxons.jurisdiction.taxonomy[rawResult._source.jurisdiction]
-          ? taxons.jurisdiction.taxonomy[rawResult._source.jurisdiction]
+        query.resolve_references && taxons[taxonFilter].jurisdiction.taxonomy[rawResult._source.jurisdiction]
+          ? taxons[taxonFilter].jurisdiction.taxonomy[rawResult._source.jurisdiction]
           : rawResult._source.jurisdiction,
       number: Array.isArray(rawResult._source.numberFull)
         ? rawResult._source.numberFull[0]
@@ -161,30 +163,38 @@ async function decision(query) {
         : [rawResult._source.numberFull],
       publication: query.resolve_references
         ? rawResult._source.publication.map((key) => {
-            if (taxons.publication.taxonomy[key]) {
-              return taxons.publication.taxonomy[key];
+            if (taxons[taxonFilter].publication.taxonomy[key]) {
+              return taxons[taxonFilter].publication.taxonomy[key];
             }
             return key;
           })
         : rawResult._source.publication,
       solution:
-        query.resolve_references && taxons.solution.taxonomy[rawResult._source.solution]
-          ? taxons.solution.taxonomy[rawResult._source.solution]
+        query.resolve_references && taxons[taxonFilter].solution.taxonomy[rawResult._source.solution]
+          ? taxons[taxonFilter].solution.taxonomy[rawResult._source.solution]
           : rawResult._source.solution,
       solution_alt: rawResult._source.solution_alt,
       type:
-        query.resolve_references && taxons.type.taxonomy[rawResult._source.type]
-          ? taxons.type.taxonomy[rawResult._source.type]
+        query.resolve_references && taxons[taxonFilter].type.taxonomy[rawResult._source.type]
+          ? taxons[taxonFilter].type.taxonomy[rawResult._source.type]
           : rawResult._source.type,
       formation:
-        query.resolve_references && taxons.formation.taxonomy[rawResult._source.formation]
-          ? taxons.formation.taxonomy[rawResult._source.formation]
+        query.resolve_references && taxons[taxonFilter].formation.taxonomy[rawResult._source.formation]
+          ? taxons[taxonFilter].formation.taxonomy[rawResult._source.formation]
           : rawResult._source.formation,
+      location:
+        query.resolve_references && taxons[taxonFilter].location.taxonomy[rawResult._source.location]
+          ? taxons[taxonFilter].location.taxonomy[rawResult._source.location]
+          : rawResult._source.location,
       update_date: rawResult._source.update_date,
       summary: rawResult._source.summary,
       themes: rawResult._source.themes,
       bulletin: rawResult._source.bulletin,
-      files: taxons.filetype.buildFilesList(rawResult._id, rawResult._source.files, query.resolve_references),
+      files: taxons[taxonFilter].filetype.buildFilesList(
+        rawResult._id,
+        rawResult._source.files,
+        query.resolve_references,
+      ),
       zones: highlightedZoning ? highlightedZoning : rawResult._source.zones,
       contested: rawResult._source.contested ? rawResult._source.contested : null,
       visa: rawResult._source.visa
@@ -204,7 +214,6 @@ async function decision(query) {
       let show_contested_params = new URLSearchParams(query);
       show_contested_params.set('showContested', true);
       response.contested.url = show_contested_params.toString();
-      // response.contested.url = `https://${process.env.APP_HOST_ALTER}/decision?id=${decisionId}&showContested=true`;
     }
   }
 
@@ -233,7 +242,6 @@ function decisionWithoutElastic(query) {
     let show_contested_params = new URLSearchParams(query);
     show_contested_params.set('showContested', true);
     response.contested.url = show_contested_params.toString();
-    // response.contested.url = `https://${process.env.APP_HOST_ALTER}/decision?id=${decisionId}&showContested=true`;
   }
 
   return response;

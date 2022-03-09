@@ -40,9 +40,9 @@ api.get(
       isString: true,
       toLowerCase: true,
       isIn: {
-        options: [taxons.operator.options],
+        options: [taxons.all.operator.options],
       },
-      errorMessage: `Value of the operator parameter must be in [${taxons.operator.keys}].`,
+      errorMessage: `Value of the operator parameter must be in [${taxons.all.operator.keys}].`,
       optional: true,
     },
     resolve_references: {

@@ -1,5 +1,4 @@
 require('../env');
-const taxons = require('../../taxons');
 
 async function stats(query) {
   if (process.env.WITHOUT_ELASTIC) {
