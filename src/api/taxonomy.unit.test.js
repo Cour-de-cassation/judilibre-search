@@ -238,7 +238,7 @@ describe('Testing /taxonomy endpoint basic validation', () => {
     expect(test2.body).toEqual({
       id: 'theme',
       context_value: 'ca',
-      result: taxons.ca.theme.options,
+      result: taxons.ca.theme.tree,
     });
   });
 

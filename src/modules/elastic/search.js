@@ -173,8 +173,6 @@ function searchWithoutElastic(query) {
     taxonFilter = 'cc';
   }
 
-  console.log('***************', taxonFilter);
-
   if (taxonFilter === 'cc') {
     this.data = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'sample_list.json')).toString());
   } else if (taxonFilter === 'ca') {

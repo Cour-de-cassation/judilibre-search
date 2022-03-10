@@ -110,7 +110,7 @@ async function getTaxonomy(query) {
         id: query.id,
         context_value: query.context_value,
         result: taxons[query.context_value][query.id].tree
-          ? taxons[query.context_value][query.id].options
+          ? taxons[query.context_value][query.id].tree
           : taxons[query.context_value][query.id].taxonomy,
       };
     } else if (query.key && !query.value) {
