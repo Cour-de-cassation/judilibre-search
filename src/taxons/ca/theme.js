@@ -1,36 +1,25 @@
 // This list cannot be produced automatically!
 const taxon = {
-  10: {
-    label: 'Nationalité',
+  1: {
+    label: 'Droit des personnes',
     subs: {
+      10: 'Nationalité',
+      11: 'Etat civil',
+      12: 'Nom - Prénom',
+      14: 'Droits attachés à la personne',
       '10A':
         "Demande tendant à contester l'enregistrement ou le refus d'enregistrement d'une déclaration de nationalité",
       '10B': 'Action déclaratoire ou négatoire de nationalité',
       '10C': 'Contestation sur une question de nationalité soulevée par voie de question préjudicielle',
       '10Z': 'Autres demandes en matière de nationalité',
-    },
-  },
-  11: {
-    label: 'Etat civil',
-    subs: {
       '11C': "Demande sanctionnant le dysfonctionnement de l'état civil",
       '11F': "Contestation d'une décision d'irrecevabilité d'une déclaration conjointe de PACS",
       '11G': "Demande aux fins d'annulation de PACS",
-    },
-  },
-  12: {
-    label: 'Nom - Prénom',
-    subs: {
       '12A': "Demande de changement, de substitution ou de reprise de nom d'un enfant naturel",
       '12B': "Demande relative à l'usage du nom d'un conjoint ou d'un ex-conjoint",
       '12C': 'Contestation du choix du prénom par le procureur de la République',
       '12D': 'Demande de changement de prénom',
       '12Z': 'Autres demandes en matière de nom ou de prénom',
-    },
-  },
-  14: {
-    label: 'Droits attachés à la personne',
-    subs: {
       '14A': "Demande tendant à la réparation et/ou à la cessation d'une atteinte au droit au respect de la vie privée",
       '14B': "Demande relative à l'organisation des funérailles ou à la sépulture",
       '14C': "Demande relative à l'internement d'une personne",
@@ -54,9 +43,18 @@ const taxon = {
       '14X': "Droits attachés à la personnes - nature d'affaire indéternimée",
     },
   },
-  20: {
-    label: 'Divorce',
+  2: {
+    label: 'Droit de la famille',
     subs: {
+      20: 'Divorce',
+      21: 'Séparation de corps',
+      22: 'Demandes postérieures au prononcé du divorce ou de la séparation de corps',
+      23: 'Mariage et régimes matrimoniaux',
+      24: 'Obligations à caractère alimentaire',
+      25: "Filiation légitime et légitimation (postes à n'utiliser qu'en cas de recours à compter du 1er juillet 2006)",
+      26: 'Filiation naturelle (recours) et filiation adoptive',
+      28: 'Partage, indivision, succession',
+      29: 'Libéralités (donations et testaments)',
       '20A': 'Demande en divorce sur requête conjointe',
       '20B': 'Demande en divorce sur demande acceptée',
       '20C': 'Demande en divorce pour rupture de la vie commune, en cas de séparation de fait',
@@ -68,11 +66,6 @@ const taxon = {
       '20J': 'Demande en divorce autre que par consentement mutuel',
       '20K': 'Demande en divorce par consentement mutuel - passerelle -',
       '20X': "Divorce - nature d'affaire indéterminée",
-    },
-  },
-  21: {
-    label: 'Séparation de corps',
-    subs: {
       '21A': 'Demande en séparation de corps sur requête conjointe',
       '21B': 'Demande en séparation de corps sur demande acceptée',
       '21C': 'Demande en séparation de corps pour rupture de la vie commune, en cas de séparation de fait',
@@ -84,47 +77,21 @@ const taxon = {
       '21I': 'Demande en séparation de corps autre que par consentement mutuel',
       '21J': 'Demande en séparation de corps par consentement mutuel - passerelle -',
       '21X': "Séparation de corps- nature d'affaire indéterminée",
-    },
-  },
-  22: {
-    label: 'Demandes postérieures au prononcé du divorce ou de la séparation de corps',
-    subs: {
       '22G': 'Demande relative à la liquidation du régime matrimonial',
-    },
-  },
-  23: {
-    label: 'Mariage et régimes matrimoniaux',
-    subs: {
       '23A': 'Demande en nullité de mariage',
       '23B': "Demande de mainlevée d'une opposition à mariage",
       '23H': 'Demande en séparation de biens judiciaire',
       '23I': "Demande en nullité de mariage célébré à l'étranger par le procureur de la République de Nantes",
       '23J': 'Demande en nullité de mariage célébré en France par le procureur de la République',
       '23K': 'Demande en nullité de mariage par toute partie autre que le procureur de la République',
-    },
-  },
-  24: {
-    label: 'Obligations à caractère alimentaire',
-    subs: {
       '24G': 'Action à fin de subsides',
       '24H': 'Contestation relative au paiement direct ou au recouvrement public des pensions alimentaires',
-    },
-  },
-  25: {
-    label:
-      "Filiation légitime et légitimation (postes à n'utiliser qu'en cas de recours à compter du 1er juillet 2006)",
-    subs: {
       '25D': 'Action en rétablissement de la présomption de paternité légitime',
       '25F': "Action en revendication d'enfant légitime ",
       '25G': 'Demande de légitimation postérieurement au mariage',
       '25H':
         "Demande relative au consentement à une procréation médicalement assistée ou à la délivrance d'un acte de notoriété constatant la possession d'état d'enfant légitime.",
       '25I': 'Demande de légitimation par autorité de justice ',
-    },
-  },
-  26: {
-    label: 'Filiation naturelle (recours) et filiation adoptive',
-    subs: {
       '26A': 'Action en contestation de reconnaissance et demande en nullité de reconnaissance ',
       '26B': 'Action en recherche de paternité naturelle ',
       '26C': 'Action en recherche de maternité naturelle ',
@@ -138,11 +105,6 @@ const taxon = {
       '26K': "Demande d'adoption plénière de l'enfant du conjoint",
       '26Y': 'Autres demandes relatives à la filiation adoptive',
       '26Z': 'Autres demandes relatives à la filiation naturelle et à la filiation adoptive ',
-    },
-  },
-  28: {
-    label: 'Partage, indivision, succession',
-    subs: {
       '28A': 'Demande en partage, ou contestations relatives au partage',
       '28B': "Demande en annulation d'un acte accompli sur un bien indivis, ou d'une convention d'indivision",
       '28C': 'Demande relative aux pouvoirs de gestion des biens indivis',
@@ -153,11 +115,6 @@ const taxon = {
       '28H': "Demande d'apposition de scellés",
       '28I': 'Contestation en matière de scellés',
       '28Z': 'Autres demandes en matière de succession',
-    },
-  },
-  29: {
-    label: 'Libéralités (donations et testaments)',
-    subs: {
       '29A': "Demande en annulation, en réduction d'une libéralité ou d'une clause d'une libéralité",
       '29B': "Demande en révocation d'une libéralité ou en caducité d'un legs",
       '29C': "Demande en délivrance d'un legs",
@@ -200,9 +157,18 @@ const taxon = {
       '2AZ': 'Autres demandes relatives à la filiation',
     },
   },
-  30: {
-    label: 'Bail commercial',
+  3: {
+    label: 'Droit des affaires',
     subs: {
+      30: 'Bail commercial',
+      31: 'Vente du fonds de commerce',
+      32: 'Location-gérance du fonds de commerce',
+      33: "Nantissement du fonds de commerce, du fonds artisanal, de l'outillage et du matériel d'équipement ou des stocks",
+      34: 'Groupements : Fonctionnement (I)',
+      35: 'Groupements : Fonctionnement (II)',
+      36: 'Groupements : Dirigeants',
+      38: 'Banque - Effets de commerce',
+      39: 'Concurrence',
       '30A': 'Demande en nullité du bail commercial',
       '30B': "Demande en paiement des loyers et charges et/ou tendant à la résiliation du bail et/ou à l'expulsion",
       '30C': 'Demande de fixation du prix du bail révisé ou renouvelé',
@@ -212,11 +178,6 @@ const taxon = {
       '30G': "Demande d'exécution de travaux à la charge du bailleur, ou demande en garantie contre le bailleur",
       '30H': 'Demande de fixation du prix de cession du bail commercial en cas de préemption',
       '30Z': 'Autres demandes en matière de baux commerciaux',
-    },
-  },
-  31: {
-    label: 'Vente du fonds de commerce',
-    subs: {
       '31A': 'Demande en nullité des promesses de vente ou de vente de fonds de commerce',
       '31B': 'Demande en paiement du prix et/ou tendant à faire sanctionner le non-paiement du prix',
       '31C': 'Demande formée par les créanciers du vendeur inscrits ou opposants',
@@ -226,11 +187,6 @@ const taxon = {
       '31G': 'Demande de vente en justice du fonds de commerce',
       '31H': 'Demande de fixation du prix de cession du fonds de commerce en cas de préemption',
       '31Z': 'Autres demandes en matière de vente de fonds de commerce',
-    },
-  },
-  32: {
-    label: 'Location-gérance du fonds de commerce',
-    subs: {
       '32A': 'Demande en nullité du contrat de location-gérance',
       '32B': 'Demande en paiement formée contre le loueur et/ou le locataire-gérant',
       '32C': "Demande en révision du loyer assorti d'une clause d'échelle mobile",
@@ -238,12 +194,6 @@ const taxon = {
       '32E': "Demande de reprise du fonds par le loueur à l'expiration du contrat de location-gérance",
       '32F': "Demande de dispense des conditions nécessaires à la concession d'une location gérance",
       '32Z': 'Autres demandes en matière de location-gérance du fonds de commerce',
-    },
-  },
-  33: {
-    label:
-      "Nantissement du fonds de commerce, du fonds artisanal, de l'outillage et du matériel d'équipement ou des stocks",
-    subs: {
       '33A': 'Demande de vente forcée du fonds nanti et/ou en surenchère du 10°',
       '33B': "Demande en nullité du nantissement et de l'inscription du nantissement du fonds de commerce",
       '33C': "Demande d'inscription provisoire du nantissement du fonds de commerce nanti",
@@ -253,11 +203,6 @@ const taxon = {
       '33G': "Demande d'autorisation de vente amiable du bien formée par le débiteur",
       '33H': 'Demande de déchéance du terme en cas de déplacement du bien nanti',
       '33X': "Nantissement du fonds de commerce ou du fonds artisanal, de l'outillage, et du matériel d'équipement",
-    },
-  },
-  34: {
-    label: 'Groupements : Fonctionnement (I)',
-    subs: {
       '34A': 'Demande en nullité de groupement',
       '34B': 'Demande de libération des apports et/ou en régularisation des statuts et des formalités de constitution',
       '34C': 'Demande en nullité des actes des assemblées et conseils',
@@ -267,11 +212,6 @@ const taxon = {
       '34G':
         "Demande en paiement de cotisations formée contre les adhérents d'une association, d'un syndicat ou d'un ordre professionnel",
       '34H': "Demande visant à faire respecter les obligations d'une société relatives au plan de vigilance",
-    },
-  },
-  35: {
-    label: 'Groupements : Fonctionnement (II)',
-    subs: {
       '35A':
         "Demande tendant à contester l'agrément ou le refus d'agrément de cessionnaires de parts sociales ou d'actions",
       '35B': 'Action en opposition des créanciers contre un projet de fusion, scission ou de réduction du capital',
@@ -284,11 +224,6 @@ const taxon = {
       '35H': 'Demande relative à la désignation et aux pouvoirs du liquidateur',
       '35X': "Groupements : Fonctionnement (II)- nature d'affaire indéterminée",
       '35Z': 'Autres demandes relatives au fonctionnement du groupement',
-    },
-  },
-  36: {
-    label: 'Groupements : Dirigeants',
-    subs: {
       '36A': "Demande en nullité de la désignation d'un dirigeant du groupement",
       '36B': 'Demande en révocation des dirigeants',
       '36C': 'Demande en indemnisation formée par le dirigeant pour révocation injustifiée',
@@ -297,11 +232,6 @@ const taxon = {
       '36F': "Demande d'exclusion de membre ou retrait de membre ou associé",
       '36X': "Groupements : Dirigeants- nature d'affaire indéterminée",
       '36Z': 'Autres demandes relatives aux dirigeants du groupement',
-    },
-  },
-  38: {
-    label: 'Banque - Effets de commerce',
-    subs: {
       '38A': 'Demande relative à une cession ou un nantissement de créances professionnelles',
       '38B': "Demande en paiement par le porteur, d'une lettre de change, d'un billet à ordre",
       '38C': 'Demande en paiement du solde du compte bancaire',
@@ -311,11 +241,6 @@ const taxon = {
       '38F': 'Demande relative à une interdiction bancaire',
       '38G': "Demande de mainlevée d'opposition au paiement d'un chèque",
       '38Z': "Autres demandes en matière de droit bancaire et d'effets de commerce",
-    },
-  },
-  39: {
-    label: 'Concurrence',
-    subs: {
       '39A': 'Demande en cessation et/ou en réparation, de pratiques anticoncurrentielles restrictives',
       '39G': "Demande en cessation d'utilisation d'un nom commercial, d'une raison sociale, ou d'une enseigne",
       '39H': 'Demande en cessation de concurrence déloyale ou illicite et/ou en dommages et intérêts',
@@ -368,9 +293,18 @@ const taxon = {
       '3EZ': 'Autres demandes en matière de dessins et modèles',
     },
   },
-  40: {
-    label: 'Ouverture du redressement ou de la liquidation judiciaire (procédures ouvertes avant le 1er janvier 2006)',
+  4: {
+    label: 'Entreprises en difficulté',
     subs: {
+      40: 'Ouverture du redressement ou de la liquidation judiciaire (procédures ouvertes avant le 1er janvier 2006)',
+      41: "L'entreprise au cours de la procédure  - Délais, organes -  (procédures ouvertes avant le 1er janvier 2006)",
+      42: "L'entreprise au cours de la procédure  - Autorisations et actions diverses - (procédures ouvertes avant le 1er janvier 2006)",
+      43: "L'entreprise au cours de la procédure - Période suspecte et sort des créances -  (procédures ouvertes avant le 1er janvier 2006)",
+      44: "Plan de continuation de l'entreprise (procédures ouvertes avant le 1er janvier 2006)",
+      45: "Plan de cession de l'entreprise (procédures ouvertes avant le 1er janvier 2006)",
+      46: 'Liquidation judiciaire - Clôture des opérations (procédures ouvertes avant le 1er janvier 2006)',
+      47: 'Autres demandes en matière de redressement et de liquidation judiciaires (procédures ouvertes avant le 1er janvier 2006)',
+      48: 'Surendettement des particuliers, faillite civile et rétablissement personnel',
       '40B': 'Demande de liquidation judiciaire',
       '40C': "Demande d'ouverture d'une procédure de règlement amiable ou de désignation d'un conciliateur",
       '40D':
@@ -383,48 +317,20 @@ const taxon = {
         "Demande d'ouverture d'une procédure de redressement ou de liquidation judiciaire à l'encontre des dirigeants en cas d'inexécution de la condamnation en comblement de l'insuffisance d'actif",
       '40H': "Demande d'extension aux dirigeants du redressement ou de la liquidation judiciaire",
       '40I': 'Demande de reprise de la procédure de redressement judiciaire',
-    },
-  },
-  41: {
-    label:
-      "L'entreprise au cours de la procédure  - Délais, organes -  (procédures ouvertes avant le 1er janvier 2006)",
-    subs: {
       '41A':
         "Appel sur une décision relative à la désignation, au remplacement ou à la mission d'un expert, de l'administrateur, du représentant du créancier, du commissaire à l'exécution du plan ou du liquidateur",
       '41Z': 'Appel sur des décisions relatives au déroulement de la procédure',
-    },
-  },
-  42: {
-    label:
-      "L'entreprise au cours de la procédure  - Autorisations et actions diverses - (procédures ouvertes avant le 1er janvier 2006)",
-    subs: {
       '42X': 'Demandes relatives aux autorisations et actions diverses sans autre indication',
-    },
-  },
-  43: {
-    label:
-      "L'entreprise au cours de la procédure - Période suspecte et sort des créances -  (procédures ouvertes avant le 1er janvier 2006)",
-    subs: {
       '43A': 'Demande en modification de la date de la cessation des paiements',
       '43B': 'Demande en nullité des actes de la période suspecte',
       '43C': "Appel sur une décision du juge commissaire relative à l'admission des créances",
       '43D': "Appel sur une décision du juge commissaire relative à la réclamation sur l'état des créances",
       '43E': 'Appel sur une décision relative au relevé de forclusion (procédures ouvertes avant le 1er janvier 2006)',
       '43X': 'Demande relative à la période suspecte et au sort des créances sans autre indication',
-    },
-  },
-  44: {
-    label: "Plan de continuation de l'entreprise (procédures ouvertes avant le 1er janvier 2006)",
-    subs: {
       '44A': "Appel sur une décision relative à l'admission du plan de continuation",
       '44B': 'Appel sur une décision  relative à la modification substantielle du plan de continuation',
       '44C': "Demande en nullité d'un acte passé en violation d'une inaliénabilité temporaire",
       '44X': "Plan de continuation de l'entreprise- nature d'affaire indéterminée",
-    },
-  },
-  45: {
-    label: "Plan de cession de l'entreprise (procédures ouvertes avant le 1er janvier 2006)",
-    subs: {
       '45A': "Appel sur une décision relative à l'admission du plan de cession sans location gérance",
       '45B': "Appel sur une décision relative à l'admission du plan de cession avec location gérance",
       '45C': 'Appel sur une décision  relative à la modification substantielle du plan de cession',
@@ -434,20 +340,9 @@ const taxon = {
       '45F': "Appel sur une décision de nomination d'un administrateur ad hoc",
       '45G': 'Demande de clôture du plan de cession',
       '45H': 'Demande de résolution du plan de cession',
-    },
-  },
-  46: {
-    label: 'Liquidation judiciaire - Clôture des opérations (procédures ouvertes avant le 1er janvier 2006)',
-    subs: {
       '46A': 'Demande de clôture pour extinction du passif',
       '46B': "Demande de clôture pour insuffisance d'actif",
       '46X': "Liquidation judiciaire - Clôture des opérations- nature d'affaire indéterminée",
-    },
-  },
-  47: {
-    label:
-      'Autres demandes en matière de redressement et de liquidation judiciaires (procédures ouvertes avant le 1er janvier 2006)',
-    subs: {
       '47A': "Demande en comblement de l'insuffisance d'actif à l'encontre des dirigeants",
       '47B': "Demande de prononcé de la faillite personnelle ou d'autres sanctions",
       '47C':
@@ -458,11 +353,6 @@ const taxon = {
       '47G':
         'Demande relative au règlement judiciaire, à la liquidation des biens, aux sanctions et à la suspension provisoire des poursuites',
       '47X': "Autres demandes en matière de redressement et de liquidation judiciaires- nature d'affaire indéterminée",
-    },
-  },
-  48: {
-    label: 'Surendettement des particuliers, faillite civile et rétablissement personnel',
-    subs: {
       '48A':
         'Recours contre les décisions statuant sur la recevabilité prononcées par les commissions de surendettement des particuliers',
       '48B':
@@ -588,9 +478,19 @@ const taxon = {
         "Demande d'autorisation des licenciements par le tribunal lorsqu'une procédure d'insolvabilité a été ouverte dans un autre état membre en application de l'article 13",
     },
   },
-  50: {
-    label: 'Vente',
+  5: {
+    label: 'Contrats',
     subs: {
+      50: 'Vente',
+      51: "Baux d'habitation et baux professionnels",
+      52: 'Baux ruraux',
+      53: "Prêt d'argent, crédit-bail (ou leasing), cautionnement",
+      54: 'Contrat tendant à la réalisation de travaux de construction',
+      55: 'Contrat de transport',
+      56: 'Autres contrats de prestation de services',
+      57: "Contrats d'intermédiaire",
+      58: "Contrat d'assurance",
+      59: 'Contrats divers',
       '50A': "Demande en nullité de la vente ou d'une clause de la vente",
       '50B': 'Demande en paiement du prix ou tendant à faire sanctionner le non-paiement du prix',
       '50C': 'Demande tendant à obtenir la livraison de la chose ou à faire sanctionner le défaut de livraison',
@@ -600,11 +500,6 @@ const taxon = {
       '50G':
         "Demande relative à l'exécution d'une promesse unilatérale de vente ou d'un pacte de préférence ou d'un compromis de vente",
       '50Z': 'Autres demandes relatives à la vente',
-    },
-  },
-  51: {
-    label: "Baux d'habitation et baux professionnels",
-    subs: {
       '51A':
         "Demande en paiement des loyers et des charges et/ou tendant à faire prononcer ou constater la résiliation pour défaut de paiement ou défaut d'assurance et ordonner l'expulsion",
       '51B':
@@ -629,11 +524,6 @@ const taxon = {
       '51M':
         'Demande du bailleur tendant à la réévaluation du loyer lorsque son montant est inférieur au loyer de référence minoré',
       '51Z': "Autres demandes relatives à un bail d'habitation ou à un bail professionnel",
-    },
-  },
-  52: {
-    label: 'Baux ruraux',
-    subs: {
       '52A':
         "Demande en paiement des fermages ou loyers et/ou tendant à faire prononcer ou constater la résiliation du bail pour défaut de paiement et prononcer l'expulsion",
       '52B':
@@ -646,11 +536,6 @@ const taxon = {
       '52F': 'Demande en paiement des indemnités dues en fin de bail au preneur sortant',
       '52G': "Demande relative à l'exercice du droit de préemption du preneur",
       '52Z': 'Autres demandes relatives à un bail rural',
-    },
-  },
-  53: {
-    label: "Prêt d'argent, crédit-bail (ou leasing), cautionnement",
-    subs: {
       '53A': "Prêt - Demande en nullité du contrat ou d'une clause du contrat",
       '53B': 'Prêt - Demande en remboursement du prêt',
       '53D': 'Autres demandes relatives au prêt',
@@ -661,11 +546,6 @@ const taxon = {
       '53J':
         'Cautionnement - Recours de la caution qui a payé contre le débiteur principal ou contre une autre caution',
       '53L': 'Autres demandes relatives au cautionnement',
-    },
-  },
-  54: {
-    label: 'Contrat tendant à la réalisation de travaux de construction',
-    subs: {
       '54A': "Demande en nullité d'un contrat tendant à la réalisation de travaux de construction",
       '54B': "Demande en paiement du prix formée par le sous-traitant contre l'entrepreneur principal",
       '54C': "Demande en paiement du prix formée par le constructeur contre le maître de l'ouvrage ou son garant",
@@ -675,19 +555,9 @@ const taxon = {
       '54G':
         "Demande d'exécution de travaux, ou de dommages-intérêts, formée par le maître de l'ouvrage contre le constructeur ou son garant, ou contre le fabricant d'un élément de construction",
       '54Z': 'Autres demandes relatives à un contrat de réalisation de travaux de construction',
-    },
-  },
-  55: {
-    label: 'Contrat de transport',
-    subs: {
       '55A': 'Demande en paiement du prix du transport',
       '55B': 'Action en responsabilité exercée contre le transporteur',
       '55Z': 'Autres demandes relatives au contrat de transport',
-    },
-  },
-  56: {
-    label: 'Autres contrats de prestation de services',
-    subs: {
       '56A': "Demande en nullité d'un contrat de prestation de services",
       '56B':
         'Demande en paiement du prix, ou des honoraires formée contre le client et/ou tendant à faire sanctionner le non-paiement du prix, ou des honoraires',
@@ -697,19 +567,9 @@ const taxon = {
       '56E': 'Demande en exécution formée par le client contre le prestataire de services',
       '56F': 'Demande en résolution formée par le client pour inexécution de la prestation de services',
       '56Z': 'Autres demandes relatives à un contrat de prestation de services',
-    },
-  },
-  57: {
-    label: "Contrats d'intermédiaire",
-    subs: {
       '57A': 'Demande en paiement ou en indemnisation formée par un intermédiaire',
       '57B': 'Demande en réparation des dommages causés par un intermédiaire',
       '57X': "Contrats d'intermédiaire- nature d'affaire indéterminée",
-    },
-  },
-  58: {
-    label: "Contrat d'assurance",
-    subs: {
       '58A':
         "Demande en nullité du contrat d'assurance, et/ou en remboursement des indemnités pour fausse déclaration intentionnelle ou réticence de la part de l'assuré  formée par l'assureur",
       '58B': "Autres demandes en nullité et/ou en remboursement des indemnités formées par l'assureur",
@@ -720,11 +580,6 @@ const taxon = {
       '58G': "Demande en paiement de l'indemnité d'assurance dans une assurance de personnes",
       '58H': "Demande en paiement de l'indemnité d'assurance dans une assurance-crédit",
       '58Z': "Demande relative à d'autres contrats d'assurance",
-    },
-  },
-  59: {
-    label: 'Contrats divers',
-    subs: {
       '59A': "Demande en nullité d'un contrat ou des clauses relatives à un autre contrat",
       '59B': 'Demande en paiement relative à un autre contrat',
       '59C': "Demande en exécution ou en dommages-intérêts pour mauvaise exécution d'un autre contrat",
@@ -735,42 +590,29 @@ const taxon = {
       '59X': "Contrats divers- nature d'affaire indéterminée",
     },
   },
-  60: {
-    label: 'Dommages causés par des véhicules',
+  6: {
+    label: 'Responsabilité et quasi-contrat',
     subs: {
+      60: 'Dommages causés par des véhicules',
+      61: 'Dommages causés par des animaux, des produits ou des services',
+      62: 'Dommages causés par des immeubles',
+      63: "Dommages causés par l'activité professionnelle de certaines personnes qualifiées",
+      64: "Dommages causés par l'action directe d'une personne",
+      65: "Dommages causés par l'action d'une personne dont on est responsable",
+      66: 'Quasi-contrats',
       '60A': 'Demande en réparation des dommages causés par des véhicules terrestres à moteur',
       '60B': 'Demande en réparation des dommages causés par des véhicules terrestres sans moteur',
       '60C': 'Demande en réparation des dommages causés par un véhicule aérien, maritime ou fluvial',
-    },
-  },
-  61: {
-    label: 'Dommages causés par des animaux, des produits ou des services',
-    subs: {
       '61A': 'Demande en réparation des dommages causés par un animal',
       '61B': 'Demande en réparation des dommages causés par un produit ou une prestation de services défectueux',
-    },
-  },
-  62: {
-    label: 'Dommages causés par des immeubles',
-    subs: {
       '62A': 'Demande en réparation des dommages causés à une personne par un immeuble',
       '62B': 'Demande en réparation des dommages causés à une chose mobilière ou immobilière par un immeuble',
       '62X': "Dommages causés par des immeubles- nature d'affaire indéterminée",
-    },
-  },
-  63: {
-    label: "Dommages causés par l'activité professionnelle de certaines personnes qualifiées",
-    subs: {
       '63A': "Demande en réparation des dommages causés par l'activité médicale ou para-médicale",
       '63B': "Demande en réparation des dommages causés par l'activité des auxiliaires de justice",
       '63C':
         "Demande en réparation des dommages causés par l'activité d'un expert en diagnostic, un commissaire aux comptes, un commissaire aux apports, un commissaire à la fusion ou un expert-comptable",
       '63D': "Demande en réparation des dommages causés par l'activité d'un prestataire de services d'investissement",
-    },
-  },
-  64: {
-    label: "Dommages causés par l'action directe d'une personne",
-    subs: {
       '64A': "Demande en réparation des dommages causés par une nuisance de l'environnement",
       '64B': "Demande en réparation des dommages causés par d'autres faits personnels",
       '64C': "Demande en réparation d'un préjudice écologique",
@@ -779,29 +621,29 @@ const taxon = {
       '64F': 'Demande de blocage, retrait ou déréférencement de contenus illicites accessibles en ligne',
       '64G':
         "Demande en réparation du préjudice causé par l'inexécution des obligations d'une société relatives au plan de vigilance",
-    },
-  },
-  65: {
-    label: "Dommages causés par l'action d'une personne dont on est responsable",
-    subs: {
       '65A':
         'Demande en réparation des dommages causés par un mineur ou un majeur, formée contre les parents ou la personne contrôlant son mode de vie ou son activité',
       '65B': "Demande en réparation des dommages causés par les salariés et apprentis, formée contre l'employeur",
       '65C':
         "Demande en réparation des dommages causés par un fonctionnaire ou employé, formée contre l'Etat ou une collectivité territoriale",
-    },
-  },
-  66: {
-    label: 'Quasi-contrats',
-    subs: {
       '66A': "Demande relative à une gestion d'affaire",
       '66B': "Demande en restitution d'une chose ou en paiement d'un prix reçu indûment",
       '66C': "Demande d'indemnisation pour enrichissement sans cause",
     },
   },
-  70: {
-    label: 'Propriété et possession immobilières',
+  7: {
+    label: 'Biens - propriété littéraire et artistique',
     subs: {
+      70: 'Propriété et possession immobilières',
+      71: 'Copropriété (I): organisation et administration',
+      72: 'Copropriété (II): droits et obligations des copropriétaires',
+      73: 'Usufruit - Usage et habitation',
+      74: 'Servitudes',
+      75: 'Emphytéose - Bail à construction - Concession immobilière',
+      76: 'Sûretés mobilières et immobilières',
+      77: 'Propriété et possession mobilières',
+      78: 'Saisies et mesures conservatoires',
+      79: 'Propriété littéraire et artistique',
       '70A': "Revendication d'un bien immobilier",
       '70B':
         "Demande formée par le propriétaire de démolition d'une construction ou d'enlèvement d'une plantation faite par un tiers sur son terrain",
@@ -820,11 +662,6 @@ const taxon = {
         "Demande tendant à la démolition ou la mise en conformité d'un ouvrage édifié ou installé en violation des règles d'urbanisme",
       '70Z':
         "Autres demandes relatives à la propriété ou à la possession d'un immeuble ou relevant de la compétence du juge de l'expropriation",
-    },
-  },
-  71: {
-    label: 'Copropriété (I): organisation et administration',
-    subs: {
       '71A':
         'Demande tendant à déclarer non écrite une clause du règlement de copropriété ou demande de nouvelle répartition des charges',
       '71B':
@@ -843,11 +680,6 @@ const taxon = {
       '71M':
         "Demande de désignation d'un mandataire commun en cas d'indivision ou de démembrement du droit de propriété",
       '71N': "Demande de désignation d'un mandataire ad hoc",
-    },
-  },
-  72: {
-    label: 'Copropriété (II): droits et obligations des copropriétaires',
-    subs: {
       '72A': 'Demande en paiement des charges ou des contributions',
       '72B': "Demande présentée par ou contre le syndicat à l'occasion de la vente d'un lot",
       '72C':
@@ -865,20 +697,10 @@ const taxon = {
       '72J':
         'Demande en paiement de pénalités de retard dues par le syndic pour défaut de délivrance de pièces ou documents au profit du syndicat des copropriétaires',
       '72Z': 'Autres demandes relatives à la copropriété',
-    },
-  },
-  73: {
-    label: 'Usufruit - Usage et habitation',
-    subs: {
       '73A': "Demande formée par l'usufruitier",
       '73B': 'Demande formée par le nu-propriétaire',
       '73X': "Usufruit - Usage et habitation- nature d'affaire indéterminée",
       '73Z': "Demande relative à un droit d'usage et d'habitation",
-    },
-  },
-  74: {
-    label: 'Servitudes',
-    subs: {
       '74A': "Demande relative à une servitude d'usage ou de passage des eaux",
       '74B': 'Demande relative à une servitude de distance pour les plantations et constructions',
       '74C': 'Demande relative à une servitude de jours et vues sur le fonds voisin',
@@ -886,22 +708,12 @@ const taxon = {
       '74E': "Demande d'établissement d'une servitude de cour commune",
       '74F': "Demande relative à un droit d'usage forestier ou rural",
       '74Z': "Demande relative à d'autres servitudes",
-    },
-  },
-  75: {
-    label: 'Emphytéose - Bail à construction - Concession immobilière',
-    subs: {
       '75A':
         'Demande relative au montant et au paiement des redevances emphytéotiques, ou des loyers du bail à construction',
       '75B':
         "Demande relative au sort du bien ou des constructions à l'expiration du bail à construction ou emphytéotique",
       '75D': "Autres demandes relatives au bail à construction ou à l'emphytéose",
       '75E': 'Demande relative à une concession immobilière',
-    },
-  },
-  76: {
-    label: 'Sûretés mobilières et immobilières',
-    subs: {
       '76A': "Demande en nullité, en radiation ou en réduction d'une sûreté immobilière",
       '76B':
         "Recours contre les décisions relatives à l'inscription ou à la radiation d'une hypothèque ou d'un privilège d'un doit réel immobilier au Livre foncier",
@@ -911,18 +723,8 @@ const taxon = {
         "Demande tendant à la réalisation de la sûreté : vente forcée, autorisation de vente amiable, ou attribution d'un bien mobilier constitutif de la sûreté",
       '76H': 'Autres demandes relatives à une sûreté mobilière',
       '76X': "Sûretés mobilières et immobilières- nature d'affaire indéterminée",
-    },
-  },
-  77: {
-    label: 'Propriété et possession mobilières',
-    subs: {
       '77A': "Demande en revendication d'un bien mobilier",
       '77B': "Demande en restitution d'un meuble vendu avec une clause de réserve de propriété",
-    },
-  },
-  78: {
-    label: 'Saisies et mesures conservatoires',
-    subs: {
       '78A': 'Demande tendant à la vente immobilière et à la distribution du prix',
       '78B':
         "Demande tendant à la suspension de la procédure de saisie immobilière, l'annulation ou la péremption ou tendant à la vente amiable",
@@ -943,11 +745,6 @@ const taxon = {
       '78R':
         "Demande de modification ou de révocation de l'ordonnance européenne de saisie conservatoire des comptes bancaires",
       '78X': "Saisies et mesures conservatoires- nature d'affaire indéterminée",
-    },
-  },
-  79: {
-    label: 'Propriété littéraire et artistique',
-    subs: {
       '79A':
         "Demande tendant à faire cesser et/ou à sanctionner une contrefaçon ou une atteinte illicite au droit de l'auteur, à un droit voisin du droit d'auteur ou à un droit de producteur de base de données",
       '79B': "Demande en paiement de droits d'auteur ou de droits voisins",
@@ -961,9 +758,19 @@ const taxon = {
       '79Z': 'Autres demandes relatives à la propriété littéraire et artistique',
     },
   },
-  80: {
-    label: 'Relations individuelles de travail',
+  8: {
+    label: 'Relations du travail et protection',
     subs: {
+      80: 'Relations individuelles de travail',
+      81: 'Elections professionnelles',
+      82: 'Représentation des intérêts des salariés',
+      83: 'Statut des salariés protégés',
+      84: 'Condition du personnel dans les procédures de sauvegarde, de redressement ou de liquidation judiciaire',
+      85: 'Conflits collectifs du travail',
+      86: 'Négociation collective',
+      87: 'Formation et insertion professionnelles',
+      88: 'Protection sociale',
+      89: 'Risques professionnels',
       '80A': "Demande d'indemnités liées à la rupture du contrat de travail CDI ou CDD, son exécution ou inexécution",
       '80B': "Demande d'indemnités liées à la rupture du contrat de travail pour motif économique",
       '80C': "Demande d'indemnités ou de salaires",
@@ -990,11 +797,6 @@ const taxon = {
       '80W': 'Contestation en matière de médecine du travail',
       '80X': "Relations individuelles de travail- nature d'affaire indéterminée",
       '80Y': 'Demande de nullité de la rupture du contrat de travail',
-    },
-  },
-  81: {
-    label: 'Elections professionnelles',
-    subs: {
       '81A':
         "Demande relative à l'organisation des élections des institutions représentatives du personnel dans l'entreprise",
       '81B':
@@ -1011,11 +813,6 @@ const taxon = {
       '81I': "Demande relative à l'élection d'autres représentants du personnel",
       '81J': "Demande relative aux élections des conseillers prud'hommes",
       '81K': 'Contestation relative au scrutin sur sigle organisé dans les très petites entreprises',
-    },
-  },
-  82: {
-    label: 'Représentation des intérêts des salariés',
-    subs: {
       '82A': "Demande de moyens de fonctionnement d'une institution représentative du personnel",
       '82B': "Demande en exécution d'obligations corrélatives aux attributions de représentants du personnel",
       '82C': "Demande relative à la désignation, au mandat ou la rémunération d'un expert",
@@ -1028,11 +825,6 @@ const taxon = {
         "Demande d'annulation de la désignation ou de la révocation d'un délégué syndical ou d'un représentant syndical au comité d'entreprise",
       '82J': 'Autres demandes contre un syndicat',
       '82K': "Demande relative à un plan de sauvegarde de l'emploi",
-    },
-  },
-  83: {
-    label: 'Statut des salariés protégés',
-    subs: {
       '83A': "Demande en paiement d'heures consacrées aux fonctions",
       '83B': "Demande d'annulation d'une sanction disciplinaire frappant un salarié protégé",
       '83C':
@@ -1043,11 +835,6 @@ const taxon = {
       '83G': 'Demande de résiliation ou de résolution judiciaire du contrat de travail formée par un salarié protégé',
       '83H': "Autres demandes d'un salarié protégé",
       '83I': "Demande d'un employeur contre un salarié protégé",
-    },
-  },
-  84: {
-    label: 'Condition du personnel dans les procédures de sauvegarde, de redressement ou de liquidation judiciaire',
-    subs: {
       '84A':
         'Demande en annulation de la désignation du représentant des salariés ou des institutions représentatives du personnel',
       '84B':
@@ -1072,20 +859,10 @@ const taxon = {
         "Demande de l'A.G.S. en paiement des cotisations contre un employeur soumis à l'obligation d'assurance des créances salariales",
       '84N':
         "Demande de l'A.G.S. d'un administrateur judiciaire, d'un représentant des créanciers, ou mandataire liquidateur contre un salarié",
-    },
-  },
-  85: {
-    label: 'Conflits collectifs du travail',
-    subs: {
       '85A': "Demande d'expulsion d'occupants des lieux de travail",
       '85B': 'Demande tendant à la réouverture des locaux de travail',
       '85C': "Autres demandes de l'employeur relatives à un mouvement collectif",
       '85D': "Autres demandes d'un syndicat ou d'un salarié en matière de conflits collectifs",
-    },
-  },
-  86: {
-    label: 'Négociation collective',
-    subs: {
       '86A': "Demande relative à l'ouverture ou au déroulement d'une négociation collective",
       '86B': "Demande en nullité d'une clause, d'une convention ou d'un accord collectif",
       '86C': "Demande en appréciation de validité d'une clause conventionnelle",
@@ -1096,11 +873,6 @@ const taxon = {
         "Demande en exécution d'un accord de conciliation, d'un accord sur une recommandation de médiateur, d'une sentence arbitrale, ou tendant à sanctionner leur inexécution",
       '86G':
         "Demande relative à la validité d'une clause d'un accord ou d'un accord de conciliation ou d'un accord sur une recommandation de médiateur",
-    },
-  },
-  87: {
-    label: 'Formation et insertion professionnelles',
-    subs: {
       '87A':
         "Demande relative à la validité, l'exécution ou la résiliation du contrat d'apprentissage formée par l'apprenti",
       '87B':
@@ -1111,11 +883,6 @@ const taxon = {
       '87E': "Demande relative au fonctionnement d'un organisme de formation professionnelle",
       '87F': "Autres demandes en matière d'apprentissage",
       '87X': "Formation et insertion professionnelles- nature d'affaire indéterminée",
-    },
-  },
-  88: {
-    label: 'Protection sociale',
-    subs: {
       '88A':
         "Contestation d'une décision d'un organisme portant sur l'immatriculation, l'affiliation ou un refus de reconnaissance d'un droit ",
       '88B': "Demande d'annulation d'une mise en demeure ou d'une contrainte",
@@ -1140,11 +907,6 @@ const taxon = {
       '88V': "Inaptitude - Contestation d'une décision relative à l'inaptitude",
       '88W': "Aide sociale - Contestation d'une décision relative à une allocation santé",
       '88Y': "Aide sociale - Contestation d'une décision relative aux allocations et/ou aux droits des personnes âgées",
-    },
-  },
-  89: {
-    label: 'Risques professionnels',
-    subs: {
       '89A':
         "A.T.M.P. : Demande de prise en charge au titre des A.T.M.P. et/ou contestation relative au taux d'incapacité",
       '89B': "A.T.M.P. : Demande relative à la faute inexcusable de l'employeur",
@@ -1174,19 +936,22 @@ const taxon = {
       '89Z': 'Autres demandes en matière de risques professionnels',
     },
   },
-  90: {
-    label: 'Contributions indirectes et monopoles fiscaux',
+  9: {
+    label: 'Relations avec les personnes publiques',
     subs: {
+      90: 'Contributions indirectes et monopoles fiscaux',
+      91: "Droits d'enregistrement et assimilés",
+      92: 'Droits de douane et assimilés',
+      93: 'Autres contestations en matière fiscale et douanière',
+      94: 'Elections politiques et référendum',
+      95: 'Elections à certains organismes',
+      96: 'Responsabilité des personnes publiques',
+      97: 'Recours et actions contre les décisions rendues par certains organismes',
       '90A': 'Demande en décharge ou en réduction des droits relatifs au commerce et à la circulation des boissons',
       '90B': 'Demande relative au recouvrement des droits relatifs au commerce et à la circulation des boissons',
       '90C': 'Demande en décharge ou en réduction des droits relatifs aux spectacles',
       '90D': 'Demande relative au recouvrement des droits relatifs aux spectacles',
       '90Z': "Demande relative à d'autres droits indirects",
-    },
-  },
-  91: {
-    label: "Droits d'enregistrement et assimilés",
-    subs: {
       '91A':
         "Demande en décharge ou en réduction des droits d'enregistrement portant sur des actes et mutations à titre onéreux",
       '91B': 'Demande relative au recouvrement des droits de mutation à titre onéreux',
@@ -1195,29 +960,14 @@ const taxon = {
       '91D':
         "Demande relative au recouvrement des droits d'enregistrement portant sur des mutations à titre gratuit ou des partages",
       '91Z': "Demande relative à d'autres droits d'enregistrement ou assimilés",
-    },
-  },
-  92: {
-    label: 'Droits de douane et assimilés',
-    subs: {
       '92A': "Demande en décharge ou en réduction des droits de douane à l'importation",
       '92B': "Demande relative au recouvrement des droits de douane à l'importation",
       '92C': 'Demande en décharge ou en réduction des taxes douanières fiscales, parafiscales et taxes annexes',
       '92D': 'Demande relative au  recouvrement des taxes douanières fiscales, parafiscales et taxes annexes',
       '92Z': 'Autres demandes en matière de droits de douane',
-    },
-  },
-  93: {
-    label: 'Autres contestations en matière fiscale et douanière',
-    subs: {
       '93A': "Actions en opposition à poursuites relatives à d'autres droits et contributions",
       '93B': "Demande en revendication d'objets saisis",
       '93C': 'Demande relative à la contrainte par corps pour défaut de paiement des impositions',
-    },
-  },
-  94: {
-    label: 'Elections politiques et référendum',
-    subs: {
       '94A':
         "Contestations des décisions de la commission administrative ayant dressé la liste électorale, concernant l'inscription ou la radiation d'un électeur",
       '94B':
@@ -1226,21 +976,11 @@ const taxon = {
       '94D':
         'Demande formée en référé aux fins de faire cesser la diffusion en ligne de fausses informations de nature à altérer la sincérité du scrutin',
       '94Z': "Autres demandes en matière d'élections politiques ou de référendum",
-    },
-  },
-  95: {
-    label: 'Elections à certains organismes',
-    subs: {
       '95A':
         'Contestations relatives aux inscriptions et radiations sur les listes électorales des membres des tribunaux et chambres de commerce ou des chambres des métiers',
       '95B':
         "Contestations relatives aux inscriptions et radiations sur les listes électorales des membres assesseurs des tribunaux paritaires de baux ruraux ou des membres des chambres d'agriculture",
       '95C': "Contestations en matière d'élections concernant d'autres organismes",
-    },
-  },
-  96: {
-    label: 'Responsabilité des personnes publiques',
-    subs: {
       '96A': 'Demande de réparation des dommages causés par une personne publique à la propriété privée',
       '96B':
         "Demande de réparation du préjudice causé par un agissement d'une personne publique constitutive d'une voie de fait",
@@ -1249,11 +989,6 @@ const taxon = {
       '96D': 'Demande en réparation des dommages causés par le fonctionnement défectueux du service de la justice',
       '96E': "Demande d'indemnisation à raison d'une détention provisoire",
       '96Z': 'Autres actions en responsabilité exercées contre des personnes publiques',
-    },
-  },
-  97: {
-    label: 'Recours et actions contre les décisions rendues par certains organismes',
-    subs: {
       '97C': "Recours contre les décisions administratives des ordres d'avocats",
       '97D': 'Actions disciplinaires exercées contre les notaires et officiers ministériels',
       '97E': "Recours contre les décisions des bureaux d'aide juridictionnelle",
