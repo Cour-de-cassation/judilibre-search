@@ -1459,7 +1459,12 @@
                 }
               },
               "contested": {
-                "description": "Objet décrivant la décision attaquée, de type `decisionLink` où `title` contient son intitulé, `number` son numéro, `description` son court texte descriptif, `theme` la liste de ses matières (ou éléments de titrage) et `url` le lien vers celle-ci.",
+                "description": "Objet décrivant la décision attaquée (chaînage arrière), de type `decisionLink` où `title` contient son intitulé, `number` son numéro, `description` son court texte descriptif, `theme` la liste de ses matières (ou éléments de titrage) et `url` le lien vers celle-ci.",
+                "$ref": "#/components/schemas/decisionLink",
+                "nullable": true
+              },
+              "forward": {
+                "description": "Objet décrivant la décision suivant celle-ci (chaînage avant), de type `decisionLink` où `title` contient son intitulé, `number` son numéro, `description` son court texte descriptif, `theme` la liste de ses matières (ou éléments de titrage) et `url` le lien vers celle-ci.",
                 "$ref": "#/components/schemas/decisionLink",
                 "nullable": true
               },
@@ -1470,8 +1475,19 @@
                   "$ref": "#/components/schemas/decisionLink"
                 }
               },
+              "timeline": {
+                "description": "Liste des dates clés relatives à la décision, chaque date clé étant représentée par un objet de type `decisionLink`.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/decisionLink"
+                }
+              },
               "to_be_deleted": {
                 "description": "Lorsque la propriété `to_be_deleted` est définie et vaut `true`, alors la décision correspondante doit être supprimée des archives ou des bases de données du réutilisateur. Cette propriété peut apparaître dans le cadre d'un export des décisions mises à jour (`/export?date_type=update`).",
+                "type": "boolean"
+              },
+              "partial": {
+                "description": "Lorsque la propriété `partial` est définie et vaut `true`, alors le contenu de la décision correspondante est partiel (décision partiellement publique).",
                 "type": "boolean"
               }
             }
@@ -1697,6 +1713,10 @@
           "content": {
             "description": "Contenu de la décision (propriété présente pour les décisions qui ne seraient pas indexées dans la base JUDILIBRE).",
             "type": "string"
+          },
+          "ongoing": {
+            "description": "Si `ongoing` vaut `true`, signifie que la décision n'a pas encore été rendue (par exemple : pourvoi en cours).",
+            "type": "boolean"
           }
         },
         "example": {
