@@ -197,6 +197,9 @@ async function decision(query) {
       ),
       zones: highlightedZoning ? highlightedZoning : rawResult._source.zones,
       contested: rawResult._source.contested ? rawResult._source.contested : null,
+      forward: rawResult._source.forward ? rawResult._source.forward : null,
+      timeline: rawResult._source.timeline ? rawResult._source.timeline : null,
+      partial: rawResult._source.partial ? rawResult._source.partial : false,
       visa: rawResult._source.visa
         ? rawResult._source.visa.map((item) => {
             return {
@@ -214,6 +217,12 @@ async function decision(query) {
       let show_contested_params = new URLSearchParams(query);
       show_contested_params.set('showContested', true);
       response.contested.url = show_contested_params.toString();
+    }
+
+    if (response.forward !== null && response.forward.content) {
+      let show_forward_params = new URLSearchParams(query);
+      show_forward_params.set('showForward', true);
+      response.forward.url = show_forward_params.toString();
     }
   }
 
@@ -271,6 +280,12 @@ function decisionWithoutElastic(query) {
     let show_contested_params = new URLSearchParams(query);
     show_contested_params.set('showContested', true);
     response.contested.url = show_contested_params.toString();
+  }
+
+  if (response.forward !== null && response.forward.content) {
+    let show_forward_params = new URLSearchParams(query);
+    show_forward_params.set('showForward', true);
+    response.forward.url = show_forward_params.toString();
   }
 
   return response;

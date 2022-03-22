@@ -93,6 +93,9 @@ async function batchexport(query) {
             ),
             zones: rawResult._source.zones,
             contested: rawResult._source.contested ? rawResult._source.contested : null,
+            forward: rawResult._source.forward ? rawResult._source.forward : null,
+            timeline: rawResult._source.timeline ? rawResult._source.timeline : null,
+            partial: rawResult._source.partial ? rawResult._source.partial : false,
             visa: rawResult._source.visa
               ? rawResult._source.visa.map((item) => {
                   return {
@@ -111,8 +114,11 @@ async function batchexport(query) {
             delete result.update_date;
             delete result.zones;
             delete result.contested;
+            delete result.forward;
             delete result.visa;
             delete result.rapprochements;
+            delete result.timeline;
+            delete result.partial;
           }
           response.results.push(result);
         });
@@ -245,10 +251,26 @@ function exportWithoutElastic(query) {
     response.results[i].files = sample.files;
     response.results[i].zones = sample.zones;
     response.results[i].contested = sample.contested;
+    response.results[i].forward = sample.forward;
     response.results[i].visa = sample.visa;
     response.results[i].rapprochements = sample.rapprochements;
     response.results[i].location = sample.location;
     response.results[i].nac = sample.nac;
+    response.results[i].timeline = sample.timeline;
+    response.results[i].partial = sample.partial;
+
+    if (query.abridged) {
+      delete response.results[i].source;
+      delete response.results[i].text;
+      delete response.results[i].update_date;
+      delete response.results[i].zones;
+      delete response.results[i].contested;
+      delete response.results[i].forward;
+      delete response.results[i].visa;
+      delete response.results[i].rapprochements;
+      delete response.results[i].timeline;
+      delete response.results[i].partial;
+    }
   }
 
   return response;
