@@ -213,13 +213,13 @@ async function decision(query) {
           : [],
     };
 
-    if (response.contested !== null && response.contested.content) {
+    if (response.contested !== null && response.contested !== undefined && response.contested.content) {
       let show_contested_params = new URLSearchParams(query);
       show_contested_params.set('showContested', true);
       response.contested.url = show_contested_params.toString();
     }
 
-    if (response.forward !== null && response.forward.content) {
+    if (response.forward !== null && response.forward !== undefined && response.forward.content) {
       let show_forward_params = new URLSearchParams(query);
       show_forward_params.set('showForward', true);
       response.forward.url = show_forward_params.toString();
@@ -276,13 +276,13 @@ function decisionWithoutElastic(query) {
 
   response.id = query.id;
 
-  if (response.contested !== null && response.contested.content) {
+  if (response.contested !== null && response.contested !== undefined && response.contested.content) {
     let show_contested_params = new URLSearchParams(query);
     show_contested_params.set('showContested', true);
     response.contested.url = show_contested_params.toString();
   }
 
-  if (response.forward !== null && response.forward.content) {
+  if (response.forward !== null && response.forward !== undefined && response.forward.content) {
     let show_forward_params = new URLSearchParams(query);
     show_forward_params.set('showForward', true);
     response.forward.url = show_forward_params.toString();

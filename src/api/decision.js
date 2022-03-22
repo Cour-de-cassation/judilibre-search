@@ -124,7 +124,7 @@ api.get(
           ],
         });
       } else if (req.query.showContested) {
-        if (result && result.contested !== null && result.contested.content) {
+        if (result && result.contested !== null && result.contested !== undefined && result.contested.content) {
           let contest_params = new URLSearchParams(req.query);
           contest_params.delete('showContested');
           const response = {
@@ -147,7 +147,7 @@ api.get(
           });
         }
       } else if (req.query.showForward) {
-        if (result && result.forward !== null && result.forward.content) {
+        if (result && result.forward !== null && result.forward !== undefined && result.forward.content) {
           let contest_params = new URLSearchParams(req.query);
           contest_params.delete('showForward');
           const response = {
@@ -177,10 +177,10 @@ api.get(
             }
           }
         }
-        if (result && result.contested !== null && result.contested.content) {
+        if (result && result.contested !== null && result.contested !== undefined && result.contested.content) {
           delete result.contested.content;
         }
-        if (result && result.forward !== null && result.forward.content) {
+        if (result && result.forward !== null && result.forward !== undefined && result.forward.content) {
           delete result.forward.content;
         }
         return res.status(200).json(result);
