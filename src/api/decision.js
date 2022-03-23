@@ -131,12 +131,17 @@ api.get(
             id: result.contested.id,
             source: result.contested.source,
             text: result.contested.content,
-            chamber: result.contested.title.split('\n')[1],
+            location: result.contested.location,
+            solution: result.contested.solution,
+            chamber: result.contested.chamber ? result.contested.chamber : result.contested.title.split('\n')[1],
             decision_date: result.contested.date,
-            jurisdiction: result.contested.title.split('\n')[0],
+            jurisdiction: result.contested.jurisdiction
+              ? result.contested.jurisdiction
+              : result.contested.title.split('\n')[0],
             number: result.contested.number,
             numbers: [result.contested.number],
             partial: result.contested.partial === true,
+            ongoing: result.contested.ongoing === true,
             forward: contest_params.toString(),
           };
           return res.status(200).json(response);
@@ -148,19 +153,24 @@ api.get(
         }
       } else if (req.query.showForward) {
         if (result && result.forward !== null && result.forward !== undefined && result.forward.content) {
-          let contest_params = new URLSearchParams(req.query);
-          contest_params.delete('showForward');
+          let forward_params = new URLSearchParams(req.query);
+          forward_params.delete('showForward');
           const response = {
             id: result.forward.id,
             source: result.forward.source,
             text: result.forward.content,
-            chamber: result.forward.title.split('\n')[1],
+            location: result.forward.location,
+            solution: result.forward.solution,
+            chamber: result.forward.chamber ? result.forward.chamber : result.forward.title.split('\n')[1],
             decision_date: result.forward.date,
-            jurisdiction: result.forward.title.split('\n')[0],
+            jurisdiction: result.forward.jurisdiction
+              ? result.forward.jurisdiction
+              : result.forward.title.split('\n')[0],
             number: result.forward.number,
             numbers: [result.forward.number],
             partial: result.forward.partial === true,
-            contested: contest_params.toString(),
+            ongoing: result.forward.ongoing === true,
+            contested: forward_params.toString(),
           };
           return res.status(200).json(response);
         } else {

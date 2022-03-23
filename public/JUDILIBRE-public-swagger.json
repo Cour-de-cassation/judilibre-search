@@ -1475,6 +1475,10 @@
           "description": "Identifiant de la décision.",
           "type": "string"
         },
+        "source": {
+          "description": "Source de la décision.",
+          "type": "string"
+        },
         "date": {
           "description": "Date de la décision, au format ISO-8601 (par exemple 2021-05-13).",
           "type": "string"
@@ -1521,6 +1525,10 @@
         "content": {
           "description": "Contenu de la décision (propriété présente pour les décisions qui ne seraient pas indexées dans la base JUDILIBRE).",
           "type": "string"
+        },
+        "partial": {
+          "description": "Si `partial` vaut `true`, signifie que le contenu de la décision référencée est partiel (décision partiellement publique).",
+          "type": "boolean"
         },
         "ongoing": {
           "description": "Si `ongoing` vaut `true`, signifie que la décision référencée n'a pas encore été rendue (par exemple : pourvoi en cours).",
