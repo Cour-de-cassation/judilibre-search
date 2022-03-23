@@ -1483,6 +1483,22 @@
           "description": "Intitulé de la décision.",
           "type": "string"
         },
+        "jurisdiction": {
+          "description": "Juridiction ayant rendu la décision (par exemple : Cour de cassation, Cour d'appel).",
+          "type": "string"
+        },
+        "location": {
+          "description": "Siège ayant rendu la décision (par exemple : Cour d'appel de Toulouse).",
+          "type": "string"
+        },
+        "chamber": {
+          "description": "Chambre ayant rendu la décision (par exemple : Chambre sociale).",
+          "type": "string"
+        },
+        "solution": {
+          "description": "Solution de la décision.",
+          "type": "string"
+        },
         "url": {
           "description": "URL de la décision.",
           "type": "string"
@@ -1507,7 +1523,7 @@
           "type": "string"
         },
         "ongoing": {
-          "description": "Si `ongoing` vaut `true`, signifie que la décision n'a pas encore été rendue (par exemple : pourvoi en cours).",
+          "description": "Si `ongoing` vaut `true`, signifie que la décision référencée n'a pas encore été rendue (par exemple : pourvoi en cours).",
           "type": "boolean"
         }
       },
