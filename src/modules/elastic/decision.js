@@ -213,7 +213,35 @@ async function decision(query) {
           : [],
     };
 
+    if (query.contested === 0 || query.contested === '0') {
+      response.contested = null;
+    } else if (query.contested === 1 || query.contested === '1') {
+      response.contested = {
+        id: '6221baa829204c7900acec44',
+        date: '2022-03-03',
+        title: "Cour d'appel de Paris\nPôle 6 - Chambre 7",
+        jurisdiction: "Cour d'appel de Paris",
+        chamber: 'Pôle 6 - Chambre 7',
+        solution: 'Infirme partiellement, réforme ou modifie certaines dispositions de la décision déférée',
+        number: '19/06655',
+      };
+    } else if (query.contested === 2 || query.contested === '2') {
+      response.contested = {
+        date: '2019-02-23',
+        title: "Cour d'appel de Lyon\nCHAMBRE SOCIALE A",
+        jurisdiction: "Cour d'appel de Lyon",
+        chamber: 'CHAMBRE SOCIALE A',
+        solution: 'Infirme partiellement, réforme ou modifie certaines dispositions de la décision déférée',
+        number: '18/02650',
+      };
+    }
+
     if (response.contested !== null && response.contested !== undefined) {
+      for (let _key in response.contested) {
+        if (Array.isArray(response.contested[_key])) {
+          response.contested[_key] = response.contested[_key][0];
+        }
+      }
       if (response.contested.id) {
         response.contested.url = response.contested.id;
       } else if (response.contested.content) {
@@ -223,7 +251,30 @@ async function decision(query) {
       }
     }
 
+    if (query.forward === 0 || query.forward === '0') {
+      response.contested = null;
+    } else if (query.forward === 1 || query.forward === '1') {
+      response.forward = {
+        id: '609b6f8cb58b513522af1e84',
+        date: '2021-05-12',
+        title: 'Cour de cassation\nChambre sociale',
+        jurisdiction: 'Cour de cassation',
+        chamber: 'Chambre sociale',
+        solution: 'Rejet',
+        number: '20-60.118',
+      };
+    } else if (query.forward === 2 || query.forward === '2') {
+      response.forward = {
+        ongoing: true,
+      };
+    }
+
     if (response.forward !== null && response.forward !== undefined) {
+      for (let _key in response.forward) {
+        if (Array.isArray(response.forward[_key])) {
+          response.forward[_key] = response.forward[_key][0];
+        }
+      }
       if (response.forward.id) {
         response.forward.url = response.forward.id;
       } else if (response.forward.content) {
@@ -231,6 +282,45 @@ async function decision(query) {
         show_forward_params.set('showForward', true);
         response.forward.url = show_forward_params.toString();
       }
+    }
+
+    if (query.timeline === 0 || query.timeline === '0') {
+      response.timeline = null;
+    } else if (query.timeline === 1 || query.timeline === '1') {
+      response.timeline = [
+        {
+          id: '6221baa829204c7900acec44',
+          date: '2022-03-03',
+          title: "Cour d'appel de Paris\nPôle 6 - Chambre 7",
+          jurisdiction: "Cour d'appel de Paris",
+          chamber: 'Pôle 6 - Chambre 7',
+          solution: 'Infirme partiellement, réforme ou modifie certaines dispositions de la décision déférée',
+          number: '19/06655',
+        },
+        {
+          id: '609b6f8cb58b513522af1e84',
+          date: '2021-05-12',
+          title: 'Cour de cassation\nChambre sociale',
+          jurisdiction: 'Cour de cassation',
+          chamber: 'Chambre sociale',
+          solution: 'Rejet',
+          number: '20-60.118',
+        },
+        {
+          date: '2019-02-23',
+          title: "Cour d'appel de Lyon\nCHAMBRE SOCIALE A",
+          jurisdiction: "Cour d'appel de Lyon",
+          chamber: 'CHAMBRE SOCIALE A',
+          solution: 'Infirme partiellement, réforme ou modifie certaines dispositions de la décision déférée',
+          number: '18/02650',
+        },
+        {
+          title: "Conseil de Prud'hommes - Formation paritaire de PARIS",
+          jurisdiction: "Conseil de Prud'hommes - Formation paritaire de PARIS",
+          number: '15/14153',
+          date: '2018-12-21',
+        },
+      ];
     }
   }
 
