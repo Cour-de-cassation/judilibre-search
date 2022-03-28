@@ -28,18 +28,14 @@ async function stats(query) {
     index: process.env.ELASTIC_INDEX,
     body: {
       query: {
-        function_score: {
-          query: {
-            bool: {
-              filter: [
-                {
-                  terms: {
-                    jurisdiction: 'cc',
-                  },
-                },
-              ],
+        bool: {
+          filter: [
+            {
+              terms: {
+                jurisdiction: 'cc',
+              },
             },
-          },
+          ],
         },
       },
     },
@@ -56,18 +52,14 @@ async function stats(query) {
     index: process.env.ELASTIC_INDEX,
     body: {
       query: {
-        function_score: {
-          query: {
-            bool: {
-              filter: [
-                {
-                  terms: {
-                    jurisdiction: 'ca',
-                  },
-                },
-              ],
+        bool: {
+          filter: [
+            {
+              terms: {
+                jurisdiction: 'ca',
+              },
             },
-          },
+          ],
         },
       },
     },
