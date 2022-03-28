@@ -289,6 +289,32 @@ async function decision(query) {
     } else if (query.timeline === 1 || query.timeline === '1') {
       response.timeline = [
         {
+          id: '609b6f8cb58b513522af1e84',
+          date: '2021-05-12',
+          title: 'Cour de cassation\nChambre sociale',
+          jurisdiction: 'Cour de cassation',
+          chamber: 'Chambre sociale',
+          solution: 'Rejet',
+          number: '20-60.118',
+        },
+        {
+          date: '2019-02-23',
+          title: "Cour d'appel de Lyon\nCHAMBRE SOCIALE A",
+          jurisdiction: "Cour d'appel de Lyon",
+          chamber: 'CHAMBRE SOCIALE A',
+          solution: 'Infirme partiellement, réforme ou modifie certaines dispositions de la décision déférée',
+          number: '18/02650',
+        },
+        {
+          title: "Conseil de Prud'hommes - Formation paritaire de PARIS",
+          jurisdiction: "Conseil de Prud'hommes - Formation paritaire de PARIS",
+          number: '15/14153',
+          date: '2018-12-21',
+        },
+      ];
+    } else if (query.timeline === 2 || query.timeline === '2') {
+      response.timeline = [
+        {
           id: '6221baa829204c7900acec44',
           date: '2022-03-03',
           title: "Cour d'appel de Paris\nPôle 6 - Chambre 7",
