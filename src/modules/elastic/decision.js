@@ -213,6 +213,10 @@ async function decision(query) {
           : [],
     };
 
+    if (response.partial) {
+      response.zones = null;
+    }
+
     if (query.contested === 0 || query.contested === '0') {
       response.contested = null;
     } else if (query.contested === 1 || query.contested === '1') {
