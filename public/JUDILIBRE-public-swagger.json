@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "JUDILIBRE-public",
-    "version": "1.0.3",
+    "version": "1.1.0",
     "description": "La Cour de cassation, dans le cadre de la refonte de son site Web, a initié le projet JUDILIBRE visant à la conception et au développement en interne d'un moteur de recherche dans le corpus jurisprudentiel, mettant celui-ci à disposition du public dans l'esprit du décret sur l'Open Data des décisions de justice.",
     "contact": {
       "name": "Sébastien COURVOISIER",
@@ -146,7 +146,7 @@
           },
           {
             "name": "key",
-            "description": "Clé du terme dont on veut récupérer l'intitulé complet (le paramètre `id` est alors requis), par exemple : la requête `GET /taxonomy?id=jurisdiction&key=cc` retournera `Cour de cassation`.",
+            "description": "Clé du terme dont on veut récupérer l'intitulé complet (le paramètre `id` est alors requis), par exemple : la requête `GET /taxonomy?id=jurisdiction&key=cc` retournera `Cour de cassation`, tandis que la requête `GET /taxonomy?id=jurisdiction&key=ca` retournera `Cour d'appel`.",
             "in": "query",
             "type": "string"
           },
@@ -158,7 +158,7 @@
           },
           {
             "name": "context_value",
-            "description": "Valeur pouvant être requise pour contextualiser certaines listes (par exemple, la liste des chambres qui n’a de sens que dans le contexte d’une juridiction – ainsi, pour obtenir la liste des chambres de la Cour de cassation : `GET /taxonomy?id=chamber&context_value=cc`).",
+            "description": "Valeur pouvant être requise pour contextualiser certaines listes (par exemple, la liste des chambres qui n’a de sens que dans le contexte d’une juridiction – ainsi, pour obtenir la liste des chambres de la Cour de cassation : `GET /taxonomy?id=chamber&context_value=cc`). Valeurs possibles : `cc`, `ca`. Si le paramètre `context_value` est omis, la valeur `cc` est utilisée par défaut.",
             "in": "query",
             "type": "string"
           }
@@ -323,7 +323,7 @@
           },
           {
             "name": "jurisdiction",
-            "description": "Filtre les résultats suivant la juridiction relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=jurisdiction`). Une recherche avec un paramètre `jurisdiction` vide ou manquant retourne des décisions relatives à toutes les juridictions.",
+            "description": "Filtre les résultats suivant la juridiction relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=jurisdiction`). Une recherche avec un paramètre `jurisdiction` vide ou manquant retourne des décisions relatives à la Cour de cassation (`cc`).",
             "in": "query",
             "type": "array",
             "items": {
@@ -663,7 +663,7 @@
         },
         {
           "name": "jurisdiction",
-          "description": "Filtre les résultats suivant la juridiction relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=jurisdiction`). Un export avec un paramètre `jurisdiction` vide ou manquant retourne des décisions relatives à toutes les juridictions.",
+          "description": "Filtre les résultats suivant la juridiction relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=jurisdiction`). Un export avec un paramètre `jurisdiction` vide ou manquant retourne des décisions relatives à la Cour de cassation (`cc`).",
           "in": "query",
           "type": "array",
           "items": {
@@ -1012,7 +1012,7 @@
           }
         },
         "jurisdiction": {
-          "description": "Filtre les résultats suivant la juridiction relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=jurisdiction`). Une recherche avec un paramètre `jurisdiction` vide ou manquant retourne des décisions relatives à toutes les juridictions.",
+          "description": "Filtre les résultats suivant la juridiction relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=jurisdiction`). Une recherche avec un paramètre `jurisdiction` vide ou manquant retourne des décisions relatives à la Cour de cassation (`cc`).",
           "type": "array",
           "items": {
             "type": "string"
@@ -1125,7 +1125,7 @@
           "type": "string"
         },
         "chamber": {
-          "description": "Clé de la chambre. Par défaut, utiliser `GET /taxonomy?id=chamber&context_value={jurisdiction}&key={chamber}` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété contient l'intitulé complet de celle-ci.",
+          "description": "Clé de la chambre. Par défaut, utiliser `GET /taxonomy?id=chamber&context_value={jurisdiction}&key={chamber}` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété contient l'intitulé complet de celle-ci. L'intitulé complet peut aussi être directement retourné pour certaines juridictions dont les chambres ne sont pas normalisées.",
           "type": "string"
         },
         "number": {
@@ -1144,7 +1144,7 @@
           "type": "string"
         },
         "formation": {
-          "description": "Clé de la formation. Par défaut, utiliser `GET /taxonomy?id=formation&context_value={jurisdiction}&key={formation}` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété contient l'intitulé complet de celle-ci.",
+          "description": "Clé de la formation. Par défaut, utiliser `GET /taxonomy?id=formation&context_value={jurisdiction}&key={formation}` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété contient l'intitulé complet de celle-ci. L'intitulé complet peut aussi être directement retourné pour certaines juridictions dont les formations ne sont pas normalisées.",
           "type": "string"
         },
         "publication": {
@@ -1279,7 +1279,7 @@
               "type": "boolean"
             },
             "partial": {
-              "description": "Lorsque la propriété `partial` est définie et vaut `true`, alors le contenu de la décision correspondante est partiel (décision partiellement publique).",
+              "description": "Lorsque la propriété `partial` est définie et vaut `true`, alors le contenu de la décision correspondante est partiel (décision publiée par extraits).",
               "type": "boolean"
             }
           }
@@ -1527,7 +1527,7 @@
           "type": "string"
         },
         "partial": {
-          "description": "Si `partial` vaut `true`, signifie que le contenu de la décision référencée est partiel (décision partiellement publique).",
+          "description": "Si `partial` vaut `true`, signifie que le contenu de la décision référencée est partiel (décision publiée par extraits).",
           "type": "boolean"
         },
         "ongoing": {
@@ -1719,7 +1719,7 @@
           }
         },
         "jurisdiction": {
-          "description": "Filtre les résultats suivant la juridiction relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=jurisdiction`). Une recherche avec un paramètre `jurisdiction` vide ou manquant retourne des décisions relatives à toutes les juridictions.",
+          "description": "Filtre les résultats suivant la juridiction relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=jurisdiction`). Une recherche avec un paramètre `jurisdiction` vide ou manquant retourne des décisions relatives à la Cour de cassation (`cc`).",
           "type": "array",
           "items": {
             "type": "string"

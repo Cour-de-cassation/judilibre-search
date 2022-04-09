@@ -85,6 +85,8 @@ async function batchexport(query) {
                 : rawResult._source.type,
             summary: rawResult._source.summary,
             themes: rawResult._source.themes,
+            nac: rawResult._source.nac ? rawResult._source.nac : null,
+            portalis: rawResult._source.portalis ? rawResult._source.portalis : null,
             bulletin: rawResult._source.bulletin,
             files: taxons[taxonFilter].filetype.buildFilesList(
               rawResult._id,
