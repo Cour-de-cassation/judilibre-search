@@ -1,5 +1,4 @@
 require('../env');
-const taxons = require('../../taxons');
 
 async function stats(query) {
   if (process.env.WITHOUT_ELASTIC) {
@@ -24,6 +23,56 @@ async function stats(query) {
   if (statsData && statsData.body && statsData.body.count) {
     response.indexedTotal = statsData.body.count;
   }
+
+  /*
+  let statsCCData = await this.client.count({
+    index: process.env.ELASTIC_INDEX,
+    body: {
+      query: {
+        bool: {
+          filter: [
+            {
+              terms: {
+                jurisdiction: 'cc',
+              },
+            },
+          ],
+        },
+      },
+    },
+  });
+
+  if (statsCCData && statsCCData.body && statsCCData.body.count) {
+    response.indexedByJurisdiction.push({
+      label: 'Cour de cassation',
+      value: statsCCData.body.count,
+    });
+  }
+
+  let statsCAData = await this.client.count({
+    index: process.env.ELASTIC_INDEX,
+    body: {
+      query: {
+        bool: {
+          filter: [
+            {
+              terms: {
+                jurisdiction: 'ca',
+              },
+            },
+          ],
+        },
+      },
+    },
+  });
+
+  if (statsCAData && statsCAData.body && statsCAData.body.count) {
+    response.indexedByJurisdiction.push({
+      label: "Cours d'appel",
+      value: statsCAData.body.count,
+    });
+  }
+  */
 
   let content = await this.client.search({
     index: process.env.ELASTIC_INDEX,

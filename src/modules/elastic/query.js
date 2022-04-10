@@ -14,6 +14,7 @@ function buildQuery(query, target, relaxed) {
     summary: 'summary',
     themes: 'themes',
   };
+  let taxonFilter = 'cc';
   let searchQuery;
   let textFields = [];
   let boostedFields = [];
@@ -298,6 +299,11 @@ function buildQuery(query, target, relaxed) {
           jurisdiction: query.jurisdiction,
         },
       });
+      if (query.jurisdiction.length === 1) {
+        taxonFilter = query.jurisdiction[0];
+      } else {
+        taxonFilter = 'all';
+      }
     } else {
       if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
         searchQuery.body.query.function_score.query.bool.filter = [];
@@ -307,16 +313,17 @@ function buildQuery(query, target, relaxed) {
           jurisdiction: ['cc'],
         },
       });
+      taxonFilter = 'cc';
     }
 
-    // Committee (filter):
-    if (query.committee && Array.isArray(query.committee) && query.committee.length > 0) {
+    // Location (filter):
+    if (query.location && Array.isArray(query.location) && query.location.length > 0) {
       if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
         searchQuery.body.query.function_score.query.bool.filter = [];
       }
       searchQuery.body.query.function_score.query.bool.filter.push({
         terms: {
-          committee: query.committee,
+          location: query.location,
         },
       });
     }
@@ -431,7 +438,7 @@ function buildQuery(query, target, relaxed) {
 
     // Finalize search in  text fields:
     if (searchString.length > 0) {
-      let operator = taxons.operator.default.toUpperCase();
+      let operator = taxons[taxonFilter].operator.default.toUpperCase();
       let fuzzy = true;
       let finalSearchString = searchString.join(' ');
       if (query.operator) {
@@ -526,9 +533,9 @@ function buildQuery(query, target, relaxed) {
       };
     });
 
-    // Finalize search in  text fields:
+    // Finalize search in text fields:
     if (searchString.length > 0) {
-      let operator = taxons.operator.default.toUpperCase();
+      let operator = taxons[taxonFilter].operator.default.toUpperCase();
       let fuzzy = true;
       let finalSearchString = searchString.join(' ');
       if (query.operator) {

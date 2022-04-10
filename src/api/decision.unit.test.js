@@ -87,7 +87,7 @@ describe('Testing /decision endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the operator parameter must be in [${taxons.operator.keys}].`,
+          msg: `Value of the operator parameter must be in [${taxons.all.operator.keys}].`,
           param: 'operator',
           value: 'foo',
         },
@@ -100,7 +100,7 @@ describe('Testing /decision endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the operator parameter must be in [${taxons.operator.keys}].`,
+          msg: `Value of the operator parameter must be in [${taxons.all.operator.keys}].`,
           param: 'operator',
           value: ['and'],
         },
@@ -228,6 +228,38 @@ describe('Testing /decision endpoint on static dataset', () => {
     expect(test1.statusCode).toEqual(200);
     expect(test1.body).toEqual(expect.objectContaining(baseObject));
     const test2 = await request(Server.app).get(`/decision?id=foobar&resolve_references=1`);
+    expect(test2.statusCode).toEqual(200);
+    expect(test2.body).toEqual(expect.objectContaining(baseObject));
+  });
+
+  it('GET /decision of CA content with a falsy "resolve_references" parameter must return an unresolved content', async () => {
+    const baseObject = {
+      chamber: 'comm',
+      location: 'ca_chambery',
+      jurisdiction: 'ca',
+      solution: 'Annule la décision déférée',
+      type: 'other',
+    };
+    const test1 = await request(Server.app).get(`/decision?id=5fca25d9cbbf603303c4ff890ca&resolve_references=false`);
+    expect(test1.statusCode).toEqual(200);
+    expect(test1.body).toEqual(expect.objectContaining(baseObject));
+    const test2 = await request(Server.app).get(`/decision?id=5fca25d9cbbf603303c4ff890ca&`);
+    expect(test2.statusCode).toEqual(200);
+    expect(test2.body).toEqual(expect.objectContaining(baseObject));
+  });
+
+  it('GET /decision of CA with a truthy "resolve_references" parameter must return a resolved content', async () => {
+    const baseObject = {
+      chamber: 'Chambre commerciale financière et économique',
+      location: "Cour d'appel de Chambéry",
+      jurisdiction: "Cour d'appel",
+      solution: 'Annule la décision déférée',
+      type: 'Autre',
+    };
+    const test1 = await request(Server.app).get(`/decision?id=5fca25d9cbbf603303c4ff890ca&resolve_references=true`);
+    expect(test1.statusCode).toEqual(200);
+    expect(test1.body).toEqual(expect.objectContaining(baseObject));
+    const test2 = await request(Server.app).get(`/decision?id=5fca25d9cbbf603303c4ff890ca&resolve_references=1`);
     expect(test2.statusCode).toEqual(200);
     expect(test2.body).toEqual(expect.objectContaining(baseObject));
   });

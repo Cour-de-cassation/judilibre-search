@@ -56,7 +56,7 @@ describe('Testing /search endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the field parameter must be in [${taxons.field.keys}].`,
+          msg: `Value of the field parameter must be in [${taxons.all.field.keys}].`,
           param: 'field[0]',
           value: 'foo',
         },
@@ -69,7 +69,7 @@ describe('Testing /search endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the field parameter must be in [${taxons.field.keys}].`,
+          msg: `Value of the field parameter must be in [${taxons.all.field.keys}].`,
           param: 'field[1]',
           value: 'foo',
         },
@@ -92,7 +92,7 @@ describe('Testing /search endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the operator parameter must be in [${taxons.operator.keys}].`,
+          msg: `Value of the operator parameter must be in [${taxons.all.operator.keys}].`,
           param: 'operator',
           value: 'foo',
         },
@@ -113,7 +113,7 @@ describe('Testing /search endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the type parameter must be in [${taxons.type.keys}].`,
+          msg: `Value of the type parameter must be in [${taxons.all.type.keys}].`,
           param: 'type[0]',
           value: 'foo',
         },
@@ -126,7 +126,7 @@ describe('Testing /search endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the type parameter must be in [${taxons.type.keys}].`,
+          msg: `Value of the type parameter must be in [${taxons.all.type.keys}].`,
           param: 'type[1]',
           value: 'foo',
         },
@@ -149,7 +149,7 @@ describe('Testing /search endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the chamber parameter must be in [${taxons.chamber.keys}].`,
+          msg: `Value of the chamber parameter must be in [${taxons.all.chamber.keys}].`,
           param: 'chamber[0]',
           value: 'foo',
         },
@@ -162,7 +162,7 @@ describe('Testing /search endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the chamber parameter must be in [${taxons.chamber.keys}].`,
+          msg: `Value of the chamber parameter must be in [${taxons.all.chamber.keys}].`,
           param: 'chamber[1]',
           value: 'foo',
         },
@@ -185,7 +185,7 @@ describe('Testing /search endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the formation parameter must be in [${taxons.formation.keys}].`,
+          msg: `Value of the formation parameter must be in [${taxons.all.formation.keys}].`,
           param: 'formation[0]',
           value: 'foo',
         },
@@ -198,7 +198,7 @@ describe('Testing /search endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the formation parameter must be in [${taxons.formation.keys}].`,
+          msg: `Value of the formation parameter must be in [${taxons.all.formation.keys}].`,
           param: 'formation[1]',
           value: 'foo',
         },
@@ -221,7 +221,7 @@ describe('Testing /search endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the jurisdiction parameter must be in [${taxons.jurisdiction.keys}].`,
+          msg: `Value of the jurisdiction parameter must be in [${taxons.all.jurisdiction.keys}].`,
           param: 'jurisdiction[0]',
           value: 'foo',
         },
@@ -234,7 +234,7 @@ describe('Testing /search endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the jurisdiction parameter must be in [${taxons.jurisdiction.keys}].`,
+          msg: `Value of the jurisdiction parameter must be in [${taxons.all.jurisdiction.keys}].`,
           param: 'jurisdiction[1]',
           value: 'foo',
         },
@@ -247,6 +247,12 @@ describe('Testing /search endpoint basic validation', () => {
     expect(test1.statusCode).toEqual(200);
     const test2 = await request(Server.app).get(`/search?jurisdiction[]=cc`);
     expect(test2.statusCode).toEqual(200);
+    const test3 = await request(Server.app).get(`/search?jurisdiction=ca`);
+    expect(test3.statusCode).toEqual(200);
+    const test4 = await request(Server.app).get(`/search?jurisdiction[]=ca`);
+    expect(test4.statusCode).toEqual(200);
+    const test5 = await request(Server.app).get(`/search?jurisdiction[]=ca&jurisdiction[]=cc`);
+    expect(test5.statusCode).toEqual(200);
   });
 
   it('GET /search with a wrong "publication" parameter must fail', async () => {
@@ -257,7 +263,7 @@ describe('Testing /search endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the publication parameter must be in [${taxons.publication.keys}].`,
+          msg: `Value of the publication parameter must be in [${taxons.all.publication.keys}].`,
           param: 'publication[0]',
           value: 'foo',
         },
@@ -270,7 +276,7 @@ describe('Testing /search endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the publication parameter must be in [${taxons.publication.keys}].`,
+          msg: `Value of the publication parameter must be in [${taxons.all.publication.keys}].`,
           param: 'publication[1]',
           value: 'foo',
         },
@@ -293,7 +299,7 @@ describe('Testing /search endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the solution parameter must be in [${taxons.solution.keys}].`,
+          msg: `Value of the solution parameter must be in [${taxons.all.solution.keys}].`,
           param: 'solution[0]',
           value: 'foo',
         },
@@ -306,7 +312,7 @@ describe('Testing /search endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the solution parameter must be in [${taxons.solution.keys}].`,
+          msg: `Value of the solution parameter must be in [${taxons.all.solution.keys}].`,
           param: 'solution[1]',
           value: 'foo',
         },
@@ -449,7 +455,7 @@ describe('Testing /search endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the sort parameter must be in [${taxons.sort.keys}].`,
+          msg: `Value of the sort parameter must be in [${taxons.all.sort.keys}].`,
           param: 'sort',
           value: 'foo',
         },
@@ -462,7 +468,7 @@ describe('Testing /search endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the sort parameter must be in [${taxons.sort.keys}].`,
+          msg: `Value of the sort parameter must be in [${taxons.all.sort.keys}].`,
           param: 'sort',
           value: ['score'],
         },
@@ -485,7 +491,7 @@ describe('Testing /search endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the order parameter must be in [${taxons.order.keys}].`,
+          msg: `Value of the order parameter must be in [${taxons.all.order.keys}].`,
           param: 'order',
           value: 'foo',
         },
@@ -498,7 +504,7 @@ describe('Testing /search endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the order parameter must be in [${taxons.order.keys}].`,
+          msg: `Value of the order parameter must be in [${taxons.all.order.keys}].`,
           param: 'order',
           value: ['asc'],
         },
@@ -632,6 +638,42 @@ describe('Testing /search endpoint basic validation', () => {
     const { statusCode } = await request(Server.app).get(`/search?resolve_references=true`);
     expect(statusCode).toEqual(200);
   });
+
+  it('GET /search with a wrong "location" parameter must fail', async () => {
+    const test1 = await request(Server.app).get('/search?location=foo');
+    expect(test1.statusCode).toEqual(400);
+    expect(test1.body).toEqual({
+      route: `GET /search`,
+      errors: [
+        {
+          location: 'query',
+          msg: `Value of the location parameter must be in [${taxons.ca.location.keys}].`,
+          param: 'location[0]',
+          value: 'foo',
+        },
+      ],
+    });
+    const test2 = await request(Server.app).get('/search?location[]=ca_rouen&location[]=foo');
+    expect(test2.statusCode).toEqual(400);
+    expect(test2.body).toEqual({
+      route: `GET /search`,
+      errors: [
+        {
+          location: 'query',
+          msg: `Value of the location parameter must be in [${taxons.ca.location.keys}].`,
+          param: 'location[1]',
+          value: 'foo',
+        },
+      ],
+    });
+  });
+
+  it('GET /search with a good "location" parameter should pass', async () => {
+    const test1 = await request(Server.app).get(`/search?location=ca_rouen`);
+    expect(test1.statusCode).toEqual(200);
+    const test2 = await request(Server.app).get(`/search?location[]=ca_rouen&location[]=ca_nimes`);
+    expect(test2.statusCode).toEqual(200);
+  });
 });
 
 describe('Testing /search endpoint on static dataset', () => {
@@ -668,7 +710,7 @@ describe('Testing /search endpoint on static dataset', () => {
       expect.objectContaining({
         max_score: 10,
         next_page:
-          'query=foo&resolve_references=false&field=&type=&theme=&chamber=&formation=&jurisdiction=&committee=&publication=&solution=&page=1',
+          'query=foo&resolve_references=false&field=&type=&theme=&chamber=&formation=&jurisdiction=&location=&publication=&solution=&page=1',
         page: 0,
         page_size: 10,
         previous_page: null,
@@ -683,7 +725,7 @@ describe('Testing /search endpoint on static dataset', () => {
       expect.objectContaining({
         max_score: 10,
         next_page:
-          'query=foo&field=&type=&theme=&chamber=&formation=&jurisdiction=&committee=&publication=&solution=&page=1',
+          'query=foo&field=&type=&theme=&chamber=&formation=&jurisdiction=&location=&publication=&solution=&page=1',
         page: 0,
         page_size: 10,
         previous_page: null,
@@ -692,6 +734,36 @@ describe('Testing /search endpoint on static dataset', () => {
     );
     expect(test2.body.results).toHaveLength(10);
     expect(test2.body.results[0]).toEqual(expect.objectContaining(baseObject));
+    const test3 = await request(Server.app).get(`/search?query=foo&jurisdiction=cc&resolve_references=false`);
+    expect(test3.statusCode).toEqual(200);
+    expect(test3.body).toEqual(
+      expect.objectContaining({
+        max_score: 10,
+        next_page:
+          'query=foo&jurisdiction=cc&resolve_references=false&field=&type=&theme=&chamber=&formation=&location=&publication=&solution=&page=1',
+        page: 0,
+        page_size: 10,
+        previous_page: null,
+        total: 928,
+      }),
+    );
+    expect(test3.body.results).toHaveLength(10);
+    expect(test3.body.results[0]).toEqual(expect.objectContaining(baseObject));
+    const test4 = await request(Server.app).get(`/search?query=foo&jurisdiction=cc&`);
+    expect(test4.statusCode).toEqual(200);
+    expect(test4.body).toEqual(
+      expect.objectContaining({
+        max_score: 10,
+        next_page:
+          'query=foo&jurisdiction=cc&field=&type=&theme=&chamber=&formation=&location=&publication=&solution=&page=1',
+        page: 0,
+        page_size: 10,
+        previous_page: null,
+        total: 928,
+      }),
+    );
+    expect(test4.body.results).toHaveLength(10);
+    expect(test4.body.results[0]).toEqual(expect.objectContaining(baseObject));
   });
 
   it('GET /search with a truthy "resolve_references" parameter must return a resolved content', async () => {
@@ -709,7 +781,7 @@ describe('Testing /search endpoint on static dataset', () => {
       expect.objectContaining({
         max_score: 10,
         next_page:
-          'query=foo&resolve_references=true&field=&type=&theme=&chamber=&formation=&jurisdiction=&committee=&publication=&solution=&page=1',
+          'query=foo&resolve_references=true&field=&type=&theme=&chamber=&formation=&jurisdiction=&location=&publication=&solution=&page=1',
         page: 0,
         page_size: 10,
         previous_page: null,
@@ -724,7 +796,119 @@ describe('Testing /search endpoint on static dataset', () => {
       expect.objectContaining({
         max_score: 10,
         next_page:
-          'query=foo&resolve_references=true&field=&type=&theme=&chamber=&formation=&jurisdiction=&committee=&publication=&solution=&page=1',
+          'query=foo&resolve_references=true&field=&type=&theme=&chamber=&formation=&jurisdiction=&location=&publication=&solution=&page=1',
+        page: 0,
+        page_size: 10,
+        previous_page: null,
+        total: 928,
+      }),
+    );
+    expect(test2.body.results).toHaveLength(10);
+    expect(test2.body.results[0]).toEqual(expect.objectContaining(baseObject));
+    const test3 = await request(Server.app).get(`/search?query=foo&resolve_references=true&jurisdiction=cc`);
+    expect(test3.statusCode).toEqual(200);
+    expect(test3.body).toEqual(
+      expect.objectContaining({
+        max_score: 10,
+        next_page:
+          'query=foo&resolve_references=true&jurisdiction=cc&field=&type=&theme=&chamber=&formation=&location=&publication=&solution=&page=1',
+        page: 0,
+        page_size: 10,
+        previous_page: null,
+        total: 928,
+      }),
+    );
+    expect(test3.body.results).toHaveLength(10);
+    expect(test3.body.results[0]).toEqual(expect.objectContaining(baseObject));
+    const test4 = await request(Server.app).get(`/search?query=foo&resolve_references=1&jurisdiction=cc`);
+    expect(test4.statusCode).toEqual(200);
+    expect(test4.body).toEqual(
+      expect.objectContaining({
+        max_score: 10,
+        next_page:
+          'query=foo&resolve_references=true&jurisdiction=cc&field=&type=&theme=&chamber=&formation=&location=&publication=&solution=&page=1',
+        page: 0,
+        page_size: 10,
+        previous_page: null,
+        total: 928,
+      }),
+    );
+    expect(test4.body.results).toHaveLength(10);
+    expect(test4.body.results[0]).toEqual(expect.objectContaining(baseObject));
+  });
+
+  //
+
+  it('GET /search on CA content with a falsy "resolve_references" parameter must return an unresolved content', async () => {
+    const baseObject = {
+      chamber: 'soc',
+      location: 'ca_versailles',
+      jurisdiction: 'ca',
+      solution: "MEE-retrait de l'incident",
+      type: 'ordonnance',
+    };
+    const test1 = await request(Server.app).get(`/search?query=foo&resolve_references=false&jurisdiction=ca`);
+    expect(test1.statusCode).toEqual(200);
+    expect(test1.body).toEqual(
+      expect.objectContaining({
+        max_score: 10,
+        next_page:
+          'query=foo&resolve_references=false&jurisdiction=ca&field=&type=&theme=&chamber=&formation=&location=&publication=&solution=&page=1',
+        page: 0,
+        page_size: 10,
+        previous_page: null,
+        total: 928,
+      }),
+    );
+    expect(test1.body.results).toHaveLength(10);
+    expect(test1.body.results[0]).toEqual(expect.objectContaining(baseObject));
+    const test2 = await request(Server.app).get(`/search?query=foo&jurisdiction=ca&`);
+    expect(test2.statusCode).toEqual(200);
+    expect(test2.body).toEqual(
+      expect.objectContaining({
+        max_score: 10,
+        next_page:
+          'query=foo&jurisdiction=ca&field=&type=&theme=&chamber=&formation=&location=&publication=&solution=&page=1',
+        page: 0,
+        page_size: 10,
+        previous_page: null,
+        total: 928,
+      }),
+    );
+    expect(test2.body.results).toHaveLength(10);
+    expect(test2.body.results[0]).toEqual(expect.objectContaining(baseObject));
+  });
+
+  it('GET /search on CA content with a truthy "resolve_references" parameter must return a resolved content', async () => {
+    const baseObject = {
+      chamber: 'Chambre sociale',
+      location: "Cour d'appel de Versailles",
+      jurisdiction: "Cour d'appel",
+      solution: "MEE-retrait de l'incident",
+      type: 'Ordonnance',
+    };
+    const test1 = await request(Server.app).get(`/search?query=foo&resolve_references=true&jurisdiction=ca`);
+    expect(test1.statusCode).toEqual(200);
+    expect(test1.body).toEqual(
+      expect.objectContaining({
+        max_score: 10,
+        next_page:
+          'query=foo&resolve_references=true&jurisdiction=ca&field=&type=&theme=&chamber=&formation=&location=&publication=&solution=&page=1',
+        page: 0,
+        page_size: 10,
+        previous_page: null,
+        total: 928,
+      }),
+    );
+    expect(test1.body.results).toHaveLength(10);
+    expect(test1.body.results[0]).toEqual(expect.objectContaining(baseObject));
+    const test2 = await request(Server.app).get(`/search?query=foo&resolve_references=1&jurisdiction=ca`);
+    expect(test2.statusCode).toEqual(200);
+    expect(test2.body).toEqual(
+      expect.objectContaining({
+        max_score: 10,
+        next_page:
+          'query=foo&resolve_references=true&jurisdiction=ca&field=&type=&theme=&chamber=&formation=&location=&publication=&solution=&page=1',
         page: 0,
         page_size: 10,
         previous_page: null,

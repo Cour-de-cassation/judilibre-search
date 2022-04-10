@@ -91,13 +91,30 @@ async function getTaxonomy(query) {
     };
   }
   if (query.id) {
-    if (!query.key && !query.value && !query.context_value) {
+    if (query.context_value && ['cc', 'ca'].indexOf(query.context_value) === -1) {
+      return {
+        errors: [
+          {
+            value: query.context_value,
+            msg: `Unknown value for the given context_value parameter.`,
+            param: 'context_value',
+            location: 'query',
+          },
+        ],
+      };
+    } else if (!query.context_value) {
+      query.context_value = 'cc';
+    }
+    if (!query.key && !query.value) {
       return {
         id: query.id,
-        result: taxons[query.id].taxonomy,
+        context_value: query.context_value,
+        result: taxons[query.context_value][query.id].tree
+          ? taxons[query.context_value][query.id].tree
+          : taxons[query.context_value][query.id].taxonomy,
       };
-    } else if (query.key && !query.value && !query.context_value) {
-      if (taxons[query.id].taxonomy[query.key] === undefined) {
+    } else if (query.key && !query.value) {
+      if (taxons[query.context_value][query.id].taxonomy[query.key] === undefined) {
         return {
           errors: [
             {
@@ -112,14 +129,15 @@ async function getTaxonomy(query) {
       return {
         id: query.id,
         key: query.key,
+        context_value: query.context_value,
         result: {
-          value: taxons[query.id].taxonomy[query.key],
+          value: taxons[query.context_value][query.id].taxonomy[query.key],
         },
       };
-    } else if (query.value && !query.key && !query.context_value) {
+    } else if (query.value && !query.key) {
       let found = null;
-      for (let key in taxons[query.id].taxonomy) {
-        if (taxons[query.id].taxonomy[key].toLowerCase() === query.value.toLowerCase()) {
+      for (let key in taxons[query.context_value][query.id].taxonomy) {
+        if (taxons[query.context_value][query.id].taxonomy[key].toLowerCase() === query.value.toLowerCase()) {
           found = key;
           break;
         }
@@ -139,6 +157,7 @@ async function getTaxonomy(query) {
       return {
         id: query.id,
         value: query.value,
+        context_value: query.context_value,
         result: {
           key: found,
         },

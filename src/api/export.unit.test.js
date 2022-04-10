@@ -17,7 +17,7 @@ describe('Testing /export endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the type parameter must be in [${taxons.type.keys}].`,
+          msg: `Value of the type parameter must be in [${taxons.all.type.keys}].`,
           param: 'type[0]',
           value: 'foo',
         },
@@ -30,7 +30,7 @@ describe('Testing /export endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the type parameter must be in [${taxons.type.keys}].`,
+          msg: `Value of the type parameter must be in [${taxons.all.type.keys}].`,
           param: 'type[1]',
           value: 'foo',
         },
@@ -53,7 +53,7 @@ describe('Testing /export endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the chamber parameter must be in [${taxons.chamber.keys}].`,
+          msg: `Value of the chamber parameter must be in [${taxons.all.chamber.keys}].`,
           param: 'chamber[0]',
           value: 'foo',
         },
@@ -66,7 +66,7 @@ describe('Testing /export endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the chamber parameter must be in [${taxons.chamber.keys}].`,
+          msg: `Value of the chamber parameter must be in [${taxons.all.chamber.keys}].`,
           param: 'chamber[1]',
           value: 'foo',
         },
@@ -89,7 +89,7 @@ describe('Testing /export endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the formation parameter must be in [${taxons.formation.keys}].`,
+          msg: `Value of the formation parameter must be in [${taxons.all.formation.keys}].`,
           param: 'formation[0]',
           value: 'foo',
         },
@@ -102,7 +102,7 @@ describe('Testing /export endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the formation parameter must be in [${taxons.formation.keys}].`,
+          msg: `Value of the formation parameter must be in [${taxons.all.formation.keys}].`,
           param: 'formation[1]',
           value: 'foo',
         },
@@ -125,7 +125,7 @@ describe('Testing /export endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the jurisdiction parameter must be in [${taxons.jurisdiction.keys}].`,
+          msg: `Value of the jurisdiction parameter must be in [${taxons.all.jurisdiction.keys}].`,
           param: 'jurisdiction[0]',
           value: 'foo',
         },
@@ -138,7 +138,7 @@ describe('Testing /export endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the jurisdiction parameter must be in [${taxons.jurisdiction.keys}].`,
+          msg: `Value of the jurisdiction parameter must be in [${taxons.all.jurisdiction.keys}].`,
           param: 'jurisdiction[1]',
           value: 'foo',
         },
@@ -151,6 +151,12 @@ describe('Testing /export endpoint basic validation', () => {
     expect(test1.statusCode).toEqual(200);
     const test2 = await request(Server.app).get(`/export?batch=0&jurisdiction[]=cc`);
     expect(test2.statusCode).toEqual(200);
+    const test3 = await request(Server.app).get(`/export?batch=0&jurisdiction=ca`);
+    expect(test3.statusCode).toEqual(200);
+    const test4 = await request(Server.app).get(`/export?batch=0&jurisdiction[]=ca`);
+    expect(test4.statusCode).toEqual(200);
+    const test5 = await request(Server.app).get(`/export?batch=0&jurisdiction[]=cc&jurisdiction[]=ca`);
+    expect(test5.statusCode).toEqual(200);
   });
 
   it('GET /export with a wrong "publication" parameter must fail', async () => {
@@ -161,7 +167,7 @@ describe('Testing /export endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the publication parameter must be in [${taxons.publication.keys}].`,
+          msg: `Value of the publication parameter must be in [${taxons.all.publication.keys}].`,
           param: 'publication[0]',
           value: 'foo',
         },
@@ -174,7 +180,7 @@ describe('Testing /export endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the publication parameter must be in [${taxons.publication.keys}].`,
+          msg: `Value of the publication parameter must be in [${taxons.all.publication.keys}].`,
           param: 'publication[1]',
           value: 'foo',
         },
@@ -197,7 +203,7 @@ describe('Testing /export endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the solution parameter must be in [${taxons.solution.keys}].`,
+          msg: `Value of the solution parameter must be in [${taxons.all.solution.keys}].`,
           param: 'solution[0]',
           value: 'foo',
         },
@@ -210,7 +216,7 @@ describe('Testing /export endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the solution parameter must be in [${taxons.solution.keys}].`,
+          msg: `Value of the solution parameter must be in [${taxons.all.solution.keys}].`,
           param: 'solution[1]',
           value: 'foo',
         },
@@ -353,7 +359,7 @@ describe('Testing /export endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the date_type parameter must be in [${taxons.date_type.keys}].`,
+          msg: `Value of the date_type parameter must be in [${taxons.all.date_type.keys}].`,
           param: 'date_type',
           value: 'foo',
         },
@@ -366,7 +372,7 @@ describe('Testing /export endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the date_type parameter must be in [${taxons.date_type.keys}].`,
+          msg: `Value of the date_type parameter must be in [${taxons.all.date_type.keys}].`,
           param: 'date_type',
           value: ['creation'],
         },
@@ -389,7 +395,7 @@ describe('Testing /export endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the order parameter must be in [${taxons.order.keys}].`,
+          msg: `Value of the order parameter must be in [${taxons.all.order.keys}].`,
           param: 'order',
           value: 'foo',
         },
@@ -402,7 +408,7 @@ describe('Testing /export endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the order parameter must be in [${taxons.order.keys}].`,
+          msg: `Value of the order parameter must be in [${taxons.all.order.keys}].`,
           param: 'order',
           value: ['asc'],
         },

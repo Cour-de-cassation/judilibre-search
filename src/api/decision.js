@@ -29,6 +29,13 @@ api.get(
       errorMessage: `Value of the showContested parameter must be a boolean.`,
       optional: true,
     },
+    showForward: {
+      in: 'query',
+      isBoolean: true,
+      toBoolean: true,
+      errorMessage: `Value of the showForward parameter must be a boolean.`,
+      optional: true,
+    },
     query: {
       in: 'query',
       isString: true,
@@ -40,9 +47,9 @@ api.get(
       isString: true,
       toLowerCase: true,
       isIn: {
-        options: [taxons.operator.options],
+        options: [taxons.all.operator.options],
       },
-      errorMessage: `Value of the operator parameter must be in [${taxons.operator.keys}].`,
+      errorMessage: `Value of the operator parameter must be in [${taxons.all.operator.keys}].`,
       optional: true,
     },
     resolve_references: {
@@ -103,26 +110,73 @@ api.get(
             errors: [{ msg: 'Not Found', error: `File '${req.query.fileId}' not found.` }],
           });
         }
+      } else if (req.query.showContested && req.query.showForward) {
+        // Does not work in schema:
+        return res.status(400).json({
+          route: `${req.method} ${req.path}`,
+          errors: [
+            {
+              value: true,
+              msg: 'showContested and showForward parameters cannot both be true at the same time.',
+              param: 'showContested, showForward',
+              location: 'query',
+            },
+          ],
+        });
       } else if (req.query.showContested) {
-        if (result && result.contested !== null && result.contested.content) {
+        if (result && result.contested !== null && result.contested !== undefined && result.contested.content) {
           let contest_params = new URLSearchParams(req.query);
           contest_params.delete('showContested');
           const response = {
             id: result.contested.id,
-            source: 'jurica',
+            source: result.contested.source,
             text: result.contested.content,
-            chamber: result.contested.title.split('\n')[1],
+            location: result.contested.location,
+            solution: result.contested.solution,
+            chamber: result.contested.chamber ? result.contested.chamber : result.contested.title.split('\n')[1],
             decision_date: result.contested.date,
-            jurisdiction: result.contested.title.split('\n')[0],
+            jurisdiction: result.contested.jurisdiction
+              ? result.contested.jurisdiction
+              : result.contested.title.split('\n')[0],
             number: result.contested.number,
             numbers: [result.contested.number],
-            contest: contest_params.toString(),
+            partial: result.contested.partial === true,
+            ongoing: result.contested.ongoing === true,
+            forward: contest_params.toString(),
           };
           return res.status(200).json(response);
         } else {
           return res.status(404).json({
             route: `${req.method} ${req.path}`,
             errors: [{ msg: 'Not Found', error: `Contested decision not found for decision '${req.query.id}'.` }],
+          });
+        }
+      } else if (req.query.showForward) {
+        if (result && result.forward !== null && result.forward !== undefined && result.forward.content) {
+          let forward_params = new URLSearchParams(req.query);
+          forward_params.delete('showForward');
+          const response = {
+            id: result.forward.id,
+            source: result.forward.source,
+            text: result.forward.content,
+            location: result.forward.location,
+            solution: result.forward.solution,
+            chamber: result.forward.chamber ? result.forward.chamber : result.forward.title.split('\n')[1],
+            decision_date: result.forward.date,
+            jurisdiction: result.forward.jurisdiction
+              ? result.forward.jurisdiction
+              : result.forward.title.split('\n')[0],
+            number: result.forward.number,
+            numbers: [result.forward.number],
+            partial: result.forward.partial === true,
+            ongoing: result.forward.ongoing === true,
+            contested: forward_params.toString(),
+          };
+          return res.status(200).json(response);
+        } else {
+          return res.status(404).json({
+            route: `${req.method} ${req.path}`,
+            errors: [{ msg: 'Not Found', error: `Forward decision not found for decision '${req.query.id}'.` }],
           });
         }
       } else {
@@ -133,8 +187,11 @@ api.get(
             }
           }
         }
-        if (result && result.contested !== null && result.contested.content) {
+        if (result && result.contested !== null && result.contested !== undefined && result.contested.content) {
           delete result.contested.content;
+        }
+        if (result && result.forward !== null && result.forward !== undefined && result.forward.content) {
+          delete result.forward.content;
         }
         return res.status(200).json(result);
       }

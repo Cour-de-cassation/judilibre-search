@@ -24,9 +24,9 @@ api.get(
       isString: true,
       toLowerCase: true,
       isIn: {
-        options: [taxons.field.options],
+        options: [taxons.all.field.options],
       },
-      errorMessage: `Value of the field parameter must be in [${taxons.field.keys}].`,
+      errorMessage: `Value of the field parameter must be in [${taxons.all.field.keys}].`,
       optional: true,
     },
     operator: {
@@ -34,9 +34,9 @@ api.get(
       isString: true,
       toLowerCase: true,
       isIn: {
-        options: [taxons.operator.options],
+        options: [taxons.all.operator.options],
       },
-      errorMessage: `Value of the operator parameter must be in [${taxons.operator.keys}].`,
+      errorMessage: `Value of the operator parameter must be in [${taxons.all.operator.keys}].`,
       optional: true,
     },
     type: {
@@ -48,9 +48,9 @@ api.get(
       isString: true,
       toLowerCase: true,
       isIn: {
-        options: [taxons.type.options],
+        options: [taxons.all.type.options],
       },
-      errorMessage: `Value of the type parameter must be in [${taxons.type.keys}].`,
+      errorMessage: `Value of the type parameter must be in [${taxons.all.type.keys}].`,
       optional: true,
     },
     theme: {
@@ -73,9 +73,9 @@ api.get(
       isString: true,
       toLowerCase: true,
       isIn: {
-        options: [taxons.chamber.options],
+        options: [taxons.all.chamber.options],
       },
-      errorMessage: `Value of the chamber parameter must be in [${taxons.chamber.keys}].`,
+      errorMessage: `Value of the chamber parameter must be in [${taxons.all.chamber.keys}].`,
       optional: true,
     },
     formation: {
@@ -87,9 +87,9 @@ api.get(
       isString: true,
       toLowerCase: true,
       isIn: {
-        options: [taxons.formation.options],
+        options: [taxons.all.formation.options],
       },
-      errorMessage: `Value of the formation parameter must be in [${taxons.formation.keys}].`,
+      errorMessage: `Value of the formation parameter must be in [${taxons.all.formation.keys}].`,
       optional: true,
     },
     jurisdiction: {
@@ -101,23 +101,23 @@ api.get(
       isString: true,
       toLowerCase: true,
       isIn: {
-        options: [taxons.jurisdiction.options],
+        options: [taxons.all.jurisdiction.options],
       },
-      errorMessage: `Value of the jurisdiction parameter must be in [${taxons.jurisdiction.keys}].`,
+      errorMessage: `Value of the jurisdiction parameter must be in [${taxons.all.jurisdiction.keys}].`,
       optional: true,
     },
-    committee: {
+    location: {
       in: 'query',
       toArray: true,
     },
-    'committee.*': {
+    'location.*': {
       in: 'query',
       isString: true,
       toLowerCase: true,
       isIn: {
-        options: [taxons.committee.options],
+        options: [taxons.all.location.options],
       },
-      errorMessage: `Value of the committee parameter must be in [${taxons.committee.keys}].`,
+      errorMessage: `Value of the location parameter must be in [${taxons.all.location.keys}].`,
       optional: true,
     },
     publication: {
@@ -129,9 +129,9 @@ api.get(
       isString: true,
       toLowerCase: true,
       isIn: {
-        options: [taxons.publication.options],
+        options: [taxons.all.publication.options],
       },
-      errorMessage: `Value of the publication parameter must be in [${taxons.publication.keys}].`,
+      errorMessage: `Value of the publication parameter must be in [${taxons.all.publication.keys}].`,
       optional: true,
     },
     solution: {
@@ -143,9 +143,9 @@ api.get(
       isString: true,
       toLowerCase: true,
       isIn: {
-        options: [taxons.solution.options],
+        options: [taxons.all.solution.options],
       },
-      errorMessage: `Value of the solution parameter must be in [${taxons.solution.keys}].`,
+      errorMessage: `Value of the solution parameter must be in [${taxons.all.solution.keys}].`,
       optional: true,
     },
     date_start: {
@@ -167,9 +167,9 @@ api.get(
       isString: true,
       toLowerCase: true,
       isIn: {
-        options: [taxons.sort.options],
+        options: [taxons.all.sort.options],
       },
-      errorMessage: `Value of the sort parameter must be in [${taxons.sort.keys}].`,
+      errorMessage: `Value of the sort parameter must be in [${taxons.all.sort.keys}].`,
       optional: true,
     },
     order: {
@@ -177,9 +177,9 @@ api.get(
       isString: true,
       toLowerCase: true,
       isIn: {
-        options: [taxons.order.options],
+        options: [taxons.all.order.options],
       },
-      errorMessage: `Value of the order parameter must be in [${taxons.order.keys}].`,
+      errorMessage: `Value of the order parameter must be in [${taxons.all.order.keys}].`,
       optional: true,
     },
     page_size: {

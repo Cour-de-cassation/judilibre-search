@@ -2,7 +2,7 @@
   "openapi": "3.0.2",
   "info": {
     "title": "JUDILIBRE-public",
-    "version": "1.0.3",
+    "version": "1.1.0",
     "description": "La Cour de cassation, dans le cadre de la refonte de son site Web, a initié le projet JUDILIBRE visant à la conception et au développement en interne d'un moteur de recherche dans le corpus jurisprudentiel, mettant celui-ci à disposition du public dans l'esprit du décret sur l'Open Data des décisions de justice.",
     "contact": {
       "name": "Sébastien COURVOISIER",
@@ -168,7 +168,7 @@
           },
           {
             "name": "key",
-            "description": "Clé du terme dont on veut récupérer l'intitulé complet (le paramètre `id` est alors requis), par exemple : la requête `GET /taxonomy?id=jurisdiction&key=cc` retournera `Cour de cassation`.",
+            "description": "Clé du terme dont on veut récupérer l'intitulé complet (le paramètre `id` est alors requis), par exemple : la requête `GET /taxonomy?id=jurisdiction&key=cc` retournera `Cour de cassation`, tandis que la requête `GET /taxonomy?id=jurisdiction&key=ca` retournera `Cour d'appel`.",
             "schema": {
               "type": "string"
             },
@@ -184,7 +184,7 @@
           },
           {
             "name": "context_value",
-            "description": "Valeur pouvant être requise pour contextualiser certaines listes (par exemple, la liste des chambres qui n’a de sens que dans le contexte d’une juridiction – ainsi, pour obtenir la liste des chambres de la Cour de cassation : `GET /taxonomy?id=chamber&context_value=cc`).",
+            "description": "Valeur pouvant être requise pour contextualiser certaines listes (par exemple, la liste des chambres qui n’a de sens que dans le contexte d’une juridiction – ainsi, pour obtenir la liste des chambres de la Cour de cassation : `GET /taxonomy?id=chamber&context_value=cc`). Valeurs possibles : `cc`, `ca`. Si le paramètre `context_value` est omis, la valeur `cc` est utilisée par défaut.",
             "schema": {
               "type": "string"
             },
@@ -253,7 +253,7 @@
         ],
         "operationId": "taxonomy",
         "summary": "Permet de récupérer les listes des termes employés par le processus de recherche.",
-        "description": "L'API publique propose la récupération des listes des termes (sous la forme d'un couple clé/valeur) constituants les différents critères et filtres pris en compte par le processus de recherche et les données qu'il restitue, notamment :\n\n* La liste des types de décision (`type`) ;\n* La liste des juridictions dont le système intègre les décisions (`jurisdiction`) ;\n* La liste des chambres (`chamber`) ;\n* La liste des formations (`formation`) ;\n* La liste des commissions (`committee`) ;\n* La liste des niveaux de publication (`publication`) ;\n* La liste des matières (`theme`) ;\n* La liste des solutions (`solution`) ;\n* La liste des champs et des zones de contenu des décisions pouvant être ciblés par la recherche (`field`) ;\n* La liste des zones de contenu des décisions (`zones`) ;\n* etc.\n\nLa publication de cette taxonomie permet principalement au prestataire chargé de l'implémentation du frontend (ainsi qu'à certains réutilisateurs avancés) d'automatiser la constitution des formulaires de recherche et l'enrichissement des résultats retournés."
+        "description": "L'API publique propose la récupération des listes des termes (sous la forme d'un couple clé/valeur) constituants les différents critères et filtres pris en compte par le processus de recherche et les données qu'il restitue, notamment :\n\n* La liste des types de décision (`type`) ;\n* La liste des juridictions dont le système intègre les décisions (`jurisdiction`) ;\n* La liste des chambres (`chamber`) ;\n* La liste des formations (`formation`) ;\n* La liste des niveaux de publication (`publication`) ;\n* La liste des matières (`theme`) ;\n* La liste des solutions (`solution`) ;\n* La liste des champs et des zones de contenu des décisions pouvant être ciblés par la recherche (`field`) ;\n* La liste des zones de contenu des décisions (`zones`) ;\n* etc.\n\nLa publication de cette taxonomie permet principalement au prestataire chargé de l'implémentation du frontend (ainsi qu'à certains réutilisateurs avancés) d'automatiser la constitution des formulaires de recherche et l'enrichissement des résultats retournés."
       }
     },
     "/stats": {
@@ -419,19 +419,7 @@
           },
           {
             "name": "jurisdiction",
-            "description": "Filtre les résultats suivant la juridiction relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=jurisdiction`). Une recherche avec un paramètre `jurisdiction` vide ou manquant retourne des décisions relatives à toutes les juridictions.",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            },
-            "in": "query",
-            "required": false
-          },
-          {
-            "name": "committee",
-            "description": "Filtre les résultats suivant la commission relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=committee`). Une recherche avec un paramètre `committee` vide ou manquant retourne des décisions relatives à toutes les commissions.",
+            "description": "Filtre les résultats suivant la juridiction relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=jurisdiction`). Une recherche avec un paramètre `jurisdiction` vide ou manquant retourne des décisions relatives à la Cour de cassation (`cc`).",
             "schema": {
               "type": "array",
               "items": {
@@ -564,7 +552,6 @@
                         "chamber": [],
                         "formation": [],
                         "jurisdiction": [],
-                        "committee": [],
                         "publication": ["c", "b"],
                         "solution": [],
                         "date_start": "1970-01-01",
@@ -710,19 +697,7 @@
           },
           {
             "name": "jurisdiction",
-            "description": "Filtre les résultats suivant la juridiction relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=jurisdiction`). Un export avec un paramètre `jurisdiction` vide ou manquant retourne des décisions relatives à toutes les juridictions.",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            },
-            "in": "query",
-            "required": false
-          },
-          {
-            "name": "committee",
-            "description": "Filtre les résultats suivant la commission relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=committee`). Un export avec un paramètre `committee` vide ou manquant retourne des décisions relatives à toutes les commissions.",
+            "description": "Filtre les résultats suivant la juridiction relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=jurisdiction`). Un export avec un paramètre `jurisdiction` vide ou manquant retourne des décisions relatives à la Cour de cassation (`cc`).",
             "schema": {
               "type": "array",
               "items": {
@@ -861,7 +836,6 @@
                         "chamber": [],
                         "formation": [],
                         "jurisdiction": [],
-                        "committee": [],
                         "publication": ["c", "b"],
                         "solution": [],
                         "date_start": "1970-01-01",
@@ -1083,7 +1057,6 @@
             "chamber": [],
             "formation": [],
             "jurisdiction": [],
-            "committee": [],
             "publication": ["c", "b"],
             "solution": [],
             "date_start": "1970-01-01",
@@ -1245,14 +1218,7 @@
             }
           },
           "jurisdiction": {
-            "description": "Filtre les résultats suivant la juridiction relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=jurisdiction`). Une recherche avec un paramètre `jurisdiction` vide ou manquant retourne des décisions relatives à toutes les juridictions.",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "committee": {
-            "description": "Filtre les résultats suivant la commission relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=committee`). Une recherche avec un paramètre `committee` vide ou manquant retourne des décisions relatives à toutes les commissions.",
+            "description": "Filtre les résultats suivant la juridiction relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=jurisdiction`). Une recherche avec un paramètre `jurisdiction` vide ou manquant retourne des décisions relatives à la Cour de cassation (`cc`).",
             "type": "array",
             "items": {
               "type": "string"
@@ -1317,7 +1283,6 @@
           "chamber": [],
           "formation": [],
           "jurisdiction": [],
-          "committee": [],
           "publication": ["c", "b"],
           "solution": [],
           "date_start": "1970-01-01",
@@ -1366,7 +1331,7 @@
             "type": "string"
           },
           "chamber": {
-            "description": "Clé de la chambre. Par défaut, utiliser `GET /taxonomy?id=chamber&context_value={jurisdiction}&key={chamber}` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété contient l'intitulé complet de celle-ci.",
+            "description": "Clé de la chambre. Par défaut, utiliser `GET /taxonomy?id=chamber&context_value={jurisdiction}&key={chamber}` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété contient l'intitulé complet de celle-ci. L'intitulé complet peut aussi être directement retourné pour certaines juridictions dont les chambres ne sont pas normalisées.",
             "type": "string"
           },
           "number": {
@@ -1385,7 +1350,7 @@
             "type": "string"
           },
           "formation": {
-            "description": "Clé de la formation. Par défaut, utiliser `GET /taxonomy?id=formation&context_value={jurisdiction}&key={formation}` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété contient l'intitulé complet de celle-ci.",
+            "description": "Clé de la formation. Par défaut, utiliser `GET /taxonomy?id=formation&context_value={jurisdiction}&key={formation}` pour récupérer l'intitulé complet de celle-ci. Si la requête utilise `resolve_references=true`, alors cette propriété contient l'intitulé complet de celle-ci. L'intitulé complet peut aussi être directement retourné pour certaines juridictions dont les formations ne sont pas normalisées.",
             "type": "string"
           },
           "publication": {
@@ -1494,7 +1459,12 @@
                 }
               },
               "contested": {
-                "description": "Objet décrivant la décision attaquée, de type `decisionLink` où `title` contient son intitulé, `number` son numéro, `description` son court texte descriptif, `theme` la liste de ses matières (ou éléments de titrage) et `url` le lien vers celle-ci.",
+                "description": "Objet décrivant la décision attaquée (chaînage arrière), de type `decisionLink` où `title` contient son intitulé, `number` son numéro, `description` son court texte descriptif, `theme` la liste de ses matières (ou éléments de titrage) et `url` le lien vers celle-ci.",
+                "$ref": "#/components/schemas/decisionLink",
+                "nullable": true
+              },
+              "forward": {
+                "description": "Objet décrivant la décision suivant celle-ci (chaînage avant), de type `decisionLink` où `title` contient son intitulé, `number` son numéro, `description` son court texte descriptif, `theme` la liste de ses matières (ou éléments de titrage) et `url` le lien vers celle-ci.",
                 "$ref": "#/components/schemas/decisionLink",
                 "nullable": true
               },
@@ -1505,8 +1475,19 @@
                   "$ref": "#/components/schemas/decisionLink"
                 }
               },
+              "timeline": {
+                "description": "Liste des dates clés relatives à la décision, chaque date clé étant représentée par un objet de type `decisionLink`.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/decisionLink"
+                }
+              },
               "to_be_deleted": {
                 "description": "Lorsque la propriété `to_be_deleted` est définie et vaut `true`, alors la décision correspondante doit être supprimée des archives ou des bases de données du réutilisateur. Cette propriété peut apparaître dans le cadre d'un export des décisions mises à jour (`/export?date_type=update`).",
+                "type": "boolean"
+              },
+              "partial": {
+                "description": "Lorsque la propriété `partial` est définie et vaut `true`, alors le contenu de la décision correspondante est partiel (décision publiée par extraits).",
                 "type": "boolean"
               }
             }
@@ -1702,12 +1683,32 @@
             "description": "Identifiant de la décision.",
             "type": "string"
           },
+          "source": {
+            "description": "Source de la décision.",
+            "type": "string"
+          },
           "date": {
             "description": "Date de la décision, au format ISO-8601 (par exemple 2021-05-13).",
             "type": "string"
           },
           "title": {
             "description": "Intitulé de la décision.",
+            "type": "string"
+          },
+          "jurisdiction": {
+            "description": "Juridiction ayant rendu la décision (par exemple : Cour de cassation, Cour d'appel).",
+            "type": "string"
+          },
+          "location": {
+            "description": "Siège ayant rendu la décision (par exemple : Cour d'appel de Toulouse).",
+            "type": "string"
+          },
+          "chamber": {
+            "description": "Chambre ayant rendu la décision (par exemple : Chambre sociale).",
+            "type": "string"
+          },
+          "solution": {
+            "description": "Solution de la décision.",
             "type": "string"
           },
           "url": {
@@ -1732,6 +1733,14 @@
           "content": {
             "description": "Contenu de la décision (propriété présente pour les décisions qui ne seraient pas indexées dans la base JUDILIBRE).",
             "type": "string"
+          },
+          "partial": {
+            "description": "Si `partial` vaut `true`, signifie que le contenu de la décision référencée est partiel (décision publiée par extraits).",
+            "type": "boolean"
+          },
+          "ongoing": {
+            "description": "Si `ongoing` vaut `true`, signifie que la décision référencée n'a pas encore été rendue (par exemple : pourvoi en cours).",
+            "type": "boolean"
           }
         },
         "example": {
@@ -1820,7 +1829,6 @@
             "chamber": [],
             "formation": [],
             "jurisdiction": [],
-            "committee": [],
             "publication": ["c", "b"],
             "solution": [],
             "date_start": "1970-01-01",
@@ -1921,14 +1929,7 @@
             }
           },
           "jurisdiction": {
-            "description": "Filtre les résultats suivant la juridiction relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=jurisdiction`). Une recherche avec un paramètre `jurisdiction` vide ou manquant retourne des décisions relatives à toutes les juridictions.",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "committee": {
-            "description": "Filtre les résultats suivant la commission relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=committee`). Une recherche avec un paramètre `committee` vide ou manquant retourne des décisions relatives à toutes les commissions.",
+            "description": "Filtre les résultats suivant la juridiction relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=jurisdiction`). Une recherche avec un paramètre `jurisdiction` vide ou manquant retourne des décisions relatives à la Cour de cassation (`cc`).",
             "type": "array",
             "items": {
               "type": "string"
@@ -1994,7 +1995,6 @@
           "chamber": [],
           "formation": [],
           "jurisdiction": [],
-          "committee": [],
           "publication": ["c", "b"],
           "solution": [],
           "date_start": "1970-01-01",
