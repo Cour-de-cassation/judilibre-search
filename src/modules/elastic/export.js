@@ -122,9 +122,15 @@ async function batchexport(query) {
             delete result.timeline;
             delete result.partial;
           }
+
+          if (result.type === 'undefined') {
+            delete result.type;
+          }
+
           if (result.partial && result.zones) {
             delete result.zones;
           }
+
           response.results.push(result);
         });
       }

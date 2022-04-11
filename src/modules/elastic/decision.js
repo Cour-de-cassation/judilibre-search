@@ -215,6 +215,10 @@ async function decision(query) {
           : [],
     };
 
+    if (response.type === 'undefined') {
+      delete response.type;
+    }
+
     if (response.partial && response.zones) {
       delete response.zones;
     }
