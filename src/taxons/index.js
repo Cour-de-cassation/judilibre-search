@@ -36,6 +36,12 @@ taxonsEntries.forEach((taxon) => {
   if (taxons[taxon].keys) {
     taxons.all[taxon].keys = JSON.parse(JSON.stringify(taxons[taxon].keys));
   }
+  if (taxons[taxon].default) {
+    taxons.all[taxon].default = JSON.parse(JSON.stringify(taxons[taxon].default));
+  }
+  if (taxons[taxon].taxonomy) {
+    taxons.all[taxon].taxonomy = JSON.parse(JSON.stringify(taxons[taxon].taxonomy));
+  }
   try {
     taxons.ca[taxon] = require(`./ca/${taxon}`);
     if (taxons.all[taxon].options && taxons.ca[taxon].options) {
