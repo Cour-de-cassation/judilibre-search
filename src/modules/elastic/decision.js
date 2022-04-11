@@ -215,8 +215,16 @@ async function decision(query) {
           : [],
     };
 
+    if (response.type === 'undefined') {
+      delete response.type;
+    }
+
     if (response.partial && response.zones) {
       delete response.zones;
+    }
+
+    if (Array.isArray(response.timeline) && response.timeline.length < 2) {
+      delete response.timeline;
     }
 
     if (response.contested !== null && response.contested !== undefined) {
