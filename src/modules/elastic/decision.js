@@ -223,6 +223,10 @@ async function decision(query) {
       delete response.zones;
     }
 
+    if (Array.isArray(response.timeline) && response.timeline.length < 2) {
+      delete response.timeline;
+    }
+
     if (response.contested !== null && response.contested !== undefined) {
       for (let _key in response.contested) {
         if (Array.isArray(response.contested[_key])) {

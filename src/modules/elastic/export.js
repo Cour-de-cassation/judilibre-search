@@ -123,6 +123,10 @@ async function batchexport(query) {
             delete result.partial;
           }
 
+          if (Array.isArray(result.timeline) && result.timeline.length < 2) {
+            delete result.timeline;
+          }
+
           if (result.type === 'undefined') {
             delete result.type;
           }
