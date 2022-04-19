@@ -32,7 +32,7 @@ async function stats(query) {
           must: [
             {
               terms: {
-                jurisdiction: 'cc',
+                jurisdiction: ['cc'],
               },
             },
           ],
