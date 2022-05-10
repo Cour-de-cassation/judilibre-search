@@ -107,6 +107,10 @@ async function search(query) {
               ),
             };
 
+            if (result.type === 'undefined') {
+              delete result.type;
+            }
+
             let hasHitsInSpecificZone = false;
             for (let key in searchQuery.queryField) {
               let field = searchQuery.queryField[key];

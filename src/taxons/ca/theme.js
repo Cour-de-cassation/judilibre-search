@@ -376,7 +376,7 @@ const taxon = {
         "Demande formée avant la décision de recevabilité aux fins de suspension des procédures d'exécution et des cessions des rémunérations",
       '48R': 'Demande de relevé de forclusion de déclaration de créances',
       '48X': "Surendettement des particuliers et faillite civile- nature d'affaire indéterminée",
-      '4A': "Désignation d'un mandataire ad hoc, ouverture d'une procédure de conciliation ou de règlement amiable agricole, de sauvegarde, de sauvegarde financière accélérée, de sauvegarde accélérée, de redressement ou de liquidation judiciaire",
+      '4A': "Désignation d'un mandataire ad hoc, ouverture d'une procédure de conciliation ou de règlement amiable agricole, de sauvegarde, de redressement ou de liquidation judiciaire",
       '4AG':
         'Demande de prononcé de la liquidation judiciaire après résolution du plan de sauvegarde ou du plan de redressement',
       '4AH':
@@ -394,9 +394,9 @@ const taxon = {
         'Appel sur des décisions relatives au déroulement de la procédure (Loi n°2005-845 du 26 juillet 2005 de sauvegarde des entreprises)',
       '4C': "L'entreprise au cours de la procédure  - Autorisations,  plan de cession et actions diverses - (Loi n°2005-845 du 26 juillet 2005 de sauvegarde des entreprises)",
       '4CA':
-        "Appel sur des décisions relatives à la nullité des actes du débiteur non autorisés par le juge commissaire ou d'homologation de compromis ou de transaction (Loi n°2005-845 du 26 juillet 2005 de sauvegarde des entreprises)",
+        "Appel sur des décisions relatives à la nullité des actes du débiteur non autorisés par le juge commissaire ou d'homologation de compromis ou de transaction (Loi n°2005-845)",
       '4CB':
-        'Appel sur des décisions relatives au remplacement du ou des dirigeants, ou de privation du droit de vote, ou de cession forcée des actions (Loi n°2005-845 du 26 juillet 2005 de sauvegarde des entreprises)',
+        'Appel sur des décisions relatives au remplacement du ou des dirigeants, ou de privation du droit de vote, ou de cession forcée des actions (Loi n°2005-845 du 26 juillet 2005)',
       '4CC':
         'Appel sur des décisions relatives au plan de cession (Loi n°2005-845 du 26 juillet 2005 de sauvegarde des entreprises)',
       '4CD':
@@ -471,7 +471,7 @@ const taxon = {
       '4JC':
         "Demande de suspension, de renouvellement ou de levée de la suspension de la réalisation de l'ensemble des actifs par le praticien de l'insolvabilité de la procédure d'insolvabilité principale",
       '4JD':
-        "Demande de suspension, de renouvellement ou de levée de la suspension de la réalisation de l'ensemble des actifs formée par le praticien de l'insolvabilité désigné dans une procédure ouverte à l'encontre d'une autre société appartenant au même groupe de sociétés que le débiteur",
+        "Demande de suspension, de renouvellement ou de levée de la suspension de la réalisation de l'ensemble des actifs formée par le praticien de l'insolvabilité désigné",
       '4JE':
         "Demande de vérification des conditions d'approbation d'un engagement pris en application de l'article 36 du REI",
       '4JG':
@@ -929,7 +929,7 @@ const taxon = {
         "Tarification - Demande relative à l'attribution d'un taux réduit pour le personnel exerçant des fonctions support de nature administrative au sein de l'entreprise",
       '89O': "Tarification - Contestation du taux de cotisation fondée sur le classement de l'entreprise",
       '89P':
-        "Tarification - Contestation d'une décision portant sur une cotisation supplémentaire liée à un risque exceptionnel présenté par l'exploitation ou sur une cotisation complémentaire liée à une faute inexcusable de l'employeur",
+        "Tarification - Contestation d'une décision portant sur une cotisation supplémentaire liée à une faute inexcusable de l'employeur",
       '89Q':
         'Tarification - Contestation du taux de cotisation fondée sur des motifs autres que les maladies professionnelles et accidents du travail',
       '89R': 'Tarification - Autres demandes ou contestations relatives au taux de cotisation',

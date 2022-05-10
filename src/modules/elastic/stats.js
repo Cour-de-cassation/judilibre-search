@@ -24,16 +24,15 @@ async function stats(query) {
     response.indexedTotal = statsData.body.count;
   }
 
-  /*
   let statsCCData = await this.client.count({
     index: process.env.ELASTIC_INDEX,
     body: {
       query: {
         bool: {
-          filter: [
+          must: [
             {
               terms: {
-                jurisdiction: 'cc',
+                jurisdiction: ['cc'],
               },
             },
           ],
@@ -54,10 +53,10 @@ async function stats(query) {
     body: {
       query: {
         bool: {
-          filter: [
+          must: [
             {
               terms: {
-                jurisdiction: 'ca',
+                jurisdiction: ['ca'],
               },
             },
           ],
@@ -72,7 +71,6 @@ async function stats(query) {
       value: statsCAData.body.count,
     });
   }
-  */
 
   let content = await this.client.search({
     index: process.env.ELASTIC_INDEX,
