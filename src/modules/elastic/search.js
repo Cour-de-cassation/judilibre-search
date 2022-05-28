@@ -107,6 +107,11 @@ async function search(query) {
               ),
             };
 
+            if (rawResult._source.jurisdiction === 'cc') {
+              result.number = formatPourvoiNumber(result.number);
+              result.numbers = result.numbers.map(formatPourvoiNumber);
+            }
+
             if (result.type === 'undefined') {
               delete result.type;
             }
@@ -160,6 +165,15 @@ async function search(query) {
   }
 
   return response;
+}
+
+function formatPourvoiNumber(str) {
+  str = `${str}`.trim();
+  if (/^\d{2}\D\d{2}\D\d{3}$/.test(str) === false) {
+    str = str.replace(/\D/gim, '').trim();
+    str = `${str.substring(0, 2)}-${str.substring(2, 4)}.${str.substring(4)}`;
+  }
+  return str;
 }
 
 function searchWithoutElastic(query) {
@@ -257,6 +271,7 @@ function searchWithoutElastic(query) {
       } else {
         response.results[i].numbers = [response.results[i].number];
       }
+
       response.results[i].files = taxons[taxonFilter].filetype.buildFilesList(
         response.results[i].id,
         response.results[i].files,
