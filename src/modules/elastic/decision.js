@@ -219,6 +219,11 @@ async function decision(query) {
       delete response.type;
     }
 
+    if (rawResult._source.jurisdiction === 'cc') {
+      response.number = formatPourvoiNumber(response.number);
+      response.numbers = response.numbers.map(formatPourvoiNumber);
+    }
+
     if (response.partial && response.zones) {
       delete response.zones;
     }
@@ -277,6 +282,15 @@ async function decision(query) {
   }
 
   return response;
+}
+
+function formatPourvoiNumber(str) {
+  str = `${str}`.trim();
+  if (/^\d{2}\D\d{2}\D\d{3}$/.test(str) === false) {
+    str = str.replace(/\D/gim, '').trim();
+    str = `${str.substring(0, 2)}-${str.substring(2, 4)}.${str.substring(4)}`;
+  }
+  return str;
 }
 
 function decisionWithoutElastic(query) {
