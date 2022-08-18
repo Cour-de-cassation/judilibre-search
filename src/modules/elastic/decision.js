@@ -16,6 +16,7 @@ async function decision(query) {
       _source: true,
     });
   } catch (e) {
+    console.error(e);
     rawResponse = null;
   }
 
