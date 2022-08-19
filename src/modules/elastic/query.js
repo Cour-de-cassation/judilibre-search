@@ -362,9 +362,24 @@ function buildQuery(query, target, relaxed) {
 
     // Date start/end (filter):
     if (query.date_start || query.date_end) {
-      let date_field = 'decision_date';
+      let datetime = false;
+      if (
+        (query.date_start && /^\d\d\d\d-\d\d-\d\d$/.test(req.query.date_start) === false) ||
+        (query.date_end && /^\d\d\d\d-\d\d-\d\d$/.test(req.query.date_end) === false)
+      ) {
+        datetime = true;
+      }
+      let date_field = datetime ? 'decision_datetime' : 'decision_date';
+
       if (target === 'export' && query.date_type) {
-        date_field = query.date_type === 'creation' ? 'decision_date' : 'update_date';
+        date_field =
+          query.date_type === 'creation'
+            ? datetime
+              ? 'decision_datetime'
+              : 'decision_date'
+            : datetime
+            ? 'update_datetime'
+            : 'update_date';
       }
       let range = {
         range: {},
