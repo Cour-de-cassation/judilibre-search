@@ -24,6 +24,10 @@ async function search(query) {
   };
 
   if (string && searchQuery.query) {
+    if (process.env.NODE_ENV !== 'production') {
+      response.searchQuery = searchQuery.query;
+    }
+
     let rawResponse = await this.client.search(searchQuery.query);
     if (rawResponse && rawResponse.body) {
       if (!rawResponse.body.hits || !rawResponse.body.hits.total || !rawResponse.body.hits.total.value) {
