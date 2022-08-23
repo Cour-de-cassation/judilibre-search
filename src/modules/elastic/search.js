@@ -21,11 +21,10 @@ async function search(query) {
     max_score: 0,
     results: [],
     relaxed: false,
-    env: process.env.NODE_ENV,
   };
 
   if (string && searchQuery.query) {
-    if (process.env.NODE_ENV !== 'production') {
+    if (process.env.API_VERBOSITY === 'debug') {
       response.searchQuery = searchQuery.query;
     }
 

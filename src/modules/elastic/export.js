@@ -20,7 +20,7 @@ async function batchexport(query) {
   };
 
   if (searchQuery.query) {
-    if (process.env.NODE_ENV !== 'production') {
+    if (process.env.API_VERBOSITY === 'debug') {
       response.searchQuery = searchQuery.query;
     }
 
