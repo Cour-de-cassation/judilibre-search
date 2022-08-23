@@ -271,6 +271,7 @@ describe('Testing /export endpoint basic validation', () => {
         },
       ],
     });
+    /*
     const test4 = await request(Server.app).get('/export?batch=0&date_start=2018');
     expect(test4.statusCode).toEqual(400);
     expect(test4.body).toEqual({
@@ -284,6 +285,7 @@ describe('Testing /export endpoint basic validation', () => {
         },
       ],
     });
+    */
   });
 
   it('GET /export with a good "date_start" parameter should pass', async () => {
@@ -331,6 +333,7 @@ describe('Testing /export endpoint basic validation', () => {
         },
       ],
     });
+    /*
     const test4 = await request(Server.app).get('/export?batch=0&date_end=2018');
     expect(test4.statusCode).toEqual(400);
     expect(test4.body).toEqual({
@@ -344,6 +347,7 @@ describe('Testing /export endpoint basic validation', () => {
         },
       ],
     });
+    */
   });
 
   it('GET /export with a good "date_end" parameter should pass', async () => {
