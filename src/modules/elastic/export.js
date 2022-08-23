@@ -20,6 +20,10 @@ async function batchexport(query) {
   };
 
   if (searchQuery.query) {
+    if (process.env.NODE_ENV !== 'production') {
+      response.searchQuery = searchQuery.query;
+    }
+
     const rawResponse = await this.client.search(searchQuery.query);
     if (rawResponse && rawResponse.body) {
       if (rawResponse.body.hits && rawResponse.body.hits.total && rawResponse.body.hits.total.value > 0) {
