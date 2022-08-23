@@ -21,6 +21,7 @@ async function search(query) {
     max_score: 0,
     results: [],
     relaxed: false,
+    env: process.env.NODE_ENV,
   };
 
   if (string && searchQuery.query) {
