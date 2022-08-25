@@ -205,6 +205,10 @@ api.get(
       errorMessage: `Value(s) of the withFileOfType parameter must be in [${taxons.all.filetype.keys}].`,
       optional: true,
     },
+    'legacy.*': {
+      in: 'query',
+      optional: true,
+    },
   }),
   async (req, res) => {
     if (process.env.APP_HOST_ALTER === undefined) {

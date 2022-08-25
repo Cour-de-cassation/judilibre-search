@@ -355,6 +355,11 @@ describe('Testing /export endpoint basic validation', () => {
     expect(test1.statusCode).toEqual(200);
   });
 
+  it('GET /export using legacy', async () => {
+    const test1 = await request(Server.app).get(`/export?batch=0&legacy.pourvoiCcas=1`);
+    expect(test1.statusCode).toEqual(200);
+  });
+
   it('GET /export with a wrong "date_type" parameter must fail', async () => {
     const test1 = await request(Server.app).get('/export?batch=0&date_type=foo');
     expect(test1.statusCode).toEqual(400);

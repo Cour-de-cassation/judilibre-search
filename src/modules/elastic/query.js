@@ -360,12 +360,33 @@ function buildQuery(query, target, relaxed) {
       });
     }
 
+    if (target === 'export') {
+      const legacyFilter = [];
+
+      Object.keys(query).forEach((key) => {
+        if (/^legacy\.\w+$/i.test(key)) {
+          legacyFilter.push({ key: key, value: query[key] });
+        }
+      });
+
+      for (let l = 0; l < legacyFilter.length; l++) {
+        if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
+          searchQuery.body.query.function_score.query.bool.filter = [];
+        }
+        let terms = {};
+        terms[legacyFilter[l].key] = legacyFilter[l].value;
+        searchQuery.body.query.function_score.query.bool.filter.push({
+          terms: terms,
+        });
+      }
+    }
+
     // Date start/end (filter):
     if (query.date_start || query.date_end) {
       let datetime = false;
       if (
-        (query.date_start && /^\d\d\d\d-\d\d-\d\d$/.test(req.query.date_start) === false) ||
-        (query.date_end && /^\d\d\d\d-\d\d-\d\d$/.test(req.query.date_end) === false)
+        (query.date_start && /^\d\d\d\d-\d\d-\d\d$/.test(query.date_start) === false) ||
+        (query.date_end && /^\d\d\d\d-\d\d-\d\d$/.test(query.date_end) === false)
       ) {
         datetime = true;
       }
