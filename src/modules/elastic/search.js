@@ -21,6 +21,7 @@ async function search(query) {
     max_score: 0,
     results: [],
     relaxed: false,
+    debug: searchQuery,
   };
 
   if (string && searchQuery.query) {
