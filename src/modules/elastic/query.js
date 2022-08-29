@@ -374,7 +374,11 @@ function buildQuery(query, target, relaxed) {
           searchQuery.body.query.function_score.query.bool.filter = [];
         }
         let terms = {};
-        terms[legacyFilter[l].key] = [legacyFilter[l].value];
+        if (isNaN(parseInt(legacyFilter[l].value, 10))) {
+          terms[legacyFilter[l].key] = [legacyFilter[l].value];
+        } else {
+          terms[legacyFilter[l].key] = [parseInt(legacyFilter[l].value, 10)];
+        }
         searchQuery.body.query.function_score.query.bool.filter.push({
           terms: terms,
         });
