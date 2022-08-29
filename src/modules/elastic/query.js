@@ -374,7 +374,7 @@ function buildQuery(query, target, relaxed) {
           searchQuery.body.query.function_score.query.bool.filter = [];
         }
         let terms = {};
-        terms[legacyFilter[l].key] = legacyFilter[l].value;
+        terms[legacyFilter[l].key] = [legacyFilter[l].value];
         searchQuery.body.query.function_score.query.bool.filter.push({
           terms: terms,
         });
