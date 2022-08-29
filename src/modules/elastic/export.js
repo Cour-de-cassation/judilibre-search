@@ -17,7 +17,6 @@ async function batchexport(query) {
     next_batch: null,
     took: 0,
     results: [],
-    debug: searchQuery,
   };
 
   if (searchQuery.query) {
