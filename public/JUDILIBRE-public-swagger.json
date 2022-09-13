@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "JUDILIBRE-public",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "description": "La Cour de cassation, dans le cadre de la refonte de son site Web, a initié le projet JUDILIBRE visant à la conception et au développement en interne d'un moteur de recherche dans le corpus jurisprudentiel, mettant celui-ci à disposition du public dans l'esprit du décret sur l'Open Data des décisions de justice.",
     "contact": {
       "name": "Sébastien COURVOISIER",
@@ -58,6 +58,9 @@
                 "formation": "fs",
                 "publication": ["c", "b"],
                 "decision_date": "2018-12-20",
+                "decision_datetime": "2018-12-20T06:00:00Z",
+                "update_date": "2018-12-26",
+                "update_datetime": "2018-12-26T11:00:00Z",
                 "type": "arret",
                 "solution": "rejet",
                 "summary": "Le titulaire d'une autorisation temporaire d'occupation, en vigueur au moment de la procédure d'expropriation, est en droit d'obtenir l'indemnisation de son préjudice résultant de l'expropriation",
@@ -350,14 +353,14 @@
           },
           {
             "name": "date_start",
-            "description": "Combiné avec le paramètre `date_end`, permet de restreindre les résultats à un intervalle de dates, au format ISO-8601 (par exemple 2021-05-13).",
+            "description": "Combiné avec le paramètre `date_end`, permet de restreindre les résultats à un intervalle de dates, au format ISO-8601 (par exemple 2021-05-13, 2021-05-13T06:00:00Z).",
             "in": "query",
             "type": "string",
             "format": "date"
           },
           {
             "name": "date_end",
-            "description": "Combiné avec le paramètre `date_start`, permet de restreindre les résultats à un intervalle de dates, au format ISO-8601 (par exemple 2021-05-13).",
+            "description": "Combiné avec le paramètre `date_start`, permet de restreindre les résultats à un intervalle de dates, au format ISO-8601 (par exemple 2021-05-13, 2021-05-13T06:00:00Z).",
             "in": "query",
             "type": "string",
             "format": "date"
@@ -690,14 +693,14 @@
         },
         {
           "name": "date_start",
-          "description": "Combiné avec le paramètre `date_end`, permet de restreindre les résultats à un intervalle de dates, au format ISO-8601 (par exemple 2021-05-13).",
+          "description": "Combiné avec le paramètre `date_end`, permet de restreindre les résultats à un intervalle de dates, au format ISO-8601 (par exemple 2021-05-13, 2021-05-13T06:00:00Z).",
           "in": "query",
           "type": "string",
           "format": "date"
         },
         {
           "name": "date_end",
-          "description": "Combiné avec le paramètre `date_start`, permet de restreindre les résultats à un intervalle de dates, au format ISO-8601 (par exemple 2021-05-13).",
+          "description": "Combiné avec le paramètre `date_start`, permet de restreindre les résultats à un intervalle de dates, au format ISO-8601 (par exemple 2021-05-13, 2021-05-13T06:00:00Z).",
           "in": "query",
           "type": "string",
           "format": "date"
@@ -1033,11 +1036,11 @@
           }
         },
         "date_start": {
-          "description": "Combiné avec le paramètre `date_end`, permet de restreindre les résultats à un intervalle de dates, au format ISO-8601 (par exemple 2021-05-13).",
+          "description": "Combiné avec le paramètre `date_end`, permet de restreindre les résultats à un intervalle de dates, au format ISO-8601 (par exemple 2021-05-13, 2021-05-13T06:00:00Z).",
           "type": "string"
         },
         "date_end": {
-          "description": "Combiné avec le paramètre `date_start`, permet de restreindre les résultats à un intervalle de dates, au format ISO-8601 (par exemple 2021-05-13).",
+          "description": "Combiné avec le paramètre `date_start`, permet de restreindre les résultats à un intervalle de dates, au format ISO-8601 (par exemple 2021-05-13, 2021-05-13T06:00:00Z).",
           "type": "string"
         },
         "sort": {
@@ -1240,9 +1243,19 @@
               "description": "Code NAC de la décision.",
               "type": "string"
             },
+            "decision_datetime": {
+              "format": "date",
+              "description": "Date de création de la décision, au format ISO-8601 long (par exemple 2021-05-13T06:00:00Z).",
+              "type": "string"
+            },
             "update_date": {
               "format": "date",
-              "description": "Date de dernière mise à jour de la décision.",
+              "description": "Date de dernière mise à jour de la décision, au format ISO-8601 court (par exemple 2021-05-13).",
+              "type": "string"
+            },
+            "update_datetime": {
+              "format": "date",
+              "description": "Date de dernière mise à jour de la décision, au format ISO-8601 long (par exemple 2021-05-13T06:00:00Z).",
               "type": "string"
             },
             "visa": {
@@ -1281,6 +1294,10 @@
             "partial": {
               "description": "Lorsque la propriété `partial` est définie et vaut `true`, alors le contenu de la décision correspondante est partiel (décision publiée par extraits).",
               "type": "boolean"
+            },
+            "legacy": {
+              "description": "Objet contenant des propriétés \"historiques\" propres à la source de données et non normalisables (par exemple les propriétés `matiereDeterminee`, `pourvoiLocal` et `pourvoiCcas` en provenance de JuriCA). Ces propriétés sont requêtables dans le cadre de l'export par lots, par exemple : `/export?jurisdiction=ca&legacy.matiereDeterminee=1`",
+              "type": "object"
             }
           }
         },
@@ -1298,6 +1315,9 @@
         "formation": "fs",
         "publication": ["c", "b"],
         "decision_date": "2018-12-20",
+        "decision_datetime": "2018-12-20T06:00:00Z",
+        "update_date": "2018-12-26",
+        "update_datetime": "2018-12-26T11:00:00Z",
         "type": "arret",
         "solution": "rejet",
         "summary": "Le titulaire d'une autorisation temporaire d'occupation, en vigueur au moment de la procédure d'expropriation, est en droit d'obtenir l'indemnisation de son préjudice résultant de l'expropriation",
@@ -1686,7 +1706,7 @@
       }
     },
     "exportQuery": {
-      "title": "Type d'objet `searchQuery`.",
+      "title": "Type d'objet `exportQuery`.",
       "description": "Décrit l'objet contenant les paramètres d'une requête d'export.",
       "type": "object",
       "properties": {
@@ -1740,11 +1760,11 @@
           }
         },
         "date_start": {
-          "description": "Combiné avec le paramètre `date_end`, permet de restreindre les résultats à un intervalle de dates, au format ISO-8601 (par exemple 2021-05-13).",
+          "description": "Combiné avec le paramètre `date_end`, permet de restreindre les résultats à un intervalle de dates, au format ISO-8601 (par exemple 2021-05-13, 2021-05-13T06:00:00Z).",
           "type": "string"
         },
         "date_end": {
-          "description": "Combiné avec le paramètre `date_start`, permet de restreindre les résultats à un intervalle de dates, au format ISO-8601 (par exemple 2021-05-13).",
+          "description": "Combiné avec le paramètre `date_start`, permet de restreindre les résultats à un intervalle de dates, au format ISO-8601 (par exemple 2021-05-13, 2021-05-13T06:00:00Z).",
           "type": "string"
         },
         "order": {
@@ -1777,6 +1797,10 @@
           "items": {
             "type": "string"
           }
+        },
+        "legacy.*": {
+          "description": "Permet de requêter des propriétés \"historiques\" propres à la source de données et non normalisables (par exemple les propriétés `matiereDeterminee`, `pourvoiLocal` et `pourvoiCcas` en provenance de JuriCA). Par exemple : `/export?jurisdiction=ca&legacy.matiereDeterminee=1`",
+          "type": "string"
         }
       },
       "example": {
@@ -1792,7 +1816,8 @@
         "order": "desc",
         "batch_size": 10,
         "batch": 0,
-        "resolve_references": false
+        "resolve_references": false,
+        "legacy.matiereDeterminee": 1
       }
     },
     "health": {

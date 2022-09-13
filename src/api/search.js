@@ -154,14 +154,14 @@ api.get(
       in: 'query',
       isString: true,
       isISO8601: true,
-      errorMessage: `Start date must be a valid ISO-8601 date (e.g. 2021-05-13).`,
+      errorMessage: `Start date must be a valid ISO-8601 date (e.g. 2021-05-13, 2021-05-13T06:00:00Z).`,
       optional: true,
     },
     date_end: {
       in: 'query',
       isString: true,
       isISO8601: true,
-      errorMessage: `End date must be a valid ISO-8601 date (e.g. 2021-05-13).`,
+      errorMessage: `End date must be a valid ISO-8601 date (e.g. 2021-05-13, 2021-05-13T06:00:00Z).`,
       optional: true,
     },
     sort: {
@@ -241,7 +241,7 @@ api.get(
         errors: [
           {
             value: req.query.date_start,
-            msg: 'Start date must be a valid ISO-8601 date (e.g. 2021-05-13).',
+            msg: 'Start date must be a valid ISO-8601 date (e.g. 2021-05-13, 2021-05-13T06:00:00Z).',
             param: 'date_start',
             location: 'query',
           },
@@ -253,7 +253,7 @@ api.get(
         errors: [
           {
             value: req.query.date_end,
-            msg: 'End date must be a valid ISO-8601 date (e.g. 2021-05-13).',
+            msg: 'End date must be a valid ISO-8601 date (e.g. 2021-05-13, 2021-05-13T06:00:00Z).',
             param: 'date_end',
             location: 'query',
           },
