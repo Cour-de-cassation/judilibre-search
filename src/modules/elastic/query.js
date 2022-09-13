@@ -360,11 +360,51 @@ function buildQuery(query, target, relaxed) {
       });
     }
 
+    if (target === 'export') {
+      const legacyFilter = [];
+
+      Object.keys(query).forEach((key) => {
+        if (/^legacy\.\w+$/i.test(key)) {
+          legacyFilter.push({ key: key, value: query[key] });
+        }
+      });
+
+      for (let l = 0; l < legacyFilter.length; l++) {
+        if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
+          searchQuery.body.query.function_score.query.bool.filter = [];
+        }
+        let terms = {};
+        if (isNaN(parseInt(legacyFilter[l].value, 10))) {
+          terms[legacyFilter[l].key] = [legacyFilter[l].value];
+        } else {
+          terms[legacyFilter[l].key] = [parseInt(legacyFilter[l].value, 10)];
+        }
+        searchQuery.body.query.function_score.query.bool.filter.push({
+          terms: terms,
+        });
+      }
+    }
+
     // Date start/end (filter):
     if (query.date_start || query.date_end) {
-      let date_field = 'decision_date';
+      let datetime = false;
+      if (
+        (query.date_start && /^\d\d\d\d-\d\d-\d\d$/.test(query.date_start) === false) ||
+        (query.date_end && /^\d\d\d\d-\d\d-\d\d$/.test(query.date_end) === false)
+      ) {
+        datetime = true;
+      }
+      let date_field = datetime ? 'decision_datetime' : 'decision_date';
+
       if (target === 'export' && query.date_type) {
-        date_field = query.date_type === 'creation' ? 'decision_date' : 'update_date';
+        date_field =
+          query.date_type === 'creation'
+            ? datetime
+              ? 'decision_datetime'
+              : 'decision_date'
+            : datetime
+            ? 'update_datetime'
+            : 'update_date';
       }
       let range = {
         range: {},

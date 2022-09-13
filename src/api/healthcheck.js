@@ -11,7 +11,7 @@ api.get(`/${route}`, async (req, res) => {
   } catch (e) {
     return res.status(200).json({
       status: 'indisponible',
-      reason: e.message,
+      reason: JSON.stringify(e, e ? Object.getOwnPropertyNames(e) : null),
     });
   }
 });

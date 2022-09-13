@@ -15,9 +15,10 @@ api.get(`/${route}`, async (req, res) => {
     }
     return res.status(200).json(result);
   } catch (e) {
-    return res
-      .status(500)
-      .json({ route: `${req.method} ${req.path}`, errors: [{ msg: 'Internal Server Error', error: e.message }] });
+    return res.status(500).json({
+      route: `${req.method} ${req.path}`,
+      errors: [{ msg: 'Internal Server Error', error: JSON.stringify(e, e ? Object.getOwnPropertyNames(e) : null) }],
+    });
   }
 });
 

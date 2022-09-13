@@ -20,6 +20,10 @@ async function batchexport(query) {
   };
 
   if (searchQuery.query) {
+    if (process.env.API_VERBOSITY === 'debug') {
+      response.searchQuery = searchQuery.query;
+    }
+
     const rawResponse = await this.client.search(searchQuery.query);
     if (rawResponse && rawResponse.body) {
       if (rawResponse.body.hits && rawResponse.body.hits.total && rawResponse.body.hits.total.value > 0) {
@@ -73,7 +77,9 @@ async function batchexport(query) {
                 })
               : rawResult._source.publication,
             decision_date: rawResult._source.decision_date,
+            decision_datetime: rawResult._source.decision_datetime,
             update_date: rawResult._source.update_date,
+            update_datetime: rawResult._source.update_datetime,
             solution:
               query.resolve_references && taxons[taxonFilter].solution.taxonomy[rawResult._source.solution]
                 ? taxons[taxonFilter].solution.taxonomy[rawResult._source.solution]
@@ -109,11 +115,13 @@ async function batchexport(query) {
               rawResult._source.rapprochements && rawResult._source.rapprochements.value
                 ? rawResult._source.rapprochements.value
                 : [],
+            legacy: rawResult._source.legacy ? rawResult._source.legacy : {},
           };
           if (query.abridged) {
             delete result.source;
             delete result.text;
             delete result.update_date;
+            delete result.update_datetime;
             delete result.zones;
             delete result.contested;
             delete result.forward;
@@ -121,6 +129,7 @@ async function batchexport(query) {
             delete result.rapprochements;
             delete result.timeline;
             delete result.partial;
+            delete result.legacy;
           }
 
           if (Array.isArray(result.timeline) && result.timeline.length < 2) {

@@ -16,6 +16,7 @@ async function decision(query) {
       _source: true,
     });
   } catch (e) {
+    console.error(e);
     rawResponse = null;
   }
 
@@ -150,6 +151,7 @@ async function decision(query) {
           ? taxons[taxonFilter].chamber.taxonomy[rawResult._source.chamber]
           : rawResult._source.chamber,
       decision_date: rawResult._source.decision_date,
+      decision_datetime: rawResult._source.decision_datetime,
       ecli: rawResult._source.ecli,
       jurisdiction:
         query.resolve_references && taxons[taxonFilter].jurisdiction.taxonomy[rawResult._source.jurisdiction]
@@ -187,6 +189,7 @@ async function decision(query) {
           ? taxons[taxonFilter].location.taxonomy[rawResult._source.location]
           : rawResult._source.location,
       update_date: rawResult._source.update_date,
+      update_datetime: rawResult._source.update_datetime,
       summary: rawResult._source.summary,
       themes: rawResult._source.themes,
       nac: rawResult._source.nac ? rawResult._source.nac : null,
@@ -213,6 +216,7 @@ async function decision(query) {
         rawResult._source.rapprochements && rawResult._source.rapprochements.value
           ? rawResult._source.rapprochements.value
           : [],
+      legacy: rawResult._source.legacy ? rawResult._source.legacy : {},
     };
 
     if (response.type === 'undefined') {
