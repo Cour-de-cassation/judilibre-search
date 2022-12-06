@@ -21,7 +21,7 @@ async function search(query) {
     max_score: 0,
     results: [],
     relaxed: false,
-    searchQuery: searchQuery.query,
+    searchQuery: JSON.stringify(searchQuery.query),
   };
 
   if (string && searchQuery.query) {
