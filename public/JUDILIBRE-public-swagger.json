@@ -485,6 +485,9 @@
           },
           "403": {
             "description": "Permissions insuffisantes."
+          },          
+          "416": {
+            "description": "La plage d'informations demandée est incorrecte ou ne peut pas être satisfaite."
           },
           "423": {
             "description": "Accès bloqué suite à une activité suspecte."
@@ -603,6 +606,9 @@
           },
           "403": {
             "description": "Permissions insuffisantes."
+          },
+          "416": {
+            "description": "La plage d'informations demandée est incorrecte ou ne peut pas être satisfaite."
           },
           "423": {
             "description": "Accès bloqué suite à une activité suspecte."
