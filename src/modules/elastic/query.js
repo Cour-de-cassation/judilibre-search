@@ -336,16 +336,27 @@ function buildQuery(query, target, relaxed) {
       });
     }
 
-    // Themes (filter):
+    // Themes (filter for CC // search string for CA):
     if (query.theme && Array.isArray(query.theme) && query.theme.length > 0) {
-      if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
-        searchQuery.body.query.function_score.query.bool.filter = [];
+      if (taxonFilter === 'cc') {
+        if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
+          searchQuery.body.query.function_score.query.bool.filter = [];
+        }
+        searchQuery.body.query.function_score.query.bool.filter.push({
+          terms: {
+            themesFilter: query.theme,
+          },
+        });
+      } else {
+        if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
+          searchQuery.body.query.function_score.query.bool.filter = [];
+        }
+        searchQuery.body.query.function_score.query.bool.filter.push({
+          match: {
+            themes: query.theme,
+          },
+        });
       }
-      searchQuery.body.query.function_score.query.bool.filter.push({
-        terms: {
-          themesFilter: query.theme,
-        },
-      });
     }
 
     // withFileOfType (filter):
