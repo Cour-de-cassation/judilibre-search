@@ -195,6 +195,8 @@ jobs:
       SCW_COCKPIT_API_KEY: ${{ secrets.SCW_COCKPIT_API_KEY }}
       SCW_LOG_BUCKET: ${{ secrets.SCW_LOG_BUCKET }}
       SCW_KUBE_PROJECT_NAME: judilibre-prod
+      SCW_LOG_ACCESS_KEY: ${{ secrets.SCW_LOG_ACCESS_KEY }}
+      SCW_LOG_SECRET_KEY: ${{ secrets.SCW_LOG_SECRET_KEY }}
     steps:
       - uses: actions/checkout@v1
       - name: extract branch name
@@ -272,6 +274,8 @@ jobs:
       SCW_COCKPIT_API_KEY: ${{ secrets.SCW_COCKPIT_API_KEY }}
       SCW_LOG_BUCKET: ${{ secrets.SCW_LOG_BUCKET }}
       SCW_KUBE_PROJECT_NAME: judilibre-prod
+      SCW_LOG_ACCESS_KEY: ${{ secrets.SCW_LOG_ACCESS_KEY }}
+      SCW_LOG_SECRET_KEY: ${{ secrets.SCW_LOG_SECRET_KEY }}
     steps:
       - uses: actions/checkout@v1
       - name: extract branch name
