@@ -272,7 +272,7 @@ jobs:
       SCW_KUBE_NODES: 3
       START_TIMEOUT: 240
       SCW_COCKPIT_API_KEY: ${{ secrets.SCW_COCKPIT_API_KEY }}
-      SCW_LOG_BUCKET: ${{ secrets.SCW_LOG_BUCKET }}
+      SCW_LOG_BUCKET: ${{ secrets.SCW_LOG_BUCKET_NEW_NAME }}
       SCW_KUBE_PROJECT_NAME: judilibre-prod
       SCW_LOG_ACCESS_KEY: ${{ secrets.SCW_LOG_ACCESS_KEY }}
       SCW_LOG_SECRET_KEY: ${{ secrets.SCW_LOG_SECRET_KEY }}
