@@ -193,6 +193,7 @@ jobs:
       SCW_KUBE_NODES: 3
       START_TIMEOUT: 240
       SCW_COCKPIT_API_KEY: ${{ secrets.SCW_COCKPIT_API_KEY }}
+      SCW_LOG_BUCKET: ${{ secrets.SCW_LOG_BUCKET }}
     steps:
       - uses: actions/checkout@v1
       - name: extract branch name
@@ -268,6 +269,7 @@ jobs:
       SCW_KUBE_NODES: 3
       START_TIMEOUT: 240
       SCW_COCKPIT_API_KEY: ${{ secrets.SCW_COCKPIT_API_KEY }}
+      SCW_LOG_BUCKET: ${{ secrets.SCW_LOG_BUCKET }}
     steps:
       - uses: actions/checkout@v1
       - name: extract branch name
