@@ -26,38 +26,41 @@ L'utilisation de ces données est soumise :
 ### L'accès piste : 4 étapes
 
 - [Créez votre compte](https://piste.gouv.fr/component/apiportal/registration), activez le compte (lien mail) et connectez-vous
-- [Validez les CGU](https://piste.gouv.fr/consentement-cgu-api-fr) - en cherchant "Judilibre" a minima pour l'environnement sandbox et/ou celui de production
+- [Validez les CGU](https://piste.gouv.fr/api-fr/consentement-cgu-api-fr) - en cherchant "Judilibre" a minima pour l'environnement sandbox et/ou celui de production
 - [Raccorder votre Sandbox](https://piste.gouv.fr/apps)
-  - cliquez sur votre Application Sandbox
+  - cliquez sur votre Application Sandbox (nommée généralement "APP*SANDBOX*
+    %VOTRE_EMAIL%")
   - cliquez sur "Modifier l'application"
-  - et en bas, cochez l'API Judilibre (Sandbox)
+  - et en bas, dans la liste des APIs, cochez l'API Judilibre (Sandbox)
   - cliquez sur "Appliquer les modifications"
 
 ### API Endpoints
 
-La documentation technique sur chaque méthode de l'API est disponible sur le portail [api.gouv.fr (OpenAPI 3.0.2)](https://staging.api.gouv.fr/documentation/api-judilibre) [PISTE (Swagger)](https://github.com/Cour-de-cassation/judilibre-search) ou sur le [Github](https://github.com/Cour-de-cassation/judilibre-search/).
+La documentation technique sur chaque méthode de l'API est disponible sur le portail [api.gouv.fr (OpenAPI 3.0.2)](https://staging.api.gouv.fr/documentation/api-judilibre) [PISTE (Swagger)](https://piste.gouv.fr/index.php?option=com_apiportal&view=apitester&usage=api&apitab=tests&apiName=JUDILIBRE&apiId=b6d2f389-c3ec-4eb3-9075-bc24d0783781&managerId=2&type=rest&apiVersion=1.0.0&Itemid=402&swaggerVersion=2.0&lang=fr) ou sur le [Github](https://github.com/Cour-de-cassation/judilibre-search/blob/master/public/JUDILIBRE-public-swagger.json).
 
-Les endpoints racine sont disponibles pour deux environnement (nécessitent donc l'enrôlement préalable et l'obtention d'un `KeyId`):
+Les endpoints racine sont disponibles pour deux environnement (nécessitent donc l'enrôlement préalable et l'obtention d'un `KeyId`) :
 
 - bac à sable: https://sandbox-api.piste.gouv.fr/cassation/judilibre/v1.0
 - production: https://api.piste.gouv.fr/cassation/judilibre/v1.0
+
+**Note** : ces URLs ne sont pas directement accessibles via une navigation classique et nécessitent _a minima_ la spécification de votre `KeyId` dans l'en-tête des requêtes (voir ci-après).
 
 ### Tester l'API
 
 Pour les plus rapides, vous avez identifié que votre `KeyId` dans votre APP_SANDBOX, vous pouvez forger vous-même vos requêtes :
 
 ```
-curl -s -H "accept: application/json" -H "KeyId: 4196zzzz-ffff-aaaa-bbbb-6e5d4dc0cccc" -X GET "https://sandbox-api.piste.gouv.fr/cassation/judilibre/v1.0/search?query=brevet"
+curl -is -H "accept: application/json" -H "KeyId: %keyId%" -X GET "https://sandbox-api.piste.gouv.fr/cassation/judilibre/v1.0/search?query=brevet"
 
 {"page":0,"page_size":10,"query":{"query":"brevet","field":[],"type":[],"theme":[],"chamber":[],"formation":[],"jurisdiction":[],"publication":[],"solution":[]},"total":2025,"previous_page":null,"next_page":"query=brevet&field=&type=&theme=&chamber=&formation=&jurisdiction=&publication=&solution=&page=1","took":25,"max_score":2934.1016,"results":[{"score":1,"highlights":{"text":["européen et d'un <em>brevet</em> français se résout par la substitution du <em>brevet</em>...}
 ```
 
 Ou par navigation :
 
-- [Accéder à l'API](https://piste.gouv.fr/api-center)
+- [Accéder à l'API](https://piste.gouv.fr/api-fr/api-center)
   - chercher "Judilibre"
   - cliquez sur "Tester l'API"
-  - choisissez dans "Select credentials" la premier clé de votre application Sandbox (APP*SANDBOX*...)
+  - choisissez dans "Select credentials" la premier clé de votre application Sandbox (APP_SANDBOX...)
 - Tester alors le point d'API `/search`
   - cliquez sur `/search`
   - cliquez sur "Try it out"
