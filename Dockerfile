@@ -11,15 +11,15 @@ ARG NPM_LATEST
 RUN apk add curl
 
 # use proxy & private npm registry
-RUN if [ ! -z "$http_proxy" ] ; then \
-        npm config delete proxy; \
-        npm config set proxy $http_proxy; \
-        npm config set https-proxy $https_proxy; \
-        npm config set no-proxy $no_proxy; \
-   fi ; \
-   [ -z "$npm_registry" ] || npm config set registry=$npm_registry
+# RUN if [ ! -z "$http_proxy" ] ; then \
+#         npm config delete proxy; \
+#         npm config set proxy $http_proxy; \
+#         npm config set https-proxy $https_proxy; \
+#         npm config set no-proxy $no_proxy; \
+#    fi ; \
+#    [ -z "$npm_registry" ] || npm config set registry=$npm_registry
 
-RUN [ -z "${NPM_LATEST}" ] || npm i npm@latest -g
+# RUN [ -z "${NPM_LATEST}" ] || npm i npm@latest -g
 
 ################################
 # Step 2: "development" target #
