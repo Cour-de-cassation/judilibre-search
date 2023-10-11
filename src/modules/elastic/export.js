@@ -6,7 +6,7 @@ async function batchexport(query) {
     return exportWithoutElastic.apply(this, [query]);
   }
 
-  const searchQuery = this.buildQuery(query, 'export');
+  let searchQuery = this.buildQuery(query, 'export');
 
   let response = {
     batch: searchQuery.page,
@@ -17,6 +17,7 @@ async function batchexport(query) {
     next_batch: null,
     took: 0,
     results: [],
+    searchQuery: JSON.stringify(searchQuery.query),
   };
 
   if (searchQuery.query) {
