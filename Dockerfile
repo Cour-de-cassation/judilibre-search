@@ -1,7 +1,7 @@
 #######################
 # Step 1: Base target #
 #######################
-FROM node:16.15-alpine3.16 as base
+FROM node:18-alpine3.17 as base
 ARG http_proxy
 ARG https_proxy
 ARG no_proxy
@@ -11,15 +11,15 @@ ARG NPM_LATEST
 RUN apk add curl
 
 # use proxy & private npm registry
-# RUN if [ ! -z "$http_proxy" ] ; then \
-#         npm config delete proxy; \
-#         npm config set proxy $http_proxy; \
-#         npm config set https-proxy $https_proxy; \
-#         npm config set no-proxy $no_proxy; \
-#    fi ; \
-#    [ -z "$npm_registry" ] || npm config set registry=$npm_registry
+RUN if [ ! -z "$http_proxy" ] ; then \
+        npm config delete proxy; \
+        npm config set proxy $http_proxy; \
+        npm config set https-proxy $https_proxy; \
+        npm config set no-proxy $no_proxy; \
+   fi ; \
+   [ -z "$npm_registry" ] || npm config set registry=$npm_registry
 
-# RUN [ -z "${NPM_LATEST}" ] || npm i npm@latest -g
+RUN [ -z "${NPM_LATEST}" ] || npm i npm@latest -g
 
 ################################
 # Step 2: "development" target #
