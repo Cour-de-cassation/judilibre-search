@@ -110,6 +110,7 @@ async function search(query) {
                 rawResult._source.files,
                 query.resolve_references,
               ),
+              titlesAndSummaries: rawResult._source.titlesAndSummaries ? rawResult._source.titlesAndSummaries : [],
             };
 
             if (rawResult._source.jurisdiction === 'cc') {
@@ -202,6 +203,10 @@ function searchWithoutElastic(query) {
     this.data = JSON.parse(
       fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'ca', 'sample_list.json')).toString(),
     );
+  } else if (taxonFilter === 'tj') {
+    this.data = JSON.parse(
+      fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'tj', 'sample_list.json')).toString(),
+    );
   } else if (taxonFilter === 'all') {
     this.data = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'sample_list.json')).toString());
     const additionalData = JSON.parse(
@@ -209,6 +214,11 @@ function searchWithoutElastic(query) {
     );
     this.data.resolved = this.data.resolved.concat(additionalData.resolved);
     this.data.unresolved = this.data.unresolved.concat(additionalData.unresolved);
+    const additionalData2 = JSON.parse(
+      fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'tj', 'sample_list.json')).toString(),
+    );
+    this.data.resolved = this.data.resolved.concat(additionalData2.resolved);
+    this.data.unresolved = this.data.unresolved.concat(additionalData2.unresolved);
     this.data.resolved.sort((a, b) => {
       if (a.score > b.score) {
         return -1;

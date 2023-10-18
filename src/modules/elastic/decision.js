@@ -217,6 +217,7 @@ async function decision(query) {
           ? rawResult._source.rapprochements.value
           : [],
       legacy: rawResult._source.legacy ? rawResult._source.legacy : {},
+      titlesAndSummaries: rawResult._source.titlesAndSummaries ? rawResult._source.titlesAndSummaries : [],
     };
 
     if (response.type === 'undefined') {
@@ -308,6 +309,10 @@ function decisionWithoutElastic(query) {
     fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'ca', 'sample_list.json')).toString(),
   );
   allData.unresolved = allData.unresolved.concat(additionalData.unresolved);
+  const additionalData2 = JSON.parse(
+    fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'tj', 'sample_list.json')).toString(),
+  );
+  allData.unresolved = allData.unresolved.concat(additionalData2.unresolved);
 
   let found = null;
   for (let i = 0; i < allData.unresolved.length; i++) {
@@ -338,6 +343,16 @@ function decisionWithoutElastic(query) {
     } else {
       response = JSON.parse(
         fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'ca', 'sample_detail_unresolved.json')).toString(),
+      );
+    }
+  } else if (found === 'tj') {
+    if (query.resolve_references) {
+      response = JSON.parse(
+        fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'tj', 'sample_detail_resolved.json')).toString(),
+      );
+    } else {
+      response = JSON.parse(
+        fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'tj', 'sample_detail_unresolved.json')).toString(),
       );
     }
   }

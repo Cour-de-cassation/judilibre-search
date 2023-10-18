@@ -72,6 +72,30 @@ async function stats(query) {
     });
   }
 
+  let statsTJData = await this.client.count({
+    index: process.env.ELASTIC_INDEX,
+    body: {
+      query: {
+        bool: {
+          must: [
+            {
+              terms: {
+                jurisdiction: ['tj'],
+              },
+            },
+          ],
+        },
+      },
+    },
+  });
+
+  if (statsTJData && statsTJData.body && statsTJData.body.count) {
+    response.indexedByJurisdiction.push({
+      label: 'Tribunal judiciaire',
+      value: statsTJData.body.count,
+    });
+  }
+
   let content = await this.client.search({
     index: process.env.ELASTIC_INDEX,
     size: 0,
@@ -117,6 +141,10 @@ function statsWithoutElastic(query) {
       {
         value: 135000,
         label: "Cour d'appel de Paris",
+      },
+      {
+        value: 21500,
+        label: 'Tribunal judiciaire',
       },
     ],
     indexedByYear: [

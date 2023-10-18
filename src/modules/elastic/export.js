@@ -117,6 +117,7 @@ async function batchexport(query) {
                 ? rawResult._source.rapprochements.value
                 : [],
             legacy: rawResult._source.legacy ? rawResult._source.legacy : {},
+            titlesAndSummaries: rawResult._source.titlesAndSummaries ? rawResult._source.titlesAndSummaries : [],
           };
           if (query.abridged) {
             delete result.source;
@@ -131,6 +132,7 @@ async function batchexport(query) {
             delete result.timeline;
             delete result.partial;
             delete result.legacy;
+            delete result.titlesAndSummaries;
           }
 
           if (Array.isArray(result.timeline) && result.timeline.length < 2) {
@@ -192,6 +194,10 @@ function exportWithoutElastic(query) {
     this.data = JSON.parse(
       fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'ca', 'sample_list.json')).toString(),
     );
+  } else if (taxonFilter === 'tj') {
+    this.data = JSON.parse(
+      fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'tj', 'sample_list.json')).toString(),
+    );
   } else if (taxonFilter === 'all') {
     this.data = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'sample_list.json')).toString());
     const additionalData = JSON.parse(
@@ -199,6 +205,11 @@ function exportWithoutElastic(query) {
     );
     this.data.resolved = this.data.resolved.concat(additionalData.resolved);
     this.data.unresolved = this.data.unresolved.concat(additionalData.unresolved);
+    const additionalData2 = JSON.parse(
+      fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'tj', 'sample_list.json')).toString(),
+    );
+    this.data.resolved = this.data.resolved.concat(additionalData2.resolved);
+    this.data.unresolved = this.data.unresolved.concat(additionalData2.unresolved);
     this.data.resolved.sort((a, b) => {
       if (a.score > b.score) {
         return -1;
@@ -278,6 +289,19 @@ function exportWithoutElastic(query) {
           fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'ca', 'sample_detail_unresolved.json')).toString(),
         );
       }
+    } else if (
+      response.results[i].jurisdiction === 'tj' ||
+      response.results[i].jurisdiction === 'Tribunal judiciaire'
+    ) {
+      if (query.resolve_references) {
+        sample = JSON.parse(
+          fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'tj', 'sample_detail_resolved.json')).toString(),
+        );
+      } else {
+        sample = JSON.parse(
+          fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'tj', 'sample_detail_unresolved.json')).toString(),
+        );
+      }
     }
 
     delete response.results[i].score;
@@ -297,6 +321,8 @@ function exportWithoutElastic(query) {
     response.results[i].nac = sample.nac;
     response.results[i].timeline = sample.timeline;
     response.results[i].partial = sample.partial;
+    response.results[i].legacy = sample.legacy;
+    response.results[i].titlesAndSummaries = sample.titlesAndSummaries;
 
     if (query.abridged) {
       delete response.results[i].source;
@@ -309,6 +335,8 @@ function exportWithoutElastic(query) {
       delete response.results[i].rapprochements;
       delete response.results[i].timeline;
       delete response.results[i].partial;
+      delete response.results[i].legacy;
+      delete response.results[i].titlesAndSummaries;
     }
   }
 

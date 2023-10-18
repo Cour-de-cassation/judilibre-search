@@ -92,7 +92,7 @@ async function getTaxonomy(query) {
     };
   }
   if (query.id) {
-    if (query.context_value && ['cc', 'ca'].indexOf(query.context_value) === -1) {
+    if (query.context_value && ['cc', 'ca', 'tj'].indexOf(query.context_value) === -1) {
       return {
         errors: [
           {
