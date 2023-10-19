@@ -7,8 +7,12 @@
   "decision_date": "2020-11-18",
   "jurisdiction": "cc",
   "number": "19-19.463",
-  "numbers": ["19-19.463"],
-  "publication": ["b"],
+  "numbers": [
+    "19-19.463"
+  ],
+  "publication": [
+    "b"
+  ],
   "solution": "rejet",
   "type": "other",
   "ecli": "ECLI:FR:CCASS:2020:CO00740",
@@ -90,6 +94,76 @@
     "action contre un dirigeant social à l'occasion de sa gestion d'une société commerciale",
     "option de compétence d'un demandeur non commerçant",
     "possibilité de saisir le tribunal civil"
+  ],
+  "titlesAndSummaries": [
+    {
+      "titles": [
+        "APPEL CIVIL",
+        "Intimé",
+        "Conclusions",
+        "Recevabilité",
+        "Etendue",
+        "A l'égard de l'auteur de l'appel incident à l'exclusion de l'auteur de l'appel principal",
+        "Cas",
+        "Conclusions hors du délai requis à compter de la notification des conclusions d'appel principal à l'occasion d'un appel incident"
+      ],
+      "summary": "Selon l'alinéa 2 de l'article 905-2 du code de procédure civile, l'intimé dispose, à peine d'irrecevabilité relevée d'office par ordonnance du président de la chambre saisie ou du magistrat désigné par le premier président, d'un délai d'un mois à compter de la notification des conclusions de l'appelant pour remettre ses conclusions au greffe et former, le cas échéant, appel incident ou appel provoqué. Aux termes de l'alinéa 3, l'intimé à un appel incident ou à un appel provoqué dispose, à peine d'irrecevabilité relevée d'office par ordonnance du président de la chambre saisie ou du magistrat désigné par le premier président, d'un délai d'un mois à compter de la notification de l'appel incident ou de l'appel provoqué, à laquelle est jointe une copie de l'avis de fixation, pour remettre ses conclusions au greffe. Il en résulte que lorsque l'intimé ne conclut pas dans le délai requis à compter de la notification des conclusions d'appel principal, il ne peut valablement conclure, à l'occasion d'un appel incident ultérieurement formé par une autre partie, qu'à l'égard de cette dernière et non à l'égard de l'auteur de l'appel principal"
+    },
+    {
+      "titles": [
+        "APPEL CIVIL",
+        "Procédure avec représentation obligatoire",
+        "Conclusions",
+        "Conclusions de l'intimé",
+        "Irrecevabilité",
+        "Cas",
+        "Conclusions hors du délai requis à compter de la notification des conclusions d'appel principal à l'occasion d'un appel incident",
+        "Effets",
+        "Conclusions valables qu'à l'égard de l'auteur de l'appel incident",
+        "Portée"
+      ],
+      "summary": null
+    },
+    {
+      "titles": [
+        "APPEL CIVIL",
+        "Appel incident",
+        "Appel incident formé à l'encontre d'un co-intimé",
+        "Conclusions",
+        "Recevabilité",
+        "Faculté de l'intimé incident de conclure contre l'appelant principal",
+        "Exclusion",
+        "Cas",
+        "Intimé principal ayant dépassé le délai pour conclure contre l'appelant principal"
+      ],
+      "summary": null
+    },
+    {
+      "titles": [
+        "JUGEMENTS ET ARRETS",
+        "Notification",
+        "Effets",
+        "Etendue",
+        "Détermination",
+        "Litige indivisible",
+        "Caractérisation",
+        "Office du juge"
+      ],
+      "summary": "L' indivisibilité du litige, au sens des articles 529 et 905-2, alinéas 2 et 3, du code de procédure civile, nécessite l'impossibilité d'exécuter simultanément plusieurs chefs de dispositifs de jugements dans un même litige. Il appartient aux juges du fond de caractériser une telle impossibilité d'exécution"
+    },
+    {
+      "titles": [
+        "JUGEMENTS ET ARRETS",
+        "Notification",
+        "Effets",
+        "Etendue",
+        "Détermination",
+        "Litige indivisible",
+        "Définition",
+        "Impossibilité d'exécution simultanée de plusieurs chefs de dispositif"
+      ],
+      "summary": null
+    }
   ],
   "rapprochements": [
     {
