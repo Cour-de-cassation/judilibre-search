@@ -1,6 +1,4 @@
 const taxon = {
-  arret: 'Arrêt',
-  ordonnance: 'Ordonnance',
   other: 'Autre',
 };
 
