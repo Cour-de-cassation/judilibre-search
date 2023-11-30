@@ -1514,7 +1514,7 @@
                 "type": "object"
               },
               "titlesAndSummaries": {
-                "description": "Objet contenant l'ensemble des titres et sommaires définis pour la décision, sous la forme d'une liste d'objets 'title' et 'summary' (concerne uniquement les décisions de la Cour de cassation)",
+                "description": "Objet contenant l'ensemble des titres et sommaires définis pour la décision, sous la forme d'une liste de propriétés 'titles' (titres principaux), 'summary' (sommaire) et 'secondaryTitles' (titres secondaires ou de référence). Cela concerne uniquement les décisions de la Cour de cassation.",
                 "type": "object"
               }
             }
