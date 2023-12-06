@@ -1,4 +1,4 @@
-// This list cannot be produced automatically!
+// This list cannot be produced automatically! (copied from CA)
 const taxon = {
   1: {
     label: 'Droit des personnes',
