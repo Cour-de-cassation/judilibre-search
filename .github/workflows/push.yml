@@ -58,6 +58,17 @@ jobs:
         env:
           GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
           VERSION: ${{ steps.extract_version.outputs.version }}
+      - name: 🚀 Push docker image
+        if: (steps.docker_check.outputs.status == 'build_needed') && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/master')
+        run: |
+          echo "${DOCKER_TOKEN}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
+          docker push ${DOCKER_USERNAME}/${APP_ID}:${VERSION};
+          docker tag ${DOCKER_USERNAME}/${APP_ID}:${VERSION} ${DOCKER_USERNAME}/${APP_ID}:${GIT_BRANCH}
+          docker push ${DOCKER_USERNAME}/${APP_ID}:${GIT_BRANCH}
+        env:
+          DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
+          GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
+          VERSION: ${{ steps.extract_version.outputs.version }}
       - name: ☸️  Deploy local k8s services
         if: steps.docker_check.outputs.status == 'build_needed'
         run: ./scripts/deploy_k8s_services.sh
@@ -74,17 +85,6 @@ jobs:
         env:
           GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
           KUBECONFIG: /home/runner/.kube/config-local-k3s.yaml
-      - name: 🚀 Push docker image
-        if: (steps.docker_check.outputs.status == 'build_needed') && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/master')
-        run: |
-          echo "${DOCKER_TOKEN}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
-          docker push ${DOCKER_USERNAME}/${APP_ID}:${VERSION};
-          docker tag ${DOCKER_USERNAME}/${APP_ID}:${VERSION} ${DOCKER_USERNAME}/${APP_ID}:${GIT_BRANCH}
-          docker push ${DOCKER_USERNAME}/${APP_ID}:${GIT_BRANCH}
-        env:
-          DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
-          GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
-          VERSION: ${{ steps.extract_version.outputs.version }}
   deploy-scw-dev:
     name: 🚀 Deploy, update on Scaleway (dev on fr-par-1) ☸️
     needs: build
