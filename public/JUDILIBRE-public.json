@@ -2,7 +2,7 @@
   "openapi": "3.0.2",
   "info": {
     "title": "JUDILIBRE-public",
-    "version": "1.2.2",
+    "version": "1.2.3",
     "description": "La Cour de cassation, dans le cadre de la refonte de son site Web, a initié le projet JUDILIBRE visant à la conception et au développement en interne d'un moteur de recherche dans le corpus jurisprudentiel, mettant celui-ci à disposition du public dans l'esprit du décret sur l'Open Data des décisions de justice.",
     "contact": {
       "name": "Sébastien COURVOISIER",
@@ -1511,6 +1511,10 @@
               },
               "legacy": {
                 "description": "Objet contenant des propriétés \"historiques\" propres à la source de données et non normalisables (par exemple les propriétés `matiereDeterminee`, `pourvoiLocal` et `pourvoiCcas` en provenance de JuriCA). Ces propriétés sont requêtables dans le cadre de l'export par lots, par exemple : `/export?jurisdiction=ca&legacy.matiereDeterminee=1`",
+                "type": "object"
+              },
+              "titlesAndSummaries": {
+                "description": "Objet contenant l'ensemble des titres et sommaires définis pour la décision, sous la forme d'une liste de propriétés 'titles' (titres principaux), 'summary' (sommaire) et 'secondaryTitles' (titres secondaires ou de référence). Cela concerne uniquement les décisions de la Cour de cassation.",
                 "type": "object"
               }
             }

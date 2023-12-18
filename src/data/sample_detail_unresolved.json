@@ -91,6 +91,42 @@
     "option de compétence d'un demandeur non commerçant",
     "possibilité de saisir le tribunal civil"
   ],
+  "titlesAndSummaries": [
+    {
+      "titles": [
+        "CRIMES ET DELITS FLAGRANTS",
+        "Perquisition",
+        "Définition",
+        "Exclusion",
+        "Inventaire sommaire du contenu d'un sac jeté"
+      ],
+      "summary": "Ne constitue pas une perquisition, au sens des articles 56 et 57 du code de procédure pénale, l'inventaire sommaire réalisé par un agent de police judiciaire, en application de l'article 20 dudit code, du contenu d'un sac jeté dans une rivière, afin d'assurer la préservation des éléments de preuve qui risquent d'être altérés et avant remise à un officier de police judiciaire aux fins de saisie des objets s'y trouvant. Encourt dès lors la cassation l'arrêt qui, pour faire droit au moyen de nullité selon lequel l'inventaire auquel ont procédé les agents de police judiciaire était irrégulier, faute d'avoir été effectué par un officier de police judiciaire, en présence de deux témoins, énonce que la fouille dudit sac s'apparente à une perquisition",
+      "secondaryTitles": [
+        [
+          "AGENT DE POLICE JUDICIAIRE",
+          "Pouvoirs",
+          "Infractions",
+          "Constatation",
+          "Inventaire sommaire du contenu d'un sac jeté"
+        ],
+        ["PRESCRIPTION CIVILE", "Courtes prescriptions", "Principes généraux", "Application", "Application restrictive"]
+      ]
+    },
+    {
+      "titles": [
+        "SUBSTANCES VENENEUSES",
+        "Stupéfiants",
+        "Infraction à la législation",
+        "Pesée des substances saisies avant leur destruction",
+        "Présence de la personne qui détenait les substances ou de deux témoins",
+        "Nécessité",
+        "Exclusion",
+        "Placement sous scellés des produits stupéfiants à l'issue"
+      ],
+      "summary": "Il résulte de l'article 706-30-1, alinéa 2, du code de procédure pénale que ses prescriptions ne sont applicables qu'avant destruction des substances stupéfiantes saisies. Encourt la cassation l'arrêt qui, pour faire droit au moyen de nullité de la pesée des substances stupéfiantes saisies, relève qu'elle a été réalisée en l'absence de la personne qui les détenait ou de deux témoins, alors qu'il résulte des pièces de la procédure, dont la Cour de cassation a le contrôle, que les produits stupéfiants placés sous scellés à l'issue de cette pesée n'ont pas été détruits, une nouvelle pesée étant intervenue ultérieurement",
+      "secondaryTitles": []
+    }
+  ],
   "rapprochements": [
     {
       "id": "JURITEXT000036780011",

@@ -139,6 +139,14 @@ function buildQuery(query, target, relaxed) {
                 },
                 weight: 0.1,
               },
+              {
+                filter: {
+                  match: {
+                    jurisdiction: 'tj',
+                  },
+                },
+                weight: 0.1,
+              },
             ],
             score_mode: 'max',
             boost_mode: 'multiply',

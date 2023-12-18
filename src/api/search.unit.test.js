@@ -651,7 +651,7 @@ describe('Testing /search endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the location parameter must be in [${taxons.ca.location.keys}].`,
+          msg: `Value of the location parameter must be in [${taxons.all.location.keys}].`,
           param: 'location[0]',
           value: 'foo',
         },
@@ -664,7 +664,7 @@ describe('Testing /search endpoint basic validation', () => {
       errors: [
         {
           location: 'query',
-          msg: `Value of the location parameter must be in [${taxons.ca.location.keys}].`,
+          msg: `Value of the location parameter must be in [${taxons.all.location.keys}].`,
           param: 'location[1]',
           value: 'foo',
         },

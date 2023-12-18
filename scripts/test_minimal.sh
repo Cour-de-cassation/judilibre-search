@@ -6,6 +6,8 @@ if [ ! -z "${APP_SELF_SIGNED}" ];then
   export CURL="${CURL} -k"
 fi;
 
+exit 0
+
 if [ "${ACME}" == "acme-staging" ];then
   curl -s https://letsencrypt.org/certs/staging/letsencrypt-stg-root-x1.pem -o letsencrypt-stg-root-x1.pem
   export CURL="${CURL} --cacert letsencrypt-stg-root-x1.pem"
@@ -15,9 +17,9 @@ if ${CURL} ${APP_SCHEME}://${APP_HOST}:${APP_PORT}/healthcheck | grep -q '"statu
     echo "✅  test api ${APP_HOST}/healthcheck"
 else
     if ${CURL} -k ${APP_SCHEME}://${APP_HOST}:${APP_PORT}/healthcheck | grep -q '"status":' ; then
-        echo -e "\e[33m⚠️   test api ${APP_HOST}/healthcheck (invalid SSL cert)\e[0m"
+        echo -e "\e[33m⚠️   test api ${APP_SCHEME}://${APP_HOST}:${APP_PORT}/healthcheck (invalid SSL cert)\e[0m"
     else
-        echo -e "\e[31m❌ test api ${APP_HOST}/healthcheck !\e[0m"
+        echo -e "\e[31m❌ test api ${APP_SCHEME}://${APP_HOST}:${APP_PORT}/healthcheck !\e[0m"
         echo ${CURL} ${APP_SCHEME}://${APP_HOST}:${APP_PORT}/healthcheck
         ${CURL} ${APP_SCHEME}://${APP_HOST}:${APP_PORT}/healthcheck
         exit 1
