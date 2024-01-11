@@ -403,6 +403,12 @@
             "items": {
               "type": "string"
             }
+          },
+          {
+            "name": "particularInterest",
+            "description": "Lorsque ce paramètre vaut `true`, le résultat de la requête sera restreint aux décisions qualifiées comme présentant un intérêt particulier (vaut `false` par défaut).",
+            "in": "query",
+            "type": "boolean"
           }
         ],
         "responses": {
@@ -485,7 +491,7 @@
           },
           "403": {
             "description": "Permissions insuffisantes."
-          },          
+          },
           "416": {
             "description": "La plage d'informations demandée est incorrecte ou ne peut pas être satisfaite."
           },
@@ -755,6 +761,12 @@
           "items": {
             "type": "string"
           }
+        },
+        {
+          "name": "particularInterest",
+          "description": "Lorsque ce paramètre vaut `true`, le résultat de la requête sera restreint aux décisions qualifiées comme présentant un intérêt particulier (vaut `false` par défaut).",
+          "in": "query",
+          "type": "boolean"
         }
       ]
     },
@@ -1075,6 +1087,10 @@
           "items": {
             "type": "string"
           }
+        },
+        "particularInterest": {
+          "description": "Lorsque ce paramètre vaut `true`, le résultat de la requête sera restreint aux décisions qualifiées comme présentant un intérêt particulier (vaut `false` par défaut).",
+          "type": "boolean"
         }
       },
       "example": {
@@ -1304,6 +1320,10 @@
             "legacy": {
               "description": "Objet contenant des propriétés \"historiques\" propres à la source de données et non normalisables (par exemple les propriétés `matiereDeterminee`, `pourvoiLocal` et `pourvoiCcas` en provenance de JuriCA). Ces propriétés sont requêtables dans le cadre de l'export par lots, par exemple : `/export?jurisdiction=ca&legacy.matiereDeterminee=1`",
               "type": "object"
+            },
+            "particularInterest": {
+              "description": "Lorsque la propriété `particularInterest` est définie et vaut `true`, alors la décision correspondante est qualifiée comme présentant un intérêt particulier.",
+              "type": "boolean"
             },
             "titlesAndSummaries": {
               "description": "Objet contenant l'ensemble des titres et sommaires définis pour la décision, sous la forme d'une liste de propriétés 'titles' (titres principaux), 'summary' (sommaire) et 'secondaryTitles' (titres secondaires ou de référence). Cela concerne uniquement les décisions de la Cour de cassation.",
@@ -1811,6 +1831,10 @@
         "legacy.*": {
           "description": "Permet de requêter des propriétés \"historiques\" propres à la source de données et non normalisables (par exemple les propriétés `matiereDeterminee`, `pourvoiLocal` et `pourvoiCcas` en provenance de JuriCA). Par exemple : `/export?jurisdiction=ca&legacy.matiereDeterminee=1`",
           "type": "string"
+        },
+        "particularInterest": {
+          "description": "Lorsque ce paramètre vaut `true`, le résultat de la requête sera restreint aux décisions qualifiées comme présentant un intérêt particulier (vaut `false` par défaut).",
+          "type": "boolean"
         }
       },
       "example": {

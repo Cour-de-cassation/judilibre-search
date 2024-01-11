@@ -373,6 +373,18 @@ function buildQuery(query, target, relaxed) {
       });
     }
 
+    // particularInterest (filter):
+    if (query.particularInterest) {
+      if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
+        searchQuery.body.query.function_score.query.bool.filter = [];
+      }
+      searchQuery.body.query.function_score.query.bool.filter.push({
+        terms: {
+          particularInterest: true,
+        },
+      });
+    }
+
     if (target === 'export') {
       const legacyFilter = [];
 

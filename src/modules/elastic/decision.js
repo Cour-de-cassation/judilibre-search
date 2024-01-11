@@ -218,6 +218,7 @@ async function decision(query) {
           : [],
       legacy: rawResult._source.legacy ? rawResult._source.legacy : {},
       titlesAndSummaries: rawResult._source.titlesAndSummaries ? rawResult._source.titlesAndSummaries : [],
+      particularInterest: rawResult._source.particularInterest === true,
     };
 
     if (response.type === 'undefined') {

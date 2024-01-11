@@ -118,6 +118,7 @@ async function batchexport(query) {
                 : [],
             legacy: rawResult._source.legacy ? rawResult._source.legacy : {},
             titlesAndSummaries: rawResult._source.titlesAndSummaries ? rawResult._source.titlesAndSummaries : [],
+            particularInterest: rawResult._source.particularInterest === true,
           };
           if (query.abridged) {
             delete result.source;
@@ -227,6 +228,15 @@ function exportWithoutElastic(query) {
         return 1;
       }
       return 0;
+    });
+  }
+
+  if (query.particularInterest) {
+    this.data.resolved = this.data.resolved.filter((item) => {
+      item.particularInterest === true;
+    });
+    this.data.unresolved = this.data.unresolved.filter((item) => {
+      item.particularInterest === true;
     });
   }
 

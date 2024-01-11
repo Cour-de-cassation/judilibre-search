@@ -209,6 +209,13 @@ api.get(
       in: 'query',
       optional: true,
     },
+    particularInterest: {
+      in: 'query',
+      isBoolean: true,
+      toBoolean: true,
+      errorMessage: `Value of the particularInterest parameter must be a boolean.`,
+      optional: true,
+    },
   }),
   async (req, res) => {
     if (process.env.APP_HOST_ALTER === undefined) {
