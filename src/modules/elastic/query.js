@@ -379,7 +379,7 @@ function buildQuery(query, target, relaxed) {
         searchQuery.body.query.function_score.query.bool.filter = [];
       }
       searchQuery.body.query.function_score.query.bool.filter.push({
-        terms: {
+        term: {
           particularInterest: true,
         },
       });
