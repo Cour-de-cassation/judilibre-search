@@ -18,13 +18,12 @@
   "files": null,
   "bulletin": null,
   "contested": null,
-  "summary":null,
-  "themes": [
-    "Recours contre les décisions administratives des ordres d'avocats"
-  ],
+  "summary": null,
+  "themes": ["Recours contre les décisions administratives des ordres d'avocats"],
   "rapprochements": null,
   "location": "ca_chambery",
   "nac": "72Z",
+  "particularInterest": true,
   "zones": {
     "introduction": [
       {

@@ -111,6 +111,7 @@ async function search(query) {
                 query.resolve_references,
               ),
               titlesAndSummaries: rawResult._source.titlesAndSummaries ? rawResult._source.titlesAndSummaries : [],
+              particularInterest: rawResult._source.particularInterest === true,
             };
 
             if (rawResult._source.jurisdiction === 'cc') {
@@ -236,6 +237,15 @@ function searchWithoutElastic(query) {
         return 1;
       }
       return 0;
+    });
+  }
+
+  if (query.particularInterest) {
+    this.data.resolved = this.data.resolved.filter((item) => {
+      item.particularInterest === true;
+    });
+    this.data.unresolved = this.data.unresolved.filter((item) => {
+      item.particularInterest === true;
     });
   }
 

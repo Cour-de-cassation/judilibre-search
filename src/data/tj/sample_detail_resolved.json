@@ -18,13 +18,12 @@
   "files": null,
   "bulletin": null,
   "contested": null,
-  "summary":null,
-  "themes": [
-    "Recours contre les décisions administratives des ordres d'avocats"
-  ],
+  "summary": null,
+  "themes": ["Recours contre les décisions administratives des ordres d'avocats"],
   "rapprochements": null,
   "location": "Cour d'appel de Chambéry",
   "nac": "72Z",
+  "particularInterest": true,
   "zones": {
     "introduction": [
       {

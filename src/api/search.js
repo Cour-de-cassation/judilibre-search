@@ -214,6 +214,13 @@ api.get(
       errorMessage: `Value of the resolve_references parameter must be a boolean.`,
       optional: true,
     },
+    particularInterest: {
+      in: 'query',
+      isBoolean: true,
+      toBoolean: true,
+      errorMessage: `Value of the particularInterest parameter must be a boolean.`,
+      optional: true,
+    },
   }),
   async (req, res) => {
     if (process.env.APP_HOST_ALTER === undefined) {
