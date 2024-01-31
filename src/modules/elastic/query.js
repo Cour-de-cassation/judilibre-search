@@ -21,6 +21,7 @@ function buildQuery(query, target, relaxed) {
   let page = query.page || 0;
   let page_size = query.page_size || 10;
   let string = query.query ? query.query.trim() : '';
+  let hasString = false;
   if (target === 'export') {
     // No search query when exporting data:
     string = '';
@@ -367,6 +368,7 @@ function buildQuery(query, target, relaxed) {
         query.theme.forEach((string) => {
           searchString.push(string.split(/[\s,;/?!]+/gm).join(' '));
         });
+        hasString = true;
       }
     }
 
@@ -657,6 +659,7 @@ function buildQuery(query, target, relaxed) {
     queryField: queryField,
     textFields: textFields,
     query: searchQuery,
+    hasString: hasString,
   };
 }
 

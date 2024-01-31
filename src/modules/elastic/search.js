@@ -24,7 +24,7 @@ async function search(query) {
     searchQuery: JSON.stringify(searchQuery.query),
   };
 
-  if (searchQuery.query && (string || searchQuery.body.query.function_score.query.bool.must)) {
+  if (searchQuery.query && (string || searchQuery.hasString)) {
     if (process.env.API_VERBOSITY === 'debug') {
       response.searchQuery = searchQuery.query;
     }
