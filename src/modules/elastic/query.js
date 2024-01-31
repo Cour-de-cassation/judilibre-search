@@ -465,8 +465,8 @@ function buildQuery(query, target, relaxed) {
         });
       }
 
-      // Add search on 'text' anyway:
-      if (textFields.indexOf('text') === -1) {
+      // Add search on 'text' field if none is set:
+      if (textFields.length === 0) {
         textFields.push('text');
       }
 
