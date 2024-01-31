@@ -364,7 +364,9 @@ function buildQuery(query, target, relaxed) {
         if (query.field.indexOf('themes') === -1) {
           query.field.push('themes');
         }
-        searchString = JSON.parse(JSON.stringify(query.theme));
+        query.theme.forEach((string) => {
+          searchString.push(string.split(/[\s,;/?!]+/gm).join(' '));
+        });
       }
     }
 
