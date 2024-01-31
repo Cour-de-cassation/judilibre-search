@@ -346,14 +346,24 @@ function buildQuery(query, target, relaxed) {
 
     // Themes (filter):
     if (query.theme && Array.isArray(query.theme) && query.theme.length > 0) {
-      if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
-        searchQuery.body.query.function_score.query.bool.filter = [];
+      if (taxonFilter === 'cc') {
+        if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
+          searchQuery.body.query.function_score.query.bool.filter = [];
+        }
+        searchQuery.body.query.function_score.query.bool.filter.push({
+          terms: {
+            themesFilter: query.theme,
+          },
+        });
+      } else {
+        if (!query.field || Array.isArray(query.field) === false) {
+          query.field = [];
+        }
+        if (query.field.indexOf('themes') === -1) {
+          query.field.push('themes');
+        }
+        searchString = JSON.parse(JSON.stringify(query.theme));
       }
-      searchQuery.body.query.function_score.query.bool.filter.push({
-        terms: {
-          themesFilter: query.theme,
-        },
-      });
     }
 
     // withFileOfType (filter):
