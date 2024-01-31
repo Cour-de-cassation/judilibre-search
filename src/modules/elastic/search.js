@@ -24,7 +24,7 @@ async function search(query) {
     searchQuery: JSON.stringify(searchQuery.query),
   };
 
-  if (searchQuery.query) {
+  if (searchQuery.query && (string || searchQuery.body.query.function_score.query.bool.must)) {
     if (process.env.API_VERBOSITY === 'debug') {
       response.searchQuery = searchQuery.query;
     }
@@ -268,39 +268,45 @@ function searchWithoutElastic(query) {
     relaxed: false,
   };
 
-  if (page > 0) {
-    let previous_page_params = new URLSearchParams(query);
-    previous_page_params.set('page', page - 1);
-    response.previous_page = previous_page_params.toString();
-  }
+  if (string) {
+    if (page > 0) {
+      let previous_page_params = new URLSearchParams(query);
+      previous_page_params.set('page', page - 1);
+      response.previous_page = previous_page_params.toString();
+    }
 
-  if (query.resolve_references) {
-    if ((page + 1) * page_size < this.data.resolved.length) {
-      let next_page_params = new URLSearchParams(query);
-      next_page_params.set('page', page + 1);
-      response.next_page = next_page_params.toString();
+    if (query.resolve_references) {
+      if ((page + 1) * page_size < this.data.resolved.length) {
+        let next_page_params = new URLSearchParams(query);
+        next_page_params.set('page', page + 1);
+        response.next_page = next_page_params.toString();
+      }
+    } else {
+      if ((page + 1) * page_size < this.data.unresolved.length) {
+        let next_page_params = new URLSearchParams(query);
+        next_page_params.set('page', page + 1);
+        response.next_page = next_page_params.toString();
+      }
+    }
+
+    for (let i = 0; i < response.results.length; i++) {
+      if (Array.isArray(response.results[i].number)) {
+        response.results[i].numbers = response.results[i].number;
+        response.results[i].number = response.results[i].number[0];
+      } else {
+        response.results[i].numbers = [response.results[i].number];
+      }
+
+      response.results[i].files = taxons[taxonFilter].filetype.buildFilesList(
+        response.results[i].id,
+        response.results[i].files,
+        query.resolve_references,
+      );
     }
   } else {
-    if ((page + 1) * page_size < this.data.unresolved.length) {
-      let next_page_params = new URLSearchParams(query);
-      next_page_params.set('page', page + 1);
-      response.next_page = next_page_params.toString();
-    }
-  }
-
-  for (let i = 0; i < response.results.length; i++) {
-    if (Array.isArray(response.results[i].number)) {
-      response.results[i].numbers = response.results[i].number;
-      response.results[i].number = response.results[i].number[0];
-    } else {
-      response.results[i].numbers = [response.results[i].number];
-    }
-
-    response.results[i].files = taxons[taxonFilter].filetype.buildFilesList(
-      response.results[i].id,
-      response.results[i].files,
-      query.resolve_references,
-    );
+    response.total = 0;
+    response.max_score = 0;
+    response.results = [];
   }
 
   return response;
