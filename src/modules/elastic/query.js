@@ -344,7 +344,7 @@ function buildQuery(query, target, relaxed) {
       });
     }
 
-    // Themes (filter for CC // search string for CA):
+    // Themes (filter):
     if (query.theme && Array.isArray(query.theme) && query.theme.length > 0) {
       if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
         searchQuery.body.query.function_score.query.bool.filter = [];
@@ -460,9 +460,7 @@ function buildQuery(query, target, relaxed) {
       if (query.field && Array.isArray(query.field) && query.field.length > 0) {
         query.field.forEach((field) => {
           if (queryField[field] && textFields.indexOf(queryField[field]) === -1) {
-            if (field !== 'themes') {
-              textFields.push(queryField[field]);
-            }
+            textFields.push(queryField[field]);
           }
         });
       }
