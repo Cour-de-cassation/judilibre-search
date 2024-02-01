@@ -21,6 +21,7 @@ function buildQuery(query, target, relaxed) {
   let page = query.page || 0;
   let page_size = query.page_size || 10;
   let string = query.query ? query.query.trim() : '';
+  let hasString = false;
   if (target === 'export') {
     // No search query when exporting data:
     string = '';
@@ -344,8 +345,7 @@ function buildQuery(query, target, relaxed) {
       });
     }
 
-    // Themes (filter for CC // search string for CA):
-    let searchInThemes = false;
+    // Themes (filter):
     if (query.theme && Array.isArray(query.theme) && query.theme.length > 0) {
       if (taxonFilter === 'cc') {
         if (searchQuery.body.query.function_score.query.bool.filter === undefined) {
@@ -353,11 +353,35 @@ function buildQuery(query, target, relaxed) {
         }
         searchQuery.body.query.function_score.query.bool.filter.push({
           terms: {
-            themesFilter: query.theme,
+            themesFilter: query.theme.map((item) => {
+              return `${item}`.toLowerCase();
+            }),
           },
         });
       } else {
-        searchInThemes = true;
+        hasString = false;
+        let _themesFilter = [];
+        query.theme.forEach((string) => {
+          if (/^\w+$/i.test(string) === true) {
+            if (!query.field || Array.isArray(query.field) === false) {
+              query.field = [];
+            }
+            if (query.field.indexOf('themes') === -1) {
+              query.field.push('themes');
+            }
+            searchString.push(string.split(/[\s,;/?!]+/gm).join(' '));
+          } else {
+            _themesFilter.push(string);
+          }
+          hasString = true;
+        });
+        if (_themesFilter.length > 0) {
+          searchQuery.body.query.function_score.query.bool.filter.push({
+            terms: {
+              themesFilter: _themesFilter,
+            },
+          });
+        }
       }
     }
 
@@ -465,15 +489,13 @@ function buildQuery(query, target, relaxed) {
       if (query.field && Array.isArray(query.field) && query.field.length > 0) {
         query.field.forEach((field) => {
           if (queryField[field] && textFields.indexOf(queryField[field]) === -1) {
-            if (searchInThemes === false || field !== 'themes') {
-              textFields.push(queryField[field]);
-            }
+            textFields.push(queryField[field]);
           }
         });
       }
 
-      // Add search on 'text' anyway:
-      if (textFields.indexOf('text') === -1) {
+      // Add search on 'text' field if none is set:
+      if (textFields.length === 0) {
         textFields.push('text');
       }
 
@@ -507,12 +529,15 @@ function buildQuery(query, target, relaxed) {
 
       // Highlight text fields:
       textFields.forEach((field) => {
-        searchQuery.body.highlight.fields[field] = {};
+        if (field !== 'themes') {
+          searchQuery.body.highlight.fields[field] = {};
+        }
       });
     }
 
     // Finalize search in  text fields:
-    if (searchString.length > 0) {
+    if (searchString.length > 0 && boostedFields.length > 0) {
+      hasString = true;
       let operator = taxons[taxonFilter].operator.default.toUpperCase();
       let fuzzy = true;
       let finalSearchString = searchString.join(' ');
@@ -610,6 +635,7 @@ function buildQuery(query, target, relaxed) {
 
     // Finalize search in text fields:
     if (searchString.length > 0) {
+      hasString = true;
       let operator = taxons[taxonFilter].operator.default.toUpperCase();
       let fuzzy = true;
       let finalSearchString = searchString.join(' ');
@@ -650,6 +676,7 @@ function buildQuery(query, target, relaxed) {
     queryField: queryField,
     textFields: textFields,
     query: searchQuery,
+    hasString: hasString,
   };
 }
 

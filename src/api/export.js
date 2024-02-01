@@ -32,7 +32,6 @@ api.get(
     'theme.*': {
       in: 'query',
       isString: true,
-      toLowerCase: true,
       errorMessage: `Theme parameter must be an array of strings.`,
       optional: true,
     },
