@@ -516,7 +516,7 @@ function buildQuery(query, target, relaxed) {
 
       // Highlight text fields:
       textFields.forEach((field) => {
-        if (item !== 'themes') {
+        if (field !== 'themes') {
           searchQuery.body.highlight.fields[field] = {};
         }
       });
