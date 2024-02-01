@@ -516,12 +516,15 @@ function buildQuery(query, target, relaxed) {
 
       // Highlight text fields:
       textFields.forEach((field) => {
-        searchQuery.body.highlight.fields[field] = {};
+        if (item !== 'themes') {
+          searchQuery.body.highlight.fields[field] = {};
+        }
       });
     }
 
     // Finalize search in  text fields:
     if (searchString.length > 0) {
+      hasString = true;
       let operator = taxons[taxonFilter].operator.default.toUpperCase();
       let fuzzy = true;
       let finalSearchString = searchString.join(' ');
@@ -619,6 +622,7 @@ function buildQuery(query, target, relaxed) {
 
     // Finalize search in text fields:
     if (searchString.length > 0) {
+      hasString = true;
       let operator = taxons[taxonFilter].operator.default.toUpperCase();
       let fuzzy = true;
       let finalSearchString = searchString.join(' ');
