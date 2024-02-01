@@ -423,9 +423,7 @@ function buildQuery(query, target, relaxed) {
       if (query.theme && Array.isArray(query.theme) && query.theme.length > 0 && taxonFilter !== 'cc') {
         searchQuery.body.query.function_score.query.bool.filter.push({
           terms: {
-            themes: query.theme.map((string) => {
-              return string.split(/[\s,;/?!]+/gm).join(' ');
-            }),
+            themesFilter: query.theme,
           },
         });
         hasString = false;
@@ -534,7 +532,7 @@ function buildQuery(query, target, relaxed) {
     }
 
     // Finalize search in  text fields:
-    if (searchString.length > 0) {
+    if (searchString.length > 0 && boostedFields.length > 0) {
       hasString = true;
       let operator = taxons[taxonFilter].operator.default.toUpperCase();
       let fuzzy = true;
