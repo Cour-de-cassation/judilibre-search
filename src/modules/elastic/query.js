@@ -359,16 +359,29 @@ function buildQuery(query, target, relaxed) {
           },
         });
       } else {
-        if (!query.field || Array.isArray(query.field) === false) {
-          query.field = [];
-        }
-        if (query.field.indexOf('themes') === -1) {
-          query.field.push('themes');
-        }
+        hasString = false;
+        let _themesFilter = [];
         query.theme.forEach((string) => {
-          searchString.push(string.split(/[\s,;/?!]+/gm).join(' '));
+          if (/^\w+$/i.test(string) === true) {
+            if (!query.field || Array.isArray(query.field) === false) {
+              query.field = [];
+            }
+            if (query.field.indexOf('themes') === -1) {
+              query.field.push('themes');
+            }
+            searchString.push(string.split(/[\s,;/?!]+/gm).join(' '));
+          } else {
+            _themesFilter.push(string);
+          }
+          hasString = true;
         });
-        hasString = true;
+        if (_themesFilter.length > 0) {
+          searchQuery.body.query.function_score.query.bool.filter.push({
+            terms: {
+              themesFilter: _themesFilter,
+            },
+          });
+        }
       }
     }
 
@@ -420,6 +433,7 @@ function buildQuery(query, target, relaxed) {
         });
       }
 
+      /*
       if (query.theme && Array.isArray(query.theme) && query.theme.length > 0 && taxonFilter !== 'cc') {
         searchQuery.body.query.function_score.query.bool.filter.push({
           terms: {
@@ -428,6 +442,7 @@ function buildQuery(query, target, relaxed) {
         });
         hasString = false;
       }
+      */
     }
 
     // Date start/end (filter):
