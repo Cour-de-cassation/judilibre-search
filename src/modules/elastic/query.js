@@ -432,17 +432,6 @@ function buildQuery(query, target, relaxed) {
           terms: terms,
         });
       }
-
-      /*
-      if (query.theme && Array.isArray(query.theme) && query.theme.length > 0 && taxonFilter !== 'cc') {
-        searchQuery.body.query.function_score.query.bool.filter.push({
-          terms: {
-            themesFilter: query.theme,
-          },
-        });
-        hasString = false;
-      }
-      */
     }
 
     // Date start/end (filter):
