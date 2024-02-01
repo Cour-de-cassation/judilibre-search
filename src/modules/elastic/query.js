@@ -424,7 +424,7 @@ function buildQuery(query, target, relaxed) {
         searchQuery.body.query.function_score.query.bool.filter.push({
           terms: {
             themes: query.theme.map((string) => {
-              string.split(/[\s,;/?!]+/gm).join(' ');
+              return string.split(/[\s,;/?!]+/gm).join(' ');
             }),
           },
         });
