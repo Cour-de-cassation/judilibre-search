@@ -423,9 +423,12 @@ function buildQuery(query, target, relaxed) {
       if (query.theme && Array.isArray(query.theme) && query.theme.length > 0 && taxonFilter !== 'cc') {
         searchQuery.body.query.function_score.query.bool.filter.push({
           terms: {
-            themes: query.theme,
+            themes: query.theme.map((string) => {
+              string.split(/[\s,;/?!]+/gm).join(' ');
+            }),
           },
         });
+        hasString = false;
       }
     }
 
