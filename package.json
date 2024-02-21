@@ -1,6 +1,6 @@
 {
   "name": "judilibre-search",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "API de recherche et de consultation de la plateforme JUDILIBRE.",
   "main": "src/index.js",
   "scripts": {
