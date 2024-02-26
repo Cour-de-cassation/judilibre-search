@@ -2,7 +2,7 @@
   "openapi": "3.0.2",
   "info": {
     "title": "JUDILIBRE-public",
-    "version": "1.2.3",
+    "version": "1.2.4",
     "description": "La Cour de cassation, dans le cadre de la refonte de son site Web, a initié le projet JUDILIBRE visant à la conception et au développement en interne d'un moteur de recherche dans le corpus jurisprudentiel, mettant celui-ci à disposition du public dans l'esprit du décret sur l'Open Data des décisions de justice.",
     "contact": {
       "name": "Sébastien COURVOISIER",
@@ -433,6 +433,18 @@
             "required": false
           },
           {
+            "name": "location",
+            "description": "Filtre les résultats suivant le code du siège de juridiction ayant émis les décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=location&context_value=ca` pour les cours d'appel et `GET /taxonomy?id=location&context_value=tj` pour les tribunaux judiciaires). Par exemple : `GET /search?...&location=tj33063`. ",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "in": "query",
+            "required": false
+          },
+          {
             "name": "publication",
             "description": "Filtre les résultats suivant le niveau de publication des décisions (parmi les valeurs : `b`, `r`, `l`, `c`, etc. - les valeurs disponibles sont accessibles via `GET /taxonomy?id=publication`). Une recherche avec un paramètre `publication` vide ou manquant retourne des décisions de n'importe quel niveau de publication.",
             "schema": {
@@ -713,6 +725,18 @@
           {
             "name": "jurisdiction",
             "description": "Filtre les résultats suivant la juridiction relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=jurisdiction`). Un export avec un paramètre `jurisdiction` vide ou manquant retourne des décisions relatives à la Cour de cassation (`cc`).",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "location",
+            "description": "Filtre les résultats suivant le code du siège de juridiction ayant émis les décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=location&context_value=ca` pour les cours d'appel et `GET /taxonomy?id=location&context_value=tj` pour les tribunaux judiciaires). Par exemple : `GET /export?...&location=ca_paris`. ",
             "schema": {
               "type": "array",
               "items": {
