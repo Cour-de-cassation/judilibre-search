@@ -24,7 +24,7 @@ api.get(
       return res.status(400).json({ route: `${req.method} ${req.path}`, errors: errors.array() });
     }
     try {
-      const result = await Elastic.head(query);
+      const result = await Elastic.published(req.query);
       if (result === null) {
         return res.status(404).json({
           route: `${req.method} ${req.path}`,
