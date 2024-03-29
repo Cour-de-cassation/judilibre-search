@@ -14,8 +14,8 @@ class Elastic {
     return require('./query').apply(this, [query, target, relaxed]);
   }
 
-  async head(query) {
-    return await require('./head').apply(this, [query]);
+  async published(query) {
+    return await require('./published').apply(this, [query]);
   }
 
   async search(query) {
