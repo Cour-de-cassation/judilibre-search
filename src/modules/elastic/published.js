@@ -1,38 +1,37 @@
 require('../env');
 
 async function published(query) {
-  if (process.env.WITHOUT_ELASTIC) {
-    return publishedWithoutElastic.apply(this, [query]);
+  const response = {};
+  for (let i = 0; i < query.id.length; i++) {
+    const id = query.id[i];
+    if (process.env.WITHOUT_ELASTIC) {
+      response[id] = await publishedWithoutElastic.apply(this, [id]);
+    } else {
+      response[id] = await publishedWithElastic.apply(this, [id]);
+    }
   }
+  return response;
+}
 
-  let rawResponse;
-  let response = {
-    published: false,
-  };
+async function publishedWithoutElastic(id) {
+  return true;
+}
 
+async function publishedWithElastic(id) {
+  let response;
   try {
-    rawResponse = await this.client.get({
-      id: query.id,
+    response = await this.client.get({
+      id: id,
       index: process.env.ELASTIC_INDEX,
       _source: false,
     });
   } catch (ignore) {
-    rawResponse = null;
+    response = null;
   }
-
-  if (rawResponse && rawResponse.body && rawResponse.body.found) {
-    response = {
-      published: true,
-    };
+  if (response && response.body && response.body.found) {
+    return true;
   }
-
-  return response;
-}
-
-function publishedWithoutElastic(query) {
-  return {
-    published: true,
-  };
+  return false;
 }
 
 module.exports = published;
