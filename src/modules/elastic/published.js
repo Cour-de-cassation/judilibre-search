@@ -1,9 +1,9 @@
 require('../env');
 
-async function published(query) {
+async function published(ids) {
   const response = {};
-  for (let i = 0; i < query.id.length; i++) {
-    const id = query.id[i];
+  for (let i = 0; i < ids.length; i++) {
+    const id = ids[i];
     if (process.env.WITHOUT_ELASTIC) {
       response[id] = await publishedWithoutElastic.apply(this, [id]);
     } else {

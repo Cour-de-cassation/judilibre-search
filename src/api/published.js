@@ -5,17 +5,17 @@ const { checkSchema, validationResult } = require('express-validator');
 const Elastic = require('../modules/elastic');
 const route = 'published';
 
-api.get(
+api.post(
   `/${route}`,
   checkSchema({
     id: {
-      in: 'query',
+      in: 'body',
       toArray: true,
     },
     'id.*': {
-      in: 'query',
+      in: 'body',
       isString: true,
-      errorMessage: `Value of the id parameter must be an array of strings.`,
+      errorMessage: `id  must be an array of strings.`,
       optional: false,
     },
   }),
@@ -29,7 +29,7 @@ api.get(
       return res.status(400).json({ route: `${req.method} ${req.path}`, errors: errors.array() });
     }
     try {
-      const result = await Elastic.published(req.query);
+      const result = await Elastic.published(req.body.id);
       const t1 = new Date();
       result.took = t1.getTime() - t0.getTime();
       return res.status(200).json(result);
