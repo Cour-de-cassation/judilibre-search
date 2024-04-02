@@ -20,6 +20,7 @@ api.post(
     },
   }),
   async (req, res) => {
+    const t0 = new Date();
     if (process.env.APP_HOST_ALTER === undefined) {
       process.env.APP_HOST_ALTER = req.hostname;
     }
@@ -29,6 +30,8 @@ api.post(
     }
     try {
       const result = await Elastic.published(req.body.id);
+      const t1 = new Date();
+      result.took = t1.getTime() - t0.getTime();
       return res.status(200).json(result);
     } catch (e) {
       return res.status(500).json({
