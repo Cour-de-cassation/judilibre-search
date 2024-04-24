@@ -17,6 +17,11 @@ const taxon = {
         "Demande tendant à contester l'enregistrement ou le refus d'enregistrement d'une déclaration de nationalité",
       '10B': 'Action déclaratoire ou négatoire de nationalité',
       '10C': 'Contestation sur une question de nationalité soulevée par voie de question préjudicielle',
+      '10D': "Demande tendant à contester l'enregistrement d'une déclaration de nationalité",
+      '10E': "Demande tendant à contester le refus d'enregistrement d'une déclaration de nationalité",
+      '10F': 'Action déclaratoire de nationalité',
+      '10G': 'Action négatoire de nationalité',
+      '10H': "Action en contestation du refus de délivrance d'un certificat de nationalité française",
       '10Z': 'Autres demandes en matière de nationalité',
       '11A':
         "Demande de jugement déclaratifd'un acte de l'état civil ou de reconstitution d'un acte d'état civil ou d'un registre de l'état civil détruit",
@@ -32,6 +37,7 @@ const taxon = {
       '12B': "Demande relative à l'usage du nom d'un conjoint ou d'un ex-conjoint",
       '12C': 'Contestation du choix du prénom par le procureur de la République',
       '12D': 'Demande de changement de prénom après opposition du procureur de la République',
+      '12E': 'Demande de changement de nom après opposition du procureur de la République',
       '12Z': 'Autres demandes en matière de nom ou de prénom',
       '13A': 'Demande de jugement déclaratif de décès en cas de disparition',
       '13B': "Demande d'annulation d'un jugement déclaratif de décès",
@@ -65,6 +71,8 @@ const taxon = {
       '14R':
         "Demande d'autorisation de maintien en zone d'attente d'un étranger demandant son admission sur le territoire français",
       '14S': "Demande de mainlevée d'une mesure d'isolement et/ou de contention formée à titre principal",
+      '14T':
+        "Demande de maintien d'une mesure d'isolement et/ou de contention formée par le directeur de l'établissement",
       '14X': "Droits attachés à la personne - nature d'affaire indéterminée",
       '15A':
         "Demande d'autorisation d'un acte ou de désignation d'un administrateur ad hoc dans le cadre d'une administration légale pure et simple",
@@ -76,6 +84,7 @@ const taxon = {
       '15F':
         "Demande d'autorisation d'un acte ou de désignation d'un administrateur ad hoc dans le cadre d'une administration légale",
       '15G': "Demande aux fins de contrôle d'un acte dans des situations à risque",
+      '15H': "Demande aux fins de levée de contrôle d'un acte",
       '15Z': "Autres demandes relatives à l'incapacité des mineurs",
       '16A':
         "Appel d'une décision relative à l'organisation ou la prolongation d'une protection judiciaire en faveur d'un jeune majeur",
@@ -116,6 +125,7 @@ const taxon = {
       '17N': 'Demande de changement de représentant légal',
       '17O': "Demande tendant à modifier l'étendue de l'habilitation familiale",
       '17P': "Demande de renouvellement de l'habilitation familiale",
+      '17Q': "Demande de changement de représentant légal dans le cadre d'une habilitation familiale",
       '17R': 'Recours contre une décision relative à la personne protégée',
       '17S': "Recours contre une décision relative aux biens d'une personne protégée",
       '17T': "Demande de renouvellement d'une mesure arrivant à échéance le 18 février 2025",
@@ -131,16 +141,6 @@ const taxon = {
       '18H': "Demande de mainlevée de l'habilitation familiale",
       '18X': 'Autres demandes relatives au fonctionnement de la TPSA',
       '18Z': 'Autres demandes relatives à la clôture des régimes de protection',
-      '10D': "Demande tendant à contester l'enregistrement d'une déclaration de nationalité",
-      '10E': "Demande tendant à contester le refus d'enregistrement d'une déclaration de nationalité",
-      '10F': 'Action déclaratoire de nationalité',
-      '10G': 'Action négatoire de nationalité',
-      '10H': "Action en contestation du refus de délivrance d'un certificat de nationalité française",
-      '12E': 'Demande de changement de nom après opposition du procureur de la République',
-      '14T':
-        "Demande de maintien d'une mesure d'isolement et/ou de contention formée par le directeur de l'établissement",
-      '15H': "Demande aux fins de levée de contrôle d'un acte",
-      '17Q': "Demande de changement de représentant légal dans le cadre d'une habilitation familiale",
     },
   },
   2: {
@@ -156,65 +156,6 @@ const taxon = {
       27: 'Autorité parentale',
       28: 'Partage, indivision, succession',
       29: 'Libéralités (donations et testaments)',
-      '2A': 'Filiation',
-      '2AA': 'Action en recherche de paternité',
-      '2AB': 'Action en recherche de maternité  - dans le mariage -',
-      '2AC': 'Action en recherche de maternité  - hors mariage -',
-      '2AD': 'Action en rétablissement de la présomption de paternité',
-      '2AE': "Action en constatation de la possession d'état d'un enfant né dans le mariage",
-      '2AF': "Action en constatation de la possession d'état d'un enfant né hors mariage",
-      '2AG':
-        "Demande de délivrance d'un acte de notoriété relative à la possession d'état d'un enfant né dans le mariage",
-      '2AH': "Demande de délivrance d'un acte de notoriété relative à la possession d'état d'un enfant né hors mariage",
-      '2AI': 'Demande relative au consentement à une procréation médicalement assistée  - dans le mariage -',
-      '2AJ': 'Demande relative au consentement à une procréation médicalement assistée - hors mariage -',
-      '2AK': "Demande de mainlevée d'une opposition à reconnaissance de paternité ou de maternité",
-      '2AM': 'Action en contestation de maternité - dans le mariage -',
-      '2AN': 'Action en contestation de maternité - hors mariage -',
-      '2AO': 'Action en contestation de paternité - dans le mariage -',
-      '2AP': 'Action en contestation de paternité - hors mariage -',
-      '2AQ': "Action en contestation de la possession d'état d'un enfant né dans le mariage",
-      '2AR': "Action en contestation de la possession d'état d'un enfant hors mariage",
-      '2AS': 'Demande formée par le ministère public visant à contester la filiation  maternelle - dans le mariage-',
-      '2AT': 'Demande formée par le ministère public visant à contester la filiation  maternelle -hors mariage -',
-      '2AU': 'Demande formée par le ministère public visant à contester la filiation paternelle - dans le mariage -',
-      '2AV': 'Demande formée par le ministère public visant à contester la  filiation paternelle - hors mariage-',
-      '2AZ': 'Autres demandes relatives à la filiation',
-      '2A1':
-        "TMFPO - requête sans médiation préalable - demande de modification de l'exercice de l'autorité parentale ou de la résidence habituelle des enfants mineurs",
-      '2A2':
-        "TMFPO - Requête sans médiation préalable - demande de modification de la contribution à l'entretien des enfants",
-      '2A3': 'TMFPO - Requête sans médiation préalable - demande de modification du droit de visite',
-      '2A4':
-        'TMFPO - Requête sans médiation préalable - demande de modification de la pension alimentaire des enfants mineurs nés hors mariage',
-      '2A5':
-        "TMFPO - Requête sans médiation préalable - demande de modification de l'exercice de l'autorité parentale, de la résidence habituelle des enfants mineurs, ou du droit de visite - parents non mariés",
-      '2B1':
-        "TMFPO - Médiation à l'initiative des parties - demande de modification de l'exercice de l'autorité parentale ou de la résidence habituelle des enfants mineurs",
-      '2B2':
-        "TMFPO - Médiation à l'initiative des parties - demande de modification de la contribution à l'entretien des enfants",
-      '2B3': "TMFPO - Médiation à l'initiative des parties - demande de modification du droit de visite",
-      '2B4':
-        "TMFPO - Médiation à l'initiative des parties - demande de modification de la pension alimentaire des enfants mineurs nés hors mariage",
-      '2B5':
-        "TMFPO - Médiation à l'initiative des parties - demande de modification de l'exercice de l'autorité parentale, de la résidence habituelle des enfants mineurs, ou du droit de visite - parents non mariés",
-      '2C1':
-        "TMFPO - Médiation suite à information - demande de modification de l'exercice de l'autorité parentale ou de la résidence habituelle des enfants mineurs",
-      '2C2':
-        "TMFPO - Médiation suite à information - demande de modification de la contribution à l'entretien des enfants",
-      '2C3': 'TMFPO - Médiation suite à information - demande de modification du droit de visite',
-      '2C4':
-        'TMFPO - Médiation suite à information - demande de modification de la pension alimentaire des enfants mineurs nés hors mariage',
-      '2C5':
-        "TMFPO - Médiation suite à information - demande de modification de l'exercice de l'autorité parentale, de la résidence habituelle des enfants mineurs, ou du droit de visite - parents non mariés",
-      '2D1': 'TMFPO - Médiation après irrecevabilité - demande de modification du droit de visite',
-      '2D2':
-        "TMFPO - Médiation après irrecevabilité - demande de modification de la contribution à l'entretien des enfants",
-      '2D3': 'TMFPO - Médiation après irrecevabilité - demande de modification du droit de visite',
-      '2D4':
-        'TMFPO - Médiation après irrecevabilité - demande de modification de la pension alimentaire des enfants mineurs nés hors mariage',
-      '2D5':
-        "TMFPO - Médiation après irrecevabilité - demande de modification de l'exercice de l'autorité parentale, de la résidence habituelle des enfants mineurs, ou du droit de visite - parents non mariés",
       '20A': 'Demande en divorce sur requête conjointe',
       '20B': 'Demande en divorce sur demande acceptée',
       '20C': 'Demande en divorce pour rupture de la vie commune, en cas de séparation de fait',
@@ -281,6 +222,7 @@ const taxon = {
         "Demande relative à la révision de l'obligation alimentaire formée par l'enfant majeur à l'égard de ses parents ou autres ascendants",
       '24M':
         "Demande relative à la fixation ou à la révision de l'obligation alimentaire formée par des parents ou autres ascendants à l'égard de leurs enfants",
+      '24N': "Demande de rétablissement judiciaire de l'intermédiation financière",
       '24Z': "Autres demandes en matière d'obligation alimentaire",
       '25A': 'Action en désaveu de paternité (action introduite devant le TGI avant le 1er juillet 2006)',
       '25B':
@@ -328,6 +270,9 @@ const taxon = {
       '27J': "Demande aux fins d'obtenir le retour de l'enfant - enlèvement international d'enfant -",
       '27K': "Demande d'interdiction de sortie de territoire d'un mineur sans l'autorisation des deux parents",
       '27L': 'Demande en déclaration judiciaire de délaissement parental',
+      '27M':
+        "Demande du procureur de la République à l'issue d'une suspension de plein droit de l'exercice de l'autorité parentale sur le fondement de l'art. 378-2 du C. civ.",
+      '27N': "Demande de levée d'interdiction de sortie de territoire d'un mineur",
       '27Z': "Autres demandes relatives à l'autorité parentale",
       '28A': 'Demande en partage, ou contestations relatives au partage',
       '28B': "Demande en annulation d'un acte accompli sur un bien indivis, ou d'une convention d'indivision",
@@ -346,13 +291,43 @@ const taxon = {
       '29E': 'Demande relative au rapport à succession',
       '29F': "Demande relative aux libéralités faites à l'Etat ou à des établissements publics",
       '29Z': 'Autres demandes en matière de libéralités',
-      '24N': "Demande de rétablissement judiciaire de l'intermédiation financière",
-      '27M':
-        "Demande du procureur de la République à l'issue d'une suspension de plein droit de l'exercice de l'autorité parentale sur le fondement de l'art. 378-2 du C. civ.",
+      '2A': 'Filiation',
+      '2A1':
+        "TMFPO - requête sans médiation préalable - demande de modification de l'exercice de l'autorité parentale ou de la résidence habituelle des enfants mineurs",
+      '2A2':
+        "TMFPO - Requête sans médiation préalable - demande de modification de la contribution à l'entretien des enfants",
+      '2A3': 'TMFPO - Requête sans médiation préalable - demande de modification du droit de visite',
+      '2A4':
+        'TMFPO - Requête sans médiation préalable - demande de modification de la pension alimentaire des enfants mineurs nés hors mariage',
+      '2A5':
+        "TMFPO - Requête sans médiation préalable - demande de modification de l'exercice de l'autorité parentale, de la résidence habituelle des enfants mineurs, ou du droit de visite - parents non mariés",
       '2A6':
         "TMFPO - Requête sans médiation préalable - Parents non mariés - demande de modification de l'exercice de l'autorité parentale et/ou de la résidence habituelle des enfants et/ou du droit de visite et/ou de la contribution à l'entretien des enfants mineurs ou devenus majeurs",
       '2A7':
         "TMFPO - Requête sans médiation préalable - Après-divorce - demande de modification de l'exercice de l'autorité parentale et/ou de la résidence habituelle des enfants et/ou du droit de visite et/ou de la contribution à l'entretien des enfants mineurs ou devenus majeurs",
+      '2AA': 'Action en recherche de paternité',
+      '2AB': 'Action en recherche de maternité  - dans le mariage -',
+      '2AC': 'Action en recherche de maternité  - hors mariage -',
+      '2AD': 'Action en rétablissement de la présomption de paternité',
+      '2AE': "Action en constatation de la possession d'état d'un enfant né dans le mariage",
+      '2AF': "Action en constatation de la possession d'état d'un enfant né hors mariage",
+      '2AG':
+        "Demande de délivrance d'un acte de notoriété relative à la possession d'état d'un enfant né dans le mariage",
+      '2AH': "Demande de délivrance d'un acte de notoriété relative à la possession d'état d'un enfant né hors mariage",
+      '2AI': 'Demande relative au consentement à une procréation médicalement assistée  - dans le mariage -',
+      '2AJ': 'Demande relative au consentement à une procréation médicalement assistée - hors mariage -',
+      '2AK': "Demande de mainlevée d'une opposition à reconnaissance de paternité ou de maternité",
+      '2AM': 'Action en contestation de maternité - dans le mariage -',
+      '2AN': 'Action en contestation de maternité - hors mariage -',
+      '2AO': 'Action en contestation de paternité - dans le mariage -',
+      '2AP': 'Action en contestation de paternité - hors mariage -',
+      '2AQ': "Action en contestation de la possession d'état d'un enfant né dans le mariage",
+      '2AR': "Action en contestation de la possession d'état d'un enfant hors mariage",
+      '2AS': 'Demande formée par le ministère public visant à contester la filiation  maternelle - dans le mariage-',
+      '2AT': 'Demande formée par le ministère public visant à contester la filiation  maternelle -hors mariage -',
+      '2AU': 'Demande formée par le ministère public visant à contester la filiation paternelle - dans le mariage -',
+      '2AV': 'Demande formée par le ministère public visant à contester la  filiation paternelle - hors mariage-',
+      '2AZ': 'Autres demandes relatives à la filiation',
     },
   },
   3: {
@@ -367,47 +342,6 @@ const taxon = {
       36: 'Groupements : Dirigeants',
       38: 'Banque - Effets de commerce',
       39: 'Concurrence',
-      '3A': 'Propriété industrielle : Brevets, certificats complémentaires de protection et topographie de semi-conducteurs',
-      '3B': 'Propriété industrielle : Obtentions végétales',
-      '3C': 'Propriété industrielle : Marques',
-      '3D': "Propriété industrielle : Indications géographiques (appellations d'origine contrôlée)",
-      '3E': 'Propriété industrielle : Dessins et modèles',
-      '3AA': 'Demande en contrefaçon de brevet européen',
-      '3AB':
-        'Demande en contrefaçon de brevet français, de certificat complémentaire de protection ou de topographie de semi-conducteurs',
-      '3AC': 'Demande en non-contrefaçon de brevet européen',
-      '3AD': 'Demande en non-contrefaçon de brevet français, de certificat complémentaire de protection',
-      '3AE': 'Demande en nullité de brevet européen',
-      '3AF':
-        'Demande en nullité de brevet français, de certificat complémentaire de protection ou de topographie de semi-conducteurs',
-      '3AG': "Demande de rémunération d'un inventeur salarié",
-      '3AH': "Demande en exécution, nullité, résolution d'un contrat de licence ou de cession de brevet",
-      '3AI': "Recours contre les décisions du directeur de l'INPI - brevets -",
-      '3AZ':
-        'Autres demandes en matière de brevets, certificats complémentaires de protection et topographie de semi-conducteurs',
-      '3BA': "Demande en contrefaçon d'obtention végétale communautaire",
-      '3BB': "Demande en contrefaçon d'obtention végétale nationale",
-      '3BC': "Demande en nullité du certificat d'obtention végétale communautaire",
-      '3BD': "Demande en nullité du certificat d'obtention végétale nationale",
-      '3BE': "Demande en exécution, nullité, résolution d'un contrat de licence ou de cession d'obtention végétale",
-      '3BF': "Recours contre les décisions de l'Instance nationale des obtentions végétales",
-      '3BZ': "Autres demandes en matière d'obtention végétale",
-      '3CA': 'Demande en contrefaçon de marque communautaire',
-      '3CB': 'Demande en contrefaçon de marque française ou internationale',
-      '3CC': 'Demande en nullité de marque',
-      '3CD': 'Demande en déchéance de marque',
-      '3CE': "Recours contre les décisions du directeur de l'INPI - marques -",
-      '3CF': "Demande en exécution, nullité, résolution d'un contrat de licence ou de cession de marques",
-      '3CZ': 'Autres demandes en matière de marques',
-      '3DA': "Demande en contrefaçon - indications géographiques (appellations d'origine contrôlée) -",
-      '3DZ': "Autres demandes en matière d'indications géographiques (appellations d'origine contrôlée)",
-      '3EA': 'Demande en contrefaçon de dessins et modèles communautaires',
-      '3EB': 'Demande en contrefaçon de dessins et modèles français ou internationaux',
-      '3EC': 'Demande en nullité de dessins et modèles communautaires non enregistrés',
-      '3ED': 'Demande en nullité de dessins et modèles français ou internationaux',
-      '3EE': "Recours contre les décisions du directeur de l'INPI - dessins et modèles-",
-      '3EF': "Demande en exécution, nullité, résolution d'un contrat de licence ou de cession de dessins et modèles",
-      '3EZ': 'Autres demandes en matière de dessins et modèles',
       '30A': 'Demande en nullité du bail commercial',
       '30B': "Demande en paiement des loyers et charges et/ou tendant à la  résiliation du bail et/ou à l'expulsion",
       '30C': 'Demande de fixation du prix du bail révisé ou renouvelé',
@@ -502,6 +436,47 @@ const taxon = {
       '39X': 'Demande en matière de concurrence et/ou de propriété industrielle (brevet, marque, dessins et modèles)',
       '39Z':
         "Autres demandes en matière de brevet, d'obtention végétale, de topographie de semi conducteur, marque, dessins et modèles (Ce poste ne doit plus être utilisé à compter du 1er janvier 2009)",
+      '3A': 'Propriété industrielle : Brevets, certificats complémentaires de protection et topographie de semi-conducteurs',
+      '3AA': 'Demande en contrefaçon de brevet européen',
+      '3AB':
+        'Demande en contrefaçon de brevet français, de certificat complémentaire de protection ou de topographie de semi-conducteurs',
+      '3AC': 'Demande en non-contrefaçon de brevet européen',
+      '3AD': 'Demande en non-contrefaçon de brevet français, de certificat complémentaire de protection',
+      '3AE': 'Demande en nullité de brevet européen',
+      '3AF':
+        'Demande en nullité de brevet français, de certificat complémentaire de protection ou de topographie de semi-conducteurs',
+      '3AG': "Demande de rémunération d'un inventeur salarié",
+      '3AH': "Demande en exécution, nullité, résolution d'un contrat de licence ou de cession de brevet",
+      '3AI': "Recours contre les décisions du directeur de l'INPI - brevets -",
+      '3AZ':
+        'Autres demandes en matière de brevets, certificats complémentaires de protection et topographie de semi-conducteurs',
+      '3B': 'Propriété industrielle : Obtentions végétales',
+      '3BA': "Demande en contrefaçon d'obtention végétale communautaire",
+      '3BB': "Demande en contrefaçon d'obtention végétale nationale",
+      '3BC': "Demande en nullité du certificat d'obtention végétale communautaire",
+      '3BD': "Demande en nullité du certificat d'obtention végétale nationale",
+      '3BE': "Demande en exécution, nullité, résolution d'un contrat de licence ou de cession d'obtention végétale",
+      '3BF': "Recours contre les décisions de l'Instance nationale des obtentions végétales",
+      '3BZ': "Autres demandes en matière d'obtention végétale",
+      '3C': 'Propriété industrielle : Marques',
+      '3CA': 'Demande en contrefaçon de marque communautaire',
+      '3CB': 'Demande en contrefaçon de marque française ou internationale',
+      '3CC': 'Demande en nullité de marque',
+      '3CD': 'Demande en déchéance de marque',
+      '3CE': "Recours contre les décisions du directeur de l'INPI - marques -",
+      '3CF': "Demande en exécution, nullité, résolution d'un contrat de licence ou de cession de marques",
+      '3CZ': 'Autres demandes en matière de marques',
+      '3D': "Propriété industrielle : Indications géographiques (appellations d'origine contrôlée)",
+      '3DA': "Demande en contrefaçon - indications géographiques (appellations d'origine contrôlée) -",
+      '3DZ': "Autres demandes en matière d'indications géographiques (appellations d'origine contrôlée)",
+      '3E': 'Propriété industrielle : Dessins et modèles',
+      '3EA': 'Demande en contrefaçon de dessins et modèles communautaires',
+      '3EB': 'Demande en contrefaçon de dessins et modèles français ou internationaux',
+      '3EC': 'Demande en nullité de dessins et modèles communautaires non enregistrés',
+      '3ED': 'Demande en nullité de dessins et modèles français ou internationaux',
+      '3EE': "Recours contre les décisions du directeur de l'INPI - dessins et modèles-",
+      '3EF': "Demande en exécution, nullité, résolution d'un contrat de licence ou de cession de dessins et modèles",
+      '3EZ': 'Autres demandes en matière de dessins et modèles',
     },
   },
   4: {
@@ -516,118 +491,6 @@ const taxon = {
       46: 'Liquidation judiciaire - Clôture des opérations (procédures ouvertes avant le 1er janvier 2006)',
       47: 'Autres demandes en matière de redressement et de liquidation judiciaires (procédures ouvertes avant le 1er janvier 2006)',
       48: 'Surendettement des particuliers, faillite civile et rétablissement personnel',
-      '4A': "Désignation d'un mandataire ad hoc, ouverture d'une procédure de conciliation ou de règlement amiable agricole, de sauvegarde, de sauvegarde financière accélérée, de sauvegarde accélérée, de redressement, de liquidation judiciaire ou de rétablist. prof.",
-      '4B': "L'entreprise au cours de la procédure  - Délais, organes -",
-      '4C': "L'entreprise au cours de la procédure  - Autorisations,  plan de cession et actions diverses -",
-      '4D': "L'entreprise au cours de la procédure  - Période suspecte et sort des créances et cession d'actifs -",
-      '4E': 'Conciliation',
-      '4F': 'Plan de sauvegarde, plan arrêté en sauvegarde financière accélérée et plan arrêté en sauvegarde accélérée',
-      '4G': "Plan de redressement de l'entreprise",
-      '4H': 'Liquidation judiciaire',
-      '4I': 'Autres demandes en matière de sauvegarde, de redressement et de liquidation judiciaires',
-      '4J': "Procédures d'insolvabilité - Règlement (UE) n° 2015-848",
-      '4AA': "Demande de désignation d'un mandataire ad hoc",
-      '4AB': "Demande d'ouverture de la procédure de conciliation",
-      '4AC':
-        "Demande d'ouverture d'une procédure de règlement amiable ou de désignation d'un conciliateur en matière agricole",
-      '4AD': "Demande d'ouverture de la procédure de sauvegarde",
-      '4AE': "Demande d'ouverture de la procédure de redressement judiciaire",
-      '4AF': "Demande d'ouverture de la procédure de liquidation judiciaire",
-      '4AG':
-        'Demande de prononcé de la liquidation judiciaire après résolution du plan de sauvegarde ou du plan de redressement',
-      '4AH': 'Demande de reprise de la procédure de liquidation judiciaire',
-      '4AI':
-        "Demande d'extension de la procédure de sauvegarde pour confusion du patrimoine ou fictivité d'une personne morale",
-      '4AJ':
-        "Demande d'extension de la procédure de redressement judiciaire pour confusion de patrimoine ou fictivité d'une personne morale",
-      '4AK':
-        "Demande d'extension de la procédure de liquidation judiciaire pour confusion de patrimoine ou fictivité d'une personne morale",
-      '4AL': "Demande d'ouverture d'une procédure de redressement judiciaire après résolution du plan de sauvegarde",
-      '4AM': "Demande d'ouverture de la procédure de sauvegarde financière accélérée",
-      '4AN': "Demande d'ouverture de la procédure de sauvegarde accélérée",
-      '4AO':
-        "Demande d'ouverture de la procédure de rétablissement professionnel concomitamment à la procédure de liquidation judiciaire",
-      '4AP':
-        "Demande de prononcé de la liquidation judiciaire après clôture d'une procédure de rétablissement professionnel",
-      '4BA':
-        "Appel sur une décision relative à la désignation, au remplacement ou à la mission d'un expert, de l'administrateur, du mandataire judiciaire, du commissaire à l'exécution du plan ou du liquidateur",
-      '4BB': 'Appel sur des décisions relatives au déroulement de la procédure',
-      '4CA':
-        "Appel sur des décisions relatives à la nullité des actes du débiteur non autorisés par le juge commissaire ou d'homologation de compromis ou de transaction",
-      '4CB':
-        'Appel sur des décisions relatives au remplacement du ou des dirigeants, ou de privation du droit de vote, ou de cession forcée des actions',
-      '4CC': 'Appel sur des décisions relatives au plan de cession',
-      '4CD': 'Appel sur des décisions statuant sur la nullité des actes interdits au cessionnaire',
-      '4DA': 'Appel sur les décisions relatives à la modification de la date de la cessation des paiements',
-      '4DB': 'Appel sur des décisions relatives à la nullité des actes de la période suspecte',
-      '4DC': "Appel sur une décision du juge commissaire relative à l'admission des créances",
-      '4DD': "Appel sur une décision du juge commissaire relative à la réclamation sur l'état des créances",
-      '4DE': 'Appel sur une décision relative au relevé de forclusion',
-      '4DF': "Appel sur une décision du juge commissaire relative à la vente d'actifs",
-      '4EA': "Recours contre les décisions relatives à l'homologation ou au constat de l'accord",
-      '4EB': "Demande de résolution de l'accord",
-      '4EC': 'Autres demandes postérieures à la clôture de la procédure de conciliation',
-      '4FA': "Appel sur une décision relative à l'admission du plan de sauvegarde",
-      '4FB': 'Demande relative à la modification substantielle du plan de sauvegarde',
-      '4FC':
-        "Demande en nullité d'un acte passé en violation d'une inaliénabilité temporaire formée après clôture de la procédure de sauvegarde",
-      '4FD': 'Demande de résolution du plan de sauvegarde formée après clôture de la procédure',
-      '4FE': "Demande visant à faire constater l'exécution du plan de sauvegarde",
-      '4FF':
-        'Autres demandes postérieures à la clôture de la procédure de sauvegarde ou de sauvegarde financière accélérée ou de sauvegarde accélérée',
-      '4FG':
-        "Appel sur une décision relative à l'admission du plan arrêté en sauvegarde financière accélérée ou en sauvegarde accélérée",
-      '4FH':
-        'Demande relative à la modification substantielle du plan arrêté en sauvegarde financière accélérée ou en sauvegarde accélérée',
-      '4FI':
-        "Demande en nullité d'un acte passé en violation d'une inaliénabilité temporaire formée après clôture de la procédure de sauvegarde financière accélérée ou de sauvegarde accélérée",
-      '4FJ':
-        'Demande de résolution du plan arrêté en sauvegarde financière accélérée ou en sauvegarde accélérée formée après clôture de la procédure',
-      '4FK':
-        "Demande visant à faire constater l'exécution du plan arrêté en sauvegarde financière accélérée ou en sauvegarde accélérée",
-      '4GA': "Appel sur une décision relative à l'admission du plan de redressement",
-      '4GB': 'Demande relative à la modification substantielle du plan de redressement',
-      '4GC':
-        "Demande en nullité d'un acte passé en violation d'une inaliénabilité temporaire formée après clôture de la procédure de redressement",
-      '4GD': 'Demande de résolution du plan de redressement formée après clôture de la procédure',
-      '4GE': "Demande relative au constat de l'exécution du plan de redressement",
-      '4GF': 'Autres demandes postérieures à la clôture de la procédure de redressement',
-      '4HA': 'Appel contre des décisions prononçant la liquidation judiciaire',
-      '4HB': 'Appel contre des décisions statuant sur la clôture de la liquidation judiciaire',
-      '4HC': 'Autres demandes postérieures à la clôture de la procédure de liquidation judiciaire',
-      '4IA': "Action en responsabilité pour insuffisance d'actif à l'encontre des dirigeants",
-      '4IB':
-        'Action en responsabilité aux fins de condamnation au paiement de tout ou partie des dettes sociales  (Loi n°2005-845 du 26 juillet 2005 de sauvegarde des entreprises)',
-      '4IC': 'Demande de prononcé de la faillite personnelle',
-      '4ID': "Demande de prononcé d'une interdiction de diriger, gérer, administrer ou contrôler",
-      '4IE':
-        "Action en responsabilité exercée contre l'administrateur, le mandataire judiciaire , le liquidateur, le commissaire à l'exécution du plan",
-      '4IF':
-        'Recours devant le tribunal contre les décisions du juge commissaire et appels contre les décisions statuant sur ces recours',
-      '4IG':
-        "Action en responsabilité exercée contre l'Etat, les collectivités territoriales (introduite après le 1er janvier 2006)",
-      '4IH': 'Action en responsabilité exercée contre les créanciers',
-      '4II': "Recours devant la cour d'appel contre les décisions du juge commis",
-      '4JA':
-        "Recours contre la nature principale, secondaire ou territoriale d'une procédure collective ouverte dans le cadre du règlement européen d'insolvabilité",
-      '4JB': "Contestation de l'engagement par un créancier local",
-      '4JC':
-        "Demande de suspension, de renouvellement ou de levée de la suspension de la réalisation de l'ensemble des actifs par le praticien de l'insolvabilité de la procédure d'insolvabilité principale",
-      '4JD':
-        "Demande de suspension, de renouvellement ou de levée de la suspension de la réalisation de l'ensemble des actifs formée par le praticien de l'insolvabilité désigné dans une procédure ouverte à l'encontre d'une autre société appartenant au même groupe",
-      '4JE':
-        "Demande de vérification des conditions d'approbation d'un engagement pris en application de l'article 36 du REI",
-      '4JF':
-        "Demande de mesure provisoire ou conservatoire en vue d'assurer le respect des termes de l'engagement pris",
-      '4JG':
-        "Demande d'autorisation des licenciements par le tribunal lorsqu'une procédure d'insolvabilité a été ouverte dans un autre état membre en application de l'article 13",
-      '4JH': "Demande d'ouverture de la procédure de coordination collective",
-      '4JI': 'Demande relative aux coûts de la procédure de coordination collective',
-      '4JJ': 'Demande de révocation du coordinateur',
-      '4JK':
-        "Demande de suspension de la procédure d'insolvabilité ouverte à l'égard d'une société française membre d'un groupe de sociétés, formée par le coordinateur",
-      '4JL':
-        "Demande de levée de suspension de la procédure d'insolvabilité ouverte à l'égard d'une société française membre d'un groupe de sociétés, formée par le coordinateur",
       '40A': 'Demande de redressement judiciaire (procédures ouvertes avant le 1er janvier 2006)',
       '40B': 'Demande de liquidation judiciaire (procédures ouvertes avant le 1er janvier 2006)',
       '40C':
@@ -725,13 +588,126 @@ const taxon = {
       '48Q':
         "Demande formée avant la décision de recevabilité aux fins de suspension des procédures d'exécution et des cessions des rémunérations",
       '48R': 'Demande de relevé de forclusion de déclaration de créances',
+      '48S': "Demande d'ouverture d'une procédure de surendettement par un entrepreneur individuel",
       '48X': 'Demandes relatives au surendettement des particuliers sans autre indication',
+      '4A': "Désignation d'un mandataire ad hoc, ouverture d'une procédure de conciliation ou de règlement amiable agricole, de sauvegarde, de sauvegarde financière accélérée, de sauvegarde accélérée, de redressement, de liquidation judiciaire ou de rétablist. prof.",
+      '4AA': "Demande de désignation d'un mandataire ad hoc",
+      '4AB': "Demande d'ouverture de la procédure de conciliation",
+      '4AC':
+        "Demande d'ouverture d'une procédure de règlement amiable ou de désignation d'un conciliateur en matière agricole",
+      '4AD': "Demande d'ouverture de la procédure de sauvegarde",
+      '4AE': "Demande d'ouverture de la procédure de redressement judiciaire",
+      '4AF': "Demande d'ouverture de la procédure de liquidation judiciaire",
+      '4AG':
+        'Demande de prononcé de la liquidation judiciaire après résolution du plan de sauvegarde ou du plan de redressement',
+      '4AH': 'Demande de reprise de la procédure de liquidation judiciaire',
+      '4AI':
+        "Demande d'extension de la procédure de sauvegarde pour confusion du patrimoine ou fictivité d'une personne morale",
+      '4AJ':
+        "Demande d'extension de la procédure de redressement judiciaire pour confusion de patrimoine ou fictivité d'une personne morale",
+      '4AK':
+        "Demande d'extension de la procédure de liquidation judiciaire pour confusion de patrimoine ou fictivité d'une personne morale",
+      '4AL': "Demande d'ouverture d'une procédure de redressement judiciaire après résolution du plan de sauvegarde",
+      '4AM': "Demande d'ouverture de la procédure de sauvegarde financière accélérée",
+      '4AN': "Demande d'ouverture de la procédure de sauvegarde accélérée",
+      '4AO':
+        "Demande d'ouverture de la procédure de rétablissement professionnel concomitamment à la procédure de liquidation judiciaire",
+      '4AP':
+        "Demande de prononcé de la liquidation judiciaire après clôture d'une procédure de rétablissement professionnel",
       '4AQ': "Demande d'ouverture de la procédure de traitement de sortie de crise",
+      '4B': "L'entreprise au cours de la procédure  - Délais, organes -",
+      '4BA':
+        "Appel sur une décision relative à la désignation, au remplacement ou à la mission d'un expert, de l'administrateur, du mandataire judiciaire, du commissaire à l'exécution du plan ou du liquidateur",
+      '4BB': 'Appel sur des décisions relatives au déroulement de la procédure',
+      '4C': "L'entreprise au cours de la procédure  - Autorisations,  plan de cession et actions diverses -",
+      '4CA':
+        "Appel sur des décisions relatives à la nullité des actes du débiteur non autorisés par le juge commissaire ou d'homologation de compromis ou de transaction",
+      '4CB':
+        'Appel sur des décisions relatives au remplacement du ou des dirigeants, ou de privation du droit de vote, ou de cession forcée des actions',
+      '4CC': 'Appel sur des décisions relatives au plan de cession',
+      '4CD': 'Appel sur des décisions statuant sur la nullité des actes interdits au cessionnaire',
+      '4D': "L'entreprise au cours de la procédure  - Période suspecte et sort des créances et cession d'actifs -",
+      '4DA': 'Appel sur les décisions relatives à la modification de la date de la cessation des paiements',
+      '4DB': 'Appel sur des décisions relatives à la nullité des actes de la période suspecte',
+      '4DC': "Appel sur une décision du juge commissaire relative à l'admission des créances",
+      '4DD': "Appel sur une décision du juge commissaire relative à la réclamation sur l'état des créances",
+      '4DE': 'Appel sur une décision relative au relevé de forclusion',
+      '4DF': "Appel sur une décision du juge commissaire relative à la vente d'actifs",
+      '4E': 'Conciliation',
+      '4EA': "Recours contre les décisions relatives à l'homologation ou au constat de l'accord",
+      '4EB': "Demande de résolution de l'accord",
+      '4EC': 'Autres demandes postérieures à la clôture de la procédure de conciliation',
+      '4F': 'Plan de sauvegarde, plan arrêté en sauvegarde financière accélérée et plan arrêté en sauvegarde accélérée',
+      '4FA': "Appel sur une décision relative à l'admission du plan de sauvegarde",
+      '4FB': 'Demande relative à la modification substantielle du plan de sauvegarde',
+      '4FC':
+        "Demande en nullité d'un acte passé en violation d'une inaliénabilité temporaire formée après clôture de la procédure de sauvegarde",
+      '4FD': 'Demande de résolution du plan de sauvegarde formée après clôture de la procédure',
+      '4FE': "Demande visant à faire constater l'exécution du plan de sauvegarde",
+      '4FF':
+        'Autres demandes postérieures à la clôture de la procédure de sauvegarde ou de sauvegarde financière accélérée ou de sauvegarde accélérée',
+      '4FG':
+        "Appel sur une décision relative à l'admission du plan arrêté en sauvegarde financière accélérée ou en sauvegarde accélérée",
+      '4FH':
+        'Demande relative à la modification substantielle du plan arrêté en sauvegarde financière accélérée ou en sauvegarde accélérée',
+      '4FI':
+        "Demande en nullité d'un acte passé en violation d'une inaliénabilité temporaire formée après clôture de la procédure de sauvegarde financière accélérée ou de sauvegarde accélérée",
+      '4FJ':
+        'Demande de résolution du plan arrêté en sauvegarde financière accélérée ou en sauvegarde accélérée formée après clôture de la procédure',
+      '4FK':
+        "Demande visant à faire constater l'exécution du plan arrêté en sauvegarde financière accélérée ou en sauvegarde accélérée",
       '4FL': 'Plan de sauvegarde - Recours préalable relatif à la constitution des classes de parties affectées',
       '4FM': 'Plan de sauvegarde - Contestation du respect du meilleur intérêt des parties affectées',
+      '4G': "Plan de redressement de l'entreprise",
+      '4GA': "Appel sur une décision relative à l'admission du plan de redressement",
+      '4GB': 'Demande relative à la modification substantielle du plan de redressement',
+      '4GC':
+        "Demande en nullité d'un acte passé en violation d'une inaliénabilité temporaire formée après clôture de la procédure de redressement",
+      '4GD': 'Demande de résolution du plan de redressement formée après clôture de la procédure',
+      '4GE': "Demande relative au constat de l'exécution du plan de redressement",
+      '4GF': 'Autres demandes postérieures à la clôture de la procédure de redressement',
       '4GG': 'Plan de redressement - Recours préalable relatif à la constitution des classes de parties affectées',
       '4GH':
         'Plan de redressement - Contestation du respect du meilleur intérêt des parties affectées - plan de redressement',
+      '4H': 'Liquidation judiciaire',
+      '4HA': 'Appel contre des décisions prononçant la liquidation judiciaire',
+      '4HB': 'Appel contre des décisions statuant sur la clôture de la liquidation judiciaire',
+      '4HC': 'Autres demandes postérieures à la clôture de la procédure de liquidation judiciaire',
+      '4I': 'Autres demandes en matière de sauvegarde, de redressement et de liquidation judiciaires',
+      '4IA': "Action en responsabilité pour insuffisance d'actif à l'encontre des dirigeants",
+      '4IB':
+        'Action en responsabilité aux fins de condamnation au paiement de tout ou partie des dettes sociales  (Loi n°2005-845 du 26 juillet 2005 de sauvegarde des entreprises)',
+      '4IC': 'Demande de prononcé de la faillite personnelle',
+      '4ID': "Demande de prononcé d'une interdiction de diriger, gérer, administrer ou contrôler",
+      '4IE':
+        "Action en responsabilité exercée contre l'administrateur, le mandataire judiciaire , le liquidateur, le commissaire à l'exécution du plan",
+      '4IF':
+        'Recours devant le tribunal contre les décisions du juge commissaire et appels contre les décisions statuant sur ces recours',
+      '4IG':
+        "Action en responsabilité exercée contre l'Etat, les collectivités territoriales (introduite après le 1er janvier 2006)",
+      '4IH': 'Action en responsabilité exercée contre les créanciers',
+      '4II': "Recours devant la cour d'appel contre les décisions du juge commis",
+      '4J': "Procédures d'insolvabilité - Règlement (UE) n° 2015-848",
+      '4JA':
+        "Recours contre la nature principale, secondaire ou territoriale d'une procédure collective ouverte dans le cadre du règlement européen d'insolvabilité",
+      '4JB': "Contestation de l'engagement par un créancier local",
+      '4JC':
+        "Demande de suspension, de renouvellement ou de levée de la suspension de la réalisation de l'ensemble des actifs par le praticien de l'insolvabilité de la procédure d'insolvabilité principale",
+      '4JD':
+        "Demande de suspension, de renouvellement ou de levée de la suspension de la réalisation de l'ensemble des actifs formée par le praticien de l'insolvabilité désigné dans une procédure ouverte à l'encontre d'une autre société appartenant au même groupe",
+      '4JE':
+        "Demande de vérification des conditions d'approbation d'un engagement pris en application de l'article 36 du REI",
+      '4JF':
+        "Demande de mesure provisoire ou conservatoire en vue d'assurer le respect des termes de l'engagement pris",
+      '4JG':
+        "Demande d'autorisation des licenciements par le tribunal lorsqu'une procédure d'insolvabilité a été ouverte dans un autre état membre en application de l'article 13",
+      '4JH': "Demande d'ouverture de la procédure de coordination collective",
+      '4JI': 'Demande relative aux coûts de la procédure de coordination collective',
+      '4JJ': 'Demande de révocation du coordinateur',
+      '4JK':
+        "Demande de suspension de la procédure d'insolvabilité ouverte à l'égard d'une société française membre d'un groupe de sociétés, formée par le coordinateur",
+      '4JL':
+        "Demande de levée de suspension de la procédure d'insolvabilité ouverte à l'égard d'une société française membre d'un groupe de sociétés, formée par le coordinateur",
     },
   },
   5: {
@@ -747,8 +723,6 @@ const taxon = {
       57: "Contrats d'intermédiaire",
       58: "Contrat d'assurance",
       59: 'Contrats divers',
-      '5A': "Baux d'habitation",
-      '5B': 'Baux professionnels',
       '50A': "Demande en nullité de la vente ou d'une clause de la vente",
       '50B': 'Demande en paiement du prix ou tendant à faire sanctionner le non-paiement du prix',
       '50C': 'Demande tendant à obtenir la livraison de la chose ou à faire sanctionner le défaut de livraison',
@@ -845,6 +819,7 @@ const taxon = {
       '59G': 'Demande conjointe tendant à réviser le contrat pour imprévision',
       '59H': 'Demande unilatérale tendant à réviser le contrat ou y mettre fin pour imprévision',
       '59X': 'Demande relative à des contrats divers sans autre indication',
+      '5A': "Baux d'habitation",
       '5AA':
         "Baux d'habitation - Demande en paiement des loyers et des charges et/ou tendant à faire prononcer ou constater la résiliation pour défaut de paiement  ou défaut d'assurance et ordonner l'expulsion",
       '5AB':
@@ -870,6 +845,7 @@ const taxon = {
       '5AM':
         "Baux d'habitation - Demande du bailleur tendant à la réévaluation du loyer lorsque son montant est inférieur au loyer de référence minoré",
       '5AZ': "Baux d'habitation - Autres demandes relatives à un bail d'habitation",
+      '5B': 'Baux professionnels',
       '5BA':
         "Baux professionnels - Demande en paiement des loyers et des charges et/ou tendant à faire prononcer ou constater la résiliation pour défaut de paiement  ou défaut d'assurance et ordonner l'expulsion",
       '5BB':
@@ -1105,6 +1081,7 @@ const taxon = {
       '80W': 'Contestation en matière de médecine du travail',
       '80X': 'Autres demandes du salarié',
       '80Y': 'Demande de nullité de la rupture du contrat de travail',
+      '80Z': 'Contestation de la rupture du contrat de travail sur le fondement de la présomption de démission',
       '81A':
         "Demande relative à l'organisation des élections des institutions représentatives du personnel dans l'entreprise",
       '81B':
@@ -1245,7 +1222,6 @@ const taxon = {
         'Tarification - Contestation du taux de cotisation fondée sur des motifs autres que les maladies professionnelles et accidents du travail',
       '89R': 'Tarification - Autres demandes ou contestations relatives au taux de cotisation',
       '89Z': 'Autres demandes en matière de risques professionnels',
-      '80Z': 'Contestation de la rupture du contrat de travail sur le fondement de la présomption de démission',
     },
   },
   9: {
@@ -1288,6 +1264,10 @@ const taxon = {
         "Contestation de la décision du maire sur les cas particuliers d'inscription en dehors de la période normale de révision",
       '94D':
         'Demande formée en référé aux fins de faire cesser la diffusion en ligne de fausses informations de nature à altérer la sincérité du scrutin',
+      '94E':
+        "Recours du tiers électeur ou représentant de l'Etat concernant l'inscription ou la radiation d'un électeur",
+      '94F':
+        "Demande d'inscription par l'électeur en cas d'omission en raison d'une erreur matérielle ou en cas de radiation irrégulière",
       '94Z': "Autres demandes en matière d'élections politiques ou de référendum",
       '95A':
         'Contestations relatives aux inscriptions et radiations sur les listes électorales des membres des tribunaux et chambres de commerce ou des chambres des métiers',
@@ -1320,10 +1300,6 @@ const taxon = {
       '97O': 'Actions disciplinaires exercées contre les commissaires-priseurs judiciaires',
       '97P': "Recours contre certaines décisions du rapporteur général de l'autorité de la concurrence",
       '97Z': "Recours et actions exercés contre les décisions d'autres personnes publiques",
-      '94E':
-        "Recours du tiers électeur ou représentant de l'Etat concernant l'inscription ou la radiation d'un électeur",
-      '94F':
-        "Demande d'inscription par l'électeur en cas d'omission en raison d'une erreur matérielle ou en cas de radiation irrégulière",
     },
   },
 };
