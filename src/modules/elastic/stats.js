@@ -96,6 +96,30 @@ async function stats(query) {
     });
   }
 
+  let statsTCOMData = await this.client.count({
+    index: process.env.ELASTIC_INDEX,
+    body: {
+      query: {
+        bool: {
+          must: [
+            {
+              terms: {
+                jurisdiction: ['tcom'],
+              },
+            },
+          ],
+        },
+      },
+    },
+  });
+
+  if (statsTCOMData && statsTCOMData.body && statsTCOMData.body.count) {
+    response.indexedByJurisdiction.push({
+      label: 'Tribunal de commerce',
+      value: statsTCOMData.body.count,
+    });
+  }
+
   let content = await this.client.search({
     index: process.env.ELASTIC_INDEX,
     size: 0,
