@@ -321,6 +321,19 @@ function exportWithoutElastic(query) {
           fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'tj', 'sample_detail_unresolved.json')).toString(),
         );
       }
+    } else if (
+      response.results[i].jurisdiction === 'tcom' ||
+      response.results[i].jurisdiction === 'Tribunal de commerce'
+    ) {
+      if (query.resolve_references) {
+        sample = JSON.parse(
+          fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'tcom', 'sample_detail_resolved.json')).toString(),
+        );
+      } else {
+        sample = JSON.parse(
+          fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'tcom', 'sample_detail_unresolved.json')).toString(),
+        );
+      }
     }
 
     delete response.results[i].score;
