@@ -71,6 +71,7 @@ function buildQuery(query, target, relaxed) {
     // Base query for regular search:
     searchQuery = {
       index: process.env.ELASTIC_INDEX,
+      preference: 'preventbouncingresults',
       explain: false,
       from: page * page_size,
       size: page_size,
@@ -572,6 +573,7 @@ function buildQuery(query, target, relaxed) {
     // Base query for single decision highlighting:
     searchQuery = {
       index: process.env.ELASTIC_INDEX,
+      preference: 'preventbouncingresults',
       explain: false,
       from: 0,
       size: 1,
