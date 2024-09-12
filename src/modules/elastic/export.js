@@ -18,6 +18,7 @@ async function batchexport(query) {
     took: 0,
     results: [],
     searchQuery: JSON.stringify(searchQuery.query),
+    date: new Date()
   };
 
   if (searchQuery.query) {

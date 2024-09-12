@@ -14,6 +14,7 @@ async function decision(query) {
       id: query.id,
       index: process.env.ELASTIC_INDEX,
       _source: true,
+      date: new Date()
     });
   } catch (e) {
     console.error(e);

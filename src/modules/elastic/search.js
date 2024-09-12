@@ -22,6 +22,7 @@ async function search(query) {
     results: [],
     relaxed: false,
     searchQuery: JSON.stringify(searchQuery.query),
+    date: new Date()
   };
 
   if (searchQuery.query && (string || searchQuery.hasString)) {
