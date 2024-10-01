@@ -21,4 +21,12 @@
 
 ## version 1.0.3 (08/2021)
 
-## version 1.0.2 (08/2021)
+* Ajout des fichiers joints
+
+## version 1.0.2 (06/2021)
+
+* Version Swagger 2.0
+
+## version 1.0.1 (06/2021)
+
+* Première version publiée (OpenAPI 3.0.2)
