@@ -1,3 +1,9 @@
+# Changelog
+
+Notes : 
+
+* Certains changements de version ont eu pour seul objectif de forcer le déclenchement du déploiement automatisé de l'application sur l'ancienne plateforme d'hébergement. Ils ne concernent donc aucune évolution fonctionnelle réelle.
+
 ## version 1.2.4 (02/2024)
 
 * Ajout de la propriété `particularInterest` : 
