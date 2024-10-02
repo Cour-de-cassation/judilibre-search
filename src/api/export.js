@@ -248,19 +248,6 @@ api.get(
         ],
       });
     }
-    if (req.query && req.query.batch) {
-      let batch_size = req.query.batch_size || 10;
-      if (req.query.batch * batch_size + batch_size > 10000) {
-        return res.status(416).json({
-          route: `${req.method} ${req.path}`,
-          errors: [
-            {
-              msg: 'Range Not Satisfiable',
-            },
-          ],
-        });
-      }
-    }
     try {
       const result = await getExport(req.query);
       if (result.errors) {
