@@ -17,22 +17,28 @@ Notes :
 
 ## version 1.2.2 (03/2023)
 
+* Nettoyage et révision de la documentation.
+
 ## version 1.2.1 (12/2022)
+
+* "Bump" forcé.
 
 ## version 1.2.0 (09/2022)
 
-* Ajout des propriétés `decision_datetime`, `update_datetime` et `legacy`
+* Ajout des propriétés `decision_datetime`, `update_datetime` et `legacy`, intégration des décisions des cours d'appel.
 
 ## version 1.1.0 (04/2022)
 
+* Nettoyage et révision de la documentation, notamment pour l'évolutions du chaînage an amont de l'introduction des décisions des cours d'appel.
+
 ## version 1.0.3 (08/2021)
 
-* Ajout des fichiers joints
+* Ajout des fichiers joints aux décisions de la Cour de cassation (propriété `files` et nouveau filtre `withFileOfType`).
 
 ## version 1.0.2 (06/2021)
 
-* Version Swagger 2.0
+* Ajout de la version Swagger 2.0.
 
 ## version 1.0.1 (06/2021)
 
-* Première version publiée (OpenAPI 3.0.2)
+* Première version publiée (OpenAPI 3.0.2).
