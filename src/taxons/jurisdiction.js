@@ -2,6 +2,7 @@ const taxon = {
   cc: 'Cour de cassation',
   ca: "Cour d'appel",
   tj: 'Tribunal judiciaire',
+  tcom: 'Tribunal de commerce',
   /*
   tc: 'Tribunal des conflits',
   tgi: 'Tribunal de grande instance de Paris',

@@ -315,6 +315,10 @@ function decisionWithoutElastic(query) {
     fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'tj', 'sample_list.json')).toString(),
   );
   allData.unresolved = allData.unresolved.concat(additionalData2.unresolved);
+  const additionalData3 = JSON.parse(
+    fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'tcom', 'sample_list.json')).toString(),
+  );
+  allData.unresolved = allData.unresolved.concat(additionalData3.unresolved);
 
   let found = null;
   for (let i = 0; i < allData.unresolved.length; i++) {
@@ -355,6 +359,16 @@ function decisionWithoutElastic(query) {
     } else {
       response = JSON.parse(
         fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'tj', 'sample_detail_unresolved.json')).toString(),
+      );
+    }
+  } else if (found === 'tcom') {
+    if (query.resolve_references) {
+      response = JSON.parse(
+        fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'tcom', 'sample_detail_resolved.json')).toString(),
+      );
+    } else {
+      response = JSON.parse(
+        fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'tcom', 'sample_detail_unresolved.json')).toString(),
       );
     }
   }
