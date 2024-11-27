@@ -1,0 +1,45 @@
+include:
+- project: $CATALOG_PATH
+  file:
+  - vault-ci.yml
+  - kaniko-ci.yml
+  ref: main
+
+# Variables générales au build
+variables:
+  TAG: "${CI_COMMIT_REF_SLUG}"
+  REGISTRY_URL: "${IMAGE_REPOSITORY}"
+
+# Differents stages du build. Le stage read-secret est obligatoire et permet de recuperer les secret CI du projet
+stages:
+- read-secret
+- test
+- docker-build
+
+# Lecture des secrets CI du build
+read_secret:
+  stage: read-secret
+  extends:
+  - .vault:read_secret
+
+# Exécution des tests unitaires
+unit-test:
+  stage: test
+  image: node:18 # Remplacez par l'image Docker correspondant à votre projet
+  script:
+  - echo "Installing dependencies and running tests..."
+  - npm ci
+  - npm run test
+  only:
+  - dev
+  - master
+
+# Docker build et push de l'image sur le repo Harbor
+docker-build:
+  variables:
+    WORKING_DIR: "."
+    DOCKERFILE: Dockerfile
+    IMAGE_NAMES: judilibre-search:x.x.x judilibre-search
+  stage: docker-build
+  extends:
+  - .kaniko:build-push
