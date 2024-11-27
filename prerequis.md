@@ -1,4 +1,4 @@
-# Guide de Déploiement d'une Judilibre-search sur CloudPi
+# Guide de Déploiement Judilibre-search sur CloudPi
 
 Ce document décrit les étapes nécessaires pour déployer l'application **[ judilibre-search ]**.
 

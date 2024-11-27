@@ -37,7 +37,7 @@ docker-build:
   variables:
     WORKING_DIR: "."
     DOCKERFILE: Dockerfile
-    IMAGE_NAMES: judilibre-search:x.x.x judilibre-search
+    IMAGE_NAMES: judilibre-search:0.1.12 judilibre-search
   stage: docker-build
   extends:
   - .kaniko:build-push
