@@ -125,7 +125,6 @@ tolerations: []
 
 affinity: {}
 appId: judilibre-search
-appId: judilibre-search
 
 env:
 - name: ELASTIC_NODE
