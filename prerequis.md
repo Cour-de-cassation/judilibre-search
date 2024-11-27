@@ -1,4 +1,4 @@
-# Guide de Déploiement d'une Application
+# Guide de Déploiement d'une Judilibre-search sur CloudPi
 
 Ce document décrit les étapes nécessaires pour déployer l'application **[ judilibre-search ]**.
 
@@ -13,7 +13,7 @@ Avant de commencer, assurez-vous d'avoir :
 sops -e --age $AGE_KEY --encrypted-regex "^(data|stringData)$" sops-secret.yaml > sops-secret.enc.yaml
 ```
  Attention ! dans le secret, la partie data, doit contenir  des charactère en base64
- 
+
 - Dans le fichier [values.yaml](helm/values.yaml), renseigner les champs suivant :
 
 ```yaml
@@ -47,9 +47,13 @@ ingress:
 Pour l'ingress il faut se rapprocher du Responsable Hebergement.
 
 - Synchroniser le repos sur le projet CloudPi, cocher la case "code d'infrastructure" et enregistrer
-- Lancer la pipeline pour build l'image, Services Externes > Gitlab > 'Nom du depôt' > Build > Pipelines > Run pipeline > Selectionner la bonne branche CPi... > Run pipeline.
+
+- Lancer la pipeline pour build l'image:
+
+ Services Externes > Gitlab > 'Nom du depôt' > Build > Pipelines > Run pipeline > Selectionner la bonne branche CPi... > Run pipeline.
 
 - Etant données notre configuration en mode "Branche", pour finaliser le deploiement de l'application il faut suivres les étapes suivante :
+
   Services Externes > ArgoCD > choisir notre application > Appuyer sur l'objet kind Application > EDIT > Target Revision: chosir la branche CPi > Save
 
 - resynchroniser l'application si besoin.
