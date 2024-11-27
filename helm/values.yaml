@@ -16,7 +16,7 @@ image:
 
 # This is for the secretes for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 imagePullSecrets:
-- name: # This is to override the chart name.
+- name: # Renseigner ici l'image pull secret.
 nameOverride: ""
 fullnameOverride: ""
 
@@ -124,7 +124,7 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
-appId: judilibire-search
+appId: judilibre-search
 
 env:
 - name: ELASTIC_NODE
