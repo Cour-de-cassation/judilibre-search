@@ -12,11 +12,11 @@ image:
   # This sets the pull policy for images.
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "0.1.12"
 
 # This is for the secretes for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 imagePullSecrets:
-- name: # This is to override the chart name.
+- name: # Nom de l'image pull secret
 nameOverride: ""
 fullnameOverride: ""
 
@@ -124,7 +124,7 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
-appId: judilibire-search
+appId: judilibre-search
 
 env:
 - name: ELASTIC_NODE

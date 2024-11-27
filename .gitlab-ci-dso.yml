@@ -30,9 +30,7 @@ unit-test:
   - echo "Installing dependencies and running tests..."
   - npm ci
   - npm run test
-  only:
-  - dev
-  - master
+
 
 # Docker build et push de l'image sur le repo Harbor
 docker-build:
