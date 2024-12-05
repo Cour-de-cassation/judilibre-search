@@ -30,6 +30,10 @@ class Elastic {
     return await require('./export').apply(this, [query]);
   }
 
+  async exportTransaction(query) {
+    return await require('./exportTransaction').apply(this, [query]);
+  }
+
   async stats(query) {
     return await require('./stats').apply(this, [query]);
   }
