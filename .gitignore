@@ -126,3 +126,6 @@ scripts/update_dns_local.sh
 scripts/upgrade_elasticsearch.sh
 scripts/version.sh
 scripts/whitelist.sh
+
+# Secret sops
+helm/templates/secret-sops.yaml
