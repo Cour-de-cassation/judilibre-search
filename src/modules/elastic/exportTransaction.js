@@ -1,39 +1,37 @@
 require('../env');
 
-async function exportTransaction({ date, page = 0, page_size = 40 }) {
+async function exportTransaction({ date, page_size: pageSize = 500, from_id: fromId, point_in_time: pointInTime }) {
   if (process.env.WITHOUT_ELASTIC) return;
 
-  const offset = page * page_size + 1;
+  const timeId =
+    pointInTime ??
+    (await this.client.openPointInTime({ index: process.env.TRANSACTION_INDEX, keep_alive: '1m' }))?.body?.id;
+  if (!timeId) throw new Error('Uncaught to create a search context');
 
   const query = {
-    index: process.env.TRANSACTION_INDEX,
     body: {
       query: { range: { date: { gte: new Date(date) } } },
       sort: [{ date: 'asc' }],
-      from: offset,
-      size: page_size,
+      size: pageSize,
+      search_after: fromId ? [fromId] : undefined,
+      pit: { id: timeId, keep_alive: '1m' },
     },
   };
 
   const results = await this.client.search(query);
   const hits = results?.body?.hits?.hits ?? [];
   const total = results?.body?.hits?.total?.value ?? 0;
-  const pages = parseInt(total / page_size);
+
+  const [lastId = null] = hits.length === pageSize ? hits[hits.length - 1].sort : [];
+  const nextPit = results?.body?.pit_id;
 
   return {
     transactions: hits.map((hit) => hit._source),
-    previous_page:
-      page > 0
-        ? new URLSearchParams({
-            date,
-            page: page > total / page_size ? parseInt(total / page_size) : page - 1,
-            page_size,
-          }).toString()
-        : null,
-    next_page: offset + page_size < total ? new URLSearchParams({ date, page: page + 1, page_size }).toString() : null,
-    page_size: page_size,
+    next_page: lastId
+      ? new URLSearchParams({ date, page_size: pageSize, from_id: lastId, point_in_time: nextPit }).toString()
+      : null,
+    page_size: hits.length,
     total,
-    pages,
     query_date: new Date(),
   };
 }

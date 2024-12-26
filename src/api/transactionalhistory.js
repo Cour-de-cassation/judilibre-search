@@ -19,14 +19,14 @@ api.get(
       isInt: {
         options: {
           min: 1,
-          max: 50,
+          max: 500,
         },
       },
       toInt: true,
-      errorMessage: `Value of the page_size parameter must be an integer between 1 and 50.`,
+      errorMessage: `Value of the page_size parameter must be an integer between 1 and 500.`,
       optional: true,
     },
-    page: {
+    next_id: {
       in: 'query',
       isInt: {
         options: {
@@ -34,7 +34,13 @@ api.get(
         },
       },
       toInt: true,
-      errorMessage: `Value of the page parameter must be an integer greater or equal than 0.`,
+      errorMessage: `Value of the next_id parameter must be an integer greater or equal than 0.`,
+      optional: true,
+    },
+    point_in_time: {
+      in: 'query',
+      isString: true,
+      errorMessage: `Value of the point_in_time parameter must be valid.`,
       optional: true,
     },
   }),
@@ -45,7 +51,6 @@ api.get(
     }
 
     try {
-
       const result = await Elastic.exportTransaction(req.query);
       return res.status(200).json(result);
     } catch (e) {
