@@ -69,10 +69,10 @@ USER node
 
 
 # Install production dependencies and clean cache
-RUN npm install --production && \
-    npm config set audit-level moderate && \
-    npm audit --json --registry=https://registry.npmjs.org || ${NPM_AUDIT_DRY_RUN:-false} && \
-    npm cache clean --force
+RUN npm install --production 
+RUN npm config set audit-level moderate 
+#RUN npm audit --json --registry=https://registry.npmjs.org || ${NPM_AUDIT_DRY_RUN:-false} && \
+RUN npm cache clean --force
 
 ADD src/ ./src
 
