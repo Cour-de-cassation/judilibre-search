@@ -26,15 +26,10 @@ api.get(
       errorMessage: `Value of the page_size parameter must be an integer between 1 and 500.`,
       optional: true,
     },
-    next_id: {
+    from_id: {
       in: 'query',
-      isInt: {
-        options: {
-          min: 0,
-        },
-      },
-      toInt: true,
-      errorMessage: `Value of the next_id parameter must be an integer greater or equal than 0.`,
+      isString: true,
+      errorMessage: `Value of the from_id parameter must be a specific id.`,
       optional: true,
     },
     point_in_time: {

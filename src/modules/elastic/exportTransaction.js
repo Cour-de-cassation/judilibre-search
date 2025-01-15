@@ -13,7 +13,7 @@ async function exportTransaction({ date, page_size: pageSize = 500, from_id: fro
       query: { range: { date: { gte: new Date(date) } } },
       sort: [{ date: 'asc' }],
       size: pageSize,
-      search_after: fromId ? [fromId] : undefined,
+      search_after: fromId ? fromId.split('&') : undefined,
       pit: { id: timeId, keep_alive: '1m' },
     },
   };
@@ -22,13 +22,13 @@ async function exportTransaction({ date, page_size: pageSize = 500, from_id: fro
   const hits = results?.body?.hits?.hits ?? [];
   const total = results?.body?.hits?.total?.value ?? 0;
 
-  const [lastId = null] = hits.length === pageSize ? hits[hits.length - 1].sort : [];
+  const step = hits.length === pageSize ? hits[hits.length - 1].sort : null;
   const nextPit = results?.body?.pit_id;
 
   return {
     transactions: hits.map((hit) => hit._source),
-    next_page: lastId
-      ? new URLSearchParams({ date, page_size: pageSize, from_id: lastId, point_in_time: nextPit }).toString()
+    next_page: step
+      ? new URLSearchParams({ date, page_size: pageSize, from_id: step.join('&'), point_in_time: nextPit }).toString()
       : null,
     page_size: hits.length,
     total,
