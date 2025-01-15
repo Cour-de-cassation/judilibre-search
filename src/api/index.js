@@ -7,5 +7,6 @@ apis.push(require('./search'));
 apis.push(require('./stats'));
 apis.push(require('./taxonomy'));
 apis.push(require('./published'));
+apis.push(require('./transactionalhistory'));
 
 module.exports = apis;

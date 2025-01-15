@@ -6,7 +6,6 @@ ARG http_proxy
 ARG https_proxy
 ARG no_proxy
 ARG npm_registry
-ARG NPM_LATEST
 
 RUN apk add curl
 
@@ -19,37 +18,23 @@ RUN if [ ! -z "$http_proxy" ] ; then \
    fi ; \
    [ -z "$npm_registry" ] || npm config set registry=$npm_registry
 
-RUN [ -z "${NPM_LATEST}" ] || npm i npm@latest -g
-
 ################################
 # Step 2: "development" target #
 ################################
 FROM base as development
-ARG NPM_FIX
 ARG NPM_VERBOSE
-ARG APP_ID
-ARG API_PORT
-ENV APP_ID=${APP_ID}
-ENV API_PORT=${API_PORT}
 ENV NPM_CONFIG_LOGLEVEL debug
 
 WORKDIR /home/node/
 USER node
 
-COPY package.json ./
+COPY --chown=node:node . .
 
 RUN if [ -z "${NPM_VERBOSE}" ]; then\
       npm install;  \
     else \
       npm install --verbose; \
     fi
-
-VOLUME /${APP_ID}/src
-
-COPY jestconfig.json .eslintrc.json ./
-
-# Expose the listening port of your app
-EXPOSE ${API_PORT}
 
 CMD ["npm","run", "dev"]
 
