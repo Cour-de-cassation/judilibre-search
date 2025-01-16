@@ -104,6 +104,7 @@ jobs:
       API_VERBOSITY: debug
       DOCKER_USERNAME: opendatajustice
       ELASTIC_INDEX: judilibre_0
+      TRANSACTION_INDEX: transaction_0
       ELASTIC_NODES: 3
       ELASTIC_MEM: 2048Mi
       ELASTIC_MEM_JVM: 1024m
