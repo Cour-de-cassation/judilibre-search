@@ -19,6 +19,7 @@ jobs:
       APP_SELF_SIGNED: true
       DOCKER_USERNAME: opendatajustice
       ELASTIC_INDEX: judilibre_0
+      TRANSACTION_INDEX: transaction_0
       ELASTIC_NODES: 1
       ELASTIC_MEM: 1024Mi
       ELASTIC_MEM_JVM: 512m
