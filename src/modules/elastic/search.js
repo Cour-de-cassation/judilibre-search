@@ -22,7 +22,7 @@ async function search(query) {
     results: [],
     relaxed: false,
     searchQuery: JSON.stringify(searchQuery.query),
-    date: new Date()
+    date: new Date(),
   };
 
   if (searchQuery.query && (string || searchQuery.hasString)) {
@@ -52,9 +52,11 @@ async function search(query) {
             response.next_page = next_page_params.toString();
           }
           rawResponse.body.hits.hits.forEach((rawResult) => {
-            rawResult._source.publication = rawResult._source.publication ? rawResult._source.publication.filter((item) => {
-              return /[br]/i.test(item);
-            }) : [];
+            rawResult._source.publication = rawResult._source.publication
+              ? rawResult._source.publication.filter((item) => {
+                  return /[br]/i.test(item);
+                })
+              : [];
 
             let taxonFilter = rawResult._source.jurisdiction;
 
@@ -106,11 +108,14 @@ async function search(query) {
               summary: rawResult._source.summary,
               themes: rawResult._source.themes,
               bulletin: rawResult._source.bulletin,
-              files: taxons[taxonFilter].filetype.buildFilesList(
-                rawResult._id,
-                rawResult._source.files,
-                query.resolve_references,
-              ),
+              files:
+                taxons[taxonFilter] && taxons[taxonFilter].filetype && taxons[taxonFilter].filetype.buildFilesList
+                  ? taxons[taxonFilter].filetype.buildFilesList(
+                      rawResult._id,
+                      rawResult._source.files,
+                      query.resolve_references,
+                    )
+                  : [],
               titlesAndSummaries: rawResult._source.titlesAndSummaries ? rawResult._source.titlesAndSummaries : [],
               particularInterest: rawResult._source.particularInterest === true,
             };
@@ -307,11 +312,15 @@ function searchWithoutElastic(query) {
         response.results[i].numbers = [response.results[i].number];
       }
 
-      response.results[i].files = taxons[taxonFilter].filetype.buildFilesList(
-        response.results[i].id,
-        response.results[i].files,
-        query.resolve_references,
-      );
+      try {
+        response.results[i].files = taxons[taxonFilter].filetype.buildFilesList(
+          response.results[i].id,
+          response.results[i].files,
+          query.resolve_references,
+        );
+      } catch (_ignore) {
+        response.results[i].files = [];
+      }
     }
   } else {
     response.total = 0;
