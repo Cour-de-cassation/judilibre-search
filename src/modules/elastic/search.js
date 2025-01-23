@@ -52,9 +52,9 @@ async function search(query) {
             response.next_page = next_page_params.toString();
           }
           rawResponse.body.hits.hits.forEach((rawResult) => {
-            rawResult._source.publication = rawResult._source.publication.filter((item) => {
+            rawResult._source.publication = rawResult._source.publication ? rawResult._source.publication.filter((item) => {
               return /[br]/i.test(item);
-            });
+            }) : [];
 
             let taxonFilter = rawResult._source.jurisdiction;
 

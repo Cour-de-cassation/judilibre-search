@@ -136,9 +136,9 @@ async function decision(query) {
       }
     }
 
-    rawResult._source.publication = rawResult._source.publication.filter((item) => {
+    rawResult._source.publication = rawResult._source.publication ? rawResult._source.publication.filter((item) => {
       return /[br]/i.test(item);
-    });
+    }): [];
 
     let taxonFilter = rawResult._source.jurisdiction;
 
