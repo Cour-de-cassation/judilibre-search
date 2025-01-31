@@ -1040,6 +1040,157 @@
         "summary": "Permet de récupérer l'état de disponibilité du service.",
         "description": "Ce point d'entrée permet de connaître l'état de disponibilité du service (disponible ou indisponible)."
       }
+    },
+    "/transactionalhistory": {
+      "get": {
+        "servers": [
+          {
+            "url": "https://sandbox-api.piste.gouv.fr/cassation/judilibre/v1.0",
+            "description": "Serveur de recherche."
+          }
+        ],
+        "parameters": [
+          {
+            "name": "date",
+            "description": "Toutes les opérations remontées auront été effectuées en aval de ce champ date renseigné au format ISO-8601",
+            "schema": {
+              "format": "date",
+              "type": "string"
+            },
+            "in": "query",
+            "required": true,
+            "example": "2021-05-13T06:00:00Z"
+          },
+          {
+            "name": "page_size",
+            "description": "Permet de personnaliser le nombre d'opérations obtenu par requête (10 minimum, 500 maximum). Par défaut, l'application remonte 500 opérations ainsi qu'une querystring permettant de requêter les éléments supplémentaires le cas échéant.",
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "required": false,
+            "example": 10
+          },
+          {
+            "name": "from_id",
+            "description": "Associé au champ 'point_in_time', permet d'obtenir les opérations qui suivent cet ID. (Nous conseillons d'utiliser simplement la querystring disponible en réponse lors de la consultation d'une liste dépassant la taille d'une seule requête plutôt que de manipuler ce champ à la main).",
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "required": false,
+            "example": "673ded6f5559d27e30e40f7f"
+          },
+          {
+            "name": "point_in_time",
+            "description": "Afin d'éviter qu'une écriture en base de donnée ne vienne perturber la consultation d'une liste d'opérations votre première requête de recherche génèrera une clé 'point_in_time': une image figée de la base de donnée. La consultation du reste de la liste par des requêtes supplémentaires se réfèrera à cette image figée de sorte à fournir les résultats tels qu'ils existaient effectivement lors du premier appel. (Nous conseillons d'utiliser simplement la querystring disponible en réponse lors de la consultation d'une liste dépassant la taille d'une seule requête plutôt que de manipuler ce champ à la main)",
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/transactionalhistory"
+                },
+                "example": {
+                  "transactions": [
+                    {
+                      "id": "673ded6e5559d27e30e40f67",
+                      "action": "created",
+                      "date": "2025-01-15T14:50:10.185Z"
+                    },
+                    {
+                      "id": "673ded6e5559d27e30e40f69",
+                      "action": "created",
+                      "date": "2025-01-15T14:50:10.185Z"
+                    },
+                    {
+                      "id": "673ded6e5559d27e30e40f6b",
+                      "action": "created",
+                      "date": "2025-01-15T14:50:10.185Z"
+                    },
+                    {
+                      "id": "673ded6f5559d27e30e40f6d",
+                      "action": "created",
+                      "date": "2025-01-15T14:50:10.185Z"
+                    },
+                    {
+                      "id": "673ded6f5559d27e30e40f6f",
+                      "action": "created",
+                      "date": "2025-01-15T14:50:10.185Z"
+                    },
+                    {
+                      "id": "673ded6f5559d27e30e40f77",
+                      "action": "created",
+                      "date": "2025-01-15T14:50:10.185Z"
+                    },
+                    {
+                      "id": "673ded6f5559d27e30e40f79",
+                      "action": "created",
+                      "date": "2025-01-15T14:50:10.185Z"
+                    },
+                    {
+                      "id": "673ded6f5559d27e30e40f7b",
+                      "action": "created",
+                      "date": "2025-01-15T14:50:10.185Z"
+                    },
+                    {
+                      "id": "673ded6f5559d27e30e40f7d",
+                      "action": "created",
+                      "date": "2025-01-15T14:50:10.185Z"
+                    },
+                    {
+                      "id": "673ded6f5559d27e30e40f7f",
+                      "action": "created",
+                      "date": "2025-01-15T14:50:10.185Z"
+                    }
+                  ],
+                  "next_page": "date=2021-05-13T06%3A00%3A00Z&page_size=10&from_id=1736952610185%269&point_in_time=k-O1AwENdHJhbnNhY3Rpb25fMBZ4V05QT2ZGZ1RrR1VUd2RoNW0zcW1BABZaUWM5ZThMR1JCNkRwbEVRZUZXZ2t3AAAAAAAAAXJdFjRYa3RxNzZKUmhxT3Vob0xnU2sxN3cAARZ4V05QT2ZGZ1RrR1VUd2RoNW0zcW1BAAA%3D",
+                  "page_size": 10,
+                  "total": 834,
+                  "query_date": "2025-01-31T08:10:18.262Z"
+                }
+              }
+            },
+            "description": "Requête effectuée avec succès."
+          },
+          "400": {
+            "description": "Requête invalide."
+          },
+          "401": {
+            "description": "Authentification requise."
+          },
+          "403": {
+            "description": "Permissions insuffisantes."
+          },
+          "416": {
+            "description": "La plage d'informations demandée est incorrecte ou ne peut pas être satisfaite."
+          },
+          "423": {
+            "description": "Accès bloqué suite à une activité suspecte."
+          },
+          "429": {
+            "description": "Trop de requêtes."
+          },
+          "500": {
+            "description": "Erreur indéfinie côté serveur."
+          }
+        },
+        "security": [
+          {
+            "access": []
+          }
+        ],
+        "operationId": "transactionalhistory",
+        "summary": "Permet de consulter les actions de publication (create, update, delete) effectués sur la base de donnée.",
+        "description": "Destiné aux utilisateurs désirant procéder à leur propre indexation et mise à disposition du contenu, ce point d'entrée permet de consulter les opérations effectuées sur la base de donnée judilibre afin d'identifier les opérations de synchronisation à effectuer pour rester à jour (notamment les supressions de décisions et leurs mises à jour). Les opérations sont rendues sous forme d'une liste triée par date (ascendante). Lorsque le nombre d'opérations dépasse la taille allouée de réponse la requête renvoie une querystring, valable pendant une minute, pour consulter la suite des opérations qui n'auraient pas pu être retournée dans le premier envoi."
+      }
     }
   },
   "components": {
@@ -2270,6 +2421,54 @@
         "example": {
           "label": "Cour de cassation",
           "value": 1500000
+        }
+      },
+      "transactionalhistory": {
+        "title": "Type d'objet `transactionalhistory`.",
+        "description": "Représente la liste des opérations effectuées sur la base de donnée des décisions de justice",
+        "required": ["transactions", "total", "query_date", "page_size"],
+        "type": "object",
+        "properties": {
+          "transactions": {
+            "description": "Liste effective des opérations réalisés sur la base de donnée des décisions de justice.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "description": "ID de la décision concernée par l'opération.",
+                  "type": "string"
+                },
+                "action": {
+                  "description": "Opération effectuée en base.",
+                  "type": "string",
+                  "enum": ["created", "updated", "deleted"]
+                },
+                "date": {
+                  "description": "Date à laquelle a été effectuée l'opération.",
+                  "type": "string",
+                  "format": "date"
+                }
+              }
+            }
+          },
+          "page_size": {
+            "description": "Nombre d'opérations maximum que cette requête est capable de retourner.",
+            "type": "integer"
+          },
+          "total": {
+            "description": "Nombre d'opérations sauvegardées en base de données et correspondant à la recherche.",
+            "type": "integer"
+          },
+          "query_date": {
+            "description": "Date à laquelle a été effectuée la requête.",
+            "type": "string",
+            "format": "date"
+          },
+          "next_page": {
+            "description": "QueryString permettant d'obtenir le set d'opérations qui suit chronologiquement ce résultat et qui n'a pa pu être renvoyé dans cette requête.",
+            "type": "string"
+          }
         }
       }
     },
