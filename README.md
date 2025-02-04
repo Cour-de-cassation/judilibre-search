@@ -163,6 +163,12 @@ orderedZones.forEach((zone) => {
 });
 ```
 
+## Exploitation de l'historique de transaction
+
+Le endpoint `/transactionalhistory` fourni un moyen de suivre les actions d'écritures effectuées sur la base de donnée des décisions (création de décision, mise à jour ou suppression). Ce [transaction log](https://en.wikipedia.org/wiki/Transaction_log) doit permettre aux utilisateurs qui souhaitent maintenir leur propre base de donnée de se synchroniser plus facilement avec l'état courant.
+
+Vous pouvez consulter ici des exemples d'utilisations: [/documentation/transactionalhistory](/documentation/transactionalhistory).
+
 ## Tests de l'API via Docker
 
 ```

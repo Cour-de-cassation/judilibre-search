@@ -18,12 +18,12 @@ api.get(
       in: 'query',
       isInt: {
         options: {
-          min: 1,
+          min: 10,
           max: 500,
         },
       },
       toInt: true,
-      errorMessage: `Value of the page_size parameter must be an integer between 1 and 500.`,
+      errorMessage: `Value of the page_size parameter must be an integer between 10 and 500.`,
       optional: true,
     },
     from_id: {
