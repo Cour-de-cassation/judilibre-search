@@ -18,6 +18,7 @@ async function batchexport(query) {
     took: 0,
     results: [],
     searchQuery: JSON.stringify(searchQuery.query),
+    date: new Date(),
   };
 
   if (searchQuery.query) {
@@ -95,11 +96,14 @@ async function batchexport(query) {
             nac: rawResult._source.nac ? rawResult._source.nac : null,
             portalis: rawResult._source.portalis ? rawResult._source.portalis : null,
             bulletin: rawResult._source.bulletin,
-            files: taxons[taxonFilter].filetype.buildFilesList(
-              rawResult._id,
-              rawResult._source.files,
-              query.resolve_references,
-            ),
+            files:
+              taxons[taxonFilter] && taxons[taxonFilter].filetype && taxons[taxonFilter].filetype.buildFilesList
+                ? taxons[taxonFilter].filetype.buildFilesList(
+                    rawResult._id,
+                    rawResult._source.files,
+                    query.resolve_references,
+                  )
+                : [],
             zones: rawResult._source.zones,
             contested: rawResult._source.contested ? rawResult._source.contested : null,
             forward: rawResult._source.forward ? rawResult._source.forward : null,
@@ -199,6 +203,10 @@ function exportWithoutElastic(query) {
     this.data = JSON.parse(
       fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'tj', 'sample_list.json')).toString(),
     );
+  } else if (taxonFilter === 'tcom') {
+    this.data = JSON.parse(
+      fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'tcom', 'sample_list.json')).toString(),
+    );
   } else if (taxonFilter === 'all') {
     this.data = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'sample_list.json')).toString());
     const additionalData = JSON.parse(
@@ -211,6 +219,11 @@ function exportWithoutElastic(query) {
     );
     this.data.resolved = this.data.resolved.concat(additionalData2.resolved);
     this.data.unresolved = this.data.unresolved.concat(additionalData2.unresolved);
+    const additionalData3 = JSON.parse(
+      fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'tcom', 'sample_list.json')).toString(),
+    );
+    this.data.resolved = this.data.resolved.concat(additionalData3.resolved);
+    this.data.unresolved = this.data.unresolved.concat(additionalData3.unresolved);
     this.data.resolved.sort((a, b) => {
       if (a.score > b.score) {
         return -1;
@@ -310,6 +323,19 @@ function exportWithoutElastic(query) {
       } else {
         sample = JSON.parse(
           fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'tj', 'sample_detail_unresolved.json')).toString(),
+        );
+      }
+    } else if (
+      response.results[i].jurisdiction === 'tcom' ||
+      response.results[i].jurisdiction === 'Tribunal de commerce'
+    ) {
+      if (query.resolve_references) {
+        sample = JSON.parse(
+          fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'tcom', 'sample_detail_resolved.json')).toString(),
+        );
+      } else {
+        sample = JSON.parse(
+          fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'tcom', 'sample_detail_unresolved.json')).toString(),
         );
       }
     }

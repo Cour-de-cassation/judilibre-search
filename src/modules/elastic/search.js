@@ -22,6 +22,7 @@ async function search(query) {
     results: [],
     relaxed: false,
     searchQuery: JSON.stringify(searchQuery.query),
+    date: new Date(),
   };
 
   if (searchQuery.query && (string || searchQuery.hasString)) {
@@ -51,9 +52,11 @@ async function search(query) {
             response.next_page = next_page_params.toString();
           }
           rawResponse.body.hits.hits.forEach((rawResult) => {
-            rawResult._source.publication = rawResult._source.publication.filter((item) => {
-              return /[br]/i.test(item);
-            });
+            rawResult._source.publication = rawResult._source.publication
+              ? rawResult._source.publication.filter((item) => {
+                  return /[br]/i.test(item);
+                })
+              : [];
 
             let taxonFilter = rawResult._source.jurisdiction;
 
@@ -105,11 +108,14 @@ async function search(query) {
               summary: rawResult._source.summary,
               themes: rawResult._source.themes,
               bulletin: rawResult._source.bulletin,
-              files: taxons[taxonFilter].filetype.buildFilesList(
-                rawResult._id,
-                rawResult._source.files,
-                query.resolve_references,
-              ),
+              files:
+                taxons[taxonFilter] && taxons[taxonFilter].filetype && taxons[taxonFilter].filetype.buildFilesList
+                  ? taxons[taxonFilter].filetype.buildFilesList(
+                      rawResult._id,
+                      rawResult._source.files,
+                      query.resolve_references,
+                    )
+                  : [],
               titlesAndSummaries: rawResult._source.titlesAndSummaries ? rawResult._source.titlesAndSummaries : [],
               particularInterest: rawResult._source.particularInterest === true,
             };
@@ -208,6 +214,10 @@ function searchWithoutElastic(query) {
     this.data = JSON.parse(
       fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'tj', 'sample_list.json')).toString(),
     );
+  } else if (taxonFilter === 'tcom') {
+    this.data = JSON.parse(
+      fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'tcom', 'sample_list.json')).toString(),
+    );
   } else if (taxonFilter === 'all') {
     this.data = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'sample_list.json')).toString());
     const additionalData = JSON.parse(
@@ -220,6 +230,11 @@ function searchWithoutElastic(query) {
     );
     this.data.resolved = this.data.resolved.concat(additionalData2.resolved);
     this.data.unresolved = this.data.unresolved.concat(additionalData2.unresolved);
+    const additionalData3 = JSON.parse(
+      fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'tcom', 'sample_list.json')).toString(),
+    );
+    this.data.resolved = this.data.resolved.concat(additionalData3.resolved);
+    this.data.unresolved = this.data.unresolved.concat(additionalData3.unresolved);
     this.data.resolved.sort((a, b) => {
       if (a.score > b.score) {
         return -1;
@@ -297,11 +312,15 @@ function searchWithoutElastic(query) {
         response.results[i].numbers = [response.results[i].number];
       }
 
-      response.results[i].files = taxons[taxonFilter].filetype.buildFilesList(
-        response.results[i].id,
-        response.results[i].files,
-        query.resolve_references,
-      );
+      try {
+        response.results[i].files = taxons[taxonFilter].filetype.buildFilesList(
+          response.results[i].id,
+          response.results[i].files,
+          query.resolve_references,
+        );
+      } catch (_ignore) {
+        response.results[i].files = [];
+      }
     }
   } else {
     response.total = 0;

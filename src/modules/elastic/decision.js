@@ -136,9 +136,11 @@ async function decision(query) {
       }
     }
 
-    rawResult._source.publication = rawResult._source.publication.filter((item) => {
-      return /[br]/i.test(item);
-    });
+    rawResult._source.publication = rawResult._source.publication
+      ? rawResult._source.publication.filter((item) => {
+          return /[br]/i.test(item);
+        })
+      : [];
 
     let taxonFilter = rawResult._source.jurisdiction;
 
@@ -195,11 +197,14 @@ async function decision(query) {
       nac: rawResult._source.nac ? rawResult._source.nac : null,
       portalis: rawResult._source.portalis ? rawResult._source.portalis : null,
       bulletin: rawResult._source.bulletin,
-      files: taxons[taxonFilter].filetype.buildFilesList(
-        rawResult._id,
-        rawResult._source.files,
-        query.resolve_references,
-      ),
+      files:
+        taxons[taxonFilter] && taxons[taxonFilter].filetype && taxons[taxonFilter].filetype.buildFilesList
+          ? taxons[taxonFilter].filetype.buildFilesList(
+              rawResult._id,
+              rawResult._source.files,
+              query.resolve_references,
+            )
+          : [],
       zones: highlightedZoning ? highlightedZoning : rawResult._source.zones,
       contested: rawResult._source.contested ? rawResult._source.contested : null,
       forward: rawResult._source.forward ? rawResult._source.forward : null,
@@ -314,6 +319,10 @@ function decisionWithoutElastic(query) {
     fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'tj', 'sample_list.json')).toString(),
   );
   allData.unresolved = allData.unresolved.concat(additionalData2.unresolved);
+  const additionalData3 = JSON.parse(
+    fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'tcom', 'sample_list.json')).toString(),
+  );
+  allData.unresolved = allData.unresolved.concat(additionalData3.unresolved);
 
   let found = null;
   for (let i = 0; i < allData.unresolved.length; i++) {
@@ -354,6 +363,16 @@ function decisionWithoutElastic(query) {
     } else {
       response = JSON.parse(
         fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'tj', 'sample_detail_unresolved.json')).toString(),
+      );
+    }
+  } else if (found === 'tcom') {
+    if (query.resolve_references) {
+      response = JSON.parse(
+        fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'tcom', 'sample_detail_resolved.json')).toString(),
+      );
+    } else {
+      response = JSON.parse(
+        fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'tcom', 'sample_detail_unresolved.json')).toString(),
       );
     }
   }
