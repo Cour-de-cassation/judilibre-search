@@ -179,6 +179,7 @@ jobs:
       API_PORT: 8080
       DOCKER_USERNAME: opendatajustice
       ELASTIC_INDEX: judilibre_0
+      TRANSACTION_INDEX: transaction_0
       ELASTIC_NODES: 3
       ELASTIC_MEM: 12288Mi
       ELASTIC_MEM_JVM: 6144m
@@ -258,6 +259,7 @@ jobs:
       API_PORT: 8080
       DOCKER_USERNAME: opendatajustice
       ELASTIC_INDEX: judilibre_0
+      TRANSACTION_INDEX: transaction_0
       ELASTIC_NODES: 3
       ELASTIC_MEM: 12288Mi
       ELASTIC_MEM_JVM: 6144m
