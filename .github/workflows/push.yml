@@ -173,7 +173,7 @@ jobs:
       APP_HOST: search.prod-par1.judilibre.io
       APP_HOST_ALTER: search.judilibre.io
       APP_ID: judilibre-search
-      APP_NODES: 1
+      APP_NODES: 3
       APP_SCHEME: https
       APP_PORT: 443
       API_PORT: 8080
@@ -253,7 +253,7 @@ jobs:
       APP_HOST: search.prod-par2.judilibre.io
       APP_HOST_ALTER: search.judilibre.io
       APP_ID: judilibre-search
-      APP_NODES: 1
+      APP_NODES: 3
       APP_SCHEME: https
       APP_PORT: 443
       API_PORT: 8080
