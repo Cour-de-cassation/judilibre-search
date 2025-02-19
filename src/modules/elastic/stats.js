@@ -41,10 +41,11 @@ async function stats(query) {
   const gteFilter = query.date_start ? new Date(query.date_start) : null
   const lteFilter = query.date_end ? new Date(query.date_end) : null
 
-  const dateFilters = (gteFilter || lteFilter) ? [{ range: { decision_date: { gte: gteFilter, lte: lteFilter } } }] : []
-  const jurisdictionFilter = query.jurisdiction ? [{ term: { jurisdiction: query.jurisdiction } }] : []
+  const dateFilter = (gteFilter || lteFilter) ? [{ range: { decision_date: { gte: gteFilter, lte: lteFilter } } }] : []
+  const jurisdictionFilter = query.jurisdiction ? [{ terms: { 'jurisdiction.keyword': query.jurisdiction.split(',') } }] : []
+  const locationFilter = query.location ? [{terms: {'location.keyword': query.location.split(',')}}] : []
 
-  const filters = [...dateFilters, ...jurisdictionFilter]
+  const filters = [...dateFilter, ...jurisdictionFilter, ...locationFilter]
 
 
   elasticAggregationQuery.query.bool.filter = filters
@@ -65,9 +66,6 @@ async function stats(query) {
       }
     }
   }) ?? []
-
-  console.log(query.keys?.split(','))
-  console.dir(aggregationSources, { depth: 10 })
 
   if (aggregationSources.length > 0) {
     elasticAggregationQuery.aggs.decisions_count = {

@@ -218,7 +218,13 @@
         "parameters": [
           {
             "name": "jurisdiction",
-            "description": "Filtre pour ne retourner les résultats que pour un type de juridiction.\nDoit prendre les valeurs `cc`, `ca`, `tj` ou `tcom`.\nPar défaut, retourne toutes les juridictions",
+            "description": "Filtre pour ne retourner les résultats que pour un type de juridiction.\nDoit prendre les valeurs `cc`, `ca`, `tj` ou `tcom`.\nOn peut spécifier plusieurs valeurs en les séparant par des virgules (ex: `cc,ca`).\nPar défaut, retourne toutes les juridictions",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "description": "Filtre pour ne retourner les résultats que pour une juridiction précise.\nDoit prendre un identifiant de juridiction comme valeur (voir `GET /taxonomy`).\nOn peut spécifier plusieurs valeurs en les séparant par des virgules (ex: `ca_paris,ca_rennes`).\nPar défaut, retourne toutes les juridictions",
             "in": "query",
             "type": "string"
           },
