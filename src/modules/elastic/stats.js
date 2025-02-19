@@ -38,59 +38,36 @@ async function stats(query) {
   };
 
   // gestion des filtres
-  let filters = []
-  if (query.date_start || query.date_end) {
-    filters.push(
-      {
-        range: {
-          decision_date: {
-            gte: query.date_start ? new Date(query.date_start) : null,
-            lte: query.date_end ? new Date(query.date_end) : null
-          }
-        }
-      }
-    )
-  }
-  if (query.jurisdiction) {
-    filters.push({ term: { jurisdiction: query.jurisdiction } })
-  }
+  const gteFilter = query.date_start ? new Date(query.date_start) : null
+  const lteFilter = query.date_end ? new Date(query.date_end) : null
+
+  const dateFilters = (gteFilter || lteFilter) ? [{ range: { decision_date: { gte: gteFilter, lte: lteFilter } } }] : []
+  const jurisdictionFilter = query.jurisdiction ? [{ term: { jurisdiction: query.jurisdiction } }] : []
+
+  const filters = [...dateFilters, ...jurisdictionFilter]
+
 
   elasticAggregationQuery.query.bool.filter = filters
   elasticCountQuery.query.bool.filter = filters
 
-  let aggregationSources = [];
-  // gestion des clefs d'agregation
-  if (query.keys) {
-    for (var key of query.keys.split(',')) {
-      if (key === 'year') {
-        aggregationSources.push(
-          {
-            year: {
-              date_histogram: {
-                field: "decision_date",
-                calendar_interval: "year",
-                format: "yyyy",
-              }
-            }
-          }
-        )
-      } else if (key === 'month') {
-        aggregationSources.push(
-          {
-            year: {
-              date_histogram: {
-                field: "decision_date",
-                calendar_interval: "month",
-                format: "yyyy-MM",
-              }
-            }
-          }
-        )
-      } else {
-        aggregationSources.push({ [key]: { terms: { field: `${key}.keyword` } } })
+  const DATE_FORMAT = { 'year': 'yyyy', 'month': 'yyy-MM' }
+
+  const aggregationSources = query.keys?.split(',').map(key => {
+    if (key !== 'month' && key !== 'year') return { [key]: { terms: { field: `${key}.keyword` } } }
+
+    return {
+      year: {
+        date_histogram: {
+          field: "decision_date",
+          calendar_interval: key,
+          format: DATE_FORMAT[key]
+        }
       }
     }
-  }
+  }) ?? []
+
+  console.log(query.keys?.split(','))
+  console.dir(aggregationSources, { depth: 10 })
 
   if (aggregationSources.length > 0) {
     elasticAggregationQuery.aggs.decisions_count = {
@@ -102,16 +79,15 @@ async function stats(query) {
   }
 
 
-  let elasticCountResults = await this.client.count(
+  const { body: { count: elasticCount } } = await this.client.count(
     {
       index: process.env.ELASTIC_INDEX,
       body: elasticCountQuery,
     }
-
   )
 
 
-  let elasticAggregationResults = await this.client.search(
+  const { body: { aggregations: elasticAggregations } } = await this.client.search(
     {
       index: process.env.ELASTIC_INDEX,
       body: elasticAggregationQuery,
@@ -120,22 +96,18 @@ async function stats(query) {
 
   response = {
     query: query,
-    // elasticAggregationQuery: elasticAggregationQuery,
-    // elasticCountQuery: elasticCountQuery,
-    // elasticAggregationResults: elasticAggregationResults,
-    // elasticCountResults: elasticCountResults,
     results: {},
   }
 
-  if (elasticAggregationResults.body.aggregations.decisions_count) {
-    response.results.aggregated_data = elasticAggregationResults.body.aggregations.decisions_count.buckets.map(
+  if (elasticAggregations.decisions_count) {
+    response.results.aggregated_data = elasticAggregations.decisions_count.buckets.map(
       (obj) => ({ key: obj.key, decisions_count: obj.doc_count })
     );
   }
 
-  response.results.min_decision_date = elasticAggregationResults.body.aggregations.min_date.value_as_string;
-  response.results.max_decision_date = elasticAggregationResults.body.aggregations.max_date.value_as_string;
-  response.results.total_decisisions = elasticCountResults.body.count;
+  response.results.min_decision_date = elasticAggregations.min_date.value_as_string;
+  response.results.max_decision_date = elasticAggregations.max_date.value_as_string;
+  response.results.total_decisisions = elasticCount;
 
   return response;
 }
@@ -165,7 +137,7 @@ function statsWithoutElastic(query) {
         }
       )
     }
-    response.results.aggregated_date = buckets
+    response.results.aggregated_data = buckets
   }
 
   return response;

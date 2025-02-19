@@ -6,7 +6,7 @@ const Elastic = require('../modules/elastic');
 const taxons = require('../taxons');
 const route = 'stats';
 
-let aggregationKeys = [
+const AGGREGATION_KEYS = [
   'jurisdiction',
   'source',
   'location',
@@ -18,7 +18,7 @@ let aggregationKeys = [
   'type',
   'theme',
 ]
-let aggregationKeysRegex = `^(${aggregationKeys.join('|')})+(,(${aggregationKeys.join('|')}))*$`
+const AGGREGATION_KEYS_REGEX = `^(${AGGREGATION_KEYS.join('|')})+(,(${AGGREGATION_KEYS.join('|')}))*$`
 
 api.get(
   `/${route}`,
@@ -50,8 +50,8 @@ api.get(
     keys: {
       in: 'query',
       matches: {
-        options: [RegExp(aggregationKeysRegex)],
-        errorMessage: `Aggregation keys parameters must be in [${aggregationKeys}] or a comma separated list of these values.`,
+        options: [RegExp(AGGREGATION_KEYS_REGEX)],
+        errorMessage: `Aggregation keys parameters must be in [${AGGREGATION_KEYS}] or a comma separated list of these values.`,
       },
       optional: true,
     }
