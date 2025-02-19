@@ -54,7 +54,7 @@ async function stats(query) {
   const DATE_FORMAT = { 'year': 'yyyy', 'month': 'yyy-MM' }
 
   const aggregationSources = query.keys?.split(',').map(key => {
-    if (key !== 'month' && key !== 'year') return { [key]: { terms: { field: `${key}.keyword` } } }
+    if (key !== 'month' && key !== 'year') return { [key]: { terms: { field: (key == 'location') ? `${key}.keyword` : `${key}` } } }
 
     return {
       year: {
