@@ -16,9 +16,16 @@ const AGGREGATION_KEYS = [
   'formation',
   'solution',
   'type',
-  'theme',
+  'nac',
+  'themes',
+  'publication',
 ]
-const AGGREGATION_KEYS_REGEX = `^(${AGGREGATION_KEYS.join('|')})+(,(${AGGREGATION_KEYS.join('|')}))*$`
+const ALL_LOCATIONS = [...taxons.ca.location.keys, ...taxons.tj.location.keys, ...taxons.tcom.location.keys]
+const ALL_JURISDICTIONS = [...taxons.all.jurisdiction.keys]
+
+const AGGREGATION_KEYS_REGEX = `^(${AGGREGATION_KEYS.join('|')})(,(${AGGREGATION_KEYS.join('|')}))*$`
+const ALL_LOCATIONS_REGEX = `^(${ALL_LOCATIONS.join('|')})(,(${ALL_LOCATIONS.join('|')}))*$`
+const ALL_JURISDICTIONS_REGEX = `^(${ALL_JURISDICTIONS.join('|')})(,(${ALL_JURISDICTIONS.join('|')}))*$`
 
 api.get(
   `/${route}`,
@@ -27,10 +34,18 @@ api.get(
       in: 'query',
       isString: true,
       toLowerCase: true,
-      isIn: {
-        options: [taxons.all.jurisdiction.options],
+      matches: {
+        options: [RegExp(ALL_JURISDICTIONS_REGEX)],
+        errorMessage: `Value of the jurisdiction parameter must be in [${ALL_JURISDICTIONS}] or a comma separated list of these values.`,
       },
-      errorMessage: `Value of the jurisdiction parameter must be in [${taxons.all.jurisdiction.keys}].`,
+      optional: true,
+    },
+    location: {
+      in: 'query',
+      matches: {
+        options: [RegExp(ALL_LOCATIONS_REGEX)],
+        errorMessage: `Aggregation keys parameters must be a valid jurisdiction identifier (see GET /taxonomy) or a comma separated list of these values.`,
+      },
       optional: true,
     },
     date_start: {
