@@ -25,7 +25,7 @@ const ALL_JURISDICTIONS = [...taxons.all.jurisdiction.keys]
 
 const AGGREGATION_KEYS_REGEX = `^(${AGGREGATION_KEYS.join('|')})(,(${AGGREGATION_KEYS.join('|')}))*$`
 const ALL_LOCATIONS_REGEX = `^(${ALL_LOCATIONS.join('|')})(,(${ALL_LOCATIONS.join('|')}))*$`
-const ALL_JURISDICTIONS_REGEX = `^(${ALL_JURISDICTIONS.join('|')})(,(${ALL_JURISDICTIONS.join('|')}))*$`
+const ALL_JURISDICTIONS_REGEX = `^(${ALL_JURISDICTIONS.join('|')})$`
 
 api.get(
   `/${route}`,
@@ -36,7 +36,7 @@ api.get(
       toLowerCase: true,
       matches: {
         options: [RegExp(ALL_JURISDICTIONS_REGEX)],
-        errorMessage: `Value of the jurisdiction parameter must be in [${ALL_JURISDICTIONS}] or a comma separated list of these values.`,
+        errorMessage: `Value of the jurisdiction parameter must be in [${ALL_JURISDICTIONS}].`,
       },
       optional: true,
     },
