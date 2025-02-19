@@ -5,183 +5,140 @@ async function stats(query) {
     return statsWithoutElastic.apply(this, [query]);
   }
 
-  let response = {
-    indexedTotal: 0,
-    requestPerDay: 0, // @TODO
-    requestPerWeek: 0, // @TODO
-    requestPerMonth: 0, // @TODO
-    oldestDecision: null,
-    newestDecision: null,
-    indexedByJurisdiction: [], // @TODO
-    indexedByYear: [], // @TODO
+  // initialisation de la requête
+  let elasticAggregationQuery = {
+    size: 0,
+    query: {
+      bool: {
+        filter: []
+      }
+    },
+    aggs: {
+      min_date: {
+        min: {
+          field: 'decision_date',
+          format: 'yyyy-MM-dd',
+        },
+      },
+      max_date: {
+        max: {
+          field: 'decision_date',
+          format: 'yyyy-MM-dd',
+        },
+      }
+    }
   };
 
-  let statsData = await this.client.count({
-    index: process.env.ELASTIC_INDEX,
-  });
+  let elasticCountQuery = {
+    query: {
+      bool: {
+        filter: []
+      }
+    }
+  };
 
-  if (statsData && statsData.body && statsData.body.count) {
-    response.indexedTotal = statsData.body.count;
+  // gestion des filtres
+  const gteFilter = query.date_start ? new Date(query.date_start) : null
+  const lteFilter = query.date_end ? new Date(query.date_end) : null
+
+  const dateFilters = (gteFilter || lteFilter) ? [{ range: { decision_date: { gte: gteFilter, lte: lteFilter } } }] : []
+  const jurisdictionFilter = query.jurisdiction ? [{ term: { jurisdiction: query.jurisdiction } }] : []
+
+  const filters = [...dateFilters, ...jurisdictionFilter]
+
+
+  elasticAggregationQuery.query.bool.filter = filters
+  elasticCountQuery.query.bool.filter = filters
+
+  const DATE_FORMAT = { 'year': 'yyyy', 'month': 'yyy-MM' }
+
+  const aggregationSources = query.keys?.split(',').map(key => {
+    if (key !== 'month' && key !== 'year') return { [key]: { terms: { field: `${key}.keyword` } } }
+
+    return {
+      year: {
+        date_histogram: {
+          field: "decision_date",
+          calendar_interval: key,
+          format: DATE_FORMAT[key]
+        }
+      }
+    }
+  }) ?? []
+
+  console.log(query.keys?.split(','))
+  console.dir(aggregationSources, { depth: 10 })
+
+  if (aggregationSources.length > 0) {
+    elasticAggregationQuery.aggs.decisions_count = {
+      composite: {
+        size: 10000,
+        sources: aggregationSources
+      }
+    }
   }
 
-  let statsCCData = await this.client.count({
-    index: process.env.ELASTIC_INDEX,
-    body: {
-      query: {
-        bool: {
-          must: [
-            {
-              terms: {
-                jurisdiction: ['cc'],
-              },
-            },
-          ],
-        },
-      },
-    },
-  });
 
-  if (statsCCData && statsCCData.body && statsCCData.body.count) {
-    response.indexedByJurisdiction.push({
-      label: 'Cour de cassation',
-      value: statsCCData.body.count,
-    });
+  const { body: { count: elasticCount } } = await this.client.count(
+    {
+      index: process.env.ELASTIC_INDEX,
+      body: elasticCountQuery,
+    }
+  )
+
+
+  const { body: { aggregations: elasticAggregations } } = await this.client.search(
+    {
+      index: process.env.ELASTIC_INDEX,
+      body: elasticAggregationQuery,
+    }
+  )
+
+  response = {
+    query: query,
+    results: {},
   }
 
-  let statsCAData = await this.client.count({
-    index: process.env.ELASTIC_INDEX,
-    body: {
-      query: {
-        bool: {
-          must: [
-            {
-              terms: {
-                jurisdiction: ['ca'],
-              },
-            },
-          ],
-        },
-      },
-    },
-  });
-
-  if (statsCAData && statsCAData.body && statsCAData.body.count) {
-    response.indexedByJurisdiction.push({
-      label: "Cours d'appel",
-      value: statsCAData.body.count,
-    });
+  if (elasticAggregations.decisions_count) {
+    response.results.aggregated_data = elasticAggregations.decisions_count.buckets.map(
+      (obj) => ({ key: obj.key, decisions_count: obj.doc_count })
+    );
   }
 
-  let statsTJData = await this.client.count({
-    index: process.env.ELASTIC_INDEX,
-    body: {
-      query: {
-        bool: {
-          must: [
-            {
-              terms: {
-                jurisdiction: ['tj'],
-              },
-            },
-          ],
-        },
-      },
-    },
-  });
-
-  if (statsTJData && statsTJData.body && statsTJData.body.count) {
-    response.indexedByJurisdiction.push({
-      label: 'Tribunal judiciaire',
-      value: statsTJData.body.count,
-    });
-  }
-
-  let statsTCOMData = await this.client.count({
-    index: process.env.ELASTIC_INDEX,
-    body: {
-      query: {
-        bool: {
-          must: [
-            {
-              terms: {
-                jurisdiction: ['tcom'],
-              },
-            },
-          ],
-        },
-      },
-    },
-  });
-
-  if (statsTCOMData && statsTCOMData.body && statsTCOMData.body.count) {
-    response.indexedByJurisdiction.push({
-      label: 'Tribunal de commerce',
-      value: statsTCOMData.body.count,
-    });
-  }
-
-  let content = await this.client.search({
-    index: process.env.ELASTIC_INDEX,
-    size: 0,
-    body: {
-      aggs: {
-        min_date: {
-          min: {
-            field: 'decision_date',
-            format: 'yyyy-MM-dd',
-          },
-        },
-        max_date: {
-          max: {
-            field: 'decision_date',
-            format: 'yyyy-MM-dd',
-          },
-        },
-      },
-    },
-  });
-
-  if (content && content.body && content.body.aggregations) {
-    response.oldestDecision = content.body.aggregations.min_date.value_as_string;
-    response.newestDecision = content.body.aggregations.max_date.value_as_string;
-  }
+  response.results.min_decision_date = elasticAggregations.min_date.value_as_string;
+  response.results.max_decision_date = elasticAggregations.max_date.value_as_string;
+  response.results.total_decisisions = elasticCount;
 
   return response;
 }
 
+
 function statsWithoutElastic(query) {
   let response = {
-    requestPerDay: 0,
-    requestPerWeek: 0,
-    requestPerMonth: 0,
-    indexedTotal: 0,
-    oldestDecision: '1800-01-01',
-    newestDecision: '2021-01-01',
-    indexedByJurisdiction: [
-      {
-        value: 1500000,
-        label: 'Cour de cassation',
-      },
-      {
-        value: 135000,
-        label: "Cour d'appel de Paris",
-      },
-      {
-        value: 21500,
-        label: 'Tribunal judiciaire',
-      },
-    ],
-    indexedByYear: [
-      {
-        value: 250000,
-        label: '2019',
-      },
-      {
-        value: 195000,
-        label: '2018',
-      },
-    ],
-  };
+    query: query,
+    results: {
+      total_decisions: 123456,
+      min_decision_date: "1970-10-01",
+      max_decision_date: "2025-02-18",
+    }
+  }
+
+  if (query.keys) {
+    let buckets = [];
+    for (var i = 0; i < 5; i++) {
+      let bucketKey = {}
+      for (var k of query.keys.split(',')) {
+        bucketKey[k] = String.fromCharCode(65 + Math.floor(Math.random() * 26))
+      }
+      buckets.push(
+        {
+          key: bucketKey,
+          decisions_count: Math.floor(Math.random() * 1000)
+        }
+      )
+    }
+    response.results.aggregated_data = buckets
+  }
 
   return response;
 }
