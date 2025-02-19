@@ -42,8 +42,8 @@ async function stats(query) {
   const lteFilter = query.date_end ? new Date(query.date_end) : null
 
   const dateFilter = (gteFilter || lteFilter) ? [{ range: { decision_date: { gte: gteFilter, lte: lteFilter } } }] : []
-  const jurisdictionFilter = query.jurisdiction ? [{ terms: { 'jurisdiction.keyword': query.jurisdiction.split(',') } }] : []
-  const locationFilter = query.location ? [{terms: {'location.keyword': query.location.split(',')}}] : []
+  const jurisdictionFilter = query.jurisdiction ? [{ term: { 'jurisdiction': query.jurisdiction } }] : []
+  const locationFilter = query.location ? [{ terms: { 'location.keyword': query.location.split(',') } }] : []
 
   const filters = [...dateFilter, ...jurisdictionFilter, ...locationFilter]
 
