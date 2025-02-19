@@ -67,10 +67,16 @@
                       "jurisdiction": "cc",
                       "chamber": "civ3",
                       "number": "17-18.194",
-                      "numbers": ["17-18.194", "16-21.165"],
+                      "numbers": [
+                        "17-18.194",
+                        "16-21.165"
+                      ],
                       "ecli": "ECLI:FR:CCASS:2018:C301117",
                       "formation": "fs",
-                      "publication": ["c", "b"],
+                      "publication": [
+                        "c",
+                        "b"
+                      ],
                       "decision_date": "2018-12-20",
                       "decision_datetime": "2018-12-20T06:00:00Z",
                       "update_date": "2018-12-26",
@@ -265,6 +271,40 @@
           {
             "url": "https://sandbox-api.piste.gouv.fr/cassation/judilibre/v1.0",
             "description": "Serveur de recherche."
+          }
+        ],
+        "parameters": [
+          {
+            "name": "jurisdiction",
+            "description": "Filtre pour ne retourner les résultats que pour un type de juridiction.\nDoit prendre les valeurs `cc`, `ca`, `tj` ou `tcom`.\nPar défaut, retourne toutes les juridictions",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_start",
+            "description": "Date minimale utilisée pour filter les résultats.\nDoit être au format `YYYY-MM-DD`.\nPar défaut, pas de date minimale.",
+            "schema": {
+              "type": "string"
+            },
+            "in": "query"
+          },
+          {
+            "name": "date_end",
+            "description": "Date maximale utilisée pour filter les résultats.\nDoit être au format `YYYY-MM-DD`.\nPar défaut, pas de date maximale.",
+            "schema": {
+              "type": "string"
+            },
+            "in": "query"
+          },
+          {
+            "name": "keys",
+            "description": "Nom des variables utilisées pour agréger les données.\nPeut prendre les valeurs `year`, `month`, `jurisdiction`, `source`, `location`, `theme`, `formation`, `chamber`, `solution`, `type`, `publication`.\nOn peut spécifier plusieurs valeurs en les séparant par des virgules (ex: `jurisdiction,chamber`).\nPar défaut, les données ne sont pas agrègées.",
+            "schema": {
+              "type": "string"
+            },
+            "in": "query"
           }
         ],
         "responses": {
@@ -569,14 +609,24 @@
                       "page_size": 10,
                       "query": {
                         "query": "expropriation",
-                        "field": ["expose", "moyens", "motivations"],
+                        "field": [
+                          "expose",
+                          "moyens",
+                          "motivations"
+                        ],
                         "operator": "or",
-                        "type": ["arret", "qpc"],
+                        "type": [
+                          "arret",
+                          "qpc"
+                        ],
                         "theme": [],
                         "chamber": [],
                         "formation": [],
                         "jurisdiction": [],
-                        "publication": ["c", "b"],
+                        "publication": [
+                          "c",
+                          "b"
+                        ],
                         "solution": [],
                         "date_start": "1970-01-01",
                         "date_end": "2021-01-01",
@@ -607,10 +657,16 @@
                           "jurisdiction": "cc",
                           "chamber": "civ3",
                           "number": "17-18.194",
-                          "numbers": ["17-18.194", "16-21.165"],
+                          "numbers": [
+                            "17-18.194",
+                            "16-21.165"
+                          ],
                           "ecli": "ECLI:FR:CCASS:2018:C301117",
                           "formation": "fs",
-                          "publication": ["c", "b"],
+                          "publication": [
+                            "c",
+                            "b"
+                          ],
                           "decision_date": "2018-12-20",
                           "type": "arret",
                           "solution": "rejet",
@@ -879,12 +935,18 @@
                       "batch": 0,
                       "batch_size": 10,
                       "query": {
-                        "type": ["arret", "qpc"],
+                        "type": [
+                          "arret",
+                          "qpc"
+                        ],
                         "theme": [],
                         "chamber": [],
                         "formation": [],
                         "jurisdiction": [],
-                        "publication": ["c", "b"],
+                        "publication": [
+                          "c",
+                          "b"
+                        ],
                         "solution": [],
                         "date_start": "1970-01-01",
                         "date_end": "2021-01-01",
@@ -902,10 +964,16 @@
                           "jurisdiction": "cc",
                           "chamber": "civ3",
                           "number": "17-18.194",
-                          "numbers": ["17-18.194", "16-21.165"],
+                          "numbers": [
+                            "17-18.194",
+                            "16-21.165"
+                          ],
                           "ecli": "ECLI:FR:CCASS:2018:C301117",
                           "formation": "fs",
-                          "publication": ["c", "b"],
+                          "publication": [
+                            "c",
+                            "b"
+                          ],
                           "decision_date": "2018-12-20",
                           "type": "arret",
                           "solution": "rejet",
@@ -1198,7 +1266,15 @@
       "searchPage": {
         "title": "Type d'objet `searchPage`.",
         "description": "Décrit une page de résultats de recherche.",
-        "required": ["page", "page_size", "query", "total", "took", "max_score", "relaxed"],
+        "required": [
+          "page",
+          "page_size",
+          "query",
+          "total",
+          "took",
+          "max_score",
+          "relaxed"
+        ],
         "type": "object",
         "properties": {
           "page": {
@@ -1252,14 +1328,24 @@
           "page_size": 10,
           "query": {
             "query": "expropriation",
-            "field": ["expose", "moyens", "motivations"],
+            "field": [
+              "expose",
+              "moyens",
+              "motivations"
+            ],
             "operator": "or",
-            "type": ["arret", "qpc"],
+            "type": [
+              "arret",
+              "qpc"
+            ],
             "theme": [],
             "chamber": [],
             "formation": [],
             "jurisdiction": [],
-            "publication": ["c", "b"],
+            "publication": [
+              "c",
+              "b"
+            ],
             "solution": [],
             "date_start": "1970-01-01",
             "date_end": "2021-01-01",
@@ -1290,10 +1376,16 @@
               "jurisdiction": "cc",
               "chamber": "civ3",
               "number": "17-18.194",
-              "numbers": ["17-18.194", "16-21.165"],
+              "numbers": [
+                "17-18.194",
+                "16-21.165"
+              ],
               "ecli": "ECLI:FR:CCASS:2018:C301117",
               "formation": "fs",
-              "publication": ["c", "b"],
+              "publication": [
+                "c",
+                "b"
+              ],
               "decision_date": "2018-12-20",
               "type": "arret",
               "solution": "rejet",
@@ -1317,7 +1409,9 @@
         "type": "object",
         "allOf": [
           {
-            "required": ["score"],
+            "required": [
+              "score"
+            ],
             "type": "object",
             "properties": {
               "score": {
@@ -1353,10 +1447,16 @@
           "jurisdiction": "cc",
           "chamber": "civ3",
           "number": "17-18.194",
-          "numbers": ["17-18.194", "16-21.165"],
+          "numbers": [
+            "17-18.194",
+            "16-21.165"
+          ],
           "ecli": "ECLI:FR:CCASS:2018:C301117",
           "formation": "fs",
-          "publication": ["c", "b"],
+          "publication": [
+            "c",
+            "b"
+          ],
           "decision_date": "2018-12-20",
           "type": "arret",
           "solution": "rejet",
@@ -1482,14 +1582,24 @@
         },
         "example": {
           "query": "expropriation",
-          "field": ["expose", "moyens", "motivations"],
+          "field": [
+            "expose",
+            "moyens",
+            "motivations"
+          ],
           "operator": "or",
-          "type": ["arret", "qpc"],
+          "type": [
+            "arret",
+            "qpc"
+          ],
           "theme": [],
           "chamber": [],
           "formation": [],
           "jurisdiction": [],
-          "publication": ["c", "b"],
+          "publication": [
+            "c",
+            "b"
+          ],
           "solution": [],
           "date_start": "1970-01-01",
           "date_end": "2021-01-01",
@@ -1503,7 +1613,10 @@
       "searchHighlight": {
         "title": "Type d'objet `searchHighlight`.",
         "description": "Décrit un fragment de résultat contenant une correspondance avec la recherche saisie.",
-        "required": ["key", "value"],
+        "required": [
+          "key",
+          "value"
+        ],
         "type": "object",
         "properties": {
           "key": {
@@ -1519,13 +1632,24 @@
           }
         },
         "example": {
-          "dispositif": ["un <em>exemple</em> de fragment"]
+          "dispositif": [
+            "un <em>exemple</em> de fragment"
+          ]
         }
       },
       "decisionShort": {
         "title": "Type d'objet `decisionShort`.",
         "description": "Décrit la version courte d'un décision, telle qu'elle apparait en tant qu'item de résultat de recherche.\n\nRappel : le texte intégral et les zones qu'il contient ne sont pas inclus dans les résultats de la recherche. La récupération d'une décision complète (incluant les zones) repose sur le point d'entrée `GET /decision`.",
-        "required": ["jurisdiction", "id", "chamber", "number", "numbers", "publication", "decision_date", "solution"],
+        "required": [
+          "jurisdiction",
+          "id",
+          "chamber",
+          "number",
+          "numbers",
+          "publication",
+          "decision_date",
+          "solution"
+        ],
         "type": "object",
         "properties": {
           "id": {
@@ -1611,10 +1735,16 @@
           "jurisdiction": "cc",
           "chamber": "civ3",
           "number": "17-18.194",
-          "numbers": ["17-18.194", "16-21.165"],
+          "numbers": [
+            "17-18.194",
+            "16-21.165"
+          ],
           "ecli": "ECLI:FR:CCASS:2018:C301117",
           "formation": "fs",
-          "publication": ["c", "b"],
+          "publication": [
+            "c",
+            "b"
+          ],
           "decision_date": "2018-12-20",
           "type": "arret",
           "solution": "rejet",
@@ -1729,10 +1859,16 @@
           "jurisdiction": "cc",
           "chamber": "civ3",
           "number": "17-18.194",
-          "numbers": ["17-18.194", "16-21.165"],
+          "numbers": [
+            "17-18.194",
+            "16-21.165"
+          ],
           "ecli": "ECLI:FR:CCASS:2018:C301117",
           "formation": "fs",
-          "publication": ["c", "b"],
+          "publication": [
+            "c",
+            "b"
+          ],
           "decision_date": "2018-12-20",
           "decision_datetime": "2018-12-20T06:00:00Z",
           "update_date": "2018-12-26",
@@ -1841,7 +1977,10 @@
       "zoneSegment": {
         "title": "Type d'objet `zoneSegment`.",
         "description": "Décrit un segment d'une zone en tant qu'objet `{ start, end }` indiquant respectivement l'indice de début et de fin des caractères (relativement au texte intégral) contenus dans le segment de la zone considérée.",
-        "required": ["end", "start"],
+        "required": [
+          "end",
+          "start"
+        ],
         "type": "object",
         "properties": {
           "start": {
@@ -1861,7 +2000,14 @@
       "fileLink": {
         "title": "Type d'objet `fileLink`.",
         "description": "Objet décrivant un lien vers un document pouvant être associé à une décision.",
-        "required": ["id", "name", "url", "type", "isCommunication", "date"],
+        "required": [
+          "id",
+          "name",
+          "url",
+          "type",
+          "isCommunication",
+          "date"
+        ],
         "type": "object",
         "properties": {
           "id": {
@@ -1907,7 +2053,9 @@
       "decisionLink": {
         "title": "Type d'objet `decisionLink`.",
         "description": "Objet décrivant un lien vers une décision.",
-        "required": ["title"],
+        "required": [
+          "title"
+        ],
         "type": "object",
         "properties": {
           "id": {
@@ -1979,14 +2127,19 @@
           "title": "some text",
           "url": "some text",
           "description": "some text",
-          "theme": ["some text", "some text"],
+          "theme": [
+            "some text",
+            "some text"
+          ],
           "number": "some text"
         }
       },
       "textLink": {
         "title": "Type d'objet `textLink`.",
         "description": "Objet décrivant un lien vers un texte appliqué.",
-        "required": ["title"],
+        "required": [
+          "title"
+        ],
         "type": "object",
         "properties": {
           "id": {
@@ -2011,7 +2164,13 @@
       "exportBatch": {
         "title": "Type d'objet `exportBatch`.",
         "description": "Objet décrivant un lot de décisions exportées.",
-        "required": ["batch", "batch_size", "query", "total", "took"],
+        "required": [
+          "batch",
+          "batch_size",
+          "query",
+          "total",
+          "took"
+        ],
         "type": "object",
         "properties": {
           "query": {
@@ -2055,12 +2214,18 @@
           "batch": 0,
           "batch_size": 10,
           "query": {
-            "type": ["arret", "qpc"],
+            "type": [
+              "arret",
+              "qpc"
+            ],
             "theme": [],
             "chamber": [],
             "formation": [],
             "jurisdiction": [],
-            "publication": ["c", "b"],
+            "publication": [
+              "c",
+              "b"
+            ],
             "solution": [],
             "date_start": "1970-01-01",
             "date_end": "2021-01-01",
@@ -2078,10 +2243,16 @@
               "jurisdiction": "cc",
               "chamber": "civ3",
               "number": "17-18.194",
-              "numbers": ["17-18.194", "16-21.165"],
+              "numbers": [
+                "17-18.194",
+                "16-21.165"
+              ],
               "ecli": "ECLI:FR:CCASS:2018:C301117",
               "formation": "fs",
-              "publication": ["c", "b"],
+              "publication": [
+                "c",
+                "b"
+              ],
               "decision_date": "2018-12-20",
               "type": "arret",
               "solution": "rejet",
@@ -2229,12 +2400,18 @@
           }
         },
         "example": {
-          "type": ["arret", "qpc"],
+          "type": [
+            "arret",
+            "qpc"
+          ],
           "theme": [],
           "chamber": [],
           "formation": [],
           "jurisdiction": [],
-          "publication": ["c", "b"],
+          "publication": [
+            "c",
+            "b"
+          ],
           "solution": [],
           "date_start": "1970-01-01",
           "date_end": "2021-01-01",
@@ -2248,12 +2425,17 @@
       "health": {
         "title": "Type d'objet `health`.",
         "description": "Objet décrivant l'état de disponibilité du service.",
-        "required": ["status"],
+        "required": [
+          "status"
+        ],
         "type": "object",
         "properties": {
           "status": {
             "description": "État de disponibilité du service.",
-            "enum": ["disponible", "indisponible"],
+            "enum": [
+              "disponible",
+              "indisponible"
+            ],
             "type": "string"
           }
         },
@@ -2319,114 +2501,155 @@
           }
         }
       },
+      "statsBucket": {
+        "title": "Type d'objet `statsBucket`",
+        "description": "Nombre de décisions par bucket d'agrégation",
+        "required": [
+          "key",
+          "decisions_count"
+        ],
+        "properties": {
+          "key": {
+            "type": "object",
+            "description": "Objet contenant la description du bucket: chaque clef est une des variables d'agrégation et les valeurs sont les valeurs associées au bucket",
+            "example": {
+              "jurisdiction": "cc",
+              "year": "2024"
+            }
+          },
+          "decisions_count": {
+            "type": "integer",
+            "description": "Nombre de décisions dans ce bucket"
+          }
+        }
+      },
+      "statsQuery": {
+        "title": "Type d'objet `statsQuery`",
+        "description": "Requête du point de terminaison GET `/stats`",
+        "properties": {
+          "date_start": {
+            "format": "date",
+            "type": "string",
+            "description": "Date minimale de la requête"
+          },
+          "date_end": {
+            "format": "date",
+            "type": "string",
+            "description": "Date maximale de la requête"
+          },
+          "jurisdiction": {
+            "type": "string",
+            "description": "Filtre sur la juridiction"
+          },
+          "keys": {
+            "type": "string",
+            "description": "Liste des clefs d'agrégation"
+          }
+        }
+      },
+      "statsResults": {
+        "title": "Type d'objet `statsResults`",
+        "description": "Statistiques renvoyées par l'API sur le point de terminaison `GET /stats`",
+        "type": "object",
+        "required": [
+          "min_decision_date",
+          "max_decision_date",
+          "total_decisions"
+        ],
+        "properties": {
+          "min_decision_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Date de la plus vielle décision retournée par la requête"
+          },
+          "max_decision_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Date de la plus récente décision retournée par la requête"
+          },
+          "total_decisions": {
+            "type": "integer",
+            "description": "Nombre de décisions total retournées par la requête"
+          },
+          "aggregated_data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/statsBucket"
+            }
+          }
+        }
+      },
       "stats": {
         "title": "Type d'objet `stats`.",
-        "description": "Objet décrivant les statistiques publiées par l'API.",
+        "description": "Objet décrivant la réponse de l'API au point de terminaison `GET /stats`.",
         "required": [
-          "indexedTotal",
-          "newestDecision",
-          "oldestDecision",
-          "requestPerDay",
-          "indexedByJurisdiction",
-          "indexedByYear",
-          "requestPerWeek",
-          "requestPerMonth"
+          "query",
+          "results"
         ],
         "type": "object",
         "properties": {
-          "requestPerDay": {
-            "description": "Nombre moyen de requêtes de recherche par jour.",
-            "type": "integer"
+          "results": {
+            "description": "Résulats de la requête.",
+            "type": "object",
+            "$ref": "#/definitions/statsResults"
           },
-          "oldestDecision": {
-            "format": "date",
-            "description": "Date de la décision la plus ancienne.",
-            "type": "string"
-          },
-          "newestDecision": {
-            "format": "date",
-            "description": "Date de la décision la plus récente.",
-            "type": "string"
-          },
-          "indexedTotal": {
-            "description": "Nombre total de décisions indexées.",
-            "type": "integer"
-          },
-          "indexedByJurisdiction": {
-            "description": "Nombre de décisions indexées par juridiction.",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/statItem"
-            }
-          },
-          "indexedByYear": {
-            "description": "Nombre de décisions indexées par année.",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/statItem"
-            }
-          },
-          "requestPerWeek": {
-            "description": "Nombre moyen de requêtes de recherche par semaine.",
-            "type": "integer"
-          },
-          "requestPerMonth": {
-            "description": "Nombre moyen de requêtes de recherche par mois.",
-            "type": "integer"
+          "query": {
+            "description": "Description de la requête",
+            "type": "object",
+            "$ref": "#/definitions/statsQuery"
           }
         },
         "example": {
-          "requestPerDay": 2500,
-          "oldestDecision": "1856-07-27",
-          "newestDecision": "2021-04-15",
-          "indexedTotal": 2250000,
-          "indexedByJurisdiction": [
-            {
-              "value": 1500000,
-              "label": "Cour de cassation"
-            },
-            {
-              "value": 135000,
-              "label": "Cour d'appel de Paris"
-            }
-          ],
-          "indexedByYear": [
-            {
-              "value": 250000,
-              "label": "2019"
-            },
-            {
-              "value": 195000,
-              "label": "2018"
-            }
-          ],
-          "requestPerWeek": 17500,
-          "requestPerMonth": 520000
-        }
-      },
-      "statItem": {
-        "title": "Type d'objet `statItem`.",
-        "description": "Décrit un élément de statistique.",
-        "type": "object",
-        "properties": {
-          "value": {
-            "description": "Valeur de l'élément.",
-            "type": "integer"
+          "query": {
+            "keys": "year,location",
+            "jurisdiction": "ca"
           },
-          "label": {
-            "description": "Intitulé de l'élément.",
-            "type": "string"
+          "results": {
+            "total_decisions": 123456,
+            "min_decision_date": "1970-10-01",
+            "max_decision_date": "2025-02-18",
+            "aggregated_date": [
+              {
+                "key": {
+                  "year": "2024",
+                  "location": "ca_rennes"
+                },
+                "decisions_count": 76
+              },
+              {
+                "key": {
+                  "year": "2025",
+                  "location": "ca_rennes"
+                },
+                "decisions_count": 221
+              },
+              {
+                "key": {
+                  "year": "2024",
+                  "location": "ca_parisJ"
+                },
+                "decisions_count": 350
+              },
+              {
+                "key": {
+                  "year": "2025",
+                  "location": "ca_paris"
+                },
+                "decisions_count": 547
+              }
+            ]
           }
-        },
-        "example": {
-          "label": "Cour de cassation",
-          "value": 1500000
         }
       },
       "transactionalhistory": {
         "title": "Type d'objet `transactionalhistory`.",
         "description": "Représente la liste des opérations effectuées sur la base de donnée des décisions de justice",
-        "required": ["transactions", "total", "query_date", "page_size"],
+        "required": [
+          "transactions",
+          "total",
+          "query_date",
+          "page_size"
+        ],
         "type": "object",
         "properties": {
           "transactions": {
@@ -2442,7 +2665,11 @@
                 "action": {
                   "description": "Opération effectuée en base.",
                   "type": "string",
-                  "enum": ["created", "updated", "deleted"]
+                  "enum": [
+                    "created",
+                    "updated",
+                    "deleted"
+                  ]
                 },
                 "date": {
                   "description": "Date à laquelle a été effectuée l'opération.",
