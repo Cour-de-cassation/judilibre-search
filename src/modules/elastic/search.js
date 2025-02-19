@@ -87,14 +87,15 @@ async function search(query) {
                 query.resolve_references && taxons[taxonFilter].location.taxonomy[rawResult._source.location]
                   ? taxons[taxonFilter].location.taxonomy[rawResult._source.location]
                   : rawResult._source.location,
-              publication: query.resolve_references
-                ? rawResult._source.publication.map((key) => {
-                    if (taxons[taxonFilter].publication.taxonomy[key]) {
-                      return taxons[taxonFilter].publication.taxonomy[key];
-                    }
-                    return key;
-                  })
-                : rawResult._source.publication,
+              publication:
+                query.resolve_references && rawResult._source.publication
+                  ? rawResult._source.publication.map((key) => {
+                      if (taxons[taxonFilter].publication.taxonomy[key]) {
+                        return taxons[taxonFilter].publication.taxonomy[key];
+                      }
+                      return key;
+                    })
+                  : rawResult._source.publication,
               decision_date: rawResult._source.decision_date,
               solution:
                 query.resolve_references && taxons[taxonFilter].solution.taxonomy[rawResult._source.solution]
@@ -122,7 +123,7 @@ async function search(query) {
 
             if (rawResult._source.jurisdiction === 'cc') {
               result.number = formatPourvoiNumber(result.number);
-              result.numbers = result.numbers.map(formatPourvoiNumber);
+              result.numbers = result.numbers ? result.numbers.map(formatPourvoiNumber) : result.numbers;
             }
 
             if (result.type === 'undefined') {

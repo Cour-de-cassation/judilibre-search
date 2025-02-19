@@ -165,14 +165,15 @@ async function decision(query) {
       numbers: Array.isArray(rawResult._source.numberFull)
         ? rawResult._source.numberFull
         : [rawResult._source.numberFull],
-      publication: query.resolve_references
-        ? rawResult._source.publication.map((key) => {
-            if (taxons[taxonFilter].publication.taxonomy[key]) {
-              return taxons[taxonFilter].publication.taxonomy[key];
-            }
-            return key;
-          })
-        : rawResult._source.publication,
+      publication:
+        query.resolve_references && rawResult._source.publication
+          ? rawResult._source.publication.map((key) => {
+              if (taxons[taxonFilter].publication.taxonomy[key]) {
+                return taxons[taxonFilter].publication.taxonomy[key];
+              }
+              return key;
+            })
+          : rawResult._source.publication,
       solution:
         query.resolve_references && taxons[taxonFilter].solution.taxonomy[rawResult._source.solution]
           ? taxons[taxonFilter].solution.taxonomy[rawResult._source.solution]
@@ -232,7 +233,7 @@ async function decision(query) {
 
     if (rawResult._source.jurisdiction === 'cc') {
       response.number = formatPourvoiNumber(response.number);
-      response.numbers = response.numbers.map(formatPourvoiNumber);
+      response.numbers = response.numbers ? response.numbers.map(formatPourvoiNumber) : response.numbers;
     }
 
     if (response.partial && response.zones) {
