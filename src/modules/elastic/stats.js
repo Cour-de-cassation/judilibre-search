@@ -38,8 +38,8 @@ async function stats(query) {
   };
 
   // gestion des filtres
-  const gteFilter = query.date_start ? new Date(query.date_start) : null
-  const lteFilter = query.date_end ? new Date(query.date_end) : null
+  const gteFilter = query.date_start ? new Date(query.date_start).toISOString().slice(0, 10) : null
+  const lteFilter = query.date_end ? new Date(query.date_end).toISOString().slice(0, 10) : null
 
   const dateFilter = (gteFilter || lteFilter) ? [{ range: { decision_date: { gte: gteFilter, lte: lteFilter } } }] : []
   const jurisdictionFilter = query.jurisdiction ? [{ term: { 'jurisdiction': query.jurisdiction } }] : []
@@ -83,7 +83,6 @@ async function stats(query) {
       body: elasticCountQuery,
     }
   )
-
 
   const { body: { aggregations: elasticAggregations } } = await this.client.search(
     {
