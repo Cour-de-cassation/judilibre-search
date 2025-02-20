@@ -57,7 +57,7 @@ async function stats(query) {
     if (key !== 'month' && key !== 'year') return { [key]: { terms: { field: (key == 'location') ? `${key}.keyword` : `${key}` } } }
 
     return {
-      year: {
+      [key]: {
         date_histogram: {
           field: "decision_date",
           calendar_interval: key,
