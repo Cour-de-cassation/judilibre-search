@@ -307,6 +307,14 @@
             "in": "query"
           },
           {
+            "name": "particularInterest",
+            "description": "Filtre pour ne retourner les décisions présentant ou non un intérêt particulier.\nDoit prendre la valeur `true`.\nPar défaut, retourne toutes les décisions",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "keys",
             "description": "Nom des variables utilisées pour agréger les données.\nPeut prendre les valeurs `year`, `month`, `jurisdiction`, `source`, `location`, `theme`, `formation`, `chamber`, `solution`, `type`, `publication`.\nOn peut spécifier plusieurs valeurs en les séparant par des virgules (ex: `jurisdiction,chamber`).\nPar défaut, les données ne sont pas agrègées.",
             "schema": {
