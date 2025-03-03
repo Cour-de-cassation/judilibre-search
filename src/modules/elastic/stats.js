@@ -44,9 +44,8 @@ async function stats(query) {
   const dateFilter = (gteFilter || lteFilter) ? [{ range: { decision_date: { gte: gteFilter, lte: lteFilter } } }] : []
   const jurisdictionFilter = query.jurisdiction ? [{ term: { 'jurisdiction': query.jurisdiction } }] : []
   const locationFilter = query.location ? [{ terms: { 'location.keyword': query.location.split(',') } }] : []
-
-  const filters = [...dateFilter, ...jurisdictionFilter, ...locationFilter]
-
+  const selectionFilter = (query.particularInterest === 'true') ? [{ term: { 'particularInterest': true } }] : []
+  const filters = [...dateFilter, ...jurisdictionFilter, ...locationFilter, ...selectionFilter]
 
   elasticAggregationQuery.query.bool.filter = filters
   elasticCountQuery.query.bool.filter = filters
