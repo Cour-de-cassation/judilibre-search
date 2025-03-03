@@ -40,6 +40,16 @@ api.get(
       },
       optional: true,
     },
+    particularInterest: {
+      in: 'query',
+      isString: true,
+      toLowerCase: true,
+      matches: {
+        options: [RegExp('true')],
+        errorMessage: `Value of the particularInterest parameter must be in true.`,
+      },
+      optional: true,
+    },
     location: {
       in: 'query',
       matches: {
