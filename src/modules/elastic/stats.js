@@ -103,7 +103,7 @@ async function stats(query) {
 
   response.results.min_decision_date = elasticAggregations.min_date.value_as_string;
   response.results.max_decision_date = elasticAggregations.max_date.value_as_string;
-  response.results.total_decisisions = elasticCount;
+  response.results.total_decisions = elasticCount;
 
   return response;
 }
