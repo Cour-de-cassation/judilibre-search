@@ -2038,6 +2038,10 @@
             "description": "URL du document associé.",
             "type": "string"
           },
+          "rawUrl": {
+            "description": "URL du document associé et accessible publiquement (dans le doute, privilégez ce champ).",
+            "type": "string"
+          },
           "type": {
             "description": "Code correspondant au type de document associé (par exemple : 'comm_comm', 'comm_note', 'comm_trad', 'prep_rapp', etc.). Par défaut, utiliser `GET /taxonomy?id=filetype&key={type}` pour récupérer l'intitulé complet de celui-ci. Si la requête utilise `resolve_references=true`, alors cette propriété contient l'intitulé complet du type de document associé (par exemple : 'Communiqué', 'Note explicative', 'Arrêt traduit', 'Rapport du rapporteur', etc.).",
             "type": "string"
