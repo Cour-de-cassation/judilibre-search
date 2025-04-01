@@ -180,13 +180,6 @@ api.get(
           });
         }
       } else {
-        if (result && result.files && Array.isArray(result.files)) {
-          for (let i = 0; i < result.files.length; i++) {
-            if (result.files[i].rawUrl) {
-              delete result.files[i].rawUrl;
-            }
-          }
-        }
         if (result && result.contested !== null && result.contested !== undefined && result.contested.content) {
           delete result.contested.content;
         }
