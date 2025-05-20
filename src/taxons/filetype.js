@@ -1,5 +1,7 @@
 const taxon = {
   prep_rapp: 'Rapport du conseiller',
+  prep_raco: 'Rapport complémentaire du conseiller',
+  prep_avpg: 'Avis du procureur général',
   prep_avis: 'Avis de l’avocat général',
   prep_oral: 'Avis oral de l’avocat général',
   comm_comm: 'Communiqué',
@@ -18,6 +20,8 @@ const importCode = {
   comm_note: 5,
   comm_nora: 8,
   prep_rapp: 1,
+  prep_raco: 9,
+  prep_avpg: 10,
 };
 
 function getCodeFromImportType(type) {
