@@ -27,15 +27,19 @@ async function batchexport(query) {
     }
 
     const rawResponse = await this.client.search(searchQuery.query);
+    const resultCount = await this.client.count({
+      index: searchQuery.query.index,
+      body: { query: searchQuery.query.body.query },
+    });
     if (rawResponse && rawResponse.body) {
       if (rawResponse.body.hits && rawResponse.body.hits.total && rawResponse.body.hits.total.value > 0) {
-        response.total = rawResponse.body.hits.total.value;
+        response.total = resultCount?.body?.count ?? rawResponse.body.hits.total.value;
         if (searchQuery.page > 0) {
           let previous_batch_params = new URLSearchParams(query);
           previous_batch_params.set('batch', searchQuery.page - 1);
           response.previous_batch = previous_batch_params.toString();
         }
-        if ((searchQuery.page + 1) * searchQuery.page_size < rawResponse.body.hits.total.value) {
+        if ((searchQuery.page + 1) * searchQuery.page_size < response.total) {
           let next_batch_params = new URLSearchParams(query);
           next_batch_params.set('batch', searchQuery.page + 1);
           response.next_batch = next_batch_params.toString();
