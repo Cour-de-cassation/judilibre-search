@@ -1157,22 +1157,13 @@
           },
           {
             "name": "from_id",
-            "description": "Associé au champ 'point_in_time', permet d'obtenir les opérations qui suivent cet ID. (Nous conseillons d'utiliser simplement la querystring disponible en réponse lors de la consultation d'une liste dépassant la taille d'une seule requête plutôt que de manipuler ce champ à la main).",
+            "description": "Permet d'obtenir les opérations qui suivent cet ID. (Nous conseillons d'utiliser simplement la querystring disponible en réponse lors de la consultation d'une liste dépassant la taille d'une seule requête).",
             "schema": {
               "type": "string"
             },
             "in": "query",
             "required": false,
             "example": "673ded6f5559d27e30e40f7f"
-          },
-          {
-            "name": "point_in_time",
-            "description": "Afin d'éviter qu'une écriture en base de donnée ne vienne perturber la consultation d'une liste d'opérations votre première requête de recherche génèrera une clé 'point_in_time': une image figée de la base de donnée. La consultation du reste de la liste par des requêtes supplémentaires se réfèrera à cette image figée de sorte à fournir les résultats tels qu'ils existaient effectivement lors du premier appel. (Nous conseillons d'utiliser simplement la querystring disponible en réponse lors de la consultation d'une liste dépassant la taille d'une seule requête plutôt que de manipuler ce champ à la main)",
-            "schema": {
-              "type": "string"
-            },
-            "in": "query",
-            "required": false
           }
         ],
         "responses": {
@@ -1235,7 +1226,7 @@
                       "date": "2025-01-15T14:50:10.185Z"
                     }
                   ],
-                  "next_page": "date=2021-05-13T06%3A00%3A00Z&page_size=10&from_id=1736952610185%269&point_in_time=k-O1AwENdHJhbnNhY3Rpb25fMBZ4V05QT2ZGZ1RrR1VUd2RoNW0zcW1BABZaUWM5ZThMR1JCNkRwbEVRZUZXZ2t3AAAAAAAAAXJdFjRYa3RxNzZKUmhxT3Vob0xnU2sxN3cAARZ4V05QT2ZGZ1RrR1VUd2RoNW0zcW1BAAA%3D",
+                  "next_page": "date=2021-05-13T06%3A00%3A00Z&page_size=10&from_id=1736952610185%269",
                   "page_size": 10,
                   "total": 834,
                   "query_date": "2025-01-31T08:10:18.262Z"
