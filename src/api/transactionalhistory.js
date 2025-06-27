@@ -31,13 +31,7 @@ api.get(
       isString: true,
       errorMessage: `Value of the from_id parameter must be a specific id.`,
       optional: true,
-    },
-    point_in_time: {
-      in: 'query',
-      isString: true,
-      errorMessage: `Value of the point_in_time parameter must be valid.`,
-      optional: true,
-    },
+    }
   }),
   async (req, res) => {
     const errors = validationResult(req);
