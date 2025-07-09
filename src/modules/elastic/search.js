@@ -51,12 +51,20 @@ async function search(query) {
           response.total = resultCount?.body?.count ?? rawResponse.body.hits.total.value;
           response.max_score = rawResponse.body.hits.max_score;
           if (searchQuery.page > 0) {
-            let previous_page_params = new URLSearchParams(query);
+            let previous_page_params = new URLSearchParams();
+            Object.entries(query).forEach(([key, value]) => {
+              if (Array.isArray(value)) value.forEach(_ => previous_page_params.append(key, _))
+              else previous_page_params.append(key, value)
+            })
             previous_page_params.set('page', searchQuery.page - 1);
             response.previous_page = previous_page_params.toString();
           }
           if ((searchQuery.page + 1) * searchQuery.page_size < response.total) {
-            let next_page_params = new URLSearchParams(query);
+            let next_page_params = new URLSearchParams();
+            Object.entries(query).forEach(([key, value]) => {
+              if (Array.isArray(value)) value.forEach(_ => next_page_params.append(key, _))
+              else next_page_params.append(key, value)
+            })
             next_page_params.set('page', searchQuery.page + 1);
             response.next_page = next_page_params.toString();
           }
