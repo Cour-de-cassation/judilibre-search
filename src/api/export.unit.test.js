@@ -472,6 +472,16 @@ describe('Testing /export endpoint basic validation', () => {
         },
       ],
     });
+    const test4 = await request(Server.app).get('/export?batch=333&batch_size=30');
+    expect(test4.statusCode).toEqual(416);
+    expect(test4.body).toEqual({
+      route: `GET /export`,
+      errors: [
+        {
+          msg: `Range Not Satisfiable`,
+        },
+      ],
+    });
   });
 
   it('GET /export with a good "batch_size" parameter should pass', async () => {
