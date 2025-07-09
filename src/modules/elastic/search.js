@@ -31,22 +31,31 @@ async function search(query) {
     }
 
     let rawResponse = await this.client.search(searchQuery.query);
+    let resultCount = await this.client.count({
+      index: searchQuery.query.index,
+      body: { query: searchQuery.query.body.query },
+    });
+
     if (rawResponse && rawResponse.body) {
       if (!rawResponse.body.hits || !rawResponse.body.hits.total || !rawResponse.body.hits.total.value) {
         searchQuery = this.buildQuery(query, 'search', true);
         response.relaxed = true;
         rawResponse = await this.client.search(searchQuery.query);
+        resultCount = await this.client.count({
+          index: searchQuery.query.index,
+          body: { query: searchQuery.query.body.query },
+        });
       }
       if (rawResponse && rawResponse.body) {
         if (rawResponse.body.hits && rawResponse.body.hits.total && rawResponse.body.hits.total.value > 0) {
-          response.total = rawResponse.body.hits.total.value;
+          response.total = resultCount?.body?.count ?? rawResponse.body.hits.total.value;
           response.max_score = rawResponse.body.hits.max_score;
           if (searchQuery.page > 0) {
             let previous_page_params = new URLSearchParams(query);
             previous_page_params.set('page', searchQuery.page - 1);
             response.previous_page = previous_page_params.toString();
           }
-          if ((searchQuery.page + 1) * searchQuery.page_size < rawResponse.body.hits.total.value) {
+          if ((searchQuery.page + 1) * searchQuery.page_size < response.total) {
             let next_page_params = new URLSearchParams(query);
             next_page_params.set('page', searchQuery.page + 1);
             response.next_page = next_page_params.toString();
