@@ -77,7 +77,7 @@ const taxon = {
   tj38185: 'Tribunal judiciaire de Grenoble',
   tj23096: 'Tribunal judiciaire de Guéret',
   tj22070: 'Tribunal judiciaire de Guingamp (chambre détachée)',
-  tj98811: 'Tribunal judiciaire de Kone',
+  tj98811: 'Tribunal judiciaire de Kone (section détachée)',
   tj85191: 'Tribunal judiciaire de La Roche-sur-Yon',
   tj17300: 'Tribunal judiciaire de La Rochelle',
   tj02408: 'Tribunal judiciaire de Laon',
