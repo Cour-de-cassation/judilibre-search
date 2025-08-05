@@ -37,6 +37,10 @@ class Elastic {
   async stats(query) {
     return await require('./stats').apply(this, [query]);
   }
+
+  async scan(query) {
+    return await require('./scan/fetch')(this, query);
+  }
 }
 
 module.exports = new Elastic();
