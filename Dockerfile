@@ -1,7 +1,7 @@
 #######################
 # Step 1: Base target #
 #######################
-FROM node:20-alpine3.20 as base
+FROM node:20-alpine3.20 AS base
 ARG http_proxy
 ARG https_proxy
 ARG no_proxy
@@ -21,7 +21,7 @@ RUN if [ ! -z "$http_proxy" ] ; then \
 ################################
 # Step 2: "local" target #
 ################################
-FROM base as local
+FROM base AS local
 
 WORKDIR /home/node/
 USER node
@@ -33,7 +33,7 @@ CMD ["npm","run", "start:watch"]
 ###############################
 # Step 3: "production" target #
 ###############################
-FROM base as production
+FROM base AS production
 ARG NPM_AUDIT_DRY_RUN
 ENV APP_ID=judilibre-search
 ENV API_PORT=8080
