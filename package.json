@@ -5,8 +5,10 @@
   "main": "src/index.js",
   "scripts": {
     "test": "jest --config jestconfig.json",
-    "dev": "nodemon src/.",
-    "start": "node src/."
+    "start": "node src/.",
+    "start:watch": "nodemon src/.",
+    "start:docker": "docker compose up -d",
+    "stop:docker": "docker compose stop"
   },
   "author": "sebastien.courvoisier@justice.fr",
   "license": "",

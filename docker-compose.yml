@@ -1,0 +1,12 @@
+name: opendata
+
+services:
+  judilibre-search:
+    build:
+      target: local
+    env_file:
+      - .env
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - .:/home/node

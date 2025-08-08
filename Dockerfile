@@ -19,24 +19,16 @@ RUN if [ ! -z "$http_proxy" ] ; then \
    [ -z "$npm_registry" ] || npm config set registry=$npm_registry
 
 ################################
-# Step 2: "development" target #
+# Step 2: "local" target #
 ################################
-FROM base as development
-ARG NPM_VERBOSE
-ENV NPM_CONFIG_LOGLEVEL debug
+FROM base as local
 
 WORKDIR /home/node/
 USER node
 
 COPY --chown=node:node . .
 
-RUN if [ -z "${NPM_VERBOSE}" ]; then\
-      npm install;  \
-    else \
-      npm install --verbose; \
-    fi
-
-CMD ["npm","run", "dev"]
+CMD ["npm","run", "start:watch"]
 
 ###############################
 # Step 3: "production" target #
