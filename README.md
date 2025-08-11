@@ -171,6 +171,16 @@ Vous pouvez consulter ici des exemples d'utilisations: [/documentation/transacti
 
 ## Tests de l'API via Docker
 
+### Dépendances
+
+L'application nécessite node et peut fonctionner avec une base de donnée elasticsearch, n'hésitez pas à jeter un coup d'oeil à [juridependencies](https://github.com/Cour-de-cassation/juridependencies).
+
+### Commandes
+
+Vous pouvez simplement utiliser `npm run start:docker` si vous disposez d'une base elastic.
+
+Vous pouvez tester avec une version mocké d'elastic sur:
+
 ```
 docker run --env WITHOUT_ELASTIC=true -p 80:8080/tcp opendatajustice/judilibre-search:master
 ```
