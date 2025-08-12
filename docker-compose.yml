@@ -6,6 +6,8 @@ services:
       target: local
     env_file:
       - .env
+    ports:
+      - ${API_PORT}:${API_PORT}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
