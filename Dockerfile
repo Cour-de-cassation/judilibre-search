@@ -1,7 +1,7 @@
 #######################
 # Step 1: Base target #
 #######################
-FROM node:20-alpine3.20 as base
+FROM node:20-alpine3.20 AS base
 ARG http_proxy
 ARG https_proxy
 ARG no_proxy
@@ -19,29 +19,21 @@ RUN if [ ! -z "$http_proxy" ] ; then \
    [ -z "$npm_registry" ] || npm config set registry=$npm_registry
 
 ################################
-# Step 2: "development" target #
+# Step 2: "local" target #
 ################################
-FROM base as development
-ARG NPM_VERBOSE
-ENV NPM_CONFIG_LOGLEVEL debug
+FROM base AS local
 
 WORKDIR /home/node/
 USER node
 
 COPY --chown=node:node . .
 
-RUN if [ -z "${NPM_VERBOSE}" ]; then\
-      npm install;  \
-    else \
-      npm install --verbose; \
-    fi
-
-CMD ["npm","run", "dev"]
+CMD ["npm","run", "start:watch"]
 
 ###############################
 # Step 3: "production" target #
 ###############################
-FROM base as production
+FROM base AS production
 ARG NPM_AUDIT_DRY_RUN
 ENV APP_ID=judilibre-search
 ENV API_PORT=8080
