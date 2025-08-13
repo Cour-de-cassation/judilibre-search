@@ -1066,7 +1066,340 @@
             "access": []
           }
         ],
+        "deprecated": true,
         "operationId": "export",
+        "summary": "Permet d'effectuer un export par lot de décisions de justice.",
+        "description": "Destiné aux utilisateurs désirant procéder à leur propre indexation et mise à disposition du contenu, ce point d'entrée leur permet de récupérer des lots de décisions complètes suivant des paramètres et critères simples :\n\n* Nature de décision (filtre) ;\n* Matière (filtre) ;\n* Chambre et formation (filtre) ;\n* Juridiction et commission (filtre) ;\n* Niveau de publication (filtre) ;\n* Type de solution (filtre) ;\n* Intervalle de dates (date de création ou de mise à jour) (filtre) ;\n* Date (tri) ;\n* Nombre de décisions par lot, index du lot (navigation).\n\nL'export par lots est limité par défaut (pour une connexion non authentifiée) à 10 résultats par lot, pour un maximum de 1000 résultats au total."
+      }
+    },
+    "/export": {
+      "get": {
+        "servers": [
+          {
+            "url": "https://sandbox-api.piste.gouv.fr/cassation/judilibre/v1.0",
+            "description": "Serveur de recherche."
+          }
+        ],
+        "parameters": [
+          {
+            "name": "type",
+            "description": "Filtre les résultats suivant la natures des décisions (parmi les valeurs : `arret`, `qpc`, `ordonnance`, `saisie`, etc. - les valeurs disponibles sont accessibles via `GET /taxonomy?id=type`). Un export avec un paramètre `type` vide ou manquant retourne des décisions de toutes natures.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "theme",
+            "description": "Filtre les résultats suivant la matière (nomenclature de la Cour de cassation) relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=theme`). Un export avec un paramètre `theme` vide ou manquant retourne des décisions relatives à toutes les matières.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "chamber",
+            "description": "Filtre les résultats suivant la chambre relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=chamber`). Un export avec un paramètre `chamber` vide ou manquant retourne des décisions relatives à toutes les chambres.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "formation",
+            "description": "Filtre les résultats suivant la formation relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=formation`). Un export avec un paramètre `formation` vide ou manquant retourne des décisions relatives à toutes les formations.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "jurisdiction",
+            "description": "Filtre les résultats suivant la juridiction relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=jurisdiction`). Un export avec un paramètre `jurisdiction` vide ou manquant retourne des décisions relatives à la Cour de cassation (`cc`).",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "location",
+            "description": "Filtre les résultats suivant le code du siège de juridiction ayant émis les décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=location&context_value=ca` pour les cours d'appel et `GET /taxonomy?id=location&context_value=tj` pour les tribunaux judiciaires). Par exemple : `GET /export?...&location=ca_paris`. ",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "publication",
+            "description": "Filtre les résultats suivant le niveau de publication des décisions (parmi les valeurs : `b`, `r`, `l`, `c`, etc. - les valeurs disponibles sont accessibles via `GET /taxonomy?id=publication`). Un export avec un paramètre `publication` vide ou manquant retourne des décisions de n'importe quel niveau de publication.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "solution",
+            "description": "Filtre les résultats suivant le type de solution des décisions (parmi les valeurs : `annulation`, `avis`, `cassation`, `decheance`, `designation`, `irrecevabilite`, `nonlieu`, `qpc`, `rabat`, etc. - les valeurs disponibles sont accessibles via `GET /taxonomy?id=solution`). Un export avec un paramètre `solution` vide retourne des décisions ayant n'importe quel type de solution.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "date_start",
+            "description": "Combiné avec le paramètre `date_end`, permet de restreindre les résultats à un intervalle de dates, au format ISO-8601 (par exemple 2021-05-13, 2021-05-13T06:00:00Z).",
+            "schema": {
+              "format": "date",
+              "type": "string"
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "date_end",
+            "description": "Combiné avec le paramètre `date_start`, permet de restreindre les résultats à un intervalle de dates, au format ISO-8601 (par exemple 2021-05-13, 2021-05-13T06:00:00Z).",
+            "schema": {
+              "format": "date",
+              "type": "string"
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "abridged",
+            "description": "Lorsque ce paramètre vaut `true`, le résultat de la requête contiendra la version abrégée des décisions (sans texte intégral ni métadonnées détaillées, vaut `false` par défaut).",
+            "schema": {
+              "type": "boolean"
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "date_type",
+            "description": "Type de date à prendre en compte pour l’intervalle de dates fourni pour l’export (vaut `creation` ou `update`).",
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "order",
+            "description": "Permet de choisir l’ordre du tri des décisions exportées ('asc' pour un tri par date chronologique ou 'desc' pour un tri par date antichronologique, vaut 'asc' par défaut).",
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "batch_size",
+            "description": "Permet de déterminer le nombre de résultats retournés par lot (1000 maximum, vaut 10 par défaut).",
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "search_after",
+            "description": "L'ID de la décision à partir de laquelle chercher le prochain batch de résultats (fourni par la réponse de la requête précédente).",
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "resolve_references",
+            "description": "Lorsque ce paramètre vaut `true`, le résultat de la requête contiendra, pour chaque information retournée par défaut sous forme de clé, l'intitulé complet de celle-ci (vaut `false` par défaut).",
+            "schema": {
+              "type": "boolean"
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "withFileOfType",
+            "description": "Filtre les résultats suivant le type de documents associés aux décisions, parmi les valeurs : `prep_rapp` (Rapport du rapporteur), `prep_avis` (Avis de l’avocat général), `prep_oral` (Avis oral de l’avocat général), `comm_comm` (Communiqué), `comm_note` (Note explicative), `comm_nora` (Notice au rapport annuel), `comm_lett` (Lettre de chambre), `comm_trad` (Arrêt traduit). Les valeurs disponibles sont accessibles via `GET /taxonomy?id=filetype`.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "particularInterest",
+            "description": "Lorsque ce paramètre vaut `true`, le résultat de la requête sera restreint aux décisions qualifiées comme présentant un intérêt particulier (vaut `false` par défaut).",
+            "schema": {
+              "type": "boolean"
+            },
+            "in": "query",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/exportBatch"
+                },
+                "examples": {
+                  "Exemple d'export.": {
+                    "value": {
+                      "batch_size": 10,
+                      "query": {
+                        "type": [
+                          "arret",
+                          "qpc"
+                        ],
+                        "theme": [],
+                        "chamber": [],
+                        "formation": [],
+                        "jurisdiction": [],
+                        "publication": [
+                          "c",
+                          "b"
+                        ],
+                        "solution": [],
+                        "date_start": "1970-01-01",
+                        "date_end": "2021-01-01",
+                        "order": "desc",
+                        "batch_size": 10,
+                        "resolve_references": false
+                      },
+                      "total": 341,
+                      "next_batch": "...&search_after=0%261729555200000%26673ded6f5559d27e30e40fc5",
+                      "took": 42,
+                      "results": [
+                        {
+                          "id": "5fca7d162a251e6bf9c78514",
+                          "jurisdiction": "cc",
+                          "chamber": "civ3",
+                          "number": "17-18.194",
+                          "numbers": [
+                            "17-18.194",
+                            "16-21.165"
+                          ],
+                          "ecli": "ECLI:FR:CCASS:2018:C301117",
+                          "formation": "fs",
+                          "publication": [
+                            "c",
+                            "b"
+                          ],
+                          "decision_date": "2018-12-20",
+                          "type": "arret",
+                          "solution": "rejet",
+                          "summary": "Le titulaire d'une autorisation temporaire d'occupation, en vigueur au moment de la procédure d'expropriation, est en droit d'obtenir l'indemnisation de son préjudice résultant de l'expropriation",
+                          "themes": [
+                            "Expropriation pour cause d'utilité publique",
+                            "Indemnité",
+                            "Préjudice",
+                            "Réparation",
+                            "Cas",
+                            "Titulaire d'une autorisation temporaire d'occupation en vigueur"
+                          ],
+                          "text": "CIV.3 \r\nCH.B\r\n\r\n\r\n\r\nCOUR DE CASSATION\r\n______________________\r\n\r\n\r\nAudience publique du 20 décembre 2018\r\n\r\n\r\n\r\n\r\nRejet\r\n\r\n\r\nM. CHAUVIN, président\r\n\r\n\r\n\r\nArrêt n° 1117 FS-P+B+I\r\n\r\nPourvoi n° C 17-18.194\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nR É P U B L I Q U E F R A N Ç A I S E\r\n\r\n_________________________\r\n\r\nAU NOM DU PEUPLE FRANÇAIS\r\n_________________________\r\n\r\n\r\nLA COUR DE CASSATION, TROISIÈME CHAMBRE CIVILE, a rendu l'arrêt suivant :\r\n\r\nStatuant sur le pourvoi (...) la cour d'appel n'a pas mis la Cour de cassation en mesure d'exercer son contrôle, violant ainsi les articles 455 du code de procédure civile, ensemble les articles L. 322-1 L. 322-2 du code de l'expropriation.",
+                          "zones": {
+                            "introduction": [
+                              {
+                                "start": 0,
+                                "end": 2309
+                              }
+                            ],
+                            "motivations": [
+                              {
+                                "start": 2309,
+                                "end": 4834
+                              }
+                            ],
+                            "dispositif": [
+                              {
+                                "start": 4834,
+                                "end": 5199
+                              }
+                            ],
+                            "annexes": [
+                              {
+                                "start": 5199,
+                                "end": 16798
+                              }
+                            ]
+                          }
+                        },
+                        {}
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Export effectué avec succès."
+          },
+          "400": {
+            "description": "Requête invalide."
+          },
+          "401": {
+            "description": "Authentification requise."
+          },
+          "403": {
+            "description": "Permissions insuffisantes."
+          },
+          "416": {
+            "description": "La plage d'informations demandée est incorrecte ou ne peut pas être satisfaite."
+          },
+          "423": {
+            "description": "Accès bloqué suite à une activité suspecte."
+          },
+          "429": {
+            "description": "Trop de requêtes."
+          },
+          "500": {
+            "description": "Erreur indéfinie côté serveur."
+          }
+        },
+        "security": [
+          {
+            "access": []
+          }
+        ],
+        "operationId": "scan",
         "summary": "Permet d'effectuer un export par lot de décisions de justice.",
         "description": "Destiné aux utilisateurs désirant procéder à leur propre indexation et mise à disposition du contenu, ce point d'entrée leur permet de récupérer des lots de décisions complètes suivant des paramètres et critères simples :\n\n* Nature de décision (filtre) ;\n* Matière (filtre) ;\n* Chambre et formation (filtre) ;\n* Juridiction et commission (filtre) ;\n* Niveau de publication (filtre) ;\n* Type de solution (filtre) ;\n* Intervalle de dates (date de création ou de mise à jour) (filtre) ;\n* Date (tri) ;\n* Nombre de décisions par lot, index du lot (navigation).\n\nL'export par lots est limité par défaut (pour une connexion non authentifiée) à 10 résultats par lot, pour un maximum de 1000 résultats au total."
       }
