@@ -4,9 +4,9 @@ const Server = require('../modules/server');
 const taxons = require('../taxons');
 
 describe('Testing /healthcheck endpoint', () => {
-  it('GET /healthcheck in test mode should return a "indisponible" status.', async () => {
+  it('GET /healthcheck in test mode should return a "disponible" status.', async () => {
     const { body, statusCode } = await request(Server.app).get('/healthcheck');
     expect(statusCode).toEqual(200);
-    expect(body.status).toEqual('indisponible');
+    expect(body.status).toEqual('disponible');
   });
 });
