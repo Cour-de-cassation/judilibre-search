@@ -42,7 +42,7 @@ function formatElasticToResponse(rawResult, query) {
     const sourceName = result.jurisdiction
 
     const resume = {
-        id: result._id,
+        id: rawResult._id,
         jurisdiction:
             query.resolve_references && taxons[sourceName].jurisdiction.taxonomy[result.jurisdiction]
               ? taxons[sourceName].jurisdiction.taxonomy[result.jurisdiction]
