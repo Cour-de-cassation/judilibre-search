@@ -91,7 +91,6 @@ function formatElasticToResponse(rawResult, query) {
             : [],
         titlesAndSummaries: result.titlesAndSummaries ? result.titlesAndSummaries : [],
         particularInterest: result.particularInterest === true,
-        sort: rawResult.sort
     }
 
     const details = {
@@ -106,7 +105,7 @@ function formatElasticToResponse(rawResult, query) {
         rapprochements: result?.rapprochements?.value ?? [],
         ...(Array.isArray(result.timeline) && result.timeline.length < 2 ? {} : { timeline: result.timeline ? result.timeline : null }),
         partial: result.partial ? result.partial : false,
-        legacy: result.legacy ? result.legacy : {},
+        legacy: result.legacy ? result.legacy : {}
     }
 
         return query.abridged ? resume : { ...resume, ...details }
