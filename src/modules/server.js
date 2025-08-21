@@ -3,7 +3,7 @@ const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
-
+const { requestCountMiddleWare, requestDurationMiddleWare } = require("./metricsCollector")
 class Server {
   constructor() {
     this.app = express();
@@ -11,6 +11,8 @@ class Server {
     this.app.use(cors());
     this.app.use(express.json({ limit: '50mb' }));
     this.app.use(express.urlencoded({ extended: true }));
+    this.app.use(requestCountMiddleWare);
+    this.app.use(requestDurationMiddleWare);
     this.app.use((req, res, next) => {
       res.setHeader('X-Powered-By', false);
       res.setHeader('X-Content-Type-Options', 'nosniff');
