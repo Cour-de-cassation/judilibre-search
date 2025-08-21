@@ -3,8 +3,7 @@ const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
-const { register, http_request_total, http_request_duration_seconds } = require('./metricsCollector')
-
+const { requestCountMiddleWare, requestDurationMiddleWare } = require("./metricsCollector")
 class Server {
   constructor() {
     this.app = express();
@@ -12,30 +11,8 @@ class Server {
     this.app.use(cors());
     this.app.use(express.json({ limit: '50mb' }));
     this.app.use(express.urlencoded({ extended: true }));
-    this.app.use((req, res, next) => {
-      const req_url = new URL(req.url, `http://${req.headers.host}`);
-      const original_res_send_function = res.send;
-      const res_send_interceptor = function (body) {
-        http_request_total.inc(
-          {
-            method: req.method,
-            route: req_url.pathname,
-            status_code: res.statusCode,
-          }
-        );
-        original_res_send_function.call(this, body);
-      };
-      res.send = res_send_interceptor;
-      next();
-    });
-    this.app.use((req, res, next) => {
-      const end = http_request_duration_seconds.startTimer({ method: req.method });
-      res.on("finish", () => {
-        const req_url = new URL(req.url, `http://${req.headers.host}`);
-        end({ route: req_url.pathname,  status_code: res.statusCode });
-      });
-      next();
-    });
+    this.app.use(requestCountMiddleWare);
+    this.app.use(requestDurationMiddleWare);
     this.app.use((req, res, next) => {
       res.setHeader('X-Powered-By', false);
       res.setHeader('X-Content-Type-Options', 'nosniff');

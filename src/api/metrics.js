@@ -1,5 +1,5 @@
 require("../modules/env")
-const { register, http_request_total, http_request_duration_seconds }= require("../modules/metricsCollector")
+const { register }= require("../modules/metricsCollector")
 const express = require('express');
 const api = express.Router();
 
