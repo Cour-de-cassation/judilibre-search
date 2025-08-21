@@ -1111,7 +1111,7 @@
         },
         {
           "name": "search_after",
-          "description": "L'ID de la décision à partir de laquelle chercher le prochain batch de résultats (fourni par la réponse de la requête précédente).",
+          "description": "L'ID de la décision à partir de laquelle chercher le prochain batch de résultats (fourni par la réponse de la requête précédente par le biais de next_batch).",
           "in": "query",
           "type": "string"
         },

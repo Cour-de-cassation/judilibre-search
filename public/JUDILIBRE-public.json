@@ -1072,7 +1072,7 @@
         "description": "Destiné aux utilisateurs désirant procéder à leur propre indexation et mise à disposition du contenu, ce point d'entrée leur permet de récupérer des lots de décisions complètes suivant des paramètres et critères simples :\n\n* Nature de décision (filtre) ;\n* Matière (filtre) ;\n* Chambre et formation (filtre) ;\n* Juridiction et commission (filtre) ;\n* Niveau de publication (filtre) ;\n* Type de solution (filtre) ;\n* Intervalle de dates (date de création ou de mise à jour) (filtre) ;\n* Date (tri) ;\n* Nombre de décisions par lot, index du lot (navigation).\n\nL'export par lots est limité par défaut (pour une connexion non authentifiée) à 10 résultats par lot, pour un maximum de 1000 résultats au total."
       }
     },
-    "/export": {
+    "/scan": {
       "get": {
         "servers": [
           {
@@ -1235,7 +1235,7 @@
           },
           {
             "name": "search_after",
-            "description": "L'ID de la décision à partir de laquelle chercher le prochain batch de résultats (fourni par la réponse de la requête précédente).",
+            "description": "L'ID de la décision à partir de laquelle chercher le prochain batch de résultats (fourni par la réponse de la requête précédente par le biais de next_batch).",
             "schema": {
               "type": "string"
             },
