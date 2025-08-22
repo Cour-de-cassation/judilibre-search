@@ -21,7 +21,7 @@ register.registerMetric(http_request_duration_seconds);
 
 
 module.exports.requestCountMiddleWare = (req, res, next) => {
-  const req_url = new URL(req.url, `http://${req.headers.host}`);
+  const req_url = new URL(req.url.replace(/\/$/,''), `http://${req.headers.host}`);
   const original_res_send_function = res.send;
   const res_send_interceptor = function (body) {
     http_request_total.inc(
@@ -40,7 +40,7 @@ module.exports.requestCountMiddleWare = (req, res, next) => {
 module.exports.requestDurationMiddleWare = (req, res, next) => {
   const end = http_request_duration_seconds.startTimer({ method: req.method });
   res.on("finish", () => {
-    const req_url = new URL(req.url, `http://${req.headers.host}`);
+    const req_url = new URL(req.url.replace(/\/$/,''), `http://${req.headers.host}`);
     end({ route: req_url.pathname,  status_code: res.statusCode });
   });
   next();
