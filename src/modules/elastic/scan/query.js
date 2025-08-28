@@ -186,4 +186,4 @@ function buildQuery(query) {
   };
 }
 
-module.exports = { buildQuery }
+module.exports = { buildQuery, filterByDate, filterByJurisdiction, filterByLocation, filterByParticularInterest, buildFilter }
