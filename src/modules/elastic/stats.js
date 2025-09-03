@@ -61,7 +61,6 @@ function buildAggregationQuery({ query }) {
       )
     }
   };
-
   return { elasticAggregationQuery }
 }
 
@@ -89,11 +88,14 @@ function buildCountQuery({ query }) {
 
 function fetchStatsWithoutElastic({ query }) {
 
-  const elasticAggregationQuery = buildAggregationQuery({ query });
-  const elasticCountQuery = buildCountQuery({ query });
-
-  // console.log(JSON.stringify(elasticCountQuery, null, 4))
-  // console.log(JSON.stringify(elasticAggregationQuery, null, 4))
+  const {elasticAggregationQuery} = buildAggregationQuery({ query });
+  const {elasticCountQuery} = buildCountQuery({ query });
+  console.log("COUNT QUERY")
+  console.log(JSON.stringify(elasticCountQuery, null, 4))
+  console.log("---")
+  console.log("AGGREGATION QUERY")
+  console.log(JSON.stringify(elasticAggregationQuery, null, 4))
+  console.log("---")
 
   const rawCountResult = { body: { count: 123456 } }
   const rawAggregationResult = {
@@ -124,6 +126,7 @@ function fetchStatsWithoutElastic({ query }) {
       }
     }
   }
+
   return { rawCountResult, rawAggregationResult };
 }
 
@@ -133,21 +136,23 @@ async function fetchStats(query) {
     return formatElasticToStatsResponse(rawCountResult, rawAggregationResult, query)
   }
   else {
+    const {elasticCountQuery} = buildCountQuery({ query })
     const rawCountResult = await this.client.count(
       {
         index: process.env.ELASTIC_INDEX,
-        body: buildCountQuery({ query }),
+        body: elasticCountQuery,
       }
     )
-
+    const {elasticAggregationQuery} = buildAggregationQuery({ query })
     const rawAggregationResult = await this.client.search(
       {
         index: process.env.ELASTIC_INDEX,
-        body: buildAggregationQuery({ query }),
+        body: elasticAggregationQuery,
       }
     )
+    return formatElasticToStatsResponse(rawCountResult, rawAggregationResult, query)
   }
-  return formatElasticToStatsResponse(rawCountResult, rawAggregationResult, query)
+  
 
 }
 
@@ -155,12 +160,14 @@ async function fetchStats(query) {
 function formatElasticToStatsResponse(rawCountResult, rawAggregationResult, query) {
   const { body: { count: elasticCount } } = rawCountResult;
   const { body: { aggregations: elasticAggregations } } = rawAggregationResult;
-
+  // console.log("AGGREGATION")
+  // console.log(JSON.stringify(elasticAggregations))
   const response = {
     query: query,
     results: {
-      min_decision_date: elasticAggregations.min_date.value_as_string,
-      max_decision_date: elasticAggregations.max_date.value_as_string,
+      ...{
+      min_decision_date: (elasticAggregations.min_date.value_as_string) ? elasticAggregations.min_date.value_as_string: elasticAggregations.min_date,
+      max_decision_date: (elasticAggregations.max_date.value_as_string) ? elasticAggregations.max_date.value_as_string: elasticAggregations.max_date,
       total_decisions: elasticCount,
     },
     ...(elasticAggregations.decisions_count ?
@@ -172,6 +179,7 @@ function formatElasticToStatsResponse(rawCountResult, rawAggregationResult, quer
       : {}
 
     )
+  }
   }
 
   return response

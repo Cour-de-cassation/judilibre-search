@@ -400,6 +400,9 @@ function decisionWithoutElastic(query) {
     }
   }
 
+  response.particularInterest = false;
+  delete response.displayText;
+
   return response;
 }
 
