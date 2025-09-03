@@ -66,7 +66,7 @@ function buildAggregationQuery({ query }) {
 
 
 function buildCountQuery({ query }) {
-  return {
+  let elasticCountQuery = {
     query: {
       bool: {
         filter: buildFilter(
@@ -79,7 +79,7 @@ function buildCountQuery({ query }) {
       }
     }
   };
-
+  return {elasticCountQuery}
 }
 
 
@@ -137,6 +137,7 @@ async function fetchStats(query) {
   }
   else {
     const {elasticCountQuery} = buildCountQuery({ query })
+    // console.log(JSON.stringify(elasticCountQuery))
     const rawCountResult = await this.client.count(
       {
         index: process.env.ELASTIC_INDEX,
