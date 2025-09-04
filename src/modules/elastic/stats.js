@@ -167,8 +167,8 @@ function formatElasticToStatsResponse(rawCountResult, rawAggregationResult, quer
     query: query,
     results: {
       ...{
-      min_decision_date: (elasticAggregations.min_date.value_as_string) ? elasticAggregations.min_date.value_as_string: elasticAggregations.min_date,
-      max_decision_date: (elasticAggregations.max_date.value_as_string) ? elasticAggregations.max_date.value_as_string: elasticAggregations.max_date,
+      min_decision_date: (elasticAggregations.min_date.value_as_string) ? elasticAggregations.min_date.value_as_string: elasticAggregations.min_date.value,
+      max_decision_date: (elasticAggregations.max_date.value_as_string) ? elasticAggregations.max_date.value_as_string: elasticAggregations.max_date.value,
       total_decisions: elasticCount,
     },
     ...(elasticAggregations.decisions_count ?
