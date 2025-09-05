@@ -87,8 +87,8 @@ function buildCountQuery({ query }) {
       }
     }
   };
-  console.log("COUNT QUERY")
-  console.log(JSON.stringify(elasticCountQuery))
+  // console.log("COUNT QUERY")
+  // console.log(JSON.stringify(elasticCountQuery))
   return { elasticCountQuery }
 }
 
