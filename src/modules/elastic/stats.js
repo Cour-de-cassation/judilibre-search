@@ -1,11 +1,19 @@
 require('../env');
-const taxons = require("../../taxons")
 const { filterByDate, filterByJurisdiction, filterByLocation, filterByParticularInterest, buildFilter } = require("./scan/query")
 
 const DATE_FORMAT = { 'year': 'yyyy', 'month': 'yyy-MM' }
 
 
 function buildAggregationQuery({ query }) {
+
+  // console.log("FILTER")
+  // console.log(JSON.stringify(buildFilter(
+  //   query,
+  //   filterByDate,
+  //   filterByJurisdiction,
+  //   filterByLocation,
+  //   filterByParticularInterest
+  // )))
 
   const aggregationKeys = query.keys?.map(key => {
     if (key !== 'month' && key !== 'year') return { [key]: { terms: { field: (key == 'location') ? `${key}.keyword` : `${key}` } } }
@@ -79,7 +87,9 @@ function buildCountQuery({ query }) {
       }
     }
   };
-  return {elasticCountQuery}
+  console.log("COUNT QUERY")
+  console.log(JSON.stringify(elasticCountQuery))
+  return { elasticCountQuery }
 }
 
 
@@ -88,8 +98,8 @@ function buildCountQuery({ query }) {
 
 function fetchStatsWithoutElastic({ query }) {
 
-  const {elasticAggregationQuery} = buildAggregationQuery({ query });
-  const {elasticCountQuery} = buildCountQuery({ query });
+  const { elasticAggregationQuery } = buildAggregationQuery({ query });
+  const { elasticCountQuery } = buildCountQuery({ query });
   console.log("COUNT QUERY")
   console.log(JSON.stringify(elasticCountQuery, null, 4))
   console.log("---")
@@ -136,7 +146,7 @@ async function fetchStats(query) {
     return formatElasticToStatsResponse(rawCountResult, rawAggregationResult, query)
   }
   else {
-    const {elasticCountQuery} = buildCountQuery({ query })
+    const { elasticCountQuery } = buildCountQuery({ query })
     // console.log(JSON.stringify(elasticCountQuery))
     const rawCountResult = await this.client.count(
       {
@@ -144,7 +154,7 @@ async function fetchStats(query) {
         body: elasticCountQuery,
       }
     )
-    const {elasticAggregationQuery} = buildAggregationQuery({ query })
+    const { elasticAggregationQuery } = buildAggregationQuery({ query })
     const rawAggregationResult = await this.client.search(
       {
         index: process.env.ELASTIC_INDEX,
@@ -153,7 +163,7 @@ async function fetchStats(query) {
     )
     return formatElasticToStatsResponse(rawCountResult, rawAggregationResult, query)
   }
-  
+
 
 }
 
@@ -167,20 +177,20 @@ function formatElasticToStatsResponse(rawCountResult, rawAggregationResult, quer
     query: query,
     results: {
       ...{
-      min_decision_date: (elasticAggregations.min_date.value_as_string) ? elasticAggregations.min_date.value_as_string: elasticAggregations.min_date.value,
-      max_decision_date: (elasticAggregations.max_date.value_as_string) ? elasticAggregations.max_date.value_as_string: elasticAggregations.max_date.value,
-      total_decisions: elasticCount,
-    },
-    ...(elasticAggregations.decisions_count ?
-      {
-        aggregated_data: elasticAggregations.decisions_count.buckets.map(
-          (obj) => ({ key: obj.key, decisions_count: obj.doc_count })
-        )
-      }
-      : {}
+        min_decision_date: (elasticAggregations.min_date.value_as_string) ? elasticAggregations.min_date.value_as_string : elasticAggregations.min_date.value,
+        max_decision_date: (elasticAggregations.max_date.value_as_string) ? elasticAggregations.max_date.value_as_string : elasticAggregations.max_date.value,
+        total_decisions: elasticCount,
+      },
+      ...(elasticAggregations.decisions_count ?
+        {
+          aggregated_data: elasticAggregations.decisions_count.buckets.map(
+            (obj) => ({ key: obj.key, decisions_count: obj.doc_count })
+          )
+        }
+        : {}
 
-    )
-  }
+      )
+    }
   }
 
   return response

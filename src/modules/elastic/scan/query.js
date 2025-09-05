@@ -41,7 +41,7 @@ function filterByWithFileOfType({ withFileOfType }) {
 
 function filterByParticularInterest({ particularInterest }) {
   const isParticularInterest = particularInterest;
-  return isParticularInterest && { terms: { particularInterest: true } };
+  return isParticularInterest && { term: { particularInterest: true } };
 }
 
 function filterByChamber(chamber) {
