@@ -1,18 +1,195 @@
 require('../env');
 const taxons = require('../../taxons');
 
+const {
+  filterByFunctionsScore,
+  sort,
+  buildFilter,
+  filterByEcli,
+  filterByPourvoi,
+  filterByPublication,
+  filterByChamber,
+  filterByFormation,
+  filterByType,
+  filterBySolution,
+  filterByJurisdiction,
+  filterByLocation,
+  filterByTheme,
+  filterByWithFileOfType,
+  filterByParticularInterest,
+  filterByDate,
+} = require('./utils/query');
+
+const { buildMust, filterByFreeTextTheme, filterByFreeText } = require('./utils/query/filtersFreeText');
+
+function buildSearchQuery(query) {
+  const functionsScore = filterByFunctionsScore(query);
+  const searchString = buildMust(query, filterByFreeTextTheme, filterByFreeText);
+  return {
+    index: process.env.ELASTIC_INDEX,
+    preference: 'preventbouncingresults',
+    explain: false,
+    // size: query.batch_size || 10,
+    _source: true,
+    body: {
+      track_scores: true,
+      query: {
+        function_score: {
+          query: {
+            bool: {
+              filter: buildFilter(
+                query,
+                filterByEcli,
+                filterByPourvoi,
+                filterByPublication,
+                filterByFormation,
+                filterByChamber,
+                filterByType,
+                filterBySolution,
+                filterByJurisdiction,
+                filterByLocation,
+                filterByTheme,
+                filterByWithFileOfType,
+                filterByParticularInterest,
+                filterByDate,
+              ),
+              must: searchString,
+            },
+          },
+          ...(functionsScore ? { functions: functionsScore } : {}),
+        },
+      },
+      highlight: searchString.simple_query_string.fields.filter((_) => _ !== 'themes'),
+      // ...(query.searchAfter ? { search_after: formatUrlParamsIntoSearchAfter(query) } : {}),
+      sort: sort(query),
+    },
+  };
+}
+
+function formatDecisionToResponse(rawResult, query) {
+  const result = rawResult._source;
+  const sourceName = result.jurisdiction;
+
+  const resume = {
+    id: rawResult._id,
+    jurisdiction:
+      query.resolve_references && taxons[sourceName].jurisdiction.taxonomy[result.jurisdiction]
+        ? taxons[sourceName].jurisdiction.taxonomy[result.jurisdiction]
+        : result.jurisdiction,
+    chamber:
+      query.resolve_references && taxons[sourceName].chamber.taxonomy[result.chamber]
+        ? taxons[sourceName].chamber.taxonomy[result.chamber]
+        : result.chamber,
+    number: formatNumber(result),
+    numbers: formatNumbers(result),
+    ecli: result.ecli,
+    formation:
+      query.resolve_references && taxons[sourceName].formation.taxonomy[result.formation]
+        ? taxons[sourceName].formation.taxonomy[result.formation]
+        : result.formation,
+    location:
+      query.resolve_references && taxons[sourceName].location.taxonomy[result.location]
+        ? taxons[sourceName].location.taxonomy[result.location]
+        : result.location,
+    publication:
+      query.resolve_references && result.publication
+        ? result.publication.map((key) => {
+            if (taxons[sourceName].publication.taxonomy[key]) {
+              return taxons[sourceName].publication.taxonomy[key];
+            }
+            return key;
+          })
+        : result.publication,
+    decision_date: result.decision_date,
+    decision_datetime: result.decision_datetime,
+    solution:
+      query.resolve_references && taxons[sourceName].solution.taxonomy[result.solution]
+        ? taxons[sourceName].solution.taxonomy[result.solution]
+        : result.solution,
+    solution_alt: result.solution_alt,
+    ...(result.type === undefined ? {} : { type: formatType(query.resolve_references, result) }),
+    summary: result.summary,
+    themes: result.themes,
+    nac: result.nac ? result.nac : null,
+    portalis: result.portalis ? result.portalis : null,
+    bulletin: result.bulletin,
+    files:
+      taxons[sourceName] && taxons[sourceName].filetype && taxons[sourceName].filetype.buildFilesList
+        ? taxons[sourceName].filetype.buildFilesList(rawResult._id, result.files, query.resolve_references)
+        : [],
+    titlesAndSummaries: result.titlesAndSummaries ? result.titlesAndSummaries : [],
+    particularInterest: result.particularInterest === true,
+  };
+
+  const details = {
+    source: result.source,
+    text: result.displayText,
+    update_date: result.update_date,
+    update_datetime: result.update_datetime,
+    ...(result.partial && result.zones ? {} : { zones: result.zones }),
+    contested: result.contested ? result.contested : null,
+    forward: result.forward ? result.forward : null,
+    visa: result.visa ? result.visa.map((item) => ({ title: item })) : [],
+    rapprochements: result?.rapprochements?.value ?? [],
+    ...(Array.isArray(result.timeline) && result.timeline.length < 2
+      ? {}
+      : { timeline: result.timeline ? result.timeline : null }),
+    partial: result.partial ? result.partial : false,
+    legacy: result.legacy ? result.legacy : {},
+  };
+
+  return query.abridged ? resume : { ...resume, ...details };
+}
+
+async function getSearchCount() {
+  const rawResponse = await this.client.search(searchQuery.query);
+  const resultCount = await this.client.count({
+    index: searchQuery.query.index,
+    body: { query: searchQuery.query.body.query },
+  });
+
+  if (rawResponse.body.hits.hits.length > 0) return {
+    rawResponses 
+  }
+}
+
 async function search(query) {
   if (process.env.WITHOUT_ELASTIC) {
     return searchWithoutElastic.apply(this, [query]);
   }
 
-  let searchQuery = this.buildQuery(query, 'search');
+  const searchQuery = buildSearchQuery(query);
+  const hasSearchString = searchQuery.body.query.function_score.query.bool.must.simple_query_string.query.length > 0;
 
-  let string = query.query ? query.query.trim() : '';
+  if (!hasSearchString)
+    return {
+      // page: searchQuery.page,
+      // page_size: searchQuery.page_size,
+      query: query,
+      total: 0,
+      previous_page: null,
+      next_page: null,
+      took: 0,
+      max_score: 0,
+      results: [],
+      relaxed: false,
+      searchQuery,
+      date: new Date(),
+    };
 
-  let response = {
-    page: searchQuery.page,
-    page_size: searchQuery.page_size,
+  const rawResponse = await this.client.search(searchQuery.query);
+  const resultCount = await this.client.count({
+    index: searchQuery.query.index,
+    body: { query: searchQuery.query.body.query },
+  });
+
+  const responses = rawResponse.body.hits.hits ?? [];
+
+  // let string = query.query ? query.query.trim() : '';
+
+  return {
+    // page: searchQuery.page,
+    // page_size: searchQuery.page_size,
     query: query,
     total: 0,
     previous_page: null,
@@ -21,15 +198,11 @@ async function search(query) {
     max_score: 0,
     results: [],
     relaxed: false,
-    searchQuery: JSON.stringify(searchQuery.query),
+    searchQuery,
     date: new Date(),
   };
 
   if (searchQuery.query && (string || searchQuery.hasString)) {
-    if (process.env.API_VERBOSITY === 'debug') {
-      response.searchQuery = searchQuery.query;
-    }
-
     let rawResponse = await this.client.search(searchQuery.query);
     let resultCount = await this.client.count({
       index: searchQuery.query.index,
@@ -53,18 +226,18 @@ async function search(query) {
           if (searchQuery.page > 0) {
             let previous_page_params = new URLSearchParams();
             Object.entries(query).forEach(([key, value]) => {
-              if (Array.isArray(value)) value.forEach(_ => previous_page_params.append(key, _))
-              else previous_page_params.append(key, value)
-            })
+              if (Array.isArray(value)) value.forEach((_) => previous_page_params.append(key, _));
+              else previous_page_params.append(key, value);
+            });
             previous_page_params.set('page', searchQuery.page - 1);
             response.previous_page = previous_page_params.toString();
           }
           if ((searchQuery.page + 1) * searchQuery.page_size < response.total) {
             let next_page_params = new URLSearchParams();
             Object.entries(query).forEach(([key, value]) => {
-              if (Array.isArray(value)) value.forEach(_ => next_page_params.append(key, _))
-              else next_page_params.append(key, value)
-            })
+              if (Array.isArray(value)) value.forEach((_) => next_page_params.append(key, _));
+              else next_page_params.append(key, value);
+            });
             next_page_params.set('page', searchQuery.page + 1);
             response.next_page = next_page_params.toString();
           }
