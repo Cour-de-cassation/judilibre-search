@@ -1,5 +1,19 @@
 const { getCursors } = require('./utils/pagination');
-const { formatSearchAfterIntoUrlParams, formatUrlParamsIntoSearchAfter, formatType, formatNumber, formatNumbers } = require('./utils/format');
+
+const { 
+  formatSearchAfterIntoUrlParams, 
+  formatUrlParamsIntoSearchAfter, 
+  formatType, 
+  formatNumber, 
+  formatNumbers, 
+  formatJurisdiction, 
+  formatChamber, 
+  formatFormation, 
+  formatLocation, 
+  formatPublication, 
+  formatSolution 
+} = require('./utils/format');
+
 const {
   filterByChamber,
   filterByDate,
@@ -16,7 +30,6 @@ const {
 } = require('./utils/query/filters');
 
 const { filterByFreeTextTheme, buildMustByFilters } = require('./utils/query/filtersFreeText');
-
 const { sort } = require('./utils/query/helpers');
 
 function buildScanQuery(query) {
@@ -59,55 +72,28 @@ function buildScanQuery(query) {
 
 function formatDecisionToResponse(rawResult, query) {
   const result = rawResult._source;
-  const sourceName = result.jurisdiction;
 
   const resume = {
     id: rawResult._id,
-    jurisdiction:
-      query.resolve_references && taxons[sourceName].jurisdiction.taxonomy[result.jurisdiction]
-        ? taxons[sourceName].jurisdiction.taxonomy[result.jurisdiction]
-        : result.jurisdiction,
-    chamber:
-      query.resolve_references && taxons[sourceName].chamber.taxonomy[result.chamber]
-        ? taxons[sourceName].chamber.taxonomy[result.chamber]
-        : result.chamber,
+    jurisdiction: formatJurisdiction(result, query),
+    chamber: formatChamber(result, query),
     number: formatNumber(result),
     numbers: formatNumbers(result),
     ecli: result.ecli,
-    formation:
-      query.resolve_references && taxons[sourceName].formation.taxonomy[result.formation]
-        ? taxons[sourceName].formation.taxonomy[result.formation]
-        : result.formation,
-    location:
-      query.resolve_references && taxons[sourceName].location.taxonomy[result.location]
-        ? taxons[sourceName].location.taxonomy[result.location]
-        : result.location,
-    publication:
-      query.resolve_references && result.publication
-        ? result.publication.map((key) => {
-            if (taxons[sourceName].publication.taxonomy[key]) {
-              return taxons[sourceName].publication.taxonomy[key];
-            }
-            return key;
-          })
-        : result.publication,
+    formation: formatFormation(result, query),
+    location: formatLocation(result, query),
+    publication: formatPublication(result, query),
     decision_date: result.decision_date,
     decision_datetime: result.decision_datetime,
-    solution:
-      query.resolve_references && taxons[sourceName].solution.taxonomy[result.solution]
-        ? taxons[sourceName].solution.taxonomy[result.solution]
-        : result.solution,
+    solution: formatSolution(result, query),
     solution_alt: result.solution_alt,
-    ...(result.type === undefined ? {} : { type: formatType(query.resolve_references, result) }),
+    ...(result.type === undefined ? {} : { type: formatType(result, query) }),
     summary: result.summary,
     themes: result.themes,
     nac: result.nac ? result.nac : null,
     portalis: result.portalis ? result.portalis : null,
     bulletin: result.bulletin,
-    files:
-      taxons[sourceName] && taxons[sourceName].filetype && taxons[sourceName].filetype.buildFilesList
-        ? taxons[sourceName].filetype.buildFilesList(rawResult._id, result.files, query.resolve_references)
-        : [],
+    files: formatFiles(rawResult._id, result, query),
     titlesAndSummaries: result.titlesAndSummaries ? result.titlesAndSummaries : [],
     particularInterest: result.particularInterest === true,
   };
@@ -132,7 +118,7 @@ function formatDecisionToResponse(rawResult, query) {
   return query.abridged ? resume : { ...resume, ...details };
 }
 
-async function batchScan({ client }, query) {
+async function fetchScan({ client }, query) {
   const searchQuery = buildScanQuery(query);
 
   const resultCount = await client.count({
@@ -158,4 +144,4 @@ async function batchScan({ client }, query) {
   };
 }
 
-module.exports = batchScan;
+module.exports = fetchScan;

@@ -1,5 +1,17 @@
 require('../env');
 const taxons = require('../../taxons');
+const {
+  formatNumber,
+  formatNumbers,
+  formatChamber,
+  formatJurisdiction,
+  formatFormation,
+  formatLocation,
+  formatPublication,
+  formatSolution,
+  formatQueryToUrlParams,
+} = require('./utils/format');
+const { getPages } = require('./utils/pagination');
 
 const {
   filterByFunctionsScore,
@@ -25,11 +37,13 @@ const { buildMust, filterByFreeTextTheme, filterByFreeText } = require('./utils/
 function buildSearchQuery(query) {
   const functionsScore = filterByFunctionsScore(query);
   const searchString = buildMust(query, filterByFreeTextTheme, filterByFreeText);
+  const size = query.page_size || 10;
   return {
     index: process.env.ELASTIC_INDEX,
     preference: 'preventbouncingresults',
     explain: false,
-    // size: query.batch_size || 10,
+    size,
+    from: (query.page || 0) * size,
     _source: true,
     body: {
       track_scores: true,
@@ -60,7 +74,6 @@ function buildSearchQuery(query) {
         },
       },
       highlight: searchString.simple_query_string.fields.filter((_) => _ !== 'themes'),
-      // ...(query.searchAfter ? { search_after: formatUrlParamsIntoSearchAfter(query) } : {}),
       sort: sort(query),
     },
   };
@@ -68,89 +81,51 @@ function buildSearchQuery(query) {
 
 function formatDecisionToResponse(rawResult, query) {
   const result = rawResult._source;
-  const sourceName = result.jurisdiction;
+  const publication = result.publication?.filter(/[br]/i.test) ?? [];
 
-  const resume = {
+  return {
     id: rawResult._id,
-    jurisdiction:
-      query.resolve_references && taxons[sourceName].jurisdiction.taxonomy[result.jurisdiction]
-        ? taxons[sourceName].jurisdiction.taxonomy[result.jurisdiction]
-        : result.jurisdiction,
-    chamber:
-      query.resolve_references && taxons[sourceName].chamber.taxonomy[result.chamber]
-        ? taxons[sourceName].chamber.taxonomy[result.chamber]
-        : result.chamber,
+    jurisdiction: formatJurisdiction(result, query),
+    chamber: formatChamber(result, query),
     number: formatNumber(result),
     numbers: formatNumbers(result),
     ecli: result.ecli,
-    formation:
-      query.resolve_references && taxons[sourceName].formation.taxonomy[result.formation]
-        ? taxons[sourceName].formation.taxonomy[result.formation]
-        : result.formation,
-    location:
-      query.resolve_references && taxons[sourceName].location.taxonomy[result.location]
-        ? taxons[sourceName].location.taxonomy[result.location]
-        : result.location,
-    publication:
-      query.resolve_references && result.publication
-        ? result.publication.map((key) => {
-            if (taxons[sourceName].publication.taxonomy[key]) {
-              return taxons[sourceName].publication.taxonomy[key];
-            }
-            return key;
-          })
-        : result.publication,
+    formation: formatFormation(result, query),
+    location: formatLocation(result, query),
+    publication: formatPublication({ ...result, publication }, query),
     decision_date: result.decision_date,
-    decision_datetime: result.decision_datetime,
-    solution:
-      query.resolve_references && taxons[sourceName].solution.taxonomy[result.solution]
-        ? taxons[sourceName].solution.taxonomy[result.solution]
-        : result.solution,
+    solution: formatSolution(result, query),
     solution_alt: result.solution_alt,
-    ...(result.type === undefined ? {} : { type: formatType(query.resolve_references, result) }),
+    ...(result.type === undefined ? {} : { type: formatType(result, query) }),
     summary: result.summary,
     themes: result.themes,
     nac: result.nac ? result.nac : null,
     portalis: result.portalis ? result.portalis : null,
     bulletin: result.bulletin,
-    files:
-      taxons[sourceName] && taxons[sourceName].filetype && taxons[sourceName].filetype.buildFilesList
-        ? taxons[sourceName].filetype.buildFilesList(rawResult._id, result.files, query.resolve_references)
-        : [],
+    files: formatFiles(rawResult._id, result, query),
     titlesAndSummaries: result.titlesAndSummaries ? result.titlesAndSummaries : [],
     particularInterest: result.particularInterest === true,
   };
-
-  const details = {
-    source: result.source,
-    text: result.displayText,
-    update_date: result.update_date,
-    update_datetime: result.update_datetime,
-    ...(result.partial && result.zones ? {} : { zones: result.zones }),
-    contested: result.contested ? result.contested : null,
-    forward: result.forward ? result.forward : null,
-    visa: result.visa ? result.visa.map((item) => ({ title: item })) : [],
-    rapprochements: result?.rapprochements?.value ?? [],
-    ...(Array.isArray(result.timeline) && result.timeline.length < 2
-      ? {}
-      : { timeline: result.timeline ? result.timeline : null }),
-    partial: result.partial ? result.partial : false,
-    legacy: result.legacy ? result.legacy : {},
-  };
-
-  return query.abridged ? resume : { ...resume, ...details };
 }
 
-async function getSearchCount() {
-  const rawResponse = await this.client.search(searchQuery.query);
+async function getSafeSearch(searchQuery, repeated = false) {
+  if (repeated)
+    searchQuery.body.query.function_score.query.bool.must.simple_query_string = {
+      ...searchQuery.body.query.function_score.query.bool.must.simple_query_string,
+      default_operator: 'or',
+      auto_generate_synonyms_phrase_query: true,
+      fuzzy_max_expansions: 50,
+      fuzzy_transpositions: true,
+    };
+
+  const resultSearch = await this.client.search(searchQuery);
   const resultCount = await this.client.count({
-    index: searchQuery.query.index,
-    body: { query: searchQuery.query.body.query },
+    index: searchQuery.index,
+    body: { query: searchQuery.body.query },
   });
 
-  if (rawResponse.body.hits.hits.length > 0) return {
-    rawResponses 
-  }
+  if (resultSearch.body.hits.hits.length <= 0 && !repeated) return getSafeSearch(searchQuery, repeated = true);
+  return { resultSearch, resultCount, repeated };
 }
 
 async function search(query) {
@@ -163,8 +138,8 @@ async function search(query) {
 
   if (!hasSearchString)
     return {
-      // page: searchQuery.page,
-      // page_size: searchQuery.page_size,
+      page: searchQuery.page,
+      page_size: searchQuery.size,
       query: query,
       total: 0,
       previous_page: null,
@@ -177,207 +152,29 @@ async function search(query) {
       date: new Date(),
     };
 
-  const rawResponse = await this.client.search(searchQuery.query);
-  const resultCount = await this.client.count({
-    index: searchQuery.query.index,
-    body: { query: searchQuery.query.body.query },
-  });
-
-  const responses = rawResponse.body.hits.hits ?? [];
-
-  // let string = query.query ? query.query.trim() : '';
+  const { resultSearch, resultCount, repeated } = await getSafeSearch(searchQuery);
+  const responses = resultSearch.body.hits.hits ?? [];
+  const total = resultCount?.body?.count ?? rawResponse.body.hits.total.value;
+  const { pageBefore, pageAfter } = getPages(searchQuery.page, searchQuery.size, total);
 
   return {
-    // page: searchQuery.page,
-    // page_size: searchQuery.page_size,
+    page: searchQuery.page,
+    page_size: searchQuery.size,
     query: query,
-    total: 0,
-    previous_page: null,
-    next_page: null,
-    took: 0,
-    max_score: 0,
-    results: [],
-    relaxed: false,
+    total,
+    previous_page: formatQueryToUrlParams({ ...query, page: pageBefore }),
+    next_page: formatQueryToUrlParams({ ...query, page: pageAfter }),
+    took: resultSearch.body.took,
+    max_score: resultSearch.body.hits.max_score,
+    results: responses.map((_) => ({
+      ...formatDecisionToResponse(_, query),
+      score: _._score ? _._score / resultSearch.body.hits.max_score : 0,
+      highlights: formatHighlights(_.highlight, searchQuery.queryField),
+    })),
+    relaxed: repeated,
     searchQuery,
     date: new Date(),
   };
-
-  if (searchQuery.query && (string || searchQuery.hasString)) {
-    let rawResponse = await this.client.search(searchQuery.query);
-    let resultCount = await this.client.count({
-      index: searchQuery.query.index,
-      body: { query: searchQuery.query.body.query },
-    });
-
-    if (rawResponse && rawResponse.body) {
-      if (!rawResponse.body.hits || !rawResponse.body.hits.total || !rawResponse.body.hits.total.value) {
-        searchQuery = this.buildQuery(query, 'search', true);
-        response.relaxed = true;
-        rawResponse = await this.client.search(searchQuery.query);
-        resultCount = await this.client.count({
-          index: searchQuery.query.index,
-          body: { query: searchQuery.query.body.query },
-        });
-      }
-      if (rawResponse && rawResponse.body) {
-        if (rawResponse.body.hits && rawResponse.body.hits.total && rawResponse.body.hits.total.value > 0) {
-          response.total = resultCount?.body?.count ?? rawResponse.body.hits.total.value;
-          response.max_score = rawResponse.body.hits.max_score;
-          if (searchQuery.page > 0) {
-            let previous_page_params = new URLSearchParams();
-            Object.entries(query).forEach(([key, value]) => {
-              if (Array.isArray(value)) value.forEach((_) => previous_page_params.append(key, _));
-              else previous_page_params.append(key, value);
-            });
-            previous_page_params.set('page', searchQuery.page - 1);
-            response.previous_page = previous_page_params.toString();
-          }
-          if ((searchQuery.page + 1) * searchQuery.page_size < response.total) {
-            let next_page_params = new URLSearchParams();
-            Object.entries(query).forEach(([key, value]) => {
-              if (Array.isArray(value)) value.forEach((_) => next_page_params.append(key, _));
-              else next_page_params.append(key, value);
-            });
-            next_page_params.set('page', searchQuery.page + 1);
-            response.next_page = next_page_params.toString();
-          }
-          rawResponse.body.hits.hits.forEach((rawResult) => {
-            rawResult._source.publication = rawResult._source.publication
-              ? rawResult._source.publication.filter((item) => {
-                  return /[br]/i.test(item);
-                })
-              : [];
-
-            let taxonFilter = rawResult._source.jurisdiction;
-
-            let result = {
-              score: rawResult._score ? rawResult._score / response.max_score : 0,
-              highlights: {},
-              id: rawResult._id,
-              jurisdiction:
-                query.resolve_references && taxons[taxonFilter].jurisdiction.taxonomy[rawResult._source.jurisdiction]
-                  ? taxons[taxonFilter].jurisdiction.taxonomy[rawResult._source.jurisdiction]
-                  : rawResult._source.jurisdiction,
-              chamber:
-                query.resolve_references && taxons[taxonFilter].chamber.taxonomy[rawResult._source.chamber]
-                  ? taxons[taxonFilter].chamber.taxonomy[rawResult._source.chamber]
-                  : rawResult._source.chamber,
-              number: Array.isArray(rawResult._source.numberFull)
-                ? rawResult._source.numberFull[0]
-                : rawResult._source.numberFull,
-              numbers: Array.isArray(rawResult._source.numberFull)
-                ? rawResult._source.numberFull
-                : [rawResult._source.numberFull],
-              ecli: rawResult._source.ecli,
-              formation:
-                query.resolve_references && taxons[taxonFilter].formation.taxonomy[rawResult._source.formation]
-                  ? taxons[taxonFilter].formation.taxonomy[rawResult._source.formation]
-                  : rawResult._source.formation,
-              location:
-                query.resolve_references && taxons[taxonFilter].location.taxonomy[rawResult._source.location]
-                  ? taxons[taxonFilter].location.taxonomy[rawResult._source.location]
-                  : rawResult._source.location,
-              publication:
-                query.resolve_references && rawResult._source.publication
-                  ? rawResult._source.publication.map((key) => {
-                      if (taxons[taxonFilter].publication.taxonomy[key]) {
-                        return taxons[taxonFilter].publication.taxonomy[key];
-                      }
-                      return key;
-                    })
-                  : rawResult._source.publication,
-              decision_date: rawResult._source.decision_date,
-              solution:
-                query.resolve_references && taxons[taxonFilter].solution.taxonomy[rawResult._source.solution]
-                  ? taxons[taxonFilter].solution.taxonomy[rawResult._source.solution]
-                  : rawResult._source.solution,
-              solution_alt: rawResult._source.solution_alt,
-              type:
-                query.resolve_references && taxons[taxonFilter].type.taxonomy[rawResult._source.type]
-                  ? taxons[taxonFilter].type.taxonomy[rawResult._source.type]
-                  : rawResult._source.type,
-              summary: rawResult._source.summary,
-              themes: rawResult._source.themes,
-              bulletin: rawResult._source.bulletin,
-              files:
-                taxons[taxonFilter] && taxons[taxonFilter].filetype && taxons[taxonFilter].filetype.buildFilesList
-                  ? taxons[taxonFilter].filetype.buildFilesList(
-                      rawResult._id,
-                      rawResult._source.files,
-                      query.resolve_references,
-                    )
-                  : [],
-              titlesAndSummaries: rawResult._source.titlesAndSummaries ? rawResult._source.titlesAndSummaries : [],
-              particularInterest: rawResult._source.particularInterest === true,
-            };
-
-            if (rawResult._source.jurisdiction === 'cc') {
-              result.number = formatPourvoiNumber(result.number);
-              result.numbers = result.numbers ? result.numbers.map(formatPourvoiNumber) : result.numbers;
-            }
-
-            if (result.type === 'undefined') {
-              delete result.type;
-            }
-
-            let hasHitsInSpecificZone = false;
-            for (let key in searchQuery.queryField) {
-              let field = searchQuery.queryField[key];
-              if (rawResult.highlight && rawResult.highlight[field] && rawResult.highlight[field].length > 0) {
-                if (key !== 'text' && /zone/i.test(field)) {
-                  hasHitsInSpecificZone = true;
-                }
-                result.highlights[key] = [];
-                rawResult.highlight[field].forEach(function (hit) {
-                  hit = hit.replace(/^[^a-z<>]*/gim, '');
-                  hit = hit.replace(/[^a-z<>]*$/gim, '');
-                  hit = hit.replace(/X+/gm, '…');
-                  result.highlights[key].push(hit.trim());
-                });
-              }
-              if (
-                rawResult.highlight &&
-                rawResult.highlight[field + '.exact'] &&
-                rawResult.highlight[field + '.exact'].length > 0
-              ) {
-                if (key !== 'text' && /zone/i.test(field)) {
-                  hasHitsInSpecificZone = true;
-                }
-                result.highlights[key] = [];
-                rawResult.highlight[field + '.exact'].forEach(function (hit) {
-                  hit = hit.replace(/^[^a-z<>]*/gim, '');
-                  hit = hit.replace(/[^a-z<>]*$/gim, '');
-                  hit = hit.replace(/X+/gm, '…');
-                  result.highlights[key].push(hit.trim());
-                });
-              }
-            }
-
-            // Don't add highlights from the whole text when some specific zones are already highlighted:
-            if (hasHitsInSpecificZone === true && result.highlights['text']) {
-              delete result.highlights['text'];
-            }
-
-            response.results.push(result);
-          });
-        }
-        if (rawResponse.body.took) {
-          response.took = rawResponse.body.took;
-        }
-      }
-    }
-  }
-
-  return response;
-}
-
-function formatPourvoiNumber(str) {
-  str = `${str}`.trim();
-  if (/^\d{2}\D\d{2}\D\d{3}$/.test(str) === false) {
-    str = str.replace(/\D/gim, '').trim();
-    str = `${str.substring(0, 2)}-${str.substring(2, 4)}.${str.substring(4)}`;
-  }
-  return str;
 }
 
 function searchWithoutElastic(query) {
