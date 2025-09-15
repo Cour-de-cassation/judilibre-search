@@ -1,4 +1,4 @@
-const { inverseSort } = require("./query/helpers");
+const { inverseSort } = require('./query/helpers');
 
 const INITIAL_VALUE = 'INITIAL_VALUE';
 
@@ -45,7 +45,14 @@ async function getCursors(responses, searchQuery, client) {
   };
 }
 
+function getPages(currentPage, size, total) {
+  const pageBefore = currentPage <= 0 ? 0 : currentPage - 1;
+  const pageAfter = currentPage * size < total ? currentPage + 1 : null;
+  return { pageBefore, pageAfter };
+}
+
 module.exports = {
   INITIAL_VALUE,
   getCursors,
+  getPages
 };
