@@ -2,6 +2,8 @@ require('../modules/env');
 const express = require('express');
 const api = express.Router();
 const { checkSchema, validationResult } = require('express-validator');
+const { VALIDATORS } = require("./validators")
+
 const Elastic = require('../modules/elastic');
 const taxons = require('../taxons');
 const route = 'scan';
@@ -11,138 +13,17 @@ const iso8601 =
 api.get(
   `/${route}`,
   checkSchema({
-    type: {
-      in: 'query',
-      toArray: true,
-    },
-    'type.*': {
-      in: 'query',
-      isString: true,
-      toLowerCase: true,
-      isIn: {
-        options: [taxons.all.type.options],
-      },
-      errorMessage: `Value of the type parameter must be in [${taxons.all.type.keys}].`,
-      optional: true,
-    },
-    theme: {
-      in: 'query',
-      toArray: true,
-    },
-    'theme.*': {
-      in: 'query',
-      isString: true,
-      errorMessage: `Theme parameter must be an array of strings.`,
-      optional: true,
-    },
-    chamber: {
-      in: 'query',
-      toArray: true,
-    },
-    'chamber.*': {
-      in: 'query',
-      isString: true,
-      toLowerCase: true,
-      isIn: {
-        options: [taxons.all.chamber.options],
-      },
-      errorMessage: `Value of the chamber parameter must be in [${taxons.all.chamber.keys}].`,
-      optional: true,
-    },
-    formation: {
-      in: 'query',
-      toArray: true,
-    },
-    'formation.*': {
-      in: 'query',
-      isString: true,
-      toLowerCase: true,
-      isIn: {
-        options: [taxons.all.formation.options],
-      },
-      errorMessage: `Value of the formation parameter must be in [${taxons.all.formation.keys}].`,
-      optional: true,
-    },
-    jurisdiction: {
-      in: 'query',
-      toArray: true,
-    },
-    'jurisdiction.*': {
-      in: 'query',
-      isString: true,
-      toLowerCase: true,
-      isIn: {
-        options: [taxons.all.jurisdiction.options],
-      },
-      errorMessage: `Value of the jurisdiction parameter must be in [${taxons.all.jurisdiction.keys}].`,
-      optional: true,
-    },
-    location: {
-      in: 'query',
-      toArray: true,
-    },
-    'location.*': {
-      in: 'query',
-      isString: true,
-      toLowerCase: true,
-      isIn: {
-        options: [taxons.all.location.options],
-      },
-      errorMessage: `Value of the location parameter must be in [${taxons.all.location.keys}].`,
-      optional: true,
-    },
-    publication: {
-      in: 'query',
-      toArray: true,
-    },
-    'publication.*': {
-      in: 'query',
-      isString: true,
-      toLowerCase: true,
-      isIn: {
-        options: [taxons.all.publication.options],
-      },
-      errorMessage: `Value of the publication parameter must be in [${taxons.all.publication.keys}].`,
-      optional: true,
-    },
-    solution: {
-      in: 'query',
-      toArray: true,
-    },
-    'solution.*': {
-      in: 'query',
-      isString: true,
-      toLowerCase: true,
-      isIn: {
-        options: [taxons.all.solution.options],
-      },
-      errorMessage: `Value of the solution parameter must be in [${taxons.all.solution.keys}].`,
-      optional: true,
-    },
-    date_start: {
-      in: 'query',
-      isString: true,
-      isISO8601: true,
-      errorMessage: `Start date must be a valid ISO-8601 date (e.g. 2021-05-13, 2021-05-13T06:00:00Z).`,
-      optional: true,
-    },
-    date_end: {
-      in: 'query',
-      isString: true,
-      isISO8601: true,
-      errorMessage: `End date must be a valid ISO-8601 date (e.g. 2021-05-13, 2021-05-13T06:00:00Z).`,
-      optional: true,
-    },
-    date_type: {
-      in: 'query',
-      isString: true,
-      toLowerCase: true,
-      isIn: {
-        options: [taxons.all.date_type.options],
-      },
-      errorMessage: `Value of the date_type parameter must be in [${taxons.all.date_type.keys}].`,
-      optional: true,
-    },
+    ...VALIDATORS.TYPES,
+    ...VALIDATORS.THEMES,
+    ...VALIDATORS.CHAMBERS,
+    ...VALIDATORS.FORMATIONS,
+    ...VALIDATORS.JURISDICTIONS,
+    ...VALIDATORS.LOCATIONS,
+    ...VALIDATORS.PUBLICATIONS,
+    ...VALIDATORS.SOLUTIONS,
+    ...VALIDATORS.DATE_START,
+    ...VALIDATORS.DATE_END,
+    ...VALIDATORS.DATE_TYPE,
     order: {
       in: 'query',
       isString: true,
@@ -199,13 +80,7 @@ api.get(
       errorMessage: `Value(s) of the withFileOfType parameter must be in [${taxons.all.filetype.keys}].`,
       optional: true,
     },
-    particularInterest: {
-      in: 'query',
-      isBoolean: true,
-      toBoolean: true,
-      errorMessage: `Value of the particularInterest parameter must be a boolean.`,
-      optional: true,
-    },
+    ...VALIDATORS.PARTICULAR_INTEREST,
   }),
   async (req, res) => {
     if (process.env.APP_HOST_ALTER === undefined) {

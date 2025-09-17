@@ -52,12 +52,15 @@ function isExactSearch({ query: freeSearch, operator }) {
 
 function getFieldsWheights(query, fields) {
   if (isExactSearch(query)) return fields.map((_) => (_ !== 'visa' ? `${_}.exact` : _));
-  return fields.map((_) => (fieldsWithWheights[_] === null ? _ : `${_}^${fieldsWithWheights[_]}`));
+  return fields.map((_) => (
+    fieldsWithWheights[_].heights === null ? _ : `${_}^${fieldsWithWheights[_].heights}`));
 }
 
 function buildFreeFields(query) {
   const fields = [
-    ...Object.keys(fieldsWithWheights).filter((_) => query.fields.includes(_)),
+    ...Object.entries(fieldsWithWheights)
+      .filter(([_, value]) => query.fields.includes(value.taxonomie))
+      .map(([key]) => key),
     ...(isFieldTheme(query) ? ['themes'] : []),
     ...(isFieldVisa(query) ? ['visa'] : []),
   ];
