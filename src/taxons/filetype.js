@@ -10,6 +10,7 @@ const taxon = {
   comm_nora: 'Notice au rapport annuel',
   comm_lett: 'Lettre de chambre',
   comm_trad: 'Arrêt traduit',
+  datt_grph: 'Graphique',
 };
 
 const importCode = {
@@ -24,6 +25,7 @@ const importCode = {
   prep_rapp: 1,
   prep_raco: 9,
   prep_avpg: 10,
+  datt_grph: 12,
 };
 
 function getCodeFromImportType(type) {
@@ -43,6 +45,16 @@ function isCommunicationDoc(type) {
   return key && key.indexOf('comm') !== -1;
 }
 
+function isAttacheDoc(type) {
+  const key = getCodeFromImportType(type);
+  return key && key.indexOf('datt') !== -1;
+}
+
+function isPreparatoireDoc(type) {
+  const key = getCodeFromImportType(type);
+  return key && key.indexOf('prep') !== -1;
+}
+
 function buildFilesList(decisionId, files, resolve_references) {
   const filesList = [];
   const path = require('path');
@@ -58,6 +70,8 @@ function buildFilesList(decisionId, files, resolve_references) {
         id: files[i].id,
         type: resolve_references && taxon[code] ? taxon[code] : code,
         isCommunication: isCommunicationDoc(files[i].type),
+        isPreparatoire: isPreparatoireDoc(files[i].type),
+        isAttache: isAttacheDoc(files[i].type),
         date: fileDateForDisplay,
       };
       if (files[i].size && files[i].location) {
@@ -86,5 +100,7 @@ module.exports = {
   taxonomy: taxon,
   getCodeFromImportType: getCodeFromImportType,
   isCommunicationDoc: isCommunicationDoc,
+  isAttacheDoc: isAttacheDoc,
+  isPreparatoireDoc: isPreparatoireDoc,
   buildFilesList: buildFilesList,
 };
