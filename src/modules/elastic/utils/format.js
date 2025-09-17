@@ -70,19 +70,16 @@ module.exports.formatFiles = function formatFiles(id, result, query) {
 };
 
 module.exports.formatHighlights = function formatHighlights(highlight) {
-  const fields = Object.keys(fieldsWithWheights);
+  const fields = Object.entries(fieldsWithWheights);
 
-  // maybe technical debt: public highlight and internal are differents, why ?
-  const fieldToKey = _ => _.replace('zone', '').toLowerCase()
+  const hasZone = fields.some(([_, value]) => value.taxonomie !== 'text' && /zone/i.test(value));
+  return fields.reduce((acc, [key, field]) => {
+    if (hasZone && field.taxonomie === 'text') return acc;
 
-  const hasZone = fields.some((field) => field !== 'text' && /zone/i.test(field));
-  return fields.reduce((acc, field) => {
-    if (hasZone && field === 'text') return acc;
-
-    const highlightFounded = highlight[field] ?? highlight[field + '.exact'] ?? [];
+    const highlightFounded = highlight[key] ?? highlight[key + '.exact'] ?? [];
     return {
       ...acc,
-      [fieldToKey(_)]: highlightFounded.map((_) =>
+      [field.taxonomie]: highlightFounded.map((_) =>
         _.replace(/^[^a-z<>]*/gim, '')
           .replace(/[^a-z<>]*$/gim, '')
           .replace(/X+/gm, '…')

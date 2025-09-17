@@ -1,14 +1,44 @@
 module.exports.fieldsWithWheights =  {
-  visa: 10,
-  summary: 10,
-  themes: 10,
-  zoneMotivations: 6,
-  zoneDispositif: 6,
-  zoneExpose: 3,
-  zoneMoyens: 3,
-  zoneIntroduction: 2,
-  zoneAnnexes: 2,
-  text: null,
+  visa: {
+    taxonomie: "visa",
+    heights: 10
+  },
+  summary: {
+    taxonomie: "summary",
+    heights: 10
+  },
+  themes: {
+    taxonomie: "themes",
+    heights: 10
+  },
+  zoneMotivations: {
+    taxonomie: "motivation",
+    heights: 6
+  },
+  zoneDispositif: {
+    taxonomie: "dispositif",
+    heights: 6
+  },
+  zoneExpose: {
+    taxonomie: "expose",
+    heights: 3
+  },
+  zoneMoyens: {
+    taxonomie: "moyens",
+    heights: 3
+  },
+  zoneIntroduction: {
+    taxonomie: "introduction",
+    heights: 2
+  },
+  zoneAnnexes: {
+    taxonomie: "annexes",
+    heights: 2
+  },
+  text: {
+    taxonomie: "text",
+    heights: null
+  }
 };
 
 module.exports.sort = function sort({ sort, date_type, order }) {
