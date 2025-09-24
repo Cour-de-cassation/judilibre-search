@@ -10,6 +10,7 @@ const taxon = {
   comm_nora: 'Notice au rapport annuel',
   comm_lett: 'Lettre de chambre',
   comm_trad: 'Arrêt traduit',
+  datt_deci: 'Décision avec graphiques',
   datt_grph: 'Graphique',
 };
 
@@ -25,6 +26,7 @@ const importCode = {
   prep_rapp: 1,
   prep_raco: 9,
   prep_avpg: 10,
+  datt_deci: 13,
   datt_grph: 12,
 };
 
