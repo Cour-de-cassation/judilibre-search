@@ -63,6 +63,11 @@ function filterByJurisdiction({ jurisdiction }) {
   return { terms: { jurisdiction: isJurisdiction ? jurisdiction : ['cc'] } };
 }
 
+function filterBySource({ source }) {
+  const isSource = source && Array.isArray(source) && source.length > 0;
+  return { terms: { source: isSource ? source : ['dila', 'jurinet', 'jurica', 'juritj', 'juritcom'] } };
+}
+
 function filterByDate({ date_start, date_end, date_type }) {
   const isDateStart = !!date_start;
   const isDateEnd = !!date_end;
@@ -174,6 +179,7 @@ function buildQuery(query) {
                 filterByTheme,
                 filterByType,
                 filterByWithFileOfType,
+                filterBySource,
               ),
               must: filterByThemeFromSearchString(query),
             },
