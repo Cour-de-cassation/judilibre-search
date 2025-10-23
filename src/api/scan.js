@@ -77,6 +77,20 @@ api.get(
       errorMessage: `Value of the jurisdiction parameter must be in [${taxons.all.jurisdiction.keys}].`,
       optional: true,
     },
+    source: {
+      in: 'query',
+      toArray: true,
+    },
+    'source.*': {
+      in: 'query',
+      isString: true,
+      toLowerCase: true,
+      isIn: {
+        options: [taxons.all.source.options],
+      },
+      errorMessage: `Value of the source parameter must be in [${taxons.all.source.keys}].`,
+      optional: true,
+    },
     location: {
       in: 'query',
       toArray: true,

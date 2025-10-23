@@ -1142,6 +1142,18 @@
             "required": false
           },
           {
+            "name": "source",
+            "description": "Filtre les résultats suivant la source des décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=source`). Un export avec un paramètre `source` vide ou manquant retourne toutes les décisions.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "in": "query",
+            "required": false
+          },
+          {
             "name": "location",
             "description": "Filtre les résultats suivant le code du siège de juridiction ayant émis les décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=location&context_value=ca` pour les cours d'appel et `GET /taxonomy?id=location&context_value=tj` pour les tribunaux judiciaires). Par exemple : `GET /export?...&location=ca_paris`. ",
             "schema": {

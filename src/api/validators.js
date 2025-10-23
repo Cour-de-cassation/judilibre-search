@@ -35,6 +35,22 @@ const VALIDATORS = {
             optional: true,
         },
     },
+    SOURCES: {
+        source: {
+            in: 'query',
+            toArray: true,
+        },
+        'source.*': {
+            in: 'query',
+            isString: true,
+            toLowerCase: true,
+            isIn: {
+                options: [taxons.all.source.options],
+            },
+            errorMessage: `Value of the source parameter must be in [${taxons.all.source.keys}].`,
+            optional: true,
+        },
+    },
     LOCATIONS: {
         location: {
             in: 'query',

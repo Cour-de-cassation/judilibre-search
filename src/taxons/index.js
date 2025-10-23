@@ -11,6 +11,7 @@ const taxonsEntries = [
   'publication',
   'solution',
   'sort',
+  'source',
   'theme',
   'type',
 ];
