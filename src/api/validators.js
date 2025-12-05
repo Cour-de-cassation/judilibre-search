@@ -13,9 +13,8 @@ const AGGREGATION_KEYS = [
     'nac',
     'themes',
     'publication',
+    'filetype',
 ];
-const ALL_LOCATIONS = [...taxons.ca.location.keys, ...taxons.tj.location.keys, ...taxons.tcom.location.keys]
-const ALL_JURISDICTIONS = [...taxons.all.jurisdiction.keys]
 
 
 const VALIDATORS = {
