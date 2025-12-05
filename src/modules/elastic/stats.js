@@ -17,7 +17,7 @@ function buildAggregationQuery({ query }) {
 
   const aggregationKeys = query.keys?.map(key => {
     if (key !== 'month' && key !== 'year') return { [key]: { terms: { field: (key == 'location') ? `${key}.keyword` : `${key}` } } }
-    if (key == 'filetype') return { [key]: { terms: {field: 'files.type'}}}
+    if (key == 'filetype') return {"filetype": {"terms": {"field": "files.type"}}}
     return {
       [key]: {
         date_histogram: {
