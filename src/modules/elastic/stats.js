@@ -161,6 +161,8 @@ async function fetchStats(query) {
         body: elasticAggregationQuery,
       }
     )
+    console.log("AGGREGATION RESULTS")
+    console.log(JSON.stringify(rawAggregationResult))
     return formatElasticToStatsResponse(rawCountResult, rawAggregationResult, query)
   }
 
