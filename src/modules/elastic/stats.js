@@ -155,6 +155,8 @@ async function fetchStats(query) {
       }
     )
     const { elasticAggregationQuery } = buildAggregationQuery({ query })
+    console.log("AGGREGATION QUERY")
+    console.log(JSON.stringify(elasticAggregationQuery))
     const rawAggregationResult = await this.client.search(
       {
         index: process.env.ELASTIC_INDEX,
