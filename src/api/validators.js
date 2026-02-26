@@ -227,4 +227,4 @@ const VALIDATORS = {
 
 };
 
-module.exports = { VALIDATORS }
+module.exports = { VALIDATORS };
