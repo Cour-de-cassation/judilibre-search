@@ -3,7 +3,10 @@ const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
-const { requestCountMiddleWare, requestDurationMiddleWare } = require("./metricsCollector")
+const { requestCountMiddleWare, requestDurationMiddleWare } = require("./metricsCollector");
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
+
 class Server {
   constructor() {
     this.app = express();
@@ -30,6 +33,7 @@ class Server {
       next();
     });
     this.app.use(require(path.join(__dirname, '..', 'api')));
+    this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
     this.started = false;
   }
 

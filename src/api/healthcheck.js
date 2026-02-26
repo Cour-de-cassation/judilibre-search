@@ -1,4 +1,4 @@
-require('../modules/env');
+// require('../modules/env');
 const express = require('express');
 const api = express.Router();
 const Elastic = require('../modules/elastic');
@@ -20,7 +20,7 @@ async function getHealthcheck(query) {
   if (process.env.WITHOUT_ELASTIC) {
     return {
       status: 'disponible',
-    }
+    };
   }
   const ping = await Elastic.client.ping({});
   if (ping.body === true && ping.statusCode === 200) {
