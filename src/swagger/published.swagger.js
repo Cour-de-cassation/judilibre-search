@@ -2,6 +2,8 @@
  * @swagger
  * /published:
  *   post:
+ *     security:
+ *       - access: []
  *     summary: Vérifie si des décisions sont publiées
  *     tags:
  *       - Décision

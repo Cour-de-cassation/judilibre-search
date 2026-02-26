@@ -2,6 +2,8 @@
  * @swagger
  * /taxonomy:
  *   get:
+ *     security:
+ *       - access: []
  *     summary: Permet de récupérer les listes des termes employés par le processus de recherche.
  *     tags:
  *       - Taxonomie

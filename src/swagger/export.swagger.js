@@ -2,6 +2,8 @@
  * @swagger
  * /export:
  *   get:
+ *     security:
+ *       - access: []
  *     summary: Permet d'effectuer un export par lot de décisions de justice.
  *     deprecated: true
  *     tags:

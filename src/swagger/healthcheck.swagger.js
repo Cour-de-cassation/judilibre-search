@@ -2,6 +2,8 @@
  * @swagger
  * /healthcheck:
  *   get:
+ *     security:
+ *       - access: []
  *     summary: Vérifie la disponibilité du service
  *     tags:
  *       - Monitoring

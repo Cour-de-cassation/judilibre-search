@@ -10,6 +10,16 @@ const options = {
             description: 'La Cour de cassation, dans le cadre de la refonte de son site Web, a initié le projet JUDILIBRE visant à la conception et au développement en interne d\'un moteur de recherche dans le corpus jurisprudentiel, mettant celui-ci à disposition du public dans l\'esprit du décret sur l\'Open Data des décisions de justice.',
             version: '1.2.4',
         },
+        components: {
+            securitySchemes: {
+                access: {
+                    type: 'apiKey',
+                    name: 'KeyId',
+                    in: 'header',
+                    description: 'Access'
+                }
+            }
+        }
     },
     apis: ['./src/swagger/*.swagger.js'],
 };

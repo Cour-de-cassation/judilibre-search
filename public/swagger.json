@@ -5,9 +5,210 @@
     "description": "La Cour de cassation, dans le cadre de la refonte de son site Web, a initié le projet JUDILIBRE visant à la conception et au développement en interne d'un moteur de recherche dans le corpus jurisprudentiel, mettant celui-ci à disposition du public dans l'esprit du décret sur l'Open Data des décisions de justice.",
     "version": "1.2.4"
   },
+  "components": {
+    "securitySchemes": {
+      "access": {
+        "type": "apiKey",
+        "name": "KeyId",
+        "in": "header",
+        "description": "Access"
+      }
+    },
+    "schemas": {
+      "Decision": {
+        "type": "object",
+        "example": {
+          "id": "5fca7d162a251e6bf9c78514",
+          "jurisdiction": "cc",
+          "chamber": "civ3",
+          "number": "17-18.194",
+          "numbers": [
+            "17-18.194",
+            "16-21.165"
+          ],
+          "ecli": "ECLI:FR:CCASS:2018:C301117",
+          "formation": "fs",
+          "publication": [
+            "c",
+            "b"
+          ],
+          "decision_date": "2018-12-20",
+          "decision_datetime": "2018-12-20T06:00:00Z",
+          "update_date": "2018-12-26",
+          "update_datetime": "2018-12-26T11:00:00Z",
+          "type": "arret",
+          "solution": "rejet",
+          "summary": "Le titulaire d'une autorisation temporaire d'occupation...",
+          "themes": [
+            "Expropriation pour cause d'utilité publique",
+            "Indemnité"
+          ],
+          "text": "CIV.3 \r\nCH.B\r\n...",
+          "zones": {
+            "introduction": [
+              {
+                "start": 0,
+                "end": 2309
+              }
+            ],
+            "motivations": [
+              {
+                "start": 2309,
+                "end": 4834
+              }
+            ],
+            "dispositif": [
+              {
+                "start": 4834,
+                "end": 5199
+              }
+            ],
+            "annexes": [
+              {
+                "start": 5199,
+                "end": 16798
+              }
+            ]
+          }
+        },
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "jurisdiction": {
+            "type": "string"
+          },
+          "chamber": {
+            "type": "string"
+          },
+          "number": {
+            "type": "string"
+          },
+          "numbers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "ecli": {
+            "type": "string"
+          },
+          "formation": {
+            "type": "string"
+          },
+          "publication": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "decision_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "decision_datetime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "update_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "update_datetime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "type": {
+            "type": "string"
+          },
+          "solution": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "themes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "text": {
+            "type": "string"
+          },
+          "zones": {
+            "type": "object",
+            "properties": {
+              "introduction": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "start": {
+                      "type": "integer"
+                    },
+                    "end": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              },
+              "motivations": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "start": {
+                      "type": "integer"
+                    },
+                    "end": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              },
+              "dispositif": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "start": {
+                      "type": "integer"
+                    },
+                    "end": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              },
+              "annexes": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "start": {
+                      "type": "integer"
+                    },
+                    "end": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
   "paths": {
     "/decision": {
       "get": {
+        "security": [
+          {
+            "access": []
+          }
+        ],
         "summary": "Récupère une décision de justice",
         "tags": [
           "Décision"
@@ -81,6 +282,11 @@
     },
     "/export": {
       "get": {
+        "security": [
+          {
+            "access": []
+          }
+        ],
         "summary": "Permet d'effectuer un export par lot de décisions de justice.",
         "deprecated": true,
         "tags": [
@@ -376,6 +582,11 @@
     },
     "/healthcheck": {
       "get": {
+        "security": [
+          {
+            "access": []
+          }
+        ],
         "summary": "Vérifie la disponibilité du service",
         "tags": [
           "Monitoring"
@@ -406,6 +617,11 @@
     },
     "/metrics": {
       "get": {
+        "security": [
+          {
+            "access": []
+          }
+        ],
         "summary": "Expose les métriques Prometheus",
         "tags": [
           "Monitoring"
@@ -426,6 +642,11 @@
     },
     "/published": {
       "post": {
+        "security": [
+          {
+            "access": []
+          }
+        ],
         "summary": "Vérifie si des décisions sont publiées",
         "tags": [
           "Décision"
@@ -480,6 +701,11 @@
     },
     "/scan": {
       "get": {
+        "security": [
+          {
+            "access": []
+          }
+        ],
         "summary": "Permet d'effectuer un export par lot de décisions de justice.",
         "tags": [
           "Export"
@@ -780,6 +1006,11 @@
     },
     "/search": {
       "get": {
+        "security": [
+          {
+            "access": []
+          }
+        ],
         "summary": "Permet d'effectuer une recherche dans les données ouvertes des décisions de justice.",
         "tags": [
           "Recherche"
@@ -1117,6 +1348,11 @@
     },
     "/stats": {
       "get": {
+        "security": [
+          {
+            "access": []
+          }
+        ],
         "summary": "Permet de récupérer des statistiques sur le contenu de la base JUDILIBRE.",
         "tags": [
           "Statistiques"
@@ -1236,6 +1472,11 @@
     },
     "/taxonomy": {
       "get": {
+        "security": [
+          {
+            "access": []
+          }
+        ],
         "summary": "Permet de récupérer les listes des termes employés par le processus de recherche.",
         "tags": [
           "Taxonomie"
@@ -1316,6 +1557,11 @@
     },
     "/transactionalhistory": {
       "get": {
+        "security": [
+          {
+            "access": []
+          }
+        ],
         "summary": "Permet de consulter les actions de publication effectuées sur la base de données.",
         "tags": [
           "Export"
@@ -1387,194 +1633,6 @@
           },
           "500": {
             "description": "Erreur indéfinie côté serveur."
-          }
-        }
-      }
-    }
-  },
-  "components": {
-    "schemas": {
-      "Decision": {
-        "type": "object",
-        "example": {
-          "id": "5fca7d162a251e6bf9c78514",
-          "jurisdiction": "cc",
-          "chamber": "civ3",
-          "number": "17-18.194",
-          "numbers": [
-            "17-18.194",
-            "16-21.165"
-          ],
-          "ecli": "ECLI:FR:CCASS:2018:C301117",
-          "formation": "fs",
-          "publication": [
-            "c",
-            "b"
-          ],
-          "decision_date": "2018-12-20",
-          "decision_datetime": "2018-12-20T06:00:00Z",
-          "update_date": "2018-12-26",
-          "update_datetime": "2018-12-26T11:00:00Z",
-          "type": "arret",
-          "solution": "rejet",
-          "summary": "Le titulaire d'une autorisation temporaire d'occupation...",
-          "themes": [
-            "Expropriation pour cause d'utilité publique",
-            "Indemnité"
-          ],
-          "text": "CIV.3 \r\nCH.B\r\n...",
-          "zones": {
-            "introduction": [
-              {
-                "start": 0,
-                "end": 2309
-              }
-            ],
-            "motivations": [
-              {
-                "start": 2309,
-                "end": 4834
-              }
-            ],
-            "dispositif": [
-              {
-                "start": 4834,
-                "end": 5199
-              }
-            ],
-            "annexes": [
-              {
-                "start": 5199,
-                "end": 16798
-              }
-            ]
-          }
-        },
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "jurisdiction": {
-            "type": "string"
-          },
-          "chamber": {
-            "type": "string"
-          },
-          "number": {
-            "type": "string"
-          },
-          "numbers": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "ecli": {
-            "type": "string"
-          },
-          "formation": {
-            "type": "string"
-          },
-          "publication": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "decision_date": {
-            "type": "string",
-            "format": "date"
-          },
-          "decision_datetime": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "update_date": {
-            "type": "string",
-            "format": "date"
-          },
-          "update_datetime": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "type": {
-            "type": "string"
-          },
-          "solution": {
-            "type": "string"
-          },
-          "summary": {
-            "type": "string"
-          },
-          "themes": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "text": {
-            "type": "string"
-          },
-          "zones": {
-            "type": "object",
-            "properties": {
-              "introduction": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "start": {
-                      "type": "integer"
-                    },
-                    "end": {
-                      "type": "integer"
-                    }
-                  }
-                }
-              },
-              "motivations": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "start": {
-                      "type": "integer"
-                    },
-                    "end": {
-                      "type": "integer"
-                    }
-                  }
-                }
-              },
-              "dispositif": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "start": {
-                      "type": "integer"
-                    },
-                    "end": {
-                      "type": "integer"
-                    }
-                  }
-                }
-              },
-              "annexes": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "start": {
-                      "type": "integer"
-                    },
-                    "end": {
-                      "type": "integer"
-                    }
-                  }
-                }
-              }
-            }
           }
         }
       }

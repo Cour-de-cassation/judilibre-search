@@ -2,6 +2,8 @@
  * @swagger
  * /transactionalhistory:
  *   get:
+ *     security:
+ *       - access: []
  *     summary: Permet de consulter les actions de publication effectuées sur la base de données.
  *     tags:
  *       - Export

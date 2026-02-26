@@ -2,6 +2,8 @@
  * @swagger
  * /metrics:
  *   get:
+ *     security:
+ *       - access: []
  *     summary: Expose les métriques Prometheus
  *     tags:
  *       - Monitoring

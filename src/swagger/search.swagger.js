@@ -2,6 +2,8 @@
  * @swagger
  * /search:
  *   get:
+ *     security:
+ *       - access: []
  *     summary: Permet d'effectuer une recherche dans les données ouvertes des décisions de justice.
  *     tags:
  *       - Recherche

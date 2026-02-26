@@ -2,6 +2,8 @@
  * @swagger
  * /decision:
  *   get:
+ *     security:
+ *       - access: []
  *     summary: Récupère une décision de justice
  *     tags:
  *       - Décision

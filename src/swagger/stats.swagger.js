@@ -2,6 +2,8 @@
  * @swagger
  * /stats:
  *   get:
+ *     security:
+ *       - access: []
  *     summary: Permet de récupérer des statistiques sur le contenu de la base JUDILIBRE.
  *     tags:
  *       - Statistiques
