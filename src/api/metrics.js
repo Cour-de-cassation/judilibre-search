@@ -1,3 +1,4 @@
+require("../modules/env");
 const { register }= require("../modules/metricsCollector");
 const express = require('express');
 const api = express.Router();

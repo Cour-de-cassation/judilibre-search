@@ -1,30 +1,19 @@
-require('../modules/env');
+const swaggerJsdoc = require('swagger-jsdoc');
+const fs = require('fs');
+const path = require('path');
 
-const swaggerAutogen = require('swagger-autogen')();
-
-const doc = {
-    info: {
-        title: 'Judilibre Search API',
-        description: 'Moteur de recherche Judilibre',
+const options = {
+    definition: {
+        openapi: '3.0.0',
+        info: {
+            title: 'JUDILIBRE-public',
+            description: 'La Cour de cassation, dans le cadre de la refonte de son site Web, a initié le projet JUDILIBRE visant à la conception et au développement en interne d\'un moteur de recherche dans le corpus jurisprudentiel, mettant celui-ci à disposition du public dans l\'esprit du décret sur l\'Open Data des décisions de justice.',
+            version: '1.2.4',
+        },
+        servers: [{ url: 'http://localhost:8080' }],
     },
-    host: 'localhost:8080'
+    apis: ['./src/swagger/*.swagger.js'],
 };
 
-const outputFile = './swagger.json';
-const routes = [
-    '../api/decision.js',
-    '../api/export.js',
-    '../api/scan.js',
-    '../api/healthcheck.js',
-    '../api/search.js',
-    '../api/stats.js',
-    '../api/taxonomy.js',
-    '../api/published.js',
-    '../api/transactionalhistory.js',
-    '../api/metrics.js',
-];
-
-/* NOTE: If you are using the express Router, you must pass in the 'routes' only the
-root file where the route starts, such as index.js, app.js, routes.js, etc ... */
-
-swaggerAutogen(outputFile, routes, doc);
+const spec = swaggerJsdoc(options);
+fs.writeFileSync(path.join(__dirname, '..', '..', 'public', 'swagger.json'), JSON.stringify(spec, null, 2));

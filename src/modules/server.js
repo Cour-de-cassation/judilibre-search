@@ -5,7 +5,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const { requestCountMiddleWare, requestDurationMiddleWare } = require("./metricsCollector");
 const swaggerUi = require('swagger-ui-express');
-const swaggerDocument = require('./swagger.json');
+const swaggerDocument = require('../../public/swagger.json');
 
 class Server {
   constructor() {
