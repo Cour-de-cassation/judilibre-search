@@ -17,6 +17,10 @@ class Server {
     this.app.use(requestCountMiddleWare);
     this.app.use(requestDurationMiddleWare);
     this.app.use((req, res, next) => {
+      if (req.path.startsWith('/api-docs')) {
+        res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:");
+        return next();
+      }
       res.setHeader('X-Powered-By', false);
       res.setHeader('X-Content-Type-Options', 'nosniff');
       res.setHeader('X-Frame-Options', 'deny');
