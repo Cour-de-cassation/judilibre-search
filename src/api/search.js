@@ -12,12 +12,7 @@ const iso8601 =
 api.get(
   `/${route}`,
   checkSchema({
-    query: {
-      in: 'query',
-      isString: true,
-      errorMessage: `Value of the query parameter must be a string.`,
-      optional: true,
-    },
+    ...VALIDATORS.QUERY,
     field: {
       in: 'query',
       toArray: true,
@@ -32,16 +27,7 @@ api.get(
       errorMessage: `Value of the field parameter must be in [${taxons.all.field.keys}].`,
       optional: true,
     },
-    operator: {
-      in: 'query',
-      isString: true,
-      toLowerCase: true,
-      isIn: {
-        options: [taxons.all.operator.options],
-      },
-      errorMessage: `Value of the operator parameter must be in [${taxons.all.operator.keys}].`,
-      optional: true,
-    },
+    ...VALIDATORS.OPERATOR,
     ...VALIDATORS.TYPES,
     ...VALIDATORS.THEMES,
     ...VALIDATORS.CHAMBERS,
@@ -62,16 +48,7 @@ api.get(
       errorMessage: `Value of the sort parameter must be in [${taxons.all.sort.keys}].`,
       optional: true,
     },
-    order: {
-      in: 'query',
-      isString: true,
-      toLowerCase: true,
-      isIn: {
-        options: [taxons.all.order.options],
-      },
-      errorMessage: `Value of the order parameter must be in [${taxons.all.order.keys}].`,
-      optional: true,
-    },
+    ...VALIDATORS.ORDER,
     page_size: {
       in: 'query',
       isInt: {

@@ -2,7 +2,7 @@ require('../modules/env');
 const express = require('express');
 const api = express.Router();
 const { checkSchema, validationResult } = require('express-validator');
-const { VALIDATORS } = require("./validators")
+const { VALIDATORS } = require('./validators');
 
 const Elastic = require('../modules/elastic');
 const taxons = require('../taxons');
@@ -24,16 +24,7 @@ api.get(
     ...VALIDATORS.DATE_START,
     ...VALIDATORS.DATE_END,
     ...VALIDATORS.DATE_TYPE,
-    order: {
-      in: 'query',
-      isString: true,
-      toLowerCase: true,
-      isIn: {
-        options: [taxons.all.order.options],
-      },
-      errorMessage: `Value of the order parameter must be in [${taxons.all.order.keys}].`,
-      optional: true,
-    },
+    ...VALIDATORS.ORDER,
     batch_size: {
       in: 'query',
       isInt: {
@@ -59,13 +50,7 @@ api.get(
       errorMessage: `Value of the abridged parameter must be a boolean.`,
       optional: true,
     },
-    resolve_references: {
-      in: 'query',
-      isBoolean: true,
-      toBoolean: true,
-      errorMessage: `Value of the resolve_references parameter must be a boolean.`,
-      optional: true,
-    },
+    ...VALIDATORS.RESOLVE_REFERENCES,
     withFileOfType: {
       in: 'query',
       toArray: true,
