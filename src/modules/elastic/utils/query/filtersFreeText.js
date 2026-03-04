@@ -36,7 +36,7 @@ function buildFreeText(query, filterFn, ...filterFns) {
   if (!filterFn) return [];
 
   return filterUniqueIn([...(filterFn(query)?.query ?? []), ...(buildFreeText(query, ...filterFns)?.query ?? [])]);
-};
+}
 
 function isFieldTheme({ theme, jurisdiction }) {
   return !!filterByFreeTextTheme({ theme, jurisdiction });
@@ -52,11 +52,11 @@ function isExactSearch({ query: freeSearch, operator }) {
 
 function getFieldsWheights(query, fields) {
   if (isExactSearch(query)) return fields.map((_) => (_ !== 'visa' ? `${_}.exact` : _));
-  return fields.map((_) => (
-    fieldsWithWheights[_].heights === null ? _ : `${_}^${fieldsWithWheights[_].heights}`));
+  return fields.map((_) => (fieldsWithWheights[_].heights === null ? _ : `${_}^${fieldsWithWheights[_].heights}`));
 }
 
 function buildFreeFields(query) {
+  if (!query.fields) return getFieldsWheights(query, ['text']);
   const fields = [
     ...Object.entries(fieldsWithWheights)
       .filter(([_, value]) => query.fields.includes(value.taxonomie))
@@ -66,8 +66,8 @@ function buildFreeFields(query) {
   ];
 
   if (fields.length <= 0) return getFieldsWheights(['text']);
-  return getFieldsWheights(filterUniqueIn(fields));
-};
+  return getFieldsWheights(query, filterUniqueIn(fields));
+}
 
 function getOperatorAndFuzzy({ jurisdiction, query: freeSearch, operator }) {
   if (isExactSearch({ query: freeSearch, operator })) return { operator: 'AND', fuzzy: false };
@@ -86,14 +86,14 @@ function buildOperator(query) {
     fuzzy_max_expansions: fuzzy ? 50 : 0,
     fuzzy_transpositions: fuzzy,
   };
-};
+}
 
 module.exports.buildMust = function buildMustByFilters(query, ...filterFns) {
   return {
     simple_query_string: {
       query: buildFreeText(query, ...filterFns),
       fields: buildFreeFields(query),
-      ...buildOperator(query)
+      ...buildOperator(query),
     },
   };
 };

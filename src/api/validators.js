@@ -1,21 +1,20 @@
 const taxons = require('../taxons');
 
 const AGGREGATION_KEYS = [
-    'jurisdiction',
-    'source',
-    'location',
-    'year',
-    'month',
-    'chamber',
-    'formation',
-    'solution',
-    'type',
-    'nac',
-    'themes',
-    'publication',
-    'filetype',
+  'jurisdiction',
+  'source',
+  'location',
+  'year',
+  'month',
+  'chamber',
+  'formation',
+  'solution',
+  'type',
+  'nac',
+  'themes',
+  'publication',
+  'filetype',
 ];
-
 
 const VALIDATORS = {
   JURISDICTIONS: {
@@ -223,30 +222,43 @@ const VALIDATORS = {
     },
   },
   ORDER: {
-    in: 'query',
-    isString: true,
-    toLowerCase: true,
-    isIn: {
-      options: [taxons.all.order.options],
+    order: {
+      in: 'query',
+      isString: true,
+      isIn: {
+        options: [taxons.all.order.options],
+      },
+      customSanitizer: {
+        options: (value) => value?.toLowerCase(),
+      },
+      errorMessage: `Value of the order parameter must be in [${taxons.all.order.keys}].`,
+      optional: true,
     },
-    errorMessage: `Value of the order parameter must be in [${taxons.all.order.keys}].`,
-    optional: true,
   },
   OPERATOR: {
-    in: 'query',
-    isString: true,
-    toLowerCase: true,
-    isIn: {
-      options: [taxons.all.operator.options],
+    operator: {
+      in: 'query',
+      isString: true,
+      isIn: {
+        options: [taxons.all.operator.options],
+      },
+      customSanitizer: {
+        options: (value) => value?.toLowerCase(),
+      },
+      errorMessage: `Value of the operator parameter must be in [${taxons.all.operator.keys}].`,
+      optional: true,
     },
-    errorMessage: `Value of the operator parameter must be in [${taxons.all.operator.keys}].`,
-    optional: true,
   },
   QUERY: {
-    in: 'query',
-    isString: true,
-    errorMessage: `Value of the query parameter must be a string.`,
-    optional: true,
+    query: {
+      in: 'query',
+      isString: true,
+      customSanitizer: {
+        options: (value) => value?.toLowerCase(),
+      },
+      errorMessage: `Value of the query parameter must be a string.`,
+      optional: true,
+    },
   },
 };
 

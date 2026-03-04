@@ -12,9 +12,9 @@ const {
 } = require('./utils/format');
 const { getPages } = require('./utils/pagination');
 
+const { computeFunctionsScore, sort } = require('./utils/query/helpers');
+
 const {
-  filterByFunctionsScore,
-  sort,
   buildFilter,
   filterByEcli,
   filterByPourvoi,
@@ -29,12 +29,12 @@ const {
   filterByWithFileOfType,
   filterByParticularInterest,
   filterByDate,
-} = require('./utils/query');
+} = require('./utils/query/filters');
 
 const { buildMust, filterByFreeTextTheme, filterByFreeText } = require('./utils/query/filtersFreeText');
 
 function buildSearchQuery(query) {
-  const functionsScore = filterByFunctionsScore(query);
+  const functionsScore = computeFunctionsScore(query);
   const searchString = buildMust(query, filterByFreeTextTheme, filterByFreeText);
   const size = query.page_size || 10;
   return {
@@ -123,7 +123,7 @@ async function getSafeSearch(searchQuery, repeated = false) {
     body: { query: searchQuery.body.query },
   });
 
-  if (resultSearch.body.hits.hits.length <= 0 && !repeated) return getSafeSearch(searchQuery, repeated = true);
+  if (resultSearch.body.hits.hits.length <= 0 && !repeated) return getSafeSearch(searchQuery, (repeated = true));
   return { resultSearch, resultCount, repeated };
 }
 
@@ -131,7 +131,8 @@ async function search(query) {
   const searchQuery = buildSearchQuery(query);
   const hasSearchString = searchQuery.body.query.function_score.query.bool.must.simple_query_string.query.length > 0;
 
-  if (!hasSearchString) // is that true ?
+  if (!hasSearchString)
+    // is that true ?
     return {
       page: searchQuery.page,
       page_size: searchQuery.size,
@@ -172,4 +173,4 @@ async function search(query) {
   };
 }
 
-module.exports = search
+module.exports = search;

@@ -1,44 +1,44 @@
-module.exports.fieldsWithWheights =  {
+module.exports.fieldsWithWheights = {
   visa: {
-    taxonomie: "visa",
-    heights: 10
+    taxonomie: 'visa',
+    heights: 10,
   },
   summary: {
-    taxonomie: "summary",
-    heights: 10
+    taxonomie: 'summary',
+    heights: 10,
   },
   themes: {
-    taxonomie: "themes",
-    heights: 10
+    taxonomie: 'themes',
+    heights: 10,
   },
   zoneMotivations: {
-    taxonomie: "motivation",
-    heights: 6
+    taxonomie: 'motivation',
+    heights: 6,
   },
   zoneDispositif: {
-    taxonomie: "dispositif",
-    heights: 6
+    taxonomie: 'dispositif',
+    heights: 6,
   },
   zoneExpose: {
-    taxonomie: "expose",
-    heights: 3
+    taxonomie: 'expose',
+    heights: 3,
   },
   zoneMoyens: {
-    taxonomie: "moyens",
-    heights: 3
+    taxonomie: 'moyens',
+    heights: 3,
   },
   zoneIntroduction: {
-    taxonomie: "introduction",
-    heights: 2
+    taxonomie: 'introduction',
+    heights: 2,
   },
   zoneAnnexes: {
-    taxonomie: "annexes",
-    heights: 2
+    taxonomie: 'annexes',
+    heights: 2,
   },
   text: {
-    taxonomie: "text",
-    heights: null
-  }
+    taxonomie: 'text',
+    heights: null,
+  },
 };
 
 module.exports.sort = function sort({ sort, date_type, order }) {
@@ -50,7 +50,7 @@ module.exports.sort = function sort({ sort, date_type, order }) {
   if (date_type === 'update') return [{ _score: 'desc' }, { update_date: order || 'desc' }, { _id: 'desc' }];
 
   return [{ _score: 'desc' }, { decision_date: order || 'desc' }, { _id: 'desc' }];
-}
+};
 
 module.exports.inverseSort = function inverseSort(sort) {
   return sort.map((sortRule) =>
@@ -59,7 +59,7 @@ module.exports.inverseSort = function inverseSort(sort) {
       {},
     ),
   );
-}
+};
 
 module.exports.computeFunctionsScore = function computeFunctionsScore({ sort }) {
   if (sort !== 'scorepub') return undefined;
@@ -137,13 +137,13 @@ module.exports.computeFunctionsScore = function computeFunctionsScore({ sort }) 
       weight: 0.1,
     },
   ];
-}
+};
 
 module.exports.filterUniqueIn = function filterUniqueIn(array) {
-    return array.reduce((acc, _) => acc.includes(_) ? acc : [...acc, _])
-}
+  return array.reduce((acc, _) => (acc.includes(_) ? acc : [...acc, _]), []);
+};
 
 module.exports.whichJurisdiction = function whichJurisdiction({ jurisdiction }) {
-    const [ firstJurisdiction = 'cc' ] = jurisdiction ?? []
-    return jurisdiction?.length > 1 ? 'all' : firstJurisdiction
-}
+  const [firstJurisdiction = 'cc'] = jurisdiction ?? [];
+  return jurisdiction?.length > 1 ? 'all' : firstJurisdiction;
+};
