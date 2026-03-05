@@ -4,7 +4,6 @@ const api = express.Router();
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 const { checkSchema, validationResult } = require('express-validator');
 const Elastic = require('../modules/elastic');
-const taxons = require('../taxons');
 const { VALIDATORS } = require('./validators');
 const route = 'decision';
 
