@@ -1,141 +1,115 @@
-require('../env');
-const taxons = require('../../taxons');
+require('../../env');
+const taxons = require('../../../taxons');
+const { formatPourvoiNumber, sortByAscendingNumber } = require('../common/format');
 
 async function decision(query) {
   if (process.env.WITHOUT_ELASTIC) {
     return decisionWithoutElastic.apply(this, [query]);
   }
 
-  let rawResponse;
-  let response = null;
-
   try {
-    rawResponse = await this.client.get({
+    const rawResponse = await this.client.get({
       id: query.id,
       index: process.env.ELASTIC_INDEX,
       _source: true,
     });
-  } catch (e) {
-    console.error(e);
-    rawResponse = null;
-  }
 
-  if (rawResponse && rawResponse.body && rawResponse.body.found) {
-    let rawResult = rawResponse.body;
+    if (!rawResponse || !rawResponse.body || !rawResponse.body.found) {
+      return null;
+    }
+    const rawResult = rawResponse.body;
     let highlightedText = null;
     let highlightedZoning = null;
 
-    if (query.query) {
-      // Actual search query is required for hightlighting:
-      const searchQuery = this.buildQuery(query, 'decision');
-      const queryResponse = await this.client.search(searchQuery.query);
-      if (
-        queryResponse &&
-        queryResponse.body &&
-        queryResponse.body.hits &&
-        queryResponse.body.hits.hits &&
-        queryResponse.body.hits.hits.length > 0 &&
-        queryResponse.body.hits.hits[0].highlight
-      ) {
-        if (
-          queryResponse.body.hits.hits[0].highlight['displayText'] &&
-          queryResponse.body.hits.hits[0].highlight['displayText'].length > 0
-        ) {
-          highlightedText = queryResponse.body.hits.hits[0].highlight['displayText'][0];
-        } else if (
-          queryResponse.body.hits.hits[0].highlight['displayText.exact'] &&
-          queryResponse.body.hits.hits[0].highlight['displayText.exact'].length > 0
-        ) {
-          highlightedText = queryResponse.body.hits.hits[0].highlight['displayText.exact'][0];
-        }
-        if (highlightedText !== null) {
-          // Rebuild zoning to integrate highlights:
-          let zoningRebuildFailed = false;
-          let flattenZones = [];
-          for (let zone in rawResult._source.zones) {
-            rawResult._source.zones[zone].forEach((fragment) => {
-              flattenZones.push({
-                zone: zone,
-                start: fragment.start,
-                end: fragment.end,
-              });
-            });
-          }
-          flattenZones.sort((a, b) => {
-            if (a.start < b.start) {
-              return -1;
-            }
-            if (a.start > b.start) {
-              return 1;
-            }
-            return 0;
+    // Actual search query is required for hightlighting:
+    const searchQuery = this.buildQuery(query, 'decision');
+    const queryResponse = this.client.search(searchQuery.query);
+    const highlight = queryResponse.body.hits.hits[0].highlight;
+    if (highlight && highlight.displayText?.length > 0) {
+      highlightedText = highlight.displayText[0];
+    }
+    if (highlight && highlight.displayText?.exact?.length > 0) {
+      highlightedText = highlight.displayText.exact[0];
+    }
+    if (highlightedText !== null) {
+      // Rebuild zoning to integrate highlights:
+      let zoningRebuildFailed = false;
+      let flattenZones = [];
+      for (let zone in rawResult._source.zones) {
+        rawResult._source.zones[zone].forEach((fragment) => {
+          flattenZones.push({
+            zone: zone,
+            start: fragment.start,
+            end: fragment.end,
           });
-          let highlightedFlattenZones = [];
-          for (let i = 0; i < flattenZones.length; i++) {
-            highlightedFlattenZones[i] = {
-              zone: flattenZones[i].zone,
-              start: flattenZones[i].start,
-              end: flattenZones[i].end,
-            };
-            let start = flattenZones[i].start;
-            let end = flattenZones[i].end;
-            let sourceIndex = start;
-            let inTag = false;
-            if (i > 0) {
-              let offset = highlightedFlattenZones[i - 1].end - highlightedFlattenZones[i].start;
-              highlightedFlattenZones[i].start = highlightedFlattenZones[i - 1].end;
-              highlightedFlattenZones[i].end += offset;
-            }
-            let highlightIndex = highlightedFlattenZones[i].start;
-            let tagLength = 0;
-            while (zoningRebuildFailed === false && sourceIndex < end) {
-              if (!inTag && rawResult._source.displayText[sourceIndex] === highlightedText[highlightIndex]) {
-                sourceIndex++;
-                highlightIndex++;
-              } else {
-                if (inTag) {
-                  tagLength++;
-                  if (tagLength > 5) {
-                    zoningRebuildFailed = true;
-                  }
-                  if (highlightedText[highlightIndex] === '>') {
-                    inTag = false;
-                  }
-                } else {
-                  if (highlightedText[highlightIndex] === '<') {
-                    tagLength = 0;
-                    inTag = true;
-                  } else {
-                    zoningRebuildFailed = true;
-                  }
-                }
-                highlightIndex++;
-                highlightedFlattenZones[i].end++;
-              }
-            }
-            if (zoningRebuildFailed === true) {
-              break;
-            }
-          }
-          if (zoningRebuildFailed === true) {
-            highlightedText = null;
-            highlightedZoning = null;
+        });
+      }
+      flattenZones.sort((a, b) => {
+        sortByAscendingNumber(a, b);
+      });
+      let highlightedFlattenZones = [];
+      for (let i = 0; i < flattenZones.length; i++) {
+        highlightedFlattenZones[i] = {
+          zone: flattenZones[i].zone,
+          start: flattenZones[i].start,
+          end: flattenZones[i].end,
+        };
+        let start = flattenZones[i].start;
+        let end = flattenZones[i].end;
+        let sourceIndex = start;
+        let inTag = false;
+        if (i > 0) {
+          let offset = highlightedFlattenZones[i - 1].end - highlightedFlattenZones[i].start;
+          highlightedFlattenZones[i].start = highlightedFlattenZones[i - 1].end;
+          highlightedFlattenZones[i].end += offset;
+        }
+        let highlightIndex = highlightedFlattenZones[i].start;
+        let tagLength = 0;
+        while (zoningRebuildFailed === false && sourceIndex < end) {
+          if (!inTag && rawResult._source.displayText[sourceIndex] === highlightedText[highlightIndex]) {
+            sourceIndex++;
+            highlightIndex++;
           } else {
-            highlightedZoning = {};
-            highlightedFlattenZones.forEach((zone) => {
-              if (highlightedZoning[zone.zone] === undefined) {
-                highlightedZoning[zone.zone] = [];
+            if (inTag) {
+              tagLength++;
+              if (tagLength > 5) {
+                zoningRebuildFailed = true;
               }
-              highlightedZoning[zone.zone].push({
-                start: zone.start,
-                end: zone.end,
-              });
-            });
+              if (highlightedText[highlightIndex] === '>') {
+                inTag = false;
+              }
+            } else {
+              if (highlightedText[highlightIndex] === '<') {
+                tagLength = 0;
+                inTag = true;
+              } else {
+                zoningRebuildFailed = true;
+              }
+            }
+            highlightIndex++;
+            highlightedFlattenZones[i].end++;
           }
+        }
+        if (zoningRebuildFailed === true) {
+          break;
         }
       }
+      if (zoningRebuildFailed === true) {
+        highlightedText = null;
+        highlightedZoning = null;
+      } else {
+        highlightedZoning = {};
+        highlightedFlattenZones.forEach((zone) => {
+          if (highlightedZoning[zone.zone] === undefined) {
+            highlightedZoning[zone.zone] = [];
+          }
+          highlightedZoning[zone.zone].push({
+            start: zone.start,
+            end: zone.end,
+          });
+        });
+      }
     }
-
     rawResult._source.publication = rawResult._source.publication
       ? rawResult._source.publication.filter((item) => {
           return /[br]/i.test(item);
@@ -144,7 +118,8 @@ async function decision(query) {
 
     let taxonFilter = rawResult._source.jurisdiction;
 
-    response = {
+    // TO BE MOVED IN FORMAT FILE
+    const response = {
       id: rawResult._id,
       source: rawResult._source.source,
       text: highlightedText ? highlightedText : rawResult._source.displayText,
@@ -291,18 +266,12 @@ async function decision(query) {
         }
       }
     }
-  }
 
-  return response;
-}
-
-function formatPourvoiNumber(str) {
-  str = `${str}`.trim();
-  if (/^\d{2}\D\d{2}\D\d{3}$/.test(str) === false) {
-    str = str.replace(/\D/gim, '').trim();
-    str = `${str.substring(0, 2)}-${str.substring(2, 4)}.${str.substring(4)}`;
+    return response;
+  } catch (e) {
+    console.error(e);
+    return null;
   }
-  return str;
 }
 
 function decisionWithoutElastic(query) {

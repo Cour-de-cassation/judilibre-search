@@ -23,7 +23,7 @@ class Elastic {
   }
 
   async decision(query) {
-    return await require('./decision').apply(this, [query]);
+    return await require('./decision/decision').apply(this, [query]);
   }
 
   async export(query) {

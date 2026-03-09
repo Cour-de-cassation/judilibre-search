@@ -1,5 +1,6 @@
 require('../env');
 const taxons = require('../../taxons');
+const { formatPourvoiNumber } = require('./common/format');
 
 async function batchexport(query) {
   if (process.env.WITHOUT_ELASTIC) {
@@ -180,15 +181,6 @@ async function batchexport(query) {
   }
 
   return response;
-}
-
-function formatPourvoiNumber(str) {
-  str = `${str}`.trim();
-  if (/^\d{2}\D\d{2}\D\d{3}$/.test(str) === false) {
-    str = str.replace(/\D/gim, '').trim();
-    str = `${str.substring(0, 2)}-${str.substring(2, 4)}.${str.substring(4)}`;
-  }
-  return str;
 }
 
 function exportWithoutElastic(query) {

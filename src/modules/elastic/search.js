@@ -1,5 +1,6 @@
 require('../env');
 const taxons = require('../../taxons');
+const { formatPourvoiNumber } = require('./common/format');
 
 async function search(query) {
   if (process.env.WITHOUT_ELASTIC) {
@@ -53,18 +54,18 @@ async function search(query) {
           if (searchQuery.page > 0) {
             let previous_page_params = new URLSearchParams();
             Object.entries(query).forEach(([key, value]) => {
-              if (Array.isArray(value)) value.forEach(_ => previous_page_params.append(key, _))
-              else previous_page_params.append(key, value)
-            })
+              if (Array.isArray(value)) value.forEach((_) => previous_page_params.append(key, _));
+              else previous_page_params.append(key, value);
+            });
             previous_page_params.set('page', searchQuery.page - 1);
             response.previous_page = previous_page_params.toString();
           }
           if ((searchQuery.page + 1) * searchQuery.page_size < response.total) {
             let next_page_params = new URLSearchParams();
             Object.entries(query).forEach(([key, value]) => {
-              if (Array.isArray(value)) value.forEach(_ => next_page_params.append(key, _))
-              else next_page_params.append(key, value)
-            })
+              if (Array.isArray(value)) value.forEach((_) => next_page_params.append(key, _));
+              else next_page_params.append(key, value);
+            });
             next_page_params.set('page', searchQuery.page + 1);
             response.next_page = next_page_params.toString();
           }
@@ -196,15 +197,6 @@ async function search(query) {
   }
 
   return response;
-}
-
-function formatPourvoiNumber(str) {
-  str = `${str}`.trim();
-  if (/^\d{2}\D\d{2}\D\d{3}$/.test(str) === false) {
-    str = str.replace(/\D/gim, '').trim();
-    str = `${str.substring(0, 2)}-${str.substring(2, 4)}.${str.substring(4)}`;
-  }
-  return str;
 }
 
 function searchWithoutElastic(query) {
