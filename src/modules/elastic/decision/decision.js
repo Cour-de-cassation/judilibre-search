@@ -1,6 +1,6 @@
 require('../../env');
-const taxons = require('../../../taxons');
 const { formatPourvoiNumber, sortByAscendingNumber } = require('../common/format');
+const { formatElasticToResponse } = require('./format');
 
 async function decision(query) {
   if (process.env.WITHOUT_ELASTIC) {
@@ -23,7 +23,7 @@ async function decision(query) {
 
     // Actual search query is required for hightlighting:
     const searchQuery = this.buildQuery(query, 'decision');
-    const queryResponse = this.client.search(searchQuery.query);
+    const queryResponse = await this.client.search(searchQuery.query);
     const highlight = queryResponse.body.hits.hits[0].highlight;
     if (highlight && highlight.displayText?.length > 0) {
       highlightedText = highlight.displayText[0];
@@ -34,28 +34,23 @@ async function decision(query) {
     if (highlightedText !== null) {
       // Rebuild zoning to integrate highlights:
       let zoningRebuildFailed = false;
-      let flattenZones = [];
-      for (let zone in rawResult._source.zones) {
-        rawResult._source.zones[zone].forEach((fragment) => {
-          flattenZones.push({
-            zone: zone,
-            start: fragment.start,
-            end: fragment.end,
-          });
-        });
-      }
-      flattenZones.sort((a, b) => {
-        sortByAscendingNumber(a, b);
+      const flattenZones = Object.entries(rawResult._source.zones).flatMap(([zone, fragments]) =>
+        fragments.map(({ start, end }) => ({ zone, start, end })),
+      );
+      const sortedFlattenZones = flattenZones.toSorted((a, b) => {
+        return sortByAscendingNumber(a, b);
       });
-      let highlightedFlattenZones = [];
-      for (let i = 0; i < flattenZones.length; i++) {
+
+      const highlightedFlattenZones = [];
+
+      for (let i = 0; i < sortedFlattenZones.length; i++) {
         highlightedFlattenZones[i] = {
-          zone: flattenZones[i].zone,
-          start: flattenZones[i].start,
-          end: flattenZones[i].end,
+          zone: sortedFlattenZones[i].zone,
+          start: sortedFlattenZones[i].start,
+          end: sortedFlattenZones[i].end,
         };
-        let start = flattenZones[i].start;
-        let end = flattenZones[i].end;
+        let start = sortedFlattenZones[i].start;
+        let end = sortedFlattenZones[i].end;
         let sourceIndex = start;
         let inTag = false;
         if (i > 0) {
@@ -63,9 +58,11 @@ async function decision(query) {
           highlightedFlattenZones[i].start = highlightedFlattenZones[i - 1].end;
           highlightedFlattenZones[i].end += offset;
         }
+
         let highlightIndex = highlightedFlattenZones[i].start;
         let tagLength = 0;
-        while (zoningRebuildFailed === false && sourceIndex < end) {
+
+        while (!zoningRebuildFailed && sourceIndex < end) {
           if (!inTag && rawResult._source.displayText[sourceIndex] === highlightedText[highlightIndex]) {
             sourceIndex++;
             highlightIndex++;
@@ -90,10 +87,12 @@ async function decision(query) {
             highlightedFlattenZones[i].end++;
           }
         }
+
         if (zoningRebuildFailed === true) {
           break;
         }
       }
+
       if (zoningRebuildFailed === true) {
         highlightedText = null;
         highlightedZoning = null;
@@ -116,91 +115,7 @@ async function decision(query) {
         })
       : [];
 
-    let taxonFilter = rawResult._source.jurisdiction;
-
-    // TO BE MOVED IN FORMAT FILE
-    const response = {
-      id: rawResult._id,
-      source: rawResult._source.source,
-      text: highlightedText ? highlightedText : rawResult._source.displayText,
-      chamber:
-        query.resolve_references && taxons[taxonFilter].chamber.taxonomy[rawResult._source.chamber]
-          ? taxons[taxonFilter].chamber.taxonomy[rawResult._source.chamber]
-          : rawResult._source.chamber,
-      decision_date: rawResult._source.decision_date,
-      decision_datetime: rawResult._source.decision_datetime,
-      ecli: rawResult._source.ecli,
-      jurisdiction:
-        query.resolve_references && taxons[taxonFilter].jurisdiction.taxonomy[rawResult._source.jurisdiction]
-          ? taxons[taxonFilter].jurisdiction.taxonomy[rawResult._source.jurisdiction]
-          : rawResult._source.jurisdiction,
-      number: Array.isArray(rawResult._source.numberFull)
-        ? rawResult._source.numberFull[0]
-        : rawResult._source.numberFull,
-      numbers: Array.isArray(rawResult._source.numberFull)
-        ? rawResult._source.numberFull
-        : [rawResult._source.numberFull],
-      publication:
-        query.resolve_references && rawResult._source.publication
-          ? rawResult._source.publication.map((key) => {
-              if (taxons[taxonFilter].publication.taxonomy[key]) {
-                return taxons[taxonFilter].publication.taxonomy[key];
-              }
-              return key;
-            })
-          : rawResult._source.publication,
-      solution:
-        query.resolve_references && taxons[taxonFilter].solution.taxonomy[rawResult._source.solution]
-          ? taxons[taxonFilter].solution.taxonomy[rawResult._source.solution]
-          : rawResult._source.solution,
-      solution_alt: rawResult._source.solution_alt,
-      type:
-        query.resolve_references && taxons[taxonFilter].type.taxonomy[rawResult._source.type]
-          ? taxons[taxonFilter].type.taxonomy[rawResult._source.type]
-          : rawResult._source.type,
-      formation:
-        query.resolve_references && taxons[taxonFilter].formation.taxonomy[rawResult._source.formation]
-          ? taxons[taxonFilter].formation.taxonomy[rawResult._source.formation]
-          : rawResult._source.formation,
-      location:
-        query.resolve_references && taxons[taxonFilter].location.taxonomy[rawResult._source.location]
-          ? taxons[taxonFilter].location.taxonomy[rawResult._source.location]
-          : rawResult._source.location,
-      update_date: rawResult._source.update_date,
-      update_datetime: rawResult._source.update_datetime,
-      summary: rawResult._source.summary,
-      themes: rawResult._source.themes,
-      nac: rawResult._source.nac ? rawResult._source.nac : null,
-      portalis: rawResult._source.portalis ? rawResult._source.portalis : null,
-      bulletin: rawResult._source.bulletin,
-      files:
-        taxons[taxonFilter] && taxons[taxonFilter].filetype && taxons[taxonFilter].filetype.buildFilesList
-          ? taxons[taxonFilter].filetype.buildFilesList(
-              rawResult._id,
-              rawResult._source.files,
-              query.resolve_references,
-            )
-          : [],
-      zones: highlightedZoning ? highlightedZoning : rawResult._source.zones,
-      contested: rawResult._source.contested ? rawResult._source.contested : null,
-      forward: rawResult._source.forward ? rawResult._source.forward : null,
-      timeline: rawResult._source.timeline ? rawResult._source.timeline : null,
-      partial: rawResult._source.partial ? rawResult._source.partial : false,
-      visa: rawResult._source.visa
-        ? rawResult._source.visa.map((item) => {
-            return {
-              title: item,
-            };
-          })
-        : [],
-      rapprochements:
-        rawResult._source.rapprochements && rawResult._source.rapprochements.value
-          ? rawResult._source.rapprochements.value
-          : [],
-      legacy: rawResult._source.legacy ? rawResult._source.legacy : {},
-      titlesAndSummaries: rawResult._source.titlesAndSummaries ? rawResult._source.titlesAndSummaries : [],
-      particularInterest: rawResult._source.particularInterest === true,
-    };
+    const response = formatElasticToResponse(rawResult, highlightedText, query, highlightedZoning);
 
     if (response.type === 'undefined') {
       delete response.type;
