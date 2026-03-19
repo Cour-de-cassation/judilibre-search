@@ -3,7 +3,6 @@ const express = require('express');
 const api = express.Router();
 const { checkSchema, validationResult } = require('express-validator');
 const Elastic = require('../modules/elastic');
-const taxons = require('../taxons');
 const { VALIDATORS } = require('./validators');
 const route = 'export';
 const iso8601 =
@@ -26,54 +25,10 @@ api.get(
     ...VALIDATORS.ORDER,
     ...VALIDATORS.RESOLVE_REFERENCES,
     ...VALIDATORS.PARTICULAR_INTEREST,
-    batch_size: {
-      in: 'query',
-      isInt: {
-        options: {
-          min: 1,
-          max: 1000,
-        },
-      },
-      toInt: true,
-      errorMessage: `Value of the batch_size parameter must be an integer between 1 and 1000.`,
-      optional: true,
-    },
-    batch: {
-      in: 'query',
-      isInt: {
-        options: {
-          min: 0,
-        },
-      },
-      toInt: true,
-      errorMessage: `Value of the batch parameter must be an integer greater or equal than 0.`,
-      optional: false,
-    },
-    abridged: {
-      in: 'query',
-      isBoolean: true,
-      toBoolean: true,
-      errorMessage: `Value of the abridged parameter must be a boolean.`,
-      optional: true,
-    },
-    withFileOfType: {
-      in: 'query',
-      toArray: true,
-    },
-    'withFileOfType.*': {
-      in: 'query',
-      isString: true,
-      toLowerCase: true,
-      isIn: {
-        options: [taxons.all.filetype.options],
-      },
-      errorMessage: `Value(s) of the withFileOfType parameter must be in [${taxons.all.filetype.keys}].`,
-      optional: true,
-    },
-    'legacy.*': {
-      in: 'query',
-      optional: true,
-    },
+    ...VALIDATORS.BATCH_SIZE,
+    ...VALIDATORS.BATCH,
+    ...VALIDATORS.ABRIDGED,
+    ...VALIDATORS.WITH_FILE_OF_TYPE,
   }),
   async (req, res) => {
     if (process.env.APP_HOST_ALTER === undefined) {

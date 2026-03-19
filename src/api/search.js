@@ -3,7 +3,6 @@ const express = require('express');
 const api = express.Router();
 const { checkSchema, validationResult } = require('express-validator');
 const Elastic = require('../modules/elastic');
-const taxons = require('../taxons');
 const { VALIDATORS } = require('./validators');
 const route = 'search';
 const iso8601 =
@@ -27,30 +26,9 @@ api.get(
     ...VALIDATORS.ORDER,
     ...VALIDATORS.RESOLVE_REFERENCES,
     ...VALIDATORS.PARTICULAR_INTEREST,
-    field: {
-      in: 'query',
-      toArray: true,
-    },
-    'field.*': {
-      in: 'query',
-      isString: true,
-      toLowerCase: true,
-      isIn: {
-        options: [taxons.all.field.options],
-      },
-      errorMessage: `Value of the field parameter must be in [${taxons.all.field.keys}].`,
-      optional: true,
-    },
-    sort: {
-      in: 'query',
-      isString: true,
-      toLowerCase: true,
-      isIn: {
-        options: [taxons.all.sort.options],
-      },
-      errorMessage: `Value of the sort parameter must be in [${taxons.all.sort.keys}].`,
-      optional: true,
-    },
+    ...VALIDATORS.FIELD,
+    ...VALIDATORS.SORT,
+    ...VALIDATORS.PAGE,
     page_size: {
       in: 'query',
       isInt: {
@@ -61,17 +39,6 @@ api.get(
       },
       toInt: true,
       errorMessage: `Value of the page_size parameter must be an integer between 1 and 50.`,
-      optional: true,
-    },
-    page: {
-      in: 'query',
-      isInt: {
-        options: {
-          min: 0,
-        },
-      },
-      toInt: true,
-      errorMessage: `Value of the page parameter must be an integer greater or equal than 0.`,
       optional: true,
     },
   }),

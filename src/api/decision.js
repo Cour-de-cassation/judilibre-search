@@ -10,32 +10,10 @@ const route = 'decision';
 api.get(
   `/${route}`,
   checkSchema({
-    id: {
-      in: 'query',
-      isString: true,
-      errorMessage: `Value of the id parameter must be a string.`,
-      optional: false,
-    },
-    fileId: {
-      in: 'query',
-      isString: true,
-      errorMessage: `Value of the fileId parameter must be a string.`,
-      optional: true,
-    },
-    showContested: {
-      in: 'query',
-      isBoolean: true,
-      toBoolean: true,
-      errorMessage: `Value of the showContested parameter must be a boolean.`,
-      optional: true,
-    },
-    showForward: {
-      in: 'query',
-      isBoolean: true,
-      toBoolean: true,
-      errorMessage: `Value of the showForward parameter must be a boolean.`,
-      optional: true,
-    },
+    ...VALIDATORS.SHOW_FORWARD,
+    ...VALIDATORS.SHOW_CONTESTED,
+    ...VALIDATORS.FILE_ID,
+    ...VALIDATORS.ID,
     ...VALIDATORS.QUERY,
     ...VALIDATORS.OPERATOR,
     ...VALIDATORS.RESOLVE_REFERENCES,
