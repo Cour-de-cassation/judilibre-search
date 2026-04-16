@@ -147,6 +147,7 @@ const taxon = {
   tj02691: 'Tribunal judiciaire de Saint-Quentin',
   tj97311: 'Tribunal judiciaire de Saint-Laurent-Du-Maroni (chambre détachée)',
   tj97801: 'Tribunal judiciaire de Saint-Martin (chambre détachée)',
+  tj17415: 'Tribunal judiciaire de Saintes',
   tj57631: 'Tribunal judiciaire de Sarreguemines',
   tj49328: 'Tribunal judiciaire de Saumur',
   tj67437: 'Tribunal judiciaire de Saverne',
