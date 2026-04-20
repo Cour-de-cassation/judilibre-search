@@ -3,7 +3,10 @@ const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
-const { requestCountMiddleWare, requestDurationMiddleWare } = require("./metricsCollector")
+const { requestCountMiddleWare, requestDurationMiddleWare } = require("./metricsCollector");
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('../../public/swagger.json');
+
 class Server {
   constructor() {
     this.app = express();
@@ -14,6 +17,10 @@ class Server {
     this.app.use(requestCountMiddleWare);
     this.app.use(requestDurationMiddleWare);
     this.app.use((req, res, next) => {
+      if (req.path.startsWith('/api-docs')) {
+        res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:");
+        return next();
+      }
       res.setHeader('X-Powered-By', false);
       res.setHeader('X-Content-Type-Options', 'nosniff');
       res.setHeader('X-Frame-Options', 'deny');
@@ -30,6 +37,7 @@ class Server {
       next();
     });
     this.app.use(require(path.join(__dirname, '..', 'api')));
+    this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
     this.started = false;
   }
 

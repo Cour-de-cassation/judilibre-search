@@ -1,0 +1,1642 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "JUDILIBRE-public",
+    "description": "La Cour de cassation, dans le cadre de la refonte de son site Web, a initié le projet JUDILIBRE visant à la conception et au développement en interne d'un moteur de recherche dans le corpus jurisprudentiel, mettant celui-ci à disposition du public dans l'esprit du décret sur l'Open Data des décisions de justice.",
+    "version": "1.2.4"
+  },
+  "components": {
+    "securitySchemes": {
+      "access": {
+        "type": "apiKey",
+        "name": "KeyId",
+        "in": "header",
+        "description": "Access"
+      }
+    },
+    "schemas": {
+      "Decision": {
+        "type": "object",
+        "example": {
+          "id": "5fca7d162a251e6bf9c78514",
+          "jurisdiction": "cc",
+          "chamber": "civ3",
+          "number": "17-18.194",
+          "numbers": [
+            "17-18.194",
+            "16-21.165"
+          ],
+          "ecli": "ECLI:FR:CCASS:2018:C301117",
+          "formation": "fs",
+          "publication": [
+            "c",
+            "b"
+          ],
+          "decision_date": "2018-12-20",
+          "decision_datetime": "2018-12-20T06:00:00Z",
+          "update_date": "2018-12-26",
+          "update_datetime": "2018-12-26T11:00:00Z",
+          "type": "arret",
+          "solution": "rejet",
+          "summary": "Le titulaire d'une autorisation temporaire d'occupation...",
+          "themes": [
+            "Expropriation pour cause d'utilité publique",
+            "Indemnité"
+          ],
+          "text": "CIV.3 \r\nCH.B\r\n...",
+          "zones": {
+            "introduction": [
+              {
+                "start": 0,
+                "end": 2309
+              }
+            ],
+            "motivations": [
+              {
+                "start": 2309,
+                "end": 4834
+              }
+            ],
+            "dispositif": [
+              {
+                "start": 4834,
+                "end": 5199
+              }
+            ],
+            "annexes": [
+              {
+                "start": 5199,
+                "end": 16798
+              }
+            ]
+          }
+        },
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "jurisdiction": {
+            "type": "string"
+          },
+          "chamber": {
+            "type": "string"
+          },
+          "number": {
+            "type": "string"
+          },
+          "numbers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "ecli": {
+            "type": "string"
+          },
+          "formation": {
+            "type": "string"
+          },
+          "publication": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "decision_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "decision_datetime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "update_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "update_datetime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "type": {
+            "type": "string"
+          },
+          "solution": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "themes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "text": {
+            "type": "string"
+          },
+          "zones": {
+            "type": "object",
+            "properties": {
+              "introduction": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "start": {
+                      "type": "integer"
+                    },
+                    "end": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              },
+              "motivations": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "start": {
+                      "type": "integer"
+                    },
+                    "end": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              },
+              "dispositif": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "start": {
+                      "type": "integer"
+                    },
+                    "end": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              },
+              "annexes": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "start": {
+                      "type": "integer"
+                    },
+                    "end": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/decision": {
+      "get": {
+        "security": [
+          {
+            "access": []
+          }
+        ],
+        "summary": "Récupère une décision de justice",
+        "tags": [
+          "Décision"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Identifiant de la décision à récupérer."
+          },
+          {
+            "in": "query",
+            "name": "resolve_references",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Lorsque ce paramètre vaut `true`, le résultat de la requête contiendra, pour chaque information retournée par défaut sous forme de clé, l'intitulé complet de celle-ci (vaut `false` par défaut).\n"
+          },
+          {
+            "in": "query",
+            "name": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 512
+            },
+            "description": "Chaîne de caractères correspondant à la recherche. Ce paramètre est utilisé pour surligner en retour, dans le texte intégral de la décision, les termes correspondant avec la recherche initiale (ces termes étant délimitées par des balises `<em>`).\n"
+          },
+          {
+            "in": "query",
+            "name": "operator",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "or",
+                "and",
+                "exact"
+              ]
+            },
+            "description": "Opérateur logique reliant les multiples termes que le paramètre `query` peut contenir (`or` par défaut, `and` ou `exact` – dans ce dernier cas le moteur recherchera exactement le contenu du paramètre `query`).\n"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Décision trouvée",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Decision"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Paramètres invalides"
+          },
+          "404": {
+            "description": "Décision non trouvée"
+          },
+          "500": {
+            "description": "Erreur interne"
+          }
+        }
+      }
+    },
+    "/export": {
+      "get": {
+        "security": [
+          {
+            "access": []
+          }
+        ],
+        "summary": "Permet d'effectuer un export par lot de décisions de justice.",
+        "deprecated": true,
+        "tags": [
+          "Export"
+        ],
+        "description": "Destiné aux utilisateurs désirant procéder à leur propre indexation et mise à disposition du contenu, ce point d'entrée leur permet de récupérer des lots de décisions complètes suivant des paramètres et critères simples. L'export par lots est limité par défaut (pour une connexion non authentifiée) à 10 résultats par lot, pour un maximum de 1000 résultats au total.\n",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "batch",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "description": "Permet de déterminer le numéro du lot de résultats à retourner (le premier lot ayant la valeur 0)."
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Filtre les résultats suivant la nature des décisions (parmi les valeurs : `arret`, `qpc`, `ordonnance`, `saisie`, etc. - les valeurs disponibles sont accessibles via `GET /taxonomy?id=type`). Un export avec un paramètre `type` vide ou manquant retourne des décisions de toutes natures.\n"
+          },
+          {
+            "in": "query",
+            "name": "theme",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Filtre les résultats suivant la matière relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=theme`).\n"
+          },
+          {
+            "in": "query",
+            "name": "chamber",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Filtre les résultats suivant la chambre relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=chamber`).\n"
+          },
+          {
+            "in": "query",
+            "name": "formation",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Filtre les résultats suivant la formation relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=formation`).\n"
+          },
+          {
+            "in": "query",
+            "name": "jurisdiction",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Filtre les résultats suivant la juridiction relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=jurisdiction`).\n"
+          },
+          {
+            "in": "query",
+            "name": "location",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Filtre les résultats suivant le code du siège de juridiction (les valeurs disponibles sont accessibles via `GET /taxonomy?id=location&context_value=ca` pour les cours d'appel et `GET /taxonomy?id=location&context_value=tj` pour les tribunaux judiciaires).\n"
+          },
+          {
+            "in": "query",
+            "name": "publication",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Filtre les résultats suivant le niveau de publication des décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=publication`).\n"
+          },
+          {
+            "in": "query",
+            "name": "solution",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Filtre les résultats suivant le type de solution des décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=solution`).\n"
+          },
+          {
+            "in": "query",
+            "name": "date_start",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Combiné avec le paramètre `date_end`, permet de restreindre les résultats à un intervalle de dates, au format ISO-8601 (par exemple 2021-05-13, 2021-05-13T06:00:00Z).\n"
+          },
+          {
+            "in": "query",
+            "name": "date_end",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Combiné avec le paramètre `date_start`, permet de restreindre les résultats à un intervalle de dates, au format ISO-8601 (par exemple 2021-05-13, 2021-05-13T06:00:00Z).\n"
+          },
+          {
+            "in": "query",
+            "name": "date_type",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "creation",
+                "update"
+              ]
+            },
+            "description": "Type de date à prendre en compte pour l'intervalle de dates fourni pour l'export."
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            },
+            "description": "Permet de choisir l'ordre du tri des décisions exportées (`asc` pour un tri chronologique ou `desc` pour un tri antichronologique, vaut `asc` par défaut).\n"
+          },
+          {
+            "in": "query",
+            "name": "batch_size",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000
+            },
+            "description": "Permet de déterminer le nombre de résultats retournés par lot (1000 maximum, vaut 10 par défaut)."
+          },
+          {
+            "in": "query",
+            "name": "abridged",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Lorsque ce paramètre vaut `true`, le résultat de la requête contiendra la version abrégée des décisions (sans texte intégral ni métadonnées détaillées, vaut `false` par défaut).\n"
+          },
+          {
+            "in": "query",
+            "name": "resolve_references",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Lorsque ce paramètre vaut `true`, le résultat de la requête contiendra, pour chaque information retournée par défaut sous forme de clé, l'intitulé complet de celle-ci (vaut `false` par défaut).\n"
+          },
+          {
+            "in": "query",
+            "name": "withFileOfType",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "prep_rapp",
+                  "prep_avis",
+                  "prep_oral",
+                  "comm_comm",
+                  "comm_note",
+                  "comm_nora",
+                  "comm_lett",
+                  "comm_trad"
+                ]
+              }
+            },
+            "description": "Filtre les résultats suivant le type de documents associés aux décisions. Les valeurs disponibles sont accessibles via `GET /taxonomy?id=filetype`.\n"
+          },
+          {
+            "in": "query",
+            "name": "particularInterest",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Lorsque ce paramètre vaut `true`, le résultat de la requête sera restreint aux décisions qualifiées comme présentant un intérêt particulier (vaut `false` par défaut).\n"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Export effectué avec succès.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "batch": 0,
+                  "batch_size": 10,
+                  "total": 341,
+                  "next_batch": "http://.../...&batch=1",
+                  "took": 42,
+                  "query": {
+                    "type": [
+                      "arret",
+                      "qpc"
+                    ],
+                    "publication": [
+                      "c",
+                      "b"
+                    ],
+                    "date_start": "1970-01-01",
+                    "date_end": "2021-01-01",
+                    "order": "desc",
+                    "batch_size": 10,
+                    "batch": 0,
+                    "resolve_references": false
+                  },
+                  "results": [
+                    {
+                      "id": "5fca7d162a251e6bf9c78514",
+                      "jurisdiction": "cc",
+                      "chamber": "civ3",
+                      "number": "17-18.194",
+                      "numbers": [
+                        "17-18.194",
+                        "16-21.165"
+                      ],
+                      "ecli": "ECLI:FR:CCASS:2018:C301117",
+                      "formation": "fs",
+                      "publication": [
+                        "c",
+                        "b"
+                      ],
+                      "decision_date": "2018-12-20",
+                      "type": "arret",
+                      "solution": "rejet",
+                      "summary": "Le titulaire d'une autorisation temporaire d'occupation...",
+                      "themes": [
+                        "Expropriation pour cause d'utilité publique",
+                        "Indemnité"
+                      ],
+                      "text": "CIV.3 \r\nCH.B\r\n..."
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Requête invalide."
+          },
+          "416": {
+            "description": "La plage d'informations demandée est incorrecte ou ne peut pas être satisfaite."
+          },
+          "500": {
+            "description": "Erreur indéfinie côté serveur."
+          }
+        }
+      }
+    },
+    "/healthcheck": {
+      "get": {
+        "security": [
+          {
+            "access": []
+          }
+        ],
+        "summary": "Vérifie la disponibilité du service",
+        "tags": [
+          "Monitoring"
+        ],
+        "responses": {
+          "200": {
+            "description": "Statut de disponibilité d'Elastic",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "disponible",
+                        "indisponible"
+                      ],
+                      "example": "disponible"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/metrics": {
+      "get": {
+        "security": [
+          {
+            "access": []
+          }
+        ],
+        "summary": "Expose les métriques Prometheus",
+        "tags": [
+          "Monitoring"
+        ],
+        "responses": {
+          "200": {
+            "description": "Métriques au format Prometheus",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/published": {
+      "post": {
+        "security": [
+          {
+            "access": []
+          }
+        ],
+        "summary": "Vérifie si des décisions sont publiées",
+        "tags": [
+          "Décision"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "example": {
+                "id": [
+                  "69427fdc62345a940dcc7cc1",
+                  "5fca7d162a251e6bf9c78514"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Statut de publication des décisions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "69427fdc62345a940dcc7cc1": false,
+                  "took": 39
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Requête invalide."
+          },
+          "500": {
+            "description": "Erreur indéfinie côté serveur."
+          }
+        }
+      }
+    },
+    "/scan": {
+      "get": {
+        "security": [
+          {
+            "access": []
+          }
+        ],
+        "summary": "Permet d'effectuer un export par lot de décisions de justice.",
+        "tags": [
+          "Export"
+        ],
+        "description": "Destiné aux utilisateurs désirant procéder à leur propre indexation et mise à disposition du contenu, ce point d'entrée leur permet de récupérer des lots de décisions complètes suivant des paramètres et critères simples. L'export par lots est limité par défaut (pour une connexion non authentifiée) à 10 résultats par lot, pour un maximum de 1000 résultats au total.\n",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "type",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Filtre les résultats suivant la nature des décisions (parmi les valeurs : `arret`, `qpc`, `ordonnance`, `saisie`, etc. - les valeurs disponibles sont accessibles via `GET /taxonomy?id=type`).\n"
+          },
+          {
+            "in": "query",
+            "name": "theme",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Filtre les résultats suivant la matière relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=theme`).\n"
+          },
+          {
+            "in": "query",
+            "name": "chamber",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Filtre les résultats suivant la chambre relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=chamber`).\n"
+          },
+          {
+            "in": "query",
+            "name": "formation",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Filtre les résultats suivant la formation relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=formation`).\n"
+          },
+          {
+            "in": "query",
+            "name": "jurisdiction",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Filtre les résultats suivant la juridiction relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=jurisdiction`).\n"
+          },
+          {
+            "in": "query",
+            "name": "source",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Filtre les résultats suivant la source des décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=source`).\n"
+          },
+          {
+            "in": "query",
+            "name": "location",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Filtre les résultats suivant le code du siège de juridiction (les valeurs disponibles sont accessibles via `GET /taxonomy?id=location&context_value=ca` pour les cours d'appel et `GET /taxonomy?id=location&context_value=tj` pour les tribunaux judiciaires).\n"
+          },
+          {
+            "in": "query",
+            "name": "publication",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Filtre les résultats suivant le niveau de publication des décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=publication`).\n"
+          },
+          {
+            "in": "query",
+            "name": "solution",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Filtre les résultats suivant le type de solution des décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=solution`).\n"
+          },
+          {
+            "in": "query",
+            "name": "date_start",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Combiné avec le paramètre `date_end`, permet de restreindre les résultats à un intervalle de dates, au format ISO-8601 (par exemple 2021-05-13, 2021-05-13T06:00:00Z).\n"
+          },
+          {
+            "in": "query",
+            "name": "date_end",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Combiné avec le paramètre `date_start`, permet de restreindre les résultats à un intervalle de dates, au format ISO-8601 (par exemple 2021-05-13, 2021-05-13T06:00:00Z).\n"
+          },
+          {
+            "in": "query",
+            "name": "date_type",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "creation",
+                "update"
+              ]
+            },
+            "description": "Type de date à prendre en compte pour l'intervalle de dates fourni pour l'export."
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            },
+            "description": "Permet de choisir l'ordre du tri des décisions exportées (`asc` pour un tri chronologique ou `desc` pour un tri antichronologique, vaut `asc` par défaut).\n"
+          },
+          {
+            "in": "query",
+            "name": "batch_size",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000
+            },
+            "description": "Permet de déterminer le nombre de résultats retournés par lot (1000 maximum, vaut 10 par défaut)."
+          },
+          {
+            "in": "query",
+            "name": "searchAfter",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "L'ID de la décision à partir de laquelle chercher le prochain batch de résultats (fourni par la réponse de la requête précédente via `next_batch`).\n"
+          },
+          {
+            "in": "query",
+            "name": "abridged",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Lorsque ce paramètre vaut `true`, le résultat de la requête contiendra la version abrégée des décisions (sans texte intégral ni métadonnées détaillées, vaut `false` par défaut).\n"
+          },
+          {
+            "in": "query",
+            "name": "resolve_references",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Lorsque ce paramètre vaut `true`, le résultat de la requête contiendra, pour chaque information retournée par défaut sous forme de clé, l'intitulé complet de celle-ci (vaut `false` par défaut).\n"
+          },
+          {
+            "in": "query",
+            "name": "withFileOfType",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "prep_rapp",
+                  "prep_avis",
+                  "prep_oral",
+                  "comm_comm",
+                  "comm_note",
+                  "comm_nora",
+                  "comm_lett",
+                  "comm_trad"
+                ]
+              }
+            },
+            "description": "Filtre les résultats suivant le type de documents associés aux décisions. Les valeurs disponibles sont accessibles via `GET /taxonomy?id=filetype`.\n"
+          },
+          {
+            "in": "query",
+            "name": "particularInterest",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Lorsque ce paramètre vaut `true`, le résultat de la requête sera restreint aux décisions qualifiées comme présentant un intérêt particulier (vaut `false` par défaut).\n"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Export effectué avec succès.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "batch_size": 10,
+                  "total": 341,
+                  "next_batch": "...&search_after=0%261729555200000%26673ded6f5559d27e30e40fc5",
+                  "took": 42,
+                  "query": {
+                    "type": [
+                      "arret",
+                      "qpc"
+                    ],
+                    "publication": [
+                      "c",
+                      "b"
+                    ],
+                    "date_start": "1970-01-01",
+                    "date_end": "2021-01-01",
+                    "order": "desc",
+                    "batch_size": 10,
+                    "resolve_references": false
+                  },
+                  "results": [
+                    {
+                      "id": "5fca7d162a251e6bf9c78514",
+                      "jurisdiction": "cc",
+                      "chamber": "civ3",
+                      "number": "17-18.194",
+                      "numbers": [
+                        "17-18.194",
+                        "16-21.165"
+                      ],
+                      "ecli": "ECLI:FR:CCASS:2018:C301117",
+                      "formation": "fs",
+                      "publication": [
+                        "c",
+                        "b"
+                      ],
+                      "decision_date": "2018-12-20",
+                      "type": "arret",
+                      "solution": "rejet",
+                      "summary": "Le titulaire d'une autorisation temporaire d'occupation...",
+                      "themes": [
+                        "Expropriation pour cause d'utilité publique",
+                        "Indemnité"
+                      ],
+                      "text": "CIV.3 \r\nCH.B\r\n..."
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Requête invalide."
+          },
+          "500": {
+            "description": "Erreur indéfinie côté serveur."
+          }
+        }
+      }
+    },
+    "/search": {
+      "get": {
+        "security": [
+          {
+            "access": []
+          }
+        ],
+        "summary": "Permet d'effectuer une recherche dans les données ouvertes des décisions de justice.",
+        "tags": [
+          "Recherche"
+        ],
+        "description": "Le point d'entrée `GET /search` permet d'effectuer une recherche dans la base de données ouverte des décisions de justice, suivant les paramètres, filtres et critères suivants : texte en saisie libre, mode de mise en rapport des termes, contenu ciblé, nature de décision, matière, chambre, formation, juridiction, niveau de publication, type de solution, intervalle de dates, pertinence et date, pagination. Le résultat est nécessairement paginé (50 résultats maximum par page, 10 000 au total) et ne contient qu'un aperçu des décisions. Le texte intégral est accessible via `GET /decision`.\n",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 512
+            },
+            "description": "Chaîne de caractères correspondant à la recherche. Une recherche avec un paramètre `query` vide ou manquant est ignorée et retourne un résultat vide.\n"
+          },
+          {
+            "in": "query",
+            "name": "field",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Liste des champs ciblés par la recherche (`expose`, `moyens`, `motivations`, `dispositif`, `annexes`, `sommaire`, `titrage`, etc. - les valeurs disponibles sont accessibles via `GET /taxonomy?id=field`). Si vide ou manquant, la recherche s'applique à l'intégralité de la décision mais exclut les métadonnées.\n"
+          },
+          {
+            "in": "query",
+            "name": "operator",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "or",
+                "and",
+                "exact"
+              ]
+            },
+            "description": "Opérateur logique reliant les multiples termes que le paramètre `query` peut contenir (`or` par défaut, `and` ou `exact`).\n"
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Filtre les résultats suivant la nature des décisions (`arret`, `qpc`, `ordonnance`, etc. - les valeurs disponibles sont accessibles via `GET /taxonomy?id=type`).\n"
+          },
+          {
+            "in": "query",
+            "name": "theme",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Filtre les résultats suivant la matière relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=theme`).\n"
+          },
+          {
+            "in": "query",
+            "name": "chamber",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Filtre les résultats suivant la chambre relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=chamber`).\n"
+          },
+          {
+            "in": "query",
+            "name": "formation",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Filtre les résultats suivant la formation relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=formation`).\n"
+          },
+          {
+            "in": "query",
+            "name": "jurisdiction",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Filtre les résultats suivant la juridiction relative aux décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=jurisdiction`).\n"
+          },
+          {
+            "in": "query",
+            "name": "location",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Filtre les résultats suivant le code du siège de juridiction (les valeurs disponibles sont accessibles via `GET /taxonomy?id=location&context_value=ca` pour les cours d'appel et `GET /taxonomy?id=location&context_value=tj` pour les tribunaux judiciaires). Par exemple : `GET /search?...&location=tj33063`.\n"
+          },
+          {
+            "in": "query",
+            "name": "publication",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Filtre les résultats suivant le niveau de publication des décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=publication`).\n"
+          },
+          {
+            "in": "query",
+            "name": "solution",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Filtre les résultats suivant le type de solution des décisions (les valeurs disponibles sont accessibles via `GET /taxonomy?id=solution`).\n"
+          },
+          {
+            "in": "query",
+            "name": "date_start",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Combiné avec le paramètre `date_end`, permet de restreindre les résultats à un intervalle de dates, au format ISO-8601 (par exemple 2021-05-13, 2021-05-13T06:00:00Z).\n"
+          },
+          {
+            "in": "query",
+            "name": "date_end",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Combiné avec le paramètre `date_start`, permet de restreindre les résultats à un intervalle de dates, au format ISO-8601 (par exemple 2021-05-13, 2021-05-13T06:00:00Z).\n"
+          },
+          {
+            "in": "query",
+            "name": "sort",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "score",
+                "scorepub",
+                "date"
+              ]
+            },
+            "description": "Permet de choisir la valeur suivant laquelle les résultats sont triés (`score` pour un tri par pertinence, `scorepub` pour un tri par pertinence et niveau de publication, `date` pour un tri par date, vaut `scorepub` par défaut).\n"
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            },
+            "description": "Permet de choisir l'ordre du tri (`asc` pour un tri ascendant ou `desc` pour un tri descendant, vaut `desc` par défaut).\n"
+          },
+          {
+            "in": "query",
+            "name": "page_size",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50
+            },
+            "description": "Permet de déterminer le nombre de résultats retournés par page (50 maximum, vaut 10 par défaut)."
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "description": "Permet de déterminer le numéro de la page de résultats à retourner (la première page valant `0`)."
+          },
+          {
+            "in": "query",
+            "name": "resolve_references",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Lorsque ce paramètre vaut `true`, le résultat de la requête contiendra, pour chaque information retournée par défaut sous forme de clé, l'intitulé complet de celle-ci (vaut `false` par défaut).\n"
+          },
+          {
+            "in": "query",
+            "name": "withFileOfType",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "prep_rapp",
+                  "prep_avis",
+                  "prep_oral",
+                  "comm_comm",
+                  "comm_note",
+                  "comm_nora",
+                  "comm_lett",
+                  "comm_trad"
+                ]
+              }
+            },
+            "description": "Filtre les résultats suivant le type de documents associés aux décisions. Les valeurs disponibles sont accessibles via `GET /taxonomy?id=filetype`.\n"
+          },
+          {
+            "in": "query",
+            "name": "particularInterest",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Lorsque ce paramètre vaut `true`, le résultat de la requête sera restreint aux décisions qualifiées comme présentant un intérêt particulier (vaut `false` par défaut).\n"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recherche effectuée avec succès.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "page": 0,
+                  "page_size": 10,
+                  "total": 341,
+                  "next_page": "http://.../...&page=1",
+                  "took": 14,
+                  "max_score": 2428.1362,
+                  "relaxed": false,
+                  "query": {
+                    "query": "expropriation",
+                    "field": [
+                      "expose",
+                      "moyens",
+                      "motivations"
+                    ],
+                    "operator": "or",
+                    "type": [
+                      "arret",
+                      "qpc"
+                    ],
+                    "publication": [
+                      "c",
+                      "b"
+                    ],
+                    "date_start": "1970-01-01",
+                    "date_end": "2021-01-01",
+                    "sort": "score",
+                    "order": "desc",
+                    "page_size": 10,
+                    "page": 0,
+                    "resolve_references": false
+                  },
+                  "results": [
+                    {
+                      "score": 0.6848325044168517,
+                      "id": "5fca7d162a251e6bf9c78514",
+                      "jurisdiction": "cc",
+                      "chamber": "civ3",
+                      "number": "17-18.194",
+                      "numbers": [
+                        "17-18.194",
+                        "16-21.165"
+                      ],
+                      "ecli": "ECLI:FR:CCASS:2018:C301117",
+                      "formation": "fs",
+                      "publication": [
+                        "c",
+                        "b"
+                      ],
+                      "decision_date": "2018-12-20",
+                      "type": "arret",
+                      "solution": "rejet",
+                      "summary": "Le titulaire d'une autorisation temporaire d'occupation...",
+                      "themes": [
+                        "Expropriation pour cause d'utilité publique",
+                        "Indemnité"
+                      ],
+                      "highlights": {
+                        "motivations": [
+                          "...fixe les indemnités revenant à la suite de <em>l'expropriation</em>"
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Requête invalide."
+          },
+          "416": {
+            "description": "La plage d'informations demandée est incorrecte ou ne peut pas être satisfaite."
+          },
+          "500": {
+            "description": "Erreur indéfinie côté serveur."
+          }
+        }
+      }
+    },
+    "/stats": {
+      "get": {
+        "security": [
+          {
+            "access": []
+          }
+        ],
+        "summary": "Permet de récupérer des statistiques sur le contenu de la base JUDILIBRE.",
+        "tags": [
+          "Statistiques"
+        ],
+        "description": "Ce point d'entrée publie les statistiques suivantes, mises à jour quotidiennement : nombre de décisions indexées (au total, par année, par juridiction), nombre de requêtes (par jour, par semaine, etc.), date de la décision la plus ancienne et la plus récente.\n",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "jurisdiction",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "cc",
+                "ca",
+                "tj",
+                "tcom"
+              ]
+            },
+            "description": "Filtre pour ne retourner les résultats que pour un type de juridiction. Par défaut, retourne toutes les juridictions.\n"
+          },
+          {
+            "in": "query",
+            "name": "location",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filtre pour ne retourner les résultats que pour une juridiction précise. On peut spécifier plusieurs valeurs en les séparant par des virgules (ex: `ca_paris,ca_rennes`). Les valeurs disponibles sont accessibles via `GET /taxonomy`.\n"
+          },
+          {
+            "in": "query",
+            "name": "date_start",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Date minimale utilisée pour filtrer les résultats, au format `YYYY-MM-DD`."
+          },
+          {
+            "in": "query",
+            "name": "date_end",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Date maximale utilisée pour filtrer les résultats, au format `YYYY-MM-DD`."
+          },
+          {
+            "in": "query",
+            "name": "particularInterest",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Filtre pour ne retourner que les décisions présentant un intérêt particulier. Par défaut, retourne toutes les décisions.\n"
+          },
+          {
+            "in": "query",
+            "name": "keys",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Nom des variables utilisées pour agréger les données, séparées par des virgules (ex: `jurisdiction,chamber`). Valeurs possibles : `year`, `month`, `jurisdiction`, `source`, `location`, `theme`, `formation`, `chamber`, `solution`, `type`, `publication`. Par défaut, les données ne sont pas agrégées.\n"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Requête effectuée avec succès.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "requestPerDay": 2500,
+                  "requestPerWeek": 17500,
+                  "requestPerMonth": 520000,
+                  "oldestDecision": "1856-07-27",
+                  "newestDecision": "2021-04-15",
+                  "indexedTotal": 2250000,
+                  "indexedByJurisdiction": [
+                    {
+                      "value": 1500000,
+                      "label": "Cour de cassation"
+                    },
+                    {
+                      "value": 135000,
+                      "label": "Cour d'appel de Paris"
+                    }
+                  ],
+                  "indexedByYear": [
+                    {
+                      "value": 250000,
+                      "label": "2019"
+                    },
+                    {
+                      "value": 195000,
+                      "label": "2018"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Requête invalide."
+          },
+          "500": {
+            "description": "Erreur indéfinie côté serveur."
+          }
+        }
+      }
+    },
+    "/taxonomy": {
+      "get": {
+        "security": [
+          {
+            "access": []
+          }
+        ],
+        "summary": "Permet de récupérer les listes des termes employés par le processus de recherche.",
+        "tags": [
+          "Taxonomie"
+        ],
+        "description": "Ce point d'entrée permet de récupérer les listes des termes (sous la forme d'un couple clé/valeur) constituant les différents critères et filtres pris en compte par le processus de recherche, notamment : types de décision, juridictions, chambres, formations, niveaux de publication, matières, solutions, champs et zones de contenu, etc. Sans paramètre, retourne la liste de toutes les entrées de taxonomie disponibles.\n",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Identifiant de l'entrée de taxonomie à interroger (`type`, `jurisdiction`, `chamber`, etc. - les valeurs disponibles sont accessibles via `GET /taxonomy` sans paramètre).\n"
+          },
+          {
+            "in": "query",
+            "name": "key",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Clé du terme dont on veut récupérer l'intitulé complet (le paramètre `id` est alors requis). Par exemple : `GET /taxonomy?id=jurisdiction&key=cc` retournera `Cour de cassation`.\n"
+          },
+          {
+            "in": "query",
+            "name": "value",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Intitulé complet du terme dont on veut récupérer la clé (le paramètre `id` est alors requis). Par exemple : `GET /taxonomy?id=jurisdiction&value=cour%20de%20cassation` retournera `cc`.\n"
+          },
+          {
+            "in": "query",
+            "name": "context_value",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "cc",
+                "ca",
+                "tj",
+                "tcom"
+              ]
+            },
+            "description": "Valeur pouvant être requise pour contextualiser certaines listes (par exemple, `GET /taxonomy?id=chamber&context_value=cc` pour obtenir les chambres de la Cour de cassation). Si omis, la valeur `cc` est utilisée par défaut.\n"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Requête effectuée avec succès.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "result": [
+                    "cc",
+                    "ca"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Requête invalide."
+          },
+          "404": {
+            "description": "Terme non trouvé."
+          },
+          "500": {
+            "description": "Erreur indéfinie côté serveur."
+          }
+        }
+      }
+    },
+    "/transactionalhistory": {
+      "get": {
+        "security": [
+          {
+            "access": []
+          }
+        ],
+        "summary": "Permet de consulter les actions de publication effectuées sur la base de données.",
+        "tags": [
+          "Export"
+        ],
+        "description": "Destiné aux utilisateurs désirant procéder à leur propre indexation et mise à disposition du contenu, ce point d'entrée permet de consulter les opérations effectuées sur la base de données Judilibre (create, update, delete) afin d'identifier les opérations de synchronisation à effectuer pour rester à jour. Les opérations sont triées par date ascendante. Lorsque le nombre d'opérations dépasse la taille allouée, la réponse renvoie une querystring valable pendant une minute pour consulter la suite des opérations.\n",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "date",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Toutes les opérations remontées auront été effectuées en aval de cette date, au format ISO-8601 (ex: 2021-05-13T06:00:00Z).\n"
+          },
+          {
+            "in": "query",
+            "name": "page_size",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 10,
+              "maximum": 500
+            },
+            "description": "Permet de personnaliser le nombre d'opérations obtenu par requête (10 minimum, 500 maximum). Par défaut, l'application remonte 500 opérations.\n"
+          },
+          {
+            "in": "query",
+            "name": "from_id",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Permet d'obtenir les opérations qui suivent cet ID. Il est conseillé d'utiliser directement la querystring disponible en réponse via `next_page`.\n"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recherche effectuée avec succès.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "total": 834,
+                  "page_size": 10,
+                  "query_date": "2025-01-31T08:10:18.262Z",
+                  "next_page": "date=2021-05-13T06%3A00%3A00Z&page_size=10&from_id=1736952610185%269",
+                  "transactions": [
+                    {
+                      "id": "673ded6e5559d27e30e40f67",
+                      "action": "created",
+                      "date": "2025-01-15T14:50:10.185Z"
+                    },
+                    {
+                      "id": "673ded6e5559d27e30e40f69",
+                      "action": "created",
+                      "date": "2025-01-15T14:50:10.185Z"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Requête invalide."
+          },
+          "500": {
+            "description": "Erreur indéfinie côté serveur."
+          }
+        }
+      }
+    }
+  },
+  "tags": []
+}

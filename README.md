@@ -190,3 +190,151 @@ Des données statiques, destinées aux tests fonctionnels de base, sont inclues 
 - Un ensemble représentatif de résultats paginés en retour du point d'entrée `/search` (ne contient que des fragments de décisions) ;
 - Une [décision détaillée](https://www.legifrance.gouv.fr/juri/id/JURITEXT000042619658?tab_selection=all&searchField=ALL&query=19-60.222&searchType=ALL&typePagination=DEFAULT&pageSize=10&page=1&tab_selection=all) (d'autres seront ajoutées plus tard) en retour du point d'entrée `/decision` ;
 - Les termes auxquels correspondent certaines métadonnées en retour du point d'entrée `/taxonomy` (en cours de complétion).
+
+## Protocole de documentation d'une nouvelle route
+
+### Vue d'ensemble
+
+La documentation Swagger est générée via **swagger-jsdoc** à partir de blocs JSDoc au format OpenAPI 3.0. Chaque route possède son propre fichier de documentation, séparé du code métier.
+
+### Structure des fichiers
+
+```
+src/
+├── api/
+│   ├── ma-route.js          ← code de la route
+│   └── ma-route.test.js     ← tests
+└── swagger/
+    └── ma-route.swagger.js  ← documentation de la route
+```
+
+### Étapes
+
+#### 1. Créer le fichier `ma-route.swagger.js`
+
+Créer un fichier dans `src/swagger/` portant le même nom que le fichier de route, avec le suffixe `.swagger.js`.
+
+#### 2. Rédiger le bloc JSDoc
+
+Le bloc doit suivre la structure suivante :
+
+```js
+/**
+ * @swagger
+ * /ma-route:
+ *   get:                                    ← méthode HTTP (get, post, put, delete...)
+ *     summary: Résumé court de la route.
+ *     tags:
+ *       - MonTag                            ← groupe affiché dans l'UI swagger
+ *     description: >
+ *       Description longue et détaillée
+ *       de la route sur plusieurs lignes.
+ *     parameters:
+ *       - in: query                         ← query, path, header, cookie
+ *         name: mon-parametre
+ *         required: true                    ← true ou false
+ *         schema:
+ *           type: string                    ← string, integer, boolean, array, object
+ *         description: Description du paramètre.
+ *     responses:
+ *       200:
+ *         description: Succès.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *             example:
+ *               champ: "valeur"
+ *       400:
+ *         description: Requête invalide.
+ *       500:
+ *         description: Erreur indéfinie côté serveur.
+ */
+```
+
+#### 3. Regénérer le `swagger.json`
+
+```bash
+npm run swagger
+```
+
+---
+
+### Référence rapide
+
+#### Types de paramètres
+
+| `in`     | Usage                                      |
+|----------|--------------------------------------------|
+| `query`  | Paramètre dans l'URL (`?param=valeur`)     |
+| `path`   | Paramètre dans le chemin (`/route/:id`)    |
+| `header` | Paramètre dans les headers HTTP            |
+| `cookie` | Paramètre dans un cookie                   |
+
+#### Types de données
+
+| `type`     | Exemple de `schema`                                      |
+|------------|----------------------------------------------------------|
+| `string`   | `type: string`                                           |
+| `integer`  | `type: integer`, `minimum: 0`, `maximum: 100`            |
+| `boolean`  | `type: boolean`                                          |
+| `array`    | `type: array` + `items: { type: string }`                |
+| `enum`     | `type: string` + `enum: [valeur1, valeur2]`              |
+| `date`     | `type: string`, `format: date`                           |
+| `datetime` | `type: string`, `format: date-time`                      |
+
+#### Route avec body (POST/PUT)
+
+```js
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *           example:
+ *             id:
+ *               - "abc123"
+```
+
+#### Route dépréciée
+
+```js
+ *   get:
+ *     deprecated: true
+```
+
+#### Description longue sur plusieurs lignes
+
+Utiliser `>` en YAML pour les descriptions longues :
+
+```js
+ *     description: >
+ *       Première ligne de la description
+ *       qui continue sur la ligne suivante
+ *       sans rupture de paragraphe.
+```
+
+---
+
+### Tags disponibles
+
+Les tags permettent de regrouper les routes dans l'UI Swagger. Tags existants :
+
+| Tag             | Routes concernées                              |
+|-----------------|------------------------------------------------|
+| `Décision`      | `/decision`, `/published`                      |
+| `Recherche`     | `/search`                                      |
+| `Export`        | `/export`, `/scan`, `/transactionalhistory`    |
+| `Taxonomie`     | `/taxonomy`                                    |
+| `Statistiques`  | `/stats`                                       |
+| `Monitoring`    | `/healthcheck`, `/metrics`                     |
+
+Pour ajouter un nouveau tag, l'utiliser directement dans le bloc JSDoc — swagger-jsdoc le créera automatiquement.
+
+

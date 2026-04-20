@@ -8,7 +8,8 @@
     "start": "node src/.",
     "start:watch": "nodemon src/.",
     "start:docker": "docker compose up -d",
-    "stop:docker": "docker compose stop"
+    "stop:docker": "docker compose stop",
+    "swagger": "node src/modules/swagger.js"
   },
   "author": "sebastien.courvoisier@justice.fr",
   "license": "",
@@ -24,7 +25,9 @@
     "express-validator": "^6.14.0",
     "morgan": "^1.10.0",
     "node-fetch": "^3.2.0",
-    "prom-client": "^15.1.3"
+    "prom-client": "^15.1.3",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "jest": "^27.5.1",
