@@ -2,7 +2,7 @@
   "openapi": "3.0.2",
   "info": {
     "title": "JUDILIBRE-public",
-    "version": "1.2.4",
+    "version": "1.2.5",
     "description": "La Cour de cassation, dans le cadre de la refonte de son site Web, a initié le projet JUDILIBRE visant à la conception et au développement en interne d'un moteur de recherche dans le corpus jurisprudentiel, mettant celui-ci à disposition du public dans l'esprit du décret sur l'Open Data des décisions de justice.",
     "contact": {
       "name": "Sébastien COURVOISIER",
@@ -276,7 +276,7 @@
         "parameters": [
           {
             "name": "jurisdiction",
-            "description": "Filtre pour ne retourner les résultats que pour un type de juridiction.\nDoit prendre les valeurs `cc`, `ca`, `tj` ou `tcom`.\nPar défaut, retourne toutes les juridictions",
+            "description": "Filtre pour ne retourner les résultats que pour un type de juridiction.\nDoit prendre les valeurs `cc`, `ca`, `tj`, `tcom` ou `cph`.\nPar défaut, retourne toutes les juridictions",
             "in": "query",
             "schema": {
               "type": "string"
