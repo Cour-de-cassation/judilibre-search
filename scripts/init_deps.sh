@@ -30,7 +30,6 @@ if [ ! -d "${ELASTIC_SRC}" ];then
 fi
 
 # scripts
-
 for file in $(ls ${SCRIPTS_SRC}); do
     if [ ! -f "./scripts/$file" ]; then
         ln -s ${SCRIPTS_SRC}/$file ./scripts/$file;
@@ -41,7 +40,6 @@ done;
 if [ ! -d "k8s/" ];then
     ln -s ${KUBE_SRC} ./k8s;
 fi;
-
 
 # elastic configs
 if [ ! -d "elastic/" ]; then
