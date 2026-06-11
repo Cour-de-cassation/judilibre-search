@@ -29,7 +29,7 @@ jobs:
       KUBE_ZONE: local
       START_TIMEOUT: 120
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v4
       - name: extract branch name
         shell: bash
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF} | sed 's|^refs/heads/||;' | sed 's/[^a-zA-Z0-9]/-/g')"
@@ -38,6 +38,7 @@ jobs:
         run: ./scripts/init_deps.sh
         env:
           GIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
+          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
       - name: get version
         run: echo "##[set-output name=version;]$(./scripts/version.sh)"
         id: extract_version
