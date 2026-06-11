@@ -3,7 +3,8 @@ const taxon = {
   jurinet: 'jurinet',
   jurica: 'jurica',
   juritj: 'juritj',
-  juritcom: 'juritcom'
+  juritcom: 'juritcom',
+  'portalis-cph': 'portalis-cph',
 };
 
 module.exports = {
