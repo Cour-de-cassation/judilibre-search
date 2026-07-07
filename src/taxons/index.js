@@ -21,6 +21,7 @@ const taxons = {
   ca: {},
   tj: {},
   tcom: {},
+  cph: {},
   all: {},
 };
 
@@ -34,6 +35,7 @@ taxonsEntries.forEach((taxon) => {
   taxons.ca[taxon] = require(`./${taxon}`);
   taxons.tj[taxon] = require(`./${taxon}`);
   taxons.tcom[taxon] = require(`./${taxon}`);
+  taxons.cph[taxon] = require(`./${taxon}`);
   taxons.all[taxon] = {};
   if (taxons[taxon].options) {
     taxons.all[taxon].options = JSON.parse(JSON.stringify(taxons[taxon].options));
@@ -91,6 +93,21 @@ taxonsEntries.forEach((taxon) => {
     }
   } catch (ignore) {
     taxons.tcom[taxon] = require(`./${taxon}`);
+  }
+  try {
+    taxons.cph[taxon] = require(`./cph/${taxon}`);
+    if (taxons.all[taxon].options && taxons.cph[taxon].options) {
+      taxons.all[taxon].options = taxons.all[taxon].options.concat(
+        JSON.parse(JSON.stringify(taxons.cph[taxon].options)),
+      );
+      taxons.all[taxon].options = taxons.all[taxon].options.filter(onlyUnique);
+    }
+    if (taxons.all[taxon].keys && taxons.cph[taxon].keys) {
+      taxons.all[taxon].keys = taxons.all[taxon].keys.concat(JSON.parse(JSON.stringify(taxons.cph[taxon].keys)));
+      taxons.all[taxon].keys = taxons.all[taxon].keys.filter(onlyUnique);
+    }
+  } catch (ignore) {
+    taxons.cph[taxon] = require(`./${taxon}`);
   }
 });
 
