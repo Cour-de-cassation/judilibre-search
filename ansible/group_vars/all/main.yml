@@ -1,0 +1,15 @@
+---
+# Connexion Ansible
+ansible_user: iliasaaguida
+ansible_python_interpreter: "/home/{{ ansible_user }}/ansible_venv/bin/python"
+
+# ── judilibre-search ────────────────────────────────────────────────────────────────
+judilibre_namespace: judilibre
+judilibre_app_id: judilibre-search
+judilibre_app_port: 8000
+
+# Autres variables
+ELASTIC_INDEX: "judilibre_0"
+TRANSACTION_INDEX: "transaction_0"
+APP_ID: "judilibre-search"
+API_PORT: 8000

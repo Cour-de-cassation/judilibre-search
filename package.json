@@ -5,6 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "test": "jest --config jestconfig.json",
+    "lint": "echo \"❌ Error: no lint specified\" && exit 0",
+    "dev": "node src/.",
     "start": "node src/.",
     "start:watch": "nodemon src/.",
     "start:docker": "docker compose up -d",

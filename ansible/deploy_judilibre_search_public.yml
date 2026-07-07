@@ -1,0 +1,20 @@
+- name: Deploy judilibre-search on public platform
+  hosts: localhost
+  connection: local
+
+  tasks:
+    - name: Mettre à jour l'image du deployment
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: judilibre-search
+            namespace: judilibre
+          spec:
+            template:
+              spec:
+                containers:
+                  - name: judilibre-search
+                    image: "{{ judilibre_search_docker_image }}"
