@@ -1,0 +1,55 @@
+---
+- name: Création du Deployment {{ judilibre_app_id }}
+  kubernetes.core.k8s:
+    apply: true
+    state: present
+    verify_ssl: true
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: "{{ judilibre_app_id }}-deployment"
+        namespace: "{{ judilibre_namespace }}"
+        labels:
+          app: "{{ judilibre_app_id }}"
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app: "{{ judilibre_app_id }}"
+        template:
+          metadata:
+            labels:
+              app: "{{ judilibre_app_id }}"
+          spec:
+            containers:
+              - name: "{{ judilibre_app_id }}"
+                image: "{{ judilibre_search_docker_image }}"
+                ports:
+                  - containerPort: "{{ judilibre_app_port }}"
+                envFrom:
+                  - secretRef:
+                      name: "{{ judilibre_app_id }}-secret"
+                resources:
+                  requests:
+                    memory: "256Mi"
+                    cpu: "200m"
+                  limits:
+                    memory: "512Mi"
+                    cpu: "500m"
+                livenessProbe:
+                  exec:
+                    command:
+                      - sh
+                      - -c
+                      - 'curl -fsS http://localhost:{{ judilibre_app_port }}/healthcheck'
+                  initialDelaySeconds: 10
+                  periodSeconds: 30
+                readinessProbe:
+                  exec:
+                    command:
+                      - sh
+                      - -c
+                      - 'curl -fsS http://localhost:{{ judilibre_app_port }}/healthcheck'
+                  initialDelaySeconds: 5
+                  periodSeconds: 10

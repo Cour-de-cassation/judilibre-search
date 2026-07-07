@@ -1,0 +1,51 @@
+name: Build & Push Docker Image
+
+on:
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+"
+
+env:
+  IMAGE_NAME: ${{ secrets.JUDILIBRE_DOCKERHUB_USERNAME }}/judilibre-search
+
+jobs:
+  build-and-push:
+    name: Build & Push
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Nécessaire pour vérifier les branches
+
+      # Vérifie que le tag pointe bien sur un commit de main
+      - name: Check tag is on main
+        run: |
+          git fetch origin main
+          if ! git merge-base --is-ancestor ${{ github.sha }} origin/main; then
+            echo "❌ Ce tag n'est pas sur main. Annulation."
+            exit 1
+          fi
+          echo "✅ Tag sur main, on continue."
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.JUDILIBRE_DOCKERHUB_USERNAME }}
+          password: ${{ secrets.JUDILIBRE_DOCKERHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          target: production
+          tags: |
+            ${{ env.IMAGE_NAME }}:${{ github.ref_name }}
+            ${{ env.IMAGE_NAME }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

@@ -1,0 +1,12 @@
+---
+- name: Deploy namespace
+  ansible.builtin.import_tasks: create_namespace.yml
+
+- name: Deploy secret
+  ansible.builtin.import_tasks: create_secret.yml
+
+- name: Deploy deployment
+  ansible.builtin.import_tasks: create_deployment.yml
+
+- name: Deploy service
+  ansible.builtin.import_tasks: create_service.yml

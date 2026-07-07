@@ -1,0 +1,2 @@
+HTTP_PASSWORD: "password"
+ELASTIC_NODE: "http://localhost:9200"
