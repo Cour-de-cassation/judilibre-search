@@ -1,0 +1,23 @@
+---
+- name: Création du Service {{ judilibre_app_id }}
+  kubernetes.core.k8s:
+    apply: true
+    state: present
+    verify_ssl: true
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: "{{ judilibre_app_id }}-service"
+        namespace: "{{ judilibre_namespace }}"
+        labels:
+          app: "{{ judilibre_app_id }}"
+      spec:
+        type: ClusterIP
+        selector:
+          app: "{{ judilibre_app_id }}"
+        ports:
+          - name: http
+            protocol: TCP
+            port: "{{ judilibre_app_port }}"
+            targetPort: "{{ judilibre_app_port }}"

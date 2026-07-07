@@ -1,0 +1,11 @@
+---
+- name: Création du namespace {{ judilibre_namespace }}
+  kubernetes.core.k8s:
+    apply: true
+    state: present
+    verify_ssl: true
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: "{{ judilibre_namespace }}"
