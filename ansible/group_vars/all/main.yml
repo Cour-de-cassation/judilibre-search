@@ -1,6 +1,6 @@
 ---
 # Connexion Ansible
-ansible_user: iliasaaguida
+ansible_user: ops
 ansible_python_interpreter: "/home/{{ ansible_user }}/ansible_venv/bin/python"
 
 # ── judilibre-search ────────────────────────────────────────────────────────────────
