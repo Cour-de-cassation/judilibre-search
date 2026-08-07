@@ -4,61 +4,19 @@ const api = express.Router();
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 const { checkSchema, validationResult } = require('express-validator');
 const Elastic = require('../modules/elastic');
-const taxons = require('../taxons');
+const { VALIDATORS } = require('./validators');
 const route = 'decision';
 
 api.get(
   `/${route}`,
   checkSchema({
-    id: {
-      in: 'query',
-      isString: true,
-      errorMessage: `Value of the id parameter must be a string.`,
-      optional: false,
-    },
-    fileId: {
-      in: 'query',
-      isString: true,
-      errorMessage: `Value of the fileId parameter must be a string.`,
-      optional: true,
-    },
-    showContested: {
-      in: 'query',
-      isBoolean: true,
-      toBoolean: true,
-      errorMessage: `Value of the showContested parameter must be a boolean.`,
-      optional: true,
-    },
-    showForward: {
-      in: 'query',
-      isBoolean: true,
-      toBoolean: true,
-      errorMessage: `Value of the showForward parameter must be a boolean.`,
-      optional: true,
-    },
-    query: {
-      in: 'query',
-      isString: true,
-      errorMessage: `Value of the query parameter must be a string.`,
-      optional: true,
-    },
-    operator: {
-      in: 'query',
-      isString: true,
-      toLowerCase: true,
-      isIn: {
-        options: [taxons.all.operator.options],
-      },
-      errorMessage: `Value of the operator parameter must be in [${taxons.all.operator.keys}].`,
-      optional: true,
-    },
-    resolve_references: {
-      in: 'query',
-      isBoolean: true,
-      toBoolean: true,
-      errorMessage: `Value of the resolve_references parameter must be a boolean.`,
-      optional: true,
-    },
+    ...VALIDATORS.SHOW_FORWARD,
+    ...VALIDATORS.SHOW_CONTESTED,
+    ...VALIDATORS.FILE_ID,
+    ...VALIDATORS.ID,
+    ...VALIDATORS.QUERY,
+    ...VALIDATORS.OPERATOR,
+    ...VALIDATORS.RESOLVE_REFERENCES,
   }),
   async (req, res) => {
     if (process.env.APP_HOST_ALTER === undefined) {
