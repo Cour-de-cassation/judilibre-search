@@ -19,15 +19,15 @@ jobs:
         with:
           fetch-depth: 0  # Nécessaire pour vérifier les branches
 
-      # Vérifie que le tag pointe bien sur un commit de main
-      - name: Check tag is on main
+      # Vérifie que le tag pointe bien sur un commit de master
+      - name: Check tag is on master
         run: |
-          git fetch origin main
-          if ! git merge-base --is-ancestor ${{ github.sha }} origin/main; then
-            echo "❌ Ce tag n'est pas sur main. Annulation."
+          git fetch origin master
+          if ! git merge-base --is-ancestor ${{ github.sha }} origin/master; then
+            echo "❌ Ce tag n'est pas sur master. Annulation."
             exit 1
           fi
-          echo "✅ Tag sur main, on continue."
+          echo "✅ Tag sur master, on continue."
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
