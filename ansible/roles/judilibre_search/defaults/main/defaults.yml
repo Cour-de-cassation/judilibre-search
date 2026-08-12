@@ -1,0 +1,121 @@
+---
+# Valeurs de repli du rôle. Un environnement ne redéfinit que ce qui lui est
+# propre (cf. group_vars/<environnement>/main.yml) : tout le reste vient d'ici.
+#
+# ⚠️ Les valeurs numériques doivent rester des entiers YAML, écrits sans
+# guillemets, et être référencées telles quelles dans les manifestes — sans
+# `| int`. Mesuré sur ce rôle : une référence de variable nue conserve son type
+# quelle que soit la version d'ansible-core, alors qu'un filtre rend une chaîne
+# jusqu'à la 2.18 incluse. L'API Kubernetes refuse un `spec.replicas` ou un
+# `port` reçu en chaîne, avec une erreur qui ne parle ni d'Ansible ni de
+# version. Le rôle est ainsi insensible à la version de l'outil, ce qui vaut
+# mieux que de dépendre d'un pin.
+
+# ── Identité ──────────────────────────────────────────────────────────────────
+judilibre_search_namespace: judilibre
+judilibre_search_app_id: judilibre-search
+judilibre_search_app_port: 8000
+
+# ── Index Elasticsearch ───────────────────────────────────────────────────────
+# L'application ne fait que lire ces deux index : aucune écriture dans src/.
+judilibre_search_elastic_index: judilibre_0
+judilibre_search_transaction_index: transaction_0
+
+# ── Dimensionnement ───────────────────────────────────────────────────────────
+judilibre_search_replicas: 1
+judilibre_search_cpu_request: 200m
+judilibre_search_cpu_limit: 500m
+judilibre_search_memory_request: 256Mi
+judilibre_search_memory_limit: 512Mi
+
+# Aucun NODE_OPTIONS ici, contrairement à judilibre-admin : avec une limite à
+# 512 Mi, fixer le plafond du tas V8 à ~75 % de la limite le porterait au-delà
+# de ce que Node choisit seul, et la mémoire hors tas ferait dépasser la limite.
+# Le couple (limite mémoire, plafond de tas) est à reprendre ensemble si un jour
+# la limite monte.
+
+# ── Déploiement ───────────────────────────────────────────────────────────────
+# L'image du Dockerfile déclare `USER node`. Kubernetes ne sait pas vérifier
+# qu'un utilisateur désigné par son nom est non-root : sans UID numérique
+# explicite, `runAsNonRoot: true` fait échouer le démarrage du pod.
+judilibre_search_run_as_user: 1000
+judilibre_search_run_as_group: 1000
+
+# Délai maximum accordé au Deployment pour devenir disponible.
+judilibre_search_wait_timeout: 180
+
+# ── Périmètre du rôle ─────────────────────────────────────────────────────────
+# Quels objets le rôle crée. Tout, par défaut ; un environnement dont certains
+# objets sont posés ailleurs les désactive plutôt que de les réécrire.
+judilibre_search_manage_namespace: true
+judilibre_search_manage_config: true
+judilibre_search_manage_service: true
+
+# ── Injection de configuration ────────────────────────────────────────────────
+# Par défaut, un ConfigMap et un Secret injectés en bloc par envFrom. Là où les
+# valeurs viennent de Secrets préexistants, extra_env les référence clé par clé,
+# et extra_volumes monte ce qu'il faut. Une liste vide est un no-op valide côté
+# API, ce qui évite tout rendu conditionnel dans le manifeste.
+judilibre_search_extra_env: []
+judilibre_search_extra_volumes: []
+judilibre_search_extra_volume_mounts: []
+
+# Laissé à false tant que ce n'est pas vérifié sur un environnement : l'activer
+# sans essai casserait toute écriture temporaire de l'application.
+judilibre_search_read_only_root_fs: false
+
+# Construits ici plutôt que dans le manifeste : une expression unique se lit
+# mieux qu'un bloc `when` au milieu d'une définition Kubernetes.
+judilibre_search_env_from: >-
+  {{ [{'configMapRef': {'name': judilibre_search_app_id ~ '-config'}},
+      {'secretRef': {'name': judilibre_search_app_id ~ '-secret'}}]
+     if judilibre_search_manage_config else [] }}
+
+# Les empreintes ne valent que si le rôle gère lui-même le ConfigMap et le
+# Secret ; ailleurs, elles porteraient sur des variables inexistantes.
+judilibre_search_pod_annotations: >-
+  {{ {'checksum/config': judilibre_search_config | to_json(sort_keys=true) | hash('sha1'),
+      'checksum/secret': judilibre_search_secrets | to_json(sort_keys=true) | hash('sha1')}
+     if judilibre_search_manage_config else {} }}
+
+# Regroupées en une variable : un environnement peut n'en déclarer aucune, un
+# dict vide se rendant en `resources: {}` que l'API accepte sans rien appliquer.
+judilibre_search_resources:
+  requests:
+    memory: "{{ judilibre_search_memory_request }}"
+    cpu: "{{ judilibre_search_cpu_request }}"
+  limits:
+    memory: "{{ judilibre_search_memory_limit }}"
+    cpu: "{{ judilibre_search_cpu_limit }}"
+
+# ── Service ───────────────────────────────────────────────────────────────────
+# Nom et port variables : un environnement peut exposer un Service déjà nommé
+# autrement, visé par un Ingress qui le désigne ainsi. Les appelants internes
+# attendent judilibre-search-service.judilibre.svc.cluster.local:8000.
+judilibre_search_service_name: "{{ judilibre_search_app_id }}-service"
+
+# Écrit en clair plutôt que renvoyé sur judilibre_search_app_port, et ce n'est
+# pas une redite : une référence de variable ne conserve son type que sur un
+# seul niveau. Enchaînée — le manifeste vers cette variable, puis cette variable
+# vers le port du conteneur — elle retombe en chaîne jusqu'à ansible-core 2.18,
+# et l'API refuse le Service. Mesuré.
+judilibre_search_service_port: 8000
+
+# ── Contenu injecté dans le conteneur ─────────────────────────────────────────
+# Configuration non sensible : ConfigMap. Les valeurs d'un ConfigMap doivent
+# être des chaînes côté API Kubernetes, d'où le `| string`.
+judilibre_search_config:
+  APP_ID: "{{ judilibre_search_app_id }}"
+  API_PORT: "{{ judilibre_search_app_port | string }}"
+  ELASTIC_INDEX: "{{ judilibre_search_elastic_index }}"
+  TRANSACTION_INDEX: "{{ judilibre_search_transaction_index }}"
+
+# Secrets : Secret. Défini par environnement, sans valeur de repli — un
+# environnement qui l'oublie doit échouer, pas hériter d'un mot de passe.
+#
+# Une seule entrée, contrairement à judilibre-admin : l'application ne lit
+# aucun HTTP_PASSWD. Les seules variables consommées par src/ sont API_PORT,
+# API_VERBOSITY, APP_HOST_ALTER, APP_ID, ELASTIC_INDEX, ELASTIC_NODE,
+# TRANSACTION_INDEX et WITHOUT_ELASTIC.
+judilibre_search_secrets:
+  ELASTIC_NODE: "{{ judilibre_search_elastic_node }}"

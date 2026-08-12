@@ -1,55 +1,117 @@
 ---
-- name: Création du Deployment {{ judilibre_app_id }}
+- name: Création du Deployment {{ judilibre_search_app_id }}
   kubernetes.core.k8s:
     apply: true
     state: present
-    verify_ssl: true
+    kubeconfig: "{{ kubeconfig_path | default(omit) }}"
+    validate_certs: "{{ k8s_validate_certs | default(true) }}"
+    # Sans attente, Ansible rend la main dès que l'API a accepté l'objet : un
+    # déploiement qui part en CrashLoopBackOff ou en ImagePullBackOff donnerait
+    # un pipeline vert.
+    #
+    # Ne pas ajouter de wait_condition ici : le module remplacerait alors son
+    # prédicat spécifique aux Deployments par un simple test de condition. Or
+    # avec maxUnavailable à 0, la condition Available reste vraie pendant tout
+    # le déploiement — l'ancien pod continue de servir — et l'attente se
+    # terminerait immédiatement. Sans wait_condition, le module vérifie que
+    # observedGeneration a rattrapé generation, que availableReplicas est au
+    # niveau attendu et qu'aucune réplique n'est indisponible : c'est bien la
+    # fin du rollout.
+    wait: true
+    wait_timeout: "{{ judilibre_search_wait_timeout }}"
     definition:
       apiVersion: apps/v1
       kind: Deployment
       metadata:
-        name: "{{ judilibre_app_id }}-deployment"
-        namespace: "{{ judilibre_namespace }}"
+        name: "{{ judilibre_search_app_id }}-deployment"
+        namespace: "{{ judilibre_search_namespace }}"
         labels:
-          app: "{{ judilibre_app_id }}"
+          app: "{{ judilibre_search_app_id }}"
       spec:
-        replicas: 1
+        replicas: "{{ judilibre_search_replicas }}"
+        revisionHistoryLimit: 3
+        # maxUnavailable à 0 : le nouveau pod doit être prêt avant que l'ancien
+        # ne soit arrêté. C'est ce qui évite la coupure à chaque déploiement —
+        # et ce qui fait échouer le rollout au lieu de remplacer un pod qui
+        # fonctionne par un pod cassé.
+        strategy:
+          type: RollingUpdate
+          rollingUpdate:
+            maxUnavailable: 0
+            maxSurge: 1
         selector:
           matchLabels:
-            app: "{{ judilibre_app_id }}"
+            app: "{{ judilibre_search_app_id }}"
         template:
           metadata:
             labels:
-              app: "{{ judilibre_app_id }}"
+              app: "{{ judilibre_search_app_id }}"
+            # Les variables d'envFrom sont lues au démarrage : modifier le
+            # ConfigMap ou le Secret ne redéploierait rien sans ces empreintes,
+            # qui changent avec leur contenu. Vides là où le rôle ne les gère pas.
+            annotations: "{{ judilibre_search_pod_annotations }}"
           spec:
+            securityContext:
+              runAsNonRoot: true
+              runAsUser: "{{ judilibre_search_run_as_user }}"
+              runAsGroup: "{{ judilibre_search_run_as_group }}"
+              seccompProfile:
+                type: RuntimeDefault
             containers:
-              - name: "{{ judilibre_app_id }}"
+              - name: "{{ judilibre_search_app_id }}"
                 image: "{{ app_image }}"
+                securityContext:
+                  allowPrivilegeEscalation: false
+                  readOnlyRootFilesystem: "{{ judilibre_search_read_only_root_fs | bool }}"
+                  capabilities:
+                    drop:
+                      - ALL
                 ports:
-                  - containerPort: "{{ judilibre_app_port }}"
-                envFrom:
-                  - secretRef:
-                      name: "{{ judilibre_app_id }}-secret"
-                resources:
-                  requests:
-                    memory: "256Mi"
-                    cpu: "200m"
-                  limits:
-                    memory: "512Mi"
-                    cpu: "500m"
+                  - containerPort: "{{ judilibre_search_app_port }}"
+                # Selon l'environnement : en bloc depuis le ConfigMap et le
+                # Secret du rôle, ou clé par clé via extra_env. Chaque liste est
+                # vide quand elle ne s'applique pas.
+                envFrom: "{{ judilibre_search_env_from }}"
+                env: "{{ judilibre_search_extra_env }}"
+                resources: "{{ judilibre_search_resources }}"
+                # timeoutSeconds explicite, et c'est le point qui compte : sans
+                # lui la valeur est 1 seconde. /healthcheck attend un ping
+                # Elasticsearch, donc dès que le cluster ralentit la sonde
+                # expire, trois échecs suffisent, et kubelet tue le conteneur —
+                # en boucle. C'est ce qui a produit 4754 redémarrages sur
+                # judilibre-admin.
+                #
+                # Attention par ailleurs : /healthcheck répond 200 même
+                # lorsqu'Elasticsearch est injoignable, en rendant
+                # `status: indisponible`. Ces sondes ne valident donc que la
+                # réponse du processus Node, pas le bon fonctionnement de
+                # l'application.
+                startupProbe:
+                  exec:
+                    command:
+                      - sh
+                      - -c
+                      - 'curl -fsS http://localhost:{{ judilibre_search_app_port }}/healthcheck'
+                  periodSeconds: 5
+                  timeoutSeconds: 5
+                  failureThreshold: 12
                 livenessProbe:
                   exec:
                     command:
                       - sh
                       - -c
-                      - 'curl -fsS http://localhost:{{ judilibre_app_port }}/healthcheck'
-                  initialDelaySeconds: 10
+                      - 'curl -fsS http://localhost:{{ judilibre_search_app_port }}/healthcheck'
                   periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 3
                 readinessProbe:
                   exec:
                     command:
                       - sh
                       - -c
-                      - 'curl -fsS http://localhost:{{ judilibre_app_port }}/healthcheck'
-                  initialDelaySeconds: 5
+                      - 'curl -fsS http://localhost:{{ judilibre_search_app_port }}/healthcheck'
                   periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+                volumeMounts: "{{ judilibre_search_extra_volume_mounts }}"
+            volumes: "{{ judilibre_search_extra_volumes }}"

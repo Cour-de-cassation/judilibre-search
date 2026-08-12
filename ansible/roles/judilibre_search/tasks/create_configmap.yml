@@ -1,0 +1,16 @@
+---
+- name: Création du ConfigMap de {{ judilibre_search_app_id }}
+  kubernetes.core.k8s:
+    apply: true
+    state: present
+    kubeconfig: "{{ kubeconfig_path | default(omit) }}"
+    validate_certs: "{{ k8s_validate_certs | default(true) }}"
+    definition:
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: "{{ judilibre_search_app_id }}-config"
+        namespace: "{{ judilibre_search_namespace }}"
+        labels:
+          app: "{{ judilibre_search_app_id }}"
+      data: "{{ judilibre_search_config }}"

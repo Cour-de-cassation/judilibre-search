@@ -3,13 +3,6 @@
 ansible_user: ops
 ansible_python_interpreter: "/home/{{ ansible_user }}/ansible_venv/bin/python"
 
-# ── judilibre-search ────────────────────────────────────────────────────────────────
-judilibre_namespace: judilibre
-judilibre_app_id: judilibre-search
-judilibre_app_port: 8000
-
-# Autres variables
-ELASTIC_INDEX: "judilibre_0"
-TRANSACTION_INDEX: "transaction_0"
-APP_ID: "judilibre-search"
-API_PORT: 8000
+# L'identité de l'application, ses index et son dimensionnement vivent dans les
+# défauts du rôle : ansible/roles/judilibre_search/defaults/main/defaults.yml.
+# Un environnement n'y déclare que ce qui lui est propre.
