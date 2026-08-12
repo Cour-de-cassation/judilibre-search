@@ -1,5 +1,5 @@
 ---
-# La valeur sensible vit dans group_vars/dev/vault.yml, chiffré avec Ansible
+# La valeur sensible vit dans group_vars/preprod/vault.yml, chiffré avec Ansible
 # Vault. Ce fichier doit y définir :
 #   vault_judilibre_search_elastic_node
 #
