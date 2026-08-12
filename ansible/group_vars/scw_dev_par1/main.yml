@@ -1,0 +1,7 @@
+---
+# Cluster scw-dev-par1 — la recette publique.
+# Exposé sur search.dev-par1.judilibre.io.
+judilibre_search_namespace: judilibre-scw-dev-par1-dev
+
+# Une seule réplique ici, contre trois en production. Relevé sur le cluster.
+judilibre_search_replicas: 1

@@ -2,8 +2,10 @@ const taxon = {
   dila: 'dila',
   jurinet: 'jurinet',
   jurica: 'jurica',
+  juricav2: 'juricav2',
   juritj: 'juritj',
-  juritcom: 'juritcom'
+  juritcom: 'juritcom',
+  'portalis-cph': 'portalis-cph',
 };
 
 module.exports = {

@@ -65,7 +65,7 @@ function filterByJurisdiction({ jurisdiction }) {
 
 function filterBySource({ source }) {
   const isSource = source && Array.isArray(source) && source.length > 0;
-  return { terms: { source: isSource ? source : ['dila', 'jurinet', 'jurica', 'juritj', 'juritcom'] } };
+  return { terms: { source: isSource ? source : ['dila', 'jurinet', 'jurica', 'juricav2', 'juritj', 'juritcom', 'portalis-cph'] } };
 }
 
 function filterByDate({ date_start, date_end, date_type }) {

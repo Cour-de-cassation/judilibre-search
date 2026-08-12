@@ -1,0 +1,23 @@
+---
+# Les trois clusters publics.
+#
+# Chaque groupe ne porte qu'un hôte fictif : le playbook s'exécute en local et
+# parle à l'API distante par le kubeconfig. L'inventaire ne sert qu'à permettre
+# le chargement de group_vars/<groupe>/, qu'un `hosts: localhost` sans
+# inventaire ne fait pas.
+scw:
+  children:
+    scw_dev_par1:
+      hosts:
+        scw_dev_par1_target:
+          ansible_connection: local
+
+    scw_prod_par1:
+      hosts:
+        scw_prod_par1_target:
+          ansible_connection: local
+
+    scw_prod_par2:
+      hosts:
+        scw_prod_par2_target:
+          ansible_connection: local

@@ -1,0 +1,3 @@
+---
+# Cluster k3d jetable, sans authentification Elasticsearch.
+judilibre_search_elastic_node: "http://localhost:9200"

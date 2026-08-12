@@ -1,0 +1,11 @@
+# Template de .gitlab-ci.yml qui provient d'ops-automation
+include:
+  - project: 'cour-de-cassation/ops-automation'
+    file: 'template/gitlab-ci-template.yml'
+    ref: 'master'
+
+variables:
+  # Le dernier étage du Dockerfile est "local" (développement), et Docker prend
+  # le dernier étage comme cible par défaut : il faut donc cibler explicitement
+  # l'étage de production.
+  DOCKER_BUILD_ARGS: '--target=production'

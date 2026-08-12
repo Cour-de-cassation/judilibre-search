@@ -1,0 +1,6 @@
+---
+# Cluster scw-prod-par2 — production, second site — déployé après par1.
+# Exposé sur search.prod-par2.judilibre.io, et c'est aujourd'hui ce site que
+# search.judilibre.io désigne : le second déployé est celui qui sert le public.
+judilibre_search_namespace: judilibre-scw-prod-par2-master
+judilibre_search_replicas: 3

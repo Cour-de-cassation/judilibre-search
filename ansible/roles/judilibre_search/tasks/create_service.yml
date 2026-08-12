@@ -1,0 +1,31 @@
+---
+- name: Création du Service {{ judilibre_search_app_id }}
+  kubernetes.core.k8s:
+    apply: true
+    state: present
+    kubeconfig: "{{ kubeconfig_path | default(omit) }}"
+    validate_certs: "{{ k8s_validate_certs | default(true) }}"
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: "{{ judilibre_search_service_name }}"
+        namespace: "{{ judilibre_search_namespace }}"
+        labels:
+          app: "{{ judilibre_search_app_id }}"
+      spec:
+        type: ClusterIP
+        selector:
+          app: "{{ judilibre_search_app_id }}"
+        ports:
+          - name: http
+            protocol: TCP
+            # Le port exposé et le port du conteneur peuvent différer : la
+            # plateforme publique publie sur 80 et vise 8080.
+            #
+            # targetPort accepte un entier ou un nom de port. Rendu en chaîne,
+            # "8000" serait pris pour un *nom*, ne correspondrait à aucun port
+            # du conteneur, et le Service se retrouverait sans endpoints — sans
+            # que rien ne le signale.
+            port: "{{ judilibre_search_service_port }}"
+            targetPort: "{{ judilibre_search_app_port }}"

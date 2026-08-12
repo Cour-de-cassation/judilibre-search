@@ -1,4 +1,13 @@
 #!/bin/bash
+#
+# Test minimal de l'API, appelé par judilibre-ops après la création d'un
+# environnement (scripts/create_environment.sh).
+#
+# Ne pas supprimer ce fichier : scripts/init_deps.sh crée un lien symbolique
+# vers chaque script de judilibre-ops dont le nom n'existe pas déjà ici. En son
+# absence, c'est donc le test_minimal.sh de judilibre-ops qui s'exécuterait —
+# celui-ci vise l'API d'administration, pas celle de recherche, et la création
+# d'environnement échouerait.
 
 export CURL="curl -s --retry 5 --retry-delay 2 --max-time 5"
 
@@ -6,6 +15,8 @@ if [ ! -z "${APP_SELF_SIGNED}" ];then
   export CURL="${CURL} -k"
 fi;
 
+# Neutralise tout ce qui suit : le script sort en succès sans rien vérifier.
+# En place depuis décembre 2023.
 exit 0
 
 if [ "${ACME}" == "acme-staging" ];then

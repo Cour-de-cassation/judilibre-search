@@ -1,0 +1,91 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master]
+
+# Annule les runs en cours si un nouveau commit arrive sur la même PR/branche
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  node:
+    name: 🧪 Node
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Tests
+        run: npm run test
+
+  build-docker:
+    name: 🐳 Build Docker image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build image (no push)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          load: true
+          tags: app:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          target: production
+
+  ansible:
+    name: 🤖 Ansible checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Ansible & tools
+        run: pip install ansible ansible-lint
+
+      - name: ansible-lint
+        run: ansible-lint ansible/roles ansible/deploy_app.yml ansible/deploy_app_public.yml
+
+      - name: Syntax check — privé
+        run: |
+          ansible-playbook \
+            --syntax-check \
+            -e app_image=my-image \
+            -i ansible/inventory/local.yml \
+            ansible/deploy_app.yml
+
+      - name: Syntax check — public
+        run: |
+          ansible-playbook \
+            --syntax-check \
+            -e app_image=my-image \
+            -i ansible/inventory/scw.yml \
+            ansible/deploy_app_public.yml
+

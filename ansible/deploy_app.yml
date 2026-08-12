@@ -1,0 +1,7 @@
+---
+- name: Deploy judilibre-search
+  hosts: k3s_master
+  gather_facts: true
+  roles:
+    - role: judilibre_search
+...

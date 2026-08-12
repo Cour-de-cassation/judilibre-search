@@ -1,0 +1,8 @@
+---
+# Connexion Ansible
+ansible_user: ops
+ansible_python_interpreter: "/home/{{ ansible_user }}/ansible_venv/bin/python"
+
+# L'identité de l'application, ses index et son dimensionnement vivent dans les
+# défauts du rôle : ansible/roles/judilibre_search/defaults/main/defaults.yml.
+# Un environnement n'y déclare que ce qui lui est propre.

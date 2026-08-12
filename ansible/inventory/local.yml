@@ -1,0 +1,15 @@
+---
+local:
+  children:
+    k3s_master:
+      hosts:
+        k3s_master_host:
+          ansible_host: k3d-test-cluster-server-0
+          ansible_connection: local
+          ansible_kubectl_context: k3d-test-cluster
+          ansible_python_interpreter: /usr/local/bin/python3
+          kubeconfig_path: /root/.kube/config
+          validate_certs: no
+          k8s_validate_certs: no
+      vars:
+        env: local

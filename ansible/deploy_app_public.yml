@@ -1,0 +1,13 @@
+---
+# Déploiement de judilibre-search sur la plateforme publique.
+#
+# Pendant de deploy_app.yml : la cible n'est pas un nœud maître joint en SSH
+# mais l'API d'un cluster distant, d'où l'exécution locale et un kubeconfig
+# fabriqué par l'appelant. Le périmètre des objets créés se règle par les
+# drapeaux judilibre_search_manage_* des group_vars.
+- name: Deploy judilibre-search on the public platform
+  hosts: all
+  gather_facts: false
+  roles:
+    - role: judilibre_search
+...

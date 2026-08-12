@@ -1,0 +1,9 @@
+---
+# La valeur sensible vit dans group_vars/preprod/vault.yml, chiffré avec Ansible
+# Vault. Ce fichier doit y définir :
+#   vault_judilibre_search_elastic_node
+#
+# L'URL porte le compte judilibre-search, en lecture seule sur judilibre_0 et
+# transaction_0. L'application n'écrit dans aucun des deux : lui donner un
+# compte d'administration serait un droit accordé sans usage.
+judilibre_search_elastic_node: "{{ vault_judilibre_search_elastic_node }}"
