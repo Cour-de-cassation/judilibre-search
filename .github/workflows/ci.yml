@@ -71,13 +71,21 @@ jobs:
         run: pip install ansible ansible-lint
 
       - name: ansible-lint
-        run: ansible-lint ansible/roles ansible/deploy_app.yml ansible/deploy_judilibre_search_public.yml
+        run: ansible-lint ansible/roles ansible/deploy_app.yml ansible/deploy_app_public.yml
 
-      - name: Syntax check
+      - name: Syntax check — privé
         run: |
           ansible-playbook \
             --syntax-check \
             -e app_image=my-image \
             -i ansible/inventory/local.yml \
             ansible/deploy_app.yml
+
+      - name: Syntax check — public
+        run: |
+          ansible-playbook \
+            --syntax-check \
+            -e app_image=my-image \
+            -i ansible/inventory/scw.yml \
+            ansible/deploy_app_public.yml
 

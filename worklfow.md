@@ -51,6 +51,39 @@ de l'environnement correspondant. Si l'image du même commit existe déjà pour 
 autre environnement, le template la retague au lieu de la reconstruire : c'est donc
 exactement le binaire testé qui est promu.
 
+## CD — plateforme publique (Scaleway)
+
+Les clusters Scaleway ne peuvent pas atteindre le registry GitLab interne : ils
+tirent leur image depuis Docker Hub. Le déploiement est porté par
+[deploy-scaleway.yml](/.github/workflows/deploy-scaleway.yml), qui exécute le
+**même rôle Ansible** que la plateforme privée — seules les valeurs des
+`group_vars` changent, et le playbook est
+[ansible/deploy_app_public.yml](/ansible/deploy_app_public.yml).
+
+Le déclenchement est **manuel** : rien ne part sur un push ni sur un tag.
+
+1. *Actions* → « Déploiement sur Scaleway » → *Run workflow*
+2. `target` : `dev-par1`, `prod-par1`, `prod-par2` ou `prod-les-deux`, cette
+   dernière n'enchaînant le second site que si le premier a réussi
+3. `image` : laissée **vide**, l'image du commit est déployée — construite et
+   publiée sous `<organisation>/judilibre-search:<sha court>` si le registre ne
+   la porte pas déjà. **Renseignée**, cette référence est déployée telle quelle,
+   sans construction : c'est ce qui permet de redéployer une image déjà en
+   service ou de revenir à une version antérieure
+
+Le job enchaîne ensuite kubeconfig, résolution de l'image, déploiement Ansible,
+puis un contrôle sur l'**URL publique** — qui traverse l'Ingress, le certificat
+et le LoadBalancer, ce que les sondes du conteneur ne prouvent pas. Si le
+déploiement ou ce contrôle échoue, le Deployment revient à sa révision
+précédente.
+
+Comme un même commit donne une même étiquette, déployer `dev-par1` puis les deux
+sites de production depuis ce commit livre exactement le même artefact.
+
+**Périmètre** : namespace, Service et Deployment. Les autres objets d'un cluster
+— Ingress, Secrets, Elasticsearch, LoadBalancer, certificats — sont créés par
+`judilibre-ops`. Le namespace est partagé avec `judilibre-admin`.
+
 ### Le tag, côté public
 
 [tag.yml](/.github/workflows/tag.yml) est indépendant de ce qui précède : un tag

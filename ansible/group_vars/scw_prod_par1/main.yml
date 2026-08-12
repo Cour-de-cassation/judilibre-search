@@ -1,0 +1,5 @@
+---
+# Cluster scw-prod-par1 — production, premier site.
+# Exposé sur search.prod-par1.judilibre.io.
+judilibre_search_namespace: judilibre-scw-prod-par1-master
+judilibre_search_replicas: 3

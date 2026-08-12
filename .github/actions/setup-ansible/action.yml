@@ -1,0 +1,25 @@
+name: Outillage Ansible
+description: >-
+  Installe ansible-core, la bibliothèque Python kubernetes et la collection
+  kubernetes.core, à des versions épinglées.
+
+inputs:
+  ansible-version:
+    description: Version d'ansible-core
+    required: true
+  collection-version:
+    description: Version de la collection kubernetes.core
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Installation
+      shell: bash
+      run: |
+        set -euo pipefail
+        python3 -m pip install --quiet --disable-pip-version-check \
+            "ansible-core==${{ inputs.ansible-version }}" kubernetes
+        ansible-galaxy collection install \
+            "kubernetes.core:==${{ inputs.collection-version }}"
+        ansible --version

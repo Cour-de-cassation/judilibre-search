@@ -1,0 +1,102 @@
+---
+# Réglages communs aux trois clusters publics Scaleway.
+# Les valeurs propres à chaque cluster vivent dans group_vars/scw_<zone>/.
+#
+# Tout ce fichier reproduit ce que judilibre-ops déploie aujourd'hui
+# (k8s/deployment.yaml et k8s/service.yaml, remplis par
+# scripts/deploy_k8s_services.sh) : le premier passage ne doit rien changer
+# d'autre que le gabarit du pod.
+
+# group_vars/all impose l'interpréteur du venv des VM privées, absent d'un
+# runner où ce playbook s'exécute en local.
+ansible_python_interpreter: "{{ ansible_playbook_python }}"
+
+# ── Périmètre ─────────────────────────────────────────────────────────────────
+# Même empreinte que les autres dépôts applicatifs de la plateforme : une
+# application possède son namespace, son Service et son Deployment.
+#
+# Le Service surtout : il partage le sélecteur `app` avec le Deployment. Séparés
+# entre deux dépôts, un label modifié d'un côté et pas de l'autre laisse le
+# Service ne plus rien sélectionner, sans que rien ne le signale.
+judilibre_search_manage_namespace: true
+judilibre_search_manage_service: true
+
+# Le namespace est partagé avec judilibre-admin : les deux applications vivent
+# dans judilibre-scw-<zone>-<branche>. Le créer reste idempotent.
+#
+# Restent chez judilibre-ops : l'Ingress — nginx ici contre Traefik en privé,
+# avec ses annotations, sa liste blanche et ses secrets TLS —, les Secrets
+# d'accès, l'Elasticsearch, le LoadBalancer, l'issuer ACME et le DNS.
+#
+# Aucun ConfigMap n'existe sur ces clusters : la configuration non sensible est
+# posée dans le Deployment, ce que judilibre_search_extra_env reproduit.
+judilibre_search_manage_config: false
+
+# ── Service ───────────────────────────────────────────────────────────────────
+# Nom et port de l'existant, à respecter : l'Ingress vise ce Service par son nom
+# et le publie sur 80. Le targetPort suit judilibre_search_app_port.
+judilibre_search_service_name: judilibre-search-svc
+judilibre_search_service_port: 80
+
+# ── Conteneur ─────────────────────────────────────────────────────────────────
+# 8080 ici, contre 8000 en privé : c'est l'API_PORT des déploiements historiques
+# et la valeur posée dans le Dockerfile.
+judilibre_search_app_port: 8080
+
+# Déjà le cas aujourd'hui sur ces clusters — le désactiver serait une régression.
+judilibre_search_read_only_root_fs: true
+
+# Aucune demande ni limite, comme aujourd'hui. En poser sans fixer NODE_OPTIONS
+# en même temps exposerait à des OOMKills, V8 dimensionnant son tas d'après la
+# limite du conteneur. Sujet à traiter pour lui-même.
+judilibre_search_resources: {}
+
+# ── Configuration injectée ────────────────────────────────────────────────────
+# Reprise de k8s/deployment.yaml de judilibre-ops. Les deux Secrets référencés
+# sont créés par ce dépôt-là et ne sont pas gérés ici.
+judilibre_search_es_auth_secret: "{{ judilibre_search_app_id }}-es-path-with-auth"
+judilibre_search_http_passwd_secret: "{{ judilibre_search_app_id }}-http-passwd"
+judilibre_search_es_ca_secret: judilibre-es-http-certs-public
+
+# HTTP_PASSWD est conservé alors que l'application ne le lit jamais — les seules
+# variables consommées par src/ sont API_PORT, API_VERBOSITY, APP_HOST_ALTER,
+# APP_ID, ELASTIC_INDEX, ELASTIC_NODE, TRANSACTION_INDEX et WITHOUT_ELASTIC.
+# judilibre-ops l'injecte pour toutes les applications du groupe (« api secret /
+# password is dummy for search API », deploy_k8s_services.sh), et le premier
+# passage ne doit pas changer plus que le gabarit du pod. À retirer une fois la
+# chaîne éprouvée : ce serait une dépendance de moins vers un Secret que ce
+# dépôt ne gère pas.
+judilibre_search_extra_env:
+  - name: ELASTIC_NODE
+    valueFrom:
+      secretKeyRef:
+        name: "{{ judilibre_search_es_auth_secret }}"
+        key: elastic-node
+  - name: ELASTIC_INDEX
+    value: "{{ judilibre_search_elastic_index }}"
+  - name: TRANSACTION_INDEX
+    value: "{{ judilibre_search_transaction_index }}"
+  - name: ELASTIC_CERT
+    value: /etc/elasticsearch/certificates/ca.crt
+  - name: HTTP_PASSWD
+    valueFrom:
+      secretKeyRef:
+        name: "{{ judilibre_search_http_passwd_secret }}"
+        key: http-passwd
+
+# L'autorité de certification d'Elasticsearch, générée par l'opérateur ECK.
+judilibre_search_extra_volumes:
+  - name: cert-ca
+    secret:
+      secretName: "{{ judilibre_search_es_ca_secret }}"
+
+judilibre_search_extra_volume_mounts:
+  - name: cert-ca
+    mountPath: /etc/elasticsearch/certificates
+    readOnly: true
+
+# 180 s est trop court ici : la startupProbe accorde déjà 60 s, plus le tirage
+# d'une image froide, et il y a plusieurs répliques à faire passer une à une
+# avec maxUnavailable à 0. Kubernetes, lui, attend 600 s avant de déclarer
+# l'échec.
+judilibre_search_wait_timeout: 300
