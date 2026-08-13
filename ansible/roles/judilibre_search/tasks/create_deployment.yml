@@ -78,8 +78,7 @@
                 # lui la valeur est 1 seconde. /healthcheck attend un ping
                 # Elasticsearch, donc dès que le cluster ralentit la sonde
                 # expire, trois échecs suffisent, et kubelet tue le conteneur —
-                # en boucle. C'est ce qui a produit 4754 redémarrages sur
-                # judilibre-admin.
+                # en boucle.
                 #
                 # Attention par ailleurs : /healthcheck répond 200 même
                 # lorsqu'Elasticsearch est injoignable, en rendant
