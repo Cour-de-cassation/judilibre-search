@@ -25,8 +25,8 @@ judilibre_search_manage_service: true
 # dans judilibre-scw-<zone>-<branche>. Le créer reste idempotent.
 #
 # Restent chez judilibre-ops : l'Ingress — nginx ici contre Traefik en privé,
-# avec ses annotations, sa liste blanche et ses secrets TLS —, les Secrets
-# d'accès, l'Elasticsearch, le LoadBalancer, l'issuer ACME et le DNS.
+# avec ses annotations et ses secrets TLS —, les Secrets d'accès,
+# l'Elasticsearch, le LoadBalancer, l'issuer ACME et le DNS.
 #
 # Aucun ConfigMap n'existe sur ces clusters : la configuration non sensible est
 # posée dans le Deployment, ce que judilibre_search_extra_env reproduit.
@@ -61,11 +61,10 @@ judilibre_search_es_ca_secret: judilibre-es-http-certs-public
 # HTTP_PASSWD est conservé alors que l'application ne le lit jamais — les seules
 # variables consommées par src/ sont API_PORT, API_VERBOSITY, APP_HOST_ALTER,
 # APP_ID, ELASTIC_INDEX, ELASTIC_NODE, TRANSACTION_INDEX et WITHOUT_ELASTIC.
-# judilibre-ops l'injecte pour toutes les applications du groupe (« api secret /
-# password is dummy for search API », deploy_k8s_services.sh), et le premier
-# passage ne doit pas changer plus que le gabarit du pod. À retirer une fois la
-# chaîne éprouvée : ce serait une dépendance de moins vers un Secret que ce
-# dépôt ne gère pas.
+# Elle est injectée de la même façon à toutes les applications du groupe, et le
+# premier passage ne doit pas changer plus que le gabarit du pod. À retirer une
+# fois la chaîne éprouvée : ce serait une dépendance de moins vers un Secret que
+# ce dépôt ne gère pas.
 judilibre_search_extra_env:
   - name: ELASTIC_NODE
     valueFrom:

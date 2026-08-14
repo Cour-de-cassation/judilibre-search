@@ -9,3 +9,21 @@ variables:
   # le dernier étage comme cible par défaut : il faut donc cibler explicitement
   # l'étage de production.
   DOCKER_BUILD_ARGS: '--target=production'
+
+# ── Production : neutralisée ──────────────────────────────────────────────────
+# Pour rétablir la production, supprimer ce bloc.
+build_and_push_prod:
+  rules:
+    - when: never
+
+generate-sbom-prod:
+  rules:
+    - when: never
+
+vulnerability-scan-prod:
+  rules:
+    - when: never
+
+deploy_prod:
+  rules:
+    - when: never
