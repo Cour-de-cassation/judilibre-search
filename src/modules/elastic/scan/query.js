@@ -117,11 +117,11 @@ function filterByTheme({ theme, jurisdiction }) {
   const isCassation = isJurisdiction ? jurisdiction.every((_) => _ === 'cc') : true; // cassation only if jurisdiction = ['cc']
 
   if (isCassation) {
-    return { terms: { themesFilter: theme.map((_) => _.toLowerCase) } };
+    return { terms: { themes: theme.map((_) => _.toLowerCase) } };
   }
 
   const isNacSuite = (entry) => !/^\w+$/i.test(entry); // Warn: nac suite should be more than 1 word ? Other things can have more than 1 word
-  return { terms: { themesFilter: theme.filter(isNacSuite) } };
+  return { terms: { themes: theme.filter(isNacSuite) } };
 }
 
 function filterByThemeFromSearchString({ theme, jurisdiction }) {
