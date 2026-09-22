@@ -67,7 +67,7 @@ function priorizeProx(querysplit) {
     if(querysplit.length === 0) return []
 
     const [first, operator, ...rest] = querysplit
-    const firstPriorized = typeof first !== "string" ? priorizeProx(first) : first
+    const firstPriorized = Array.isArray(first) ? priorizeProx(first) : first
 
     if(!operator) return [firstPriorized]
     
@@ -92,7 +92,7 @@ function priorizeEt(querysplit, lastWasEt = false) {
     if(querysplit.length === 0) return []
 
     const [first, operator, ...rest] = querysplit
-    const firstPriorized = !lastWasEt && typeof first !== "string" ? priorizeEt(first) : first
+    const firstPriorized = !lastWasEt && Array.isArray(first) ? priorizeEt(first) : first
 
     if(!operator) return [firstPriorized]
 
@@ -100,7 +100,7 @@ function priorizeEt(querysplit, lastWasEt = false) {
     if(!maybeEt) return [firstPriorized, operator, ...priorizeEt(rest)]
 
     const [second, ...nextQuerysplit] = rest
-    const secondPriorized = typeof second === "string" ? second : priorizeEt(second)
+    const secondPriorized = Array.isArray(second) ? priorizeEt(second) : second
 
     return lastWasEt ?
         priorizeEt([[...firstPriorized, operator, secondPriorized], ...nextQuerysplit], lastWasEt = true) : 
@@ -108,33 +108,41 @@ function priorizeEt(querysplit, lastWasEt = false) {
 }
 module.exports.priorizeEt = priorizeEt
 
-function priorize(querysplit) {
-    const querysplitPriorized = priorizeEt(priorizeProx(querysplit))
+function cleanUselessPriorizeLevel(maybeArray) {
+    if(!Array.isArray(maybeArray)) return maybeArray
 
+    if(maybeArray.length === 1 && Array.isArray(maybeArray[0])){
+        return cleanUselessPriorizeLevel(maybeArray[0])
+    }
+
+    return maybeArray.map(cleanUselessPriorizeLevel)
+}
+
+function priorize(querysplit) {
+    return cleanUselessPriorizeLevel(priorizeEt(priorizeProx(querysplit)))
 }
 module.exports.priorize = priorize
 
 function parseQuerysplitPriorized(querysplitPriorized = []) {
-    if(querysplitPriorized.length === 0) return []
-
-    return querysplitPriorized.reduce((acc, token) => {
+    return querysplitPriorized.reduce((acc, token, i) => {
         if(Array.isArray(token)) {
             const node = parseQuerysplitPriorized(token)
-            return { ...acc, matchers: [...acc.matchers, node ]}
+            return { ...acc, matchers: [...(acc.matchers ?? []), node ]}
         }
 
         const operator = token.match(/^ET$|^OU$|^SAUF$|^PROX\/(\d+)$/)
         if(!!acc.operator && operator) return acc
-        if(!operator) return { ...acc, matchers: [...acc.matchers, token ]}
+        if(!operator && i > 0 && querysplitPriorized[i-1] === "SAUF") return { ...acc, not_matchers: [...(acc.not_matchers ?? []), token ]}
+        if(!operator) return { ...acc, matchers: [...(acc.matchers ?? []), token ]}
 
         if(operator[0].startsWith('PROX')) {
             const slop = parseInt(operator[1])
             if(isNaN(slop) || slop <= 0 || slop > 10) throw new "Syntax error"
             return { ...acc, operator: "PROX", slop }
         }
-        
+        if(operator[0] === "SAUF") return { ...acc, operator: "ET"}
         return { ...acc, operator: operator[0]}
-    }, { matchers: [], operator: null })
+    }, {})
 }
 module.exports.parseQuerysplitPriorized = parseQuerysplitPriorized
 

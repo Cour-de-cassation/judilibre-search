@@ -1,4 +1,13 @@
-const { splitQuerystring, cleanCaracters, cleanOperators, cleanProx, priorizeProx, priorizeOperator, priorizeEt, priorize, parseQuerysplitPriorized, parseQuerystring } = require("./parser")
+const { 
+    splitQuerystring, 
+    cleanCaracters, 
+    cleanOperators, 
+    priorizeProx, 
+    priorizeEt, 
+    priorize, 
+    parseQuerysplitPriorized, 
+    parseQuerystring 
+} = require("./parser")
 
 describe("src/modules/elastic/search/jurilang/parser", () => {
     describe("splitQuerystring", () => {
@@ -104,12 +113,12 @@ describe("src/modules/elastic/search/jurilang/parser", () => {
         it("should isolate PROX in a flat query", () => {
             const querysplit = ['hello', 'OU', 'jupiter', 'ET', '"hello world"', 'PROX/5', 'moon']
             const result = priorizeProx(querysplit)
-            expect(result).toEqual(['hello', 'OU', 'jupiter', 'ET',['"hello world"', 'PROX/5', 'moon']])
+            expect(result).toEqual(['hello', 'OU', 'jupiter', 'ET', ['"hello world"', 'PROX/5', 'moon']])
         })
         it("should be recursive", () => {
             const querysplit = ['hello', 'OU', ['jupiter', 'ET', '"hello world"', 'PROX/5', 'moon']]
             const result = priorizeProx(querysplit)
-            expect(result).toEqual(['hello', 'OU', ['jupiter', 'ET',['"hello world"', 'PROX/5', 'moon']]])
+            expect(result).toEqual(['hello', 'OU', ['jupiter', 'ET', ['"hello world"', 'PROX/5', 'moon']]])
         })
     })
 
@@ -117,12 +126,12 @@ describe("src/modules/elastic/search/jurilang/parser", () => {
         it("should isolate ET in a flat query", () => {
             const querysplit = ['hello', 'OU', 'jupiter', 'ET', '"hello world"', 'OU', 'moon']
             const result = priorizeEt(querysplit)
-            expect(result).toEqual(['hello', 'OU', ['jupiter', 'ET','"hello world"'], 'OU', 'moon'])
+            expect(result).toEqual(['hello', 'OU', ['jupiter', 'ET', '"hello world"'], 'OU', 'moon'])
         })
         it("should be recursive", () => {
             const querysplit = ['hello', 'OU', ['jupiter', 'ET', '"hello world"', 'OU', 'moon']]
             const result = priorizeEt(querysplit)
-            expect(result).toEqual(['hello', 'OU', [['jupiter', 'ET','"hello world"'], 'OU', 'moon']])
+            expect(result).toEqual(['hello', 'OU', [['jupiter', 'ET', '"hello world"'], 'OU', 'moon']])
         })
         it("should associate some ET in a flat query", () => {
             const querysplit = ['hello', 'OU', 'jupiter', 'ET', '"hello world"', 'ET', 'moon', 'OU', 'mars']
@@ -152,57 +161,61 @@ describe("src/modules/elastic/search/jurilang/parser", () => {
                 "matchers": [
                     {
                         "matchers": [
-                            "aa", 
-                            "bb", 
-                            "cc", 
+                            "aa",
+                            "bb",
                             {
                                 "matchers": [
                                     {
                                         "matchers": [
-                                            "dd", 
+                                            "dd",
                                             "ee"
-                                        ], 
-                                        "operator": "PROX", 
+                                        ],
+                                        "operator": "PROX",
                                         "slop": 5
-                                    }, 
+                                    },
                                     "ff"
-                                ], 
+                                ],
                                 "operator": "OU"
                             }
-                        ], 
+                        ],
+                        "not_matchers": ["cc"],
                         "operator": "ET"
-                    }, 
-                    "gg", 
-                    {"matchers": ["hh", "jj"], "operator": "ET"}], 
-                    "operator": "OU"
-                })
+                    },
+                    "gg",
+                    { "matchers": ["hh", "jj"], "operator": "ET" }],
+                "operator": "OU"
+            })
         })
     })
 
     describe("parseQuerystring", () => {
-        // it("should split a query string", () => {
-        //     const querystring = "hello world"
-        //     const result = parseQuerystring(querystring)
-        //     expect(result).toEqual([])
-        // })
-
-        // it("should split a query string with operators", () => {
-        //     const querystring = "hello world SAUF birds"
-        //     const result = parseQuerystring(querystring)
-        //     expect(result).toEqual([])
-        // })
-
-        it("should split a query string with exact expression", () => {
-            const querystring = '"hello world" SAUF birds'
+        it("should parse one word", () => {
+            const querystring = '"hello world"'
             const result = parseQuerystring(querystring)
-            expect(result).toEqual([])
+            expect(result).toEqual({ "matchers": ["hello world"] })
         })
 
-        // it("should split a query string with substrings", () => {
-        //     const querystring = '"hello world" ET ("hi moon" OU "good morning england")'
-        //     const result = parseQuerystring(querystring)
-        //     expect(result).toEqual([])
-        // })
+        it("should parse with implicit OR and priorization", () => {
+            const querystring = "hello world SAUF birds"
+            const result = parseQuerystring(querystring)
+            expect(result).toEqual({ "matchers": ["hello", { "matchers": ["world"], "not_matchers": ["birds"], "operator": "ET" }], "operator": "OU" })
+        })
+
+        it("should parse a with substring and complex priorization", () => {
+            const querystring = 'aa ET bb SAUF cc OU dd ET (ee OU ff) ET gg PROX/5 hh'
+            const result = parseQuerystring(querystring)
+            expect(result).toEqual({
+                "matchers": [
+                    { "matchers": ["aa", "bb"], "not_matchers": ["cc"], "operator": "ET" },
+                    {
+                        "matchers": [
+                            "dd",
+                            { "matchers": ["ee", "ff"], "operator": "OU" },
+                            { "matchers": ["gg", "hh"], "operator": "PROX", "slop": 5 }
+                        ], "operator": "ET"
+                    }
+                ], "operator": "OU"
+            })
+        })
     })
-    
 })
