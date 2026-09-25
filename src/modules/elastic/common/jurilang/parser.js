@@ -18,7 +18,7 @@ function splitQuerystring(querystring) {
         return [operator[0], ...splitQuerystring(querystring.slice(operator[0].length))]
     }
 
-    const word = querystring.match(/^\w+|^".+?"/)
+    const word = querystring.match(/^[\p{L}\p{N}_]+|^".+?"/u)
     if(word) {
         return [word[0], ...splitQuerystring(querystring.slice(word[0].length))]
     }
@@ -123,6 +123,10 @@ function priorize(querysplit) {
 }
 module.exports.priorize = priorize
 
+function stringify(querysplit) {
+    return querysplit.map(_ => Array.isArray(_) ? `(${stringify(_)})` : _).join(' ')
+}
+
 function parseQuerysplitPriorized(querysplitPriorized = []) {
     return querysplitPriorized.reduce((acc, token, i) => {
         if(Array.isArray(token)) {
@@ -148,8 +152,11 @@ module.exports.parseQuerysplitPriorized = parseQuerysplitPriorized
 
 function parseQuerystring(querystring = "") {
     const querysplit = cleanOperators(cleanCaracters(splitQuerystring(querystring)))
-    console.log(priorize(querysplit))
-    return parseQuerysplitPriorized(priorize(querysplit))
+    const priorizedQuerySplit = priorize(querysplit)
+    return {
+        query: parseQuerysplitPriorized(priorizedQuerySplit),
+        querystring: stringify(priorizedQuerySplit)
+    }
 
 }
 module.exports.parseQuerystring = parseQuerystring
