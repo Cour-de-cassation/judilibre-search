@@ -1,40 +1,67 @@
-const taxons = require("../../../taxons");
+const { 
+  filterByChamber, 
+  filterByDate, 
+  filterByFormation,
+  filterByJurisdiction,
+  filterByLocation,
+  filterByParticularInterest,
+  filterByPublication,
+  filterBySolution,
+  filterByTheme,
+  filterByType,
+  filterByWithFileOfType,
+  filterBySource,
+  buildSort,
+  buildFilter,
+  filterByThemeFromSearchString
+} = require('./common/query');
 
-function inverseSort(sort) {
-  return sort.map((sortRule) =>
-    Object
-      .entries(sortRule)
-      .reduce((acc, [key, value]) => ({ ...acc, [key]: value === 'desc' ? 'asc' : value === 'asc' ? 'desc' : value }), {}),
-  );
-}
+const { 
+  formatNumber,
+  formatNumbers,
+  formatType, 
+} = require('./common/format');
 
-function formatPourvoiNumber(str) {
-  str = `${str}`.trim();
-  if (/^\d{2}\D\d{2}\D\d{3}$/.test(str) === false) {
-    str = str.replace(/\D/gim, '').trim();
-    str = `${str.substring(0, 2)}-${str.substring(2, 4)}.${str.substring(4)}`;
-  }
-  return str;
-}
+const { getSearchBefore, getSearchAfter, formatUrlParamsIntoSearchAfter, formatSearchAfterIntoUrlParams } = require('./common/pagination');
+const taxons = require('../../taxons');
 
-function formatNumber({ numberFull, jurisdiction }) {
-    if (jurisdiction === "cc") return formatPourvoiNumber(numberFull)
-    return Array.isArray(numberFull)
-        ? numberFull[0]
-        : numberFull
-}
-
-function formatNumbers({ numberFull, jurisdiction }) {
-    if (jurisdiction === "cc") return numberFull ? numberFull.map(formatPourvoiNumber) : numberFull
-    return Array.isArray(numberFull)
-        ? numberFull
-        : [numberFull]
-}
-
-function formatType(resolveReference, { type, jurisdiction: sourceName }) {
-    return resolveReference && taxons[sourceName].type.taxonomy[type]
-        ? taxons[sourceName].type.taxonomy[type]
-        : type
+function buildQuery(query) {
+  return {
+    index: process.env.ELASTIC_INDEX,
+    preference: 'preventbouncingresults',
+    explain: false,
+    size: query.batch_size || 10,
+    _source: true,
+    body: {
+      track_scores: false,
+      query: {
+        function_score: {
+          query: {
+            bool: {
+              filter: buildFilter(
+                query,
+                filterByChamber,
+                filterByDate,
+                filterByFormation,
+                filterByJurisdiction,
+                filterByLocation,
+                filterByParticularInterest,
+                filterByPublication,
+                filterBySolution,
+                filterByTheme,
+                filterByType,
+                filterByWithFileOfType,
+                filterBySource,
+              ),
+              must: filterByThemeFromSearchString(query),
+            },
+          },
+        },
+      },
+      ...(query.searchAfter ? { search_after: formatUrlParamsIntoSearchAfter(query) } : {}),
+      sort: buildSort(query),
+    },
+  };
 }
 
 function formatElasticToResponse(rawResult, query) {
@@ -111,34 +138,31 @@ function formatElasticToResponse(rawResult, query) {
         return query.abridged ? resume : { ...resume, ...details }
 }
 
-const SEARCH_AFTER_INITIAL_VALUE = "SEARCH_AFTER_INITIAL_VALUE"
+async function batchScan({ client }, query) {
+  const searchQuery = buildQuery(query);
 
-function formatQueryIntoUrlParams(query) {
-    const pageParams = new URLSearchParams();
-    Object.entries(query).forEach(([key, value]) => {
-        if (Array.isArray(value)) value.forEach(_ => pageParams.append(key, _))
-        else pageParams.append(key, value)
-    })
-    return pageParams.toString();
+  const resultCount = await client.count({
+    index: searchQuery.index,
+    body: { query: searchQuery.body.query },
+  });
+  const rawResponse = await client.search(searchQuery);
+  const responses = rawResponse.body.hits.hits ?? [];
+
+  const searchBefore = await getSearchBefore(responses, searchQuery, client);
+  const searchAfter = await getSearchAfter(responses, searchQuery, client);
+
+  return {
+    batch_from: searchQuery.searchAfter,
+    batch_size: searchQuery.page_size,
+    query,
+    total: resultCount?.body?.count ?? 0,
+    previous_batch: formatSearchAfterIntoUrlParams(query, searchBefore),
+    next_batch: formatSearchAfterIntoUrlParams(query, searchAfter),
+    took: rawResponse?.body?.took ?? 0,
+    results: responses.map((_) => formatElasticToResponse(_, query)),
+    searchQuery,
+    date: new Date(),
+  };
 }
 
-function formatSearchAfterIntoUrlParams(query, searchAfter) {
-    const { searchAfter: _, ...relevantQuery } = query
-    if (!searchAfter) return null
-    if(searchAfter === SEARCH_AFTER_INITIAL_VALUE) return formatQueryIntoUrlParams(relevantQuery)
-    return formatQueryIntoUrlParams({ ...relevantQuery, searchAfter: searchAfter.join("&") })
-}
-
-function formatUrlParamsIntoSearchAfter(query) {
-    const rawSearchAfter = query.searchAfter.split("&")
-    return [Number(rawSearchAfter[0]), Number(rawSearchAfter[1]), rawSearchAfter[2]]
-}   
-
-module.exports = {
-  SEARCH_AFTER_INITIAL_VALUE,
-  inverseSort,
-  formatElasticToResponse,
-  formatQueryIntoUrlParams,
-  formatSearchAfterIntoUrlParams,
-  formatUrlParamsIntoSearchAfter
-};
+module.exports = batchScan;
