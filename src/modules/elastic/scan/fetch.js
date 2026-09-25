@@ -1,33 +1,141 @@
-const { buildQuery } = require('./query');
-const { formatElasticToResponse, inverseSort, formatSearchAfterIntoUrlParams, formatQueryIntoUrlParams, SEARCH_AFTER_INITIAL_VALUE } = require('./format');
+const { 
+  filterByChamber, 
+  filterByDate, 
+  filterByFormation,
+  filterByJurisdiction,
+  filterByLocation,
+  filterByParticularInterest,
+  filterByPublication,
+  filterBySolution,
+  filterByTheme,
+  filterByType,
+  filterByWithFileOfType,
+  filterBySource,
+  buildSort,
+  buildFilter
+} = require('../common/query');
 
-async function getSearchAfter(responses, searchQuery, client) {
-  if (responses.length < searchQuery.size) return null;
+const { 
+  formatElasticToResponse, 
+  formatSearchAfterIntoUrlParams,
+  formatNumber,
+  formatNumbers,
+  formatType, 
+} = require('../common/format');
 
-  const lastElement = responses[responses.length - 1];
-  const searchAfter = lastElement.sort
+const { getSearchBefore, getSearchAfter } = require('../common/pagination');
 
-  const nextElements = await client.search({ ...searchQuery, body: { ...searchQuery.body, search_after: searchAfter }, size: 1 });
-  return (nextElements?.body?.hits?.hits ?? []).length > 0 ? searchAfter : null;
+function buildQuery(query) {
+  return {
+    index: process.env.ELASTIC_INDEX,
+    preference: 'preventbouncingresults',
+    explain: false,
+    size: query.batch_size || 10,
+    _source: true,
+    body: {
+      track_scores: false,
+      query: {
+        function_score: {
+          query: {
+            bool: {
+              filter: buildFilter(
+                query,
+                filterByChamber,
+                filterByDate,
+                filterByFormation,
+                filterByJurisdiction,
+                filterByLocation,
+                filterByParticularInterest,
+                filterByPublication,
+                filterBySolution,
+                filterByTheme,
+                filterByType,
+                filterByWithFileOfType,
+                filterBySource,
+              ),
+              must: filterByThemeFromSearchString(query),
+            },
+          },
+        },
+      },
+      ...(query.searchAfter ? { search_after: formatUrlParamsIntoSearchAfter(query) } : {}),
+      sort: buildSort(query),
+    },
+  };
 }
 
-async function getSearchBefore(responses, searchQuery, client) {
-  if (responses.length === 0) return null
-  const searchBefore = responses[0].sort
-  const invertedSort = inverseSort(searchQuery.body.sort);
+function formatElasticToResponse(rawResult, query) {
+    const result = rawResult._source
+    const sourceName = result.jurisdiction
 
-  const rawPreviousElements = await client.search({
-    ...searchQuery,
-    body: { ...searchQuery.body, sort: invertedSort, search_after: searchBefore },
-    size: searchQuery.size + 1
-  });
-  const previousElements = rawPreviousElements?.body?.hits?.hits ?? [];
+    const resume = {
+        id: rawResult._id,
+        jurisdiction:
+            query.resolve_references && taxons[sourceName].jurisdiction.taxonomy[result.jurisdiction]
+              ? taxons[sourceName].jurisdiction.taxonomy[result.jurisdiction]
+              : result.jurisdiction,
+        chamber:
+            query.resolve_references && taxons[sourceName].chamber.taxonomy[result.chamber]
+              ? taxons[sourceName].chamber.taxonomy[result.chamber]
+              : result.chamber,
+        number: formatNumber(result),
+        numbers: formatNumbers(result),
+        ecli: result.ecli,
+        formation: query.resolve_references && taxons[sourceName].formation.taxonomy[result.formation]
+            ? taxons[sourceName].formation.taxonomy[result.formation]
+            : result.formation,
+        location: query.resolve_references && taxons[sourceName].location.taxonomy[result.location]
+            ? taxons[sourceName].location.taxonomy[result.location]
+            : result.location,
+        publication: query.resolve_references && result.publication
+            ? result.publication.map((key) => {
+                if (taxons[sourceName].publication.taxonomy[key]) {
+                return taxons[sourceName].publication.taxonomy[key];
+                }
+                return key;
+            })
+            : result.publication,
+        decision_date: result.decision_date,
+        decision_datetime: result.decision_datetime,
+        solution:
+        query.resolve_references && taxons[sourceName].solution.taxonomy[result.solution]
+            ? taxons[sourceName].solution.taxonomy[result.solution]
+            : result.solution,
+        solution_alt: result.solution_alt,
+        ...( result.type === undefined ? {} : { type: formatType(query.resolve_references, result) }),
+        summary: result.summary,
+        themes: result.themes,
+        nac: result.nac ? result.nac : null,
+        portalis: result.portalis ? result.portalis : null,
+        bulletin: result.bulletin,
+        files:
+        taxons[sourceName] && taxons[sourceName].filetype && taxons[sourceName].filetype.buildFilesList
+            ? taxons[sourceName].filetype.buildFilesList(
+                rawResult._id,
+                result.files,
+                query.resolve_references,
+            )
+            : [],
+        titlesAndSummaries: result.titlesAndSummaries ? result.titlesAndSummaries : [],
+        particularInterest: result.particularInterest === true,
+    }
 
-  if (previousElements.length === 0) return null;
-  if (previousElements.length < searchQuery.size + 1) return SEARCH_AFTER_INITIAL_VALUE;
-  
-  const firstElementFromPrevious = previousElements[previousElements.length-1];
-  return firstElementFromPrevious.sort;
+    const details = {
+        source: result.source,
+        text: result.displayText,
+        update_date: result.update_date,
+        update_datetime: result.update_datetime,
+        ...(result.partial && result.zones ? {} : { zones: result.zones }),
+        contested: result.contested ? result.contested : null,
+        forward: result.forward ? result.forward : null,
+        visa: result.visa ? result.visa.map((item) => ({ title: item })) : [],
+        rapprochements: result?.rapprochements?.value ?? [],
+        ...(Array.isArray(result.timeline) && result.timeline.length < 2 ? {} : { timeline: result.timeline ? result.timeline : null }),
+        partial: result.partial ? result.partial : false,
+        legacy: result.legacy ? result.legacy : {}
+    }
+
+        return query.abridged ? resume : { ...resume, ...details }
 }
 
 async function batchScan({ client }, query) {
