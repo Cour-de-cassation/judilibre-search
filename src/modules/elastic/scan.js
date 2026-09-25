@@ -12,18 +12,18 @@ const {
   filterByWithFileOfType,
   filterBySource,
   buildSort,
-  buildFilter
-} = require('../common/query');
+  buildFilter,
+  filterByThemeFromSearchString
+} = require('./common/query');
 
 const { 
-  formatElasticToResponse, 
-  formatSearchAfterIntoUrlParams,
   formatNumber,
   formatNumbers,
   formatType, 
-} = require('../common/format');
+} = require('./common/format');
 
-const { getSearchBefore, getSearchAfter } = require('../common/pagination');
+const { getSearchBefore, getSearchAfter, formatUrlParamsIntoSearchAfter, formatSearchAfterIntoUrlParams } = require('./common/pagination');
+const taxons = require('../../taxons');
 
 function buildQuery(query) {
   return {

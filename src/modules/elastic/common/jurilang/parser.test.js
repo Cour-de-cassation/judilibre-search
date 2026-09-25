@@ -192,29 +192,38 @@ describe("src/modules/elastic/search/jurilang/parser", () => {
         it("should parse one word", () => {
             const querystring = '"hello world"'
             const result = parseQuerystring(querystring)
-            expect(result).toEqual({ "matchers": ["hello world"] })
+            expect(result).toEqual({ query: { "matchers": ["hello world"] }, querystring: "hello world" })
         })
 
         it("should parse with implicit OR and priorization", () => {
             const querystring = "hello world SAUF birds"
             const result = parseQuerystring(querystring)
-            expect(result).toEqual({ "matchers": ["hello", { "matchers": ["world"], "not_matchers": ["birds"], "operator": "ET" }], "operator": "OU" })
+            expect(result).toEqual({ 
+                query: { 
+                    "matchers": ["hello", { "matchers": ["world"], "not_matchers": ["birds"], "operator": "ET" }], 
+                    "operator": "OU" 
+                }, 
+                querystring: "hello OU (world SAUF birds)" 
+            })
         })
 
         it("should parse a with substring and complex priorization", () => {
             const querystring = 'aa ET bb SAUF cc OU dd ET (ee OU ff) ET gg PROX/5 hh'
             const result = parseQuerystring(querystring)
             expect(result).toEqual({
-                "matchers": [
-                    { "matchers": ["aa", "bb"], "not_matchers": ["cc"], "operator": "ET" },
-                    {
-                        "matchers": [
-                            "dd",
-                            { "matchers": ["ee", "ff"], "operator": "OU" },
-                            { "matchers": ["gg", "hh"], "operator": "PROX", "slop": 5 }
-                        ], "operator": "ET"
-                    }
-                ], "operator": "OU"
+                query: {
+                    "matchers": [
+                        { "matchers": ["aa", "bb"], "not_matchers": ["cc"], "operator": "ET" },
+                        {
+                            "matchers": [
+                                "dd",
+                                { "matchers": ["ee", "ff"], "operator": "OU" },
+                                { "matchers": ["gg", "hh"], "operator": "PROX", "slop": 5 }
+                            ], "operator": "ET"
+                        }
+                    ], "operator": "OU"
+                },
+                querystring: "(aa ET bb SAUF cc) OU (dd ET (ee OU ff) ET (gg PROX/5 hh))"
             })
         })
     })

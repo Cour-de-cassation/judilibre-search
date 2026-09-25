@@ -1,3 +1,5 @@
+const { inverseSort, formatQueryIntoUrlParams } = require("./format");
+
 const SEARCH_AFTER_INITIAL_VALUE = "SEARCH_AFTER_INITIAL_VALUE"
 
 async function getSearchAfter(responses, searchQuery, client) {
