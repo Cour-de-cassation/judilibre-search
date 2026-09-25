@@ -1,5 +1,3 @@
-const { formatUrlParamsIntoSearchAfter } = require("./format");
-
 function buildSort({ date_type, order }) {
   switch (date_type) {
     case 'update':
@@ -153,43 +151,21 @@ function buildFilter(query, filterFn, ...filterFns) {
   return [filter, ...buildFilter(query, ...filterFns)];
 }
 
-function buildQuery(query) {
-  return {
-    index: process.env.ELASTIC_INDEX,
-    preference: 'preventbouncingresults',
-    explain: false,
-    size: query.batch_size || 10,
-    _source: true,
-    body: {
-      track_scores: false,
-      query: {
-        function_score: {
-          query: {
-            bool: {
-              filter: buildFilter(
-                query,
-                filterByChamber,
-                filterByDate,
-                filterByFormation,
-                filterByJurisdiction,
-                filterByLocation,
-                filterByParticularInterest,
-                filterByPublication,
-                filterBySolution,
-                filterByTheme,
-                filterByType,
-                filterByWithFileOfType,
-                filterBySource,
-              ),
-              must: filterByThemeFromSearchString(query),
-            },
-          },
-        },
-      },
-      ...(query.searchAfter ? { search_after: formatUrlParamsIntoSearchAfter(query) } : {}),
-      sort: buildSort(query),
-    },
-  };
-}
 
-module.exports = { buildQuery, filterByDate, filterByJurisdiction, filterByLocation, filterByParticularInterest, buildFilter }
+module.exports = { 
+  filterByChamber,
+  filterByFormation,
+  filterByPublication,
+  filterBySolution,
+  filterBySource,
+  filterByTheme,
+  filterByThemeFromSearchString,
+  filterByType,
+  filterByWithFileOfType,
+  filterByDate, 
+  filterByJurisdiction, 
+  filterByLocation, 
+  filterByParticularInterest, 
+  buildFilter,
+  buildSort
+}
