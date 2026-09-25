@@ -39,7 +39,11 @@ class Elastic {
   }
 
   async scan(query) {
-    return await require('./scan/fetch')(this, query);
+    return await require('./scan')(this, query);
+  }
+
+  async searchExperimental(query) {
+    return await require('./search.experimental')(this, query);
   }
 }
 
