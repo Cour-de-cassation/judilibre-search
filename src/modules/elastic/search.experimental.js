@@ -8,7 +8,6 @@ const { buildSort } = require("./common/query");
 function buildQuery(query) {
   const jlQuery = parseQuerystring(query.querystring)
   const esQuery = convertJurilangToEs(jlQuery.query)
-  console.dir(esQuery, { depth: null })
   return {
     index: process.env.ELASTIC_INDEX,
     preference: 'preventbouncingresults',
@@ -99,13 +98,12 @@ async function batchSearch({ client }, query) {
   return {
     batch_from: searchQuery.searchAfter,
     batch_size: searchQuery.page_size,
-    query,
     total: resultCount?.body?.count ?? 0,
     previous_batch: formatSearchAfterIntoUrlParams(query, searchBefore),
     next_batch: formatSearchAfterIntoUrlParams(query, searchAfter),
     took: rawResponse?.body?.took ?? 0,
     results: responses.map((_) => formatElasticToResponse(_, query)),
-    searchQuery,
+    querystring,
     date: new Date(),
   };
 }
