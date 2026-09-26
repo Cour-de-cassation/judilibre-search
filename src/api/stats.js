@@ -3,9 +3,8 @@ const express = require('express');
 const api = express.Router();
 const { checkSchema, validationResult } = require('express-validator');
 const Elastic = require('../modules/elastic');
-const taxons = require('../taxons');
 const route = 'stats';
-const { VALIDATORS } = require("./validators")
+const { VALIDATORS } = require('./validators');
 
 api.get(
   `/${route}`,
@@ -38,7 +37,8 @@ api.get(
         errors: [{ msg: 'Internal Server Error', error: JSON.stringify(e, e ? Object.getOwnPropertyNames(e) : null) }],
       });
     }
-  });
+  },
+);
 
 async function getStats(query) {
   return await Elastic.stats(query);

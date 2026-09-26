@@ -3,38 +3,16 @@ const express = require('express');
 const api = express.Router();
 const { checkSchema, validationResult } = require('express-validator');
 const taxons = require('../taxons');
+const { VALIDATORS } = require('./validators');
 const route = 'taxonomy';
 
 api.get(
   `/${route}`,
   checkSchema({
-    id: {
-      in: 'query',
-      isString: true,
-      errorMessage: `Value of the id parameter must be a string.`,
-      toLowerCase: true,
-      optional: true,
-    },
-    key: {
-      in: 'query',
-      isString: true,
-      errorMessage: `Value of the key parameter must be a string.`,
-      toLowerCase: true,
-      optional: true,
-    },
-    value: {
-      in: 'query',
-      isString: true,
-      errorMessage: `Value parameter must be a string.`,
-      optional: true,
-    },
-    context_value: {
-      in: 'query',
-      isString: true,
-      errorMessage: `Value of the context_value parameter must be a string.`,
-      toLowerCase: true,
-      optional: true,
-    },
+    ...VALIDATORS.ID,
+    ...VALIDATORS.KEY,
+    ...VALIDATORS.VALUE,
+    ...VALIDATORS.CONTEXT_VALUE,
   }),
   async (req, res) => {
     const errors = validationResult(req);
