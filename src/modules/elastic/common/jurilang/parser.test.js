@@ -1,6 +1,6 @@
 const { 
     splitQuerystring, 
-    cleanCaracters, 
+    cleanSpaces, 
     cleanOperators, 
     priorizeProx, 
     priorizeEt, 
@@ -34,24 +34,29 @@ describe("src/modules/elastic/search/jurilang/parser", () => {
             const result = splitQuerystring(querystring)
             expect(result).toEqual(['"hello world"', ' ', 'ET', ' ', ['(', '"hi moon"', ' ', 'OU', ' ', '"good morning england"', ')']])
         })
+        it("should split a query string with substrings", () => {
+            const querystring = '(hello OU world) ET "good morning england"'
+            const result = splitQuerystring(querystring)
+            expect(result).toEqual([['(', 'hello', ' ', 'OU', ' ', 'world', ')'], ' ', 'ET', ' ', '"good morning england"'])
+        })
     })
 
-    describe("cleanCaracters", () => {
+    describe("cleanSpaces", () => {
         it("should clean a query splitted", () => {
             const querysplit = ["hello", " ", "world"]
-            const result = cleanCaracters(querysplit)
+            const result = cleanSpaces(querysplit)
             expect(result).toEqual(["hello", "world"])
         })
 
-        it("should clean a query splitted with bad caracters", () => {
-            const querysplit = ["hello", "é ", "world"]
-            const result = cleanCaracters(querysplit)
-            expect(result).toEqual(["hello", "world"])
+        it("should clean a query splitted with single strange caracters", () => {
+            const querysplit = ["hello", "é ", " ", " $", "world"]
+            const result = cleanSpaces(querysplit)
+            expect(result).toEqual(["hello", "é", "$", "world"])
         })
 
         it("should clean a query splitted with subquery", () => {
             const querysplit = ['"hello world"', ' ', 'ET', ' ', ['(', '"hi moon"', ' ', 'OU', ' ', '"good morning england"', ')']]
-            const result = cleanCaracters(querysplit)
+            const result = cleanSpaces(querysplit)
             expect(result).toEqual(['hello world', 'ET', ['hi moon', 'OU', 'good morning england']])
         })
     })
