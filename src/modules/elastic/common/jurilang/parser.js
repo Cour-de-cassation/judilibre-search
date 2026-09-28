@@ -18,7 +18,7 @@ function splitQuerystring(querystring) {
         return [operator[0], ...splitQuerystring(querystring.slice(operator[0].length))]
     }
 
-    const word = querystring.match(/^[\p{L}\p{N}_]+|^".+?"/u)
+    const word = querystring.match(/^"[^"]+"|^[^\s\)]+/u)
     if(word) {
         return [word[0], ...splitQuerystring(querystring.slice(word[0].length))]
     }
@@ -27,16 +27,16 @@ function splitQuerystring(querystring) {
 }
 module.exports.splitQuerystring = splitQuerystring
 
-function cleanCaracters(querysplit) {
+function cleanSpaces(querysplit) {
     return querysplit.reduce((acc, queryToken) => {
-        if(Array.isArray(queryToken)) return [...acc, cleanCaracters(queryToken)]
-        if(queryToken.match(/^\W*$/)) return acc
+        if(Array.isArray(queryToken)) return [...acc, cleanSpaces(queryToken)]
+        if(queryToken.match(/^\s*$|^\($|^\)$/)) return acc
 
         if(queryToken.startsWith('"') && queryToken.endsWith('"')) return [...acc, queryToken.slice(1, queryToken.length -1)]
-        return [...acc, queryToken]
+        return [...acc, queryToken.trim()]
     }, [])
 }
-module.exports.cleanCaracters = cleanCaracters
+module.exports.cleanSpaces = cleanSpaces
 
 function isOperator(token) {
     return typeof token === "string" && !!token.match(/^ET$|^OU$|^SAUF$|^PROX\/\d+$/)
@@ -151,7 +151,7 @@ function parseQuerysplitPriorized(querysplitPriorized = []) {
 module.exports.parseQuerysplitPriorized = parseQuerysplitPriorized
 
 function parseQuerystring(querystring = "") {
-    const querysplit = cleanOperators(cleanCaracters(splitQuerystring(querystring)))
+    const querysplit = cleanOperators(cleanSpaces(splitQuerystring(querystring)))
     const priorizedQuerySplit = priorize(querysplit)
     return {
         query: parseQuerysplitPriorized(priorizedQuerySplit),
