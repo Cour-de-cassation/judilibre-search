@@ -2,7 +2,7 @@ function convertMatcher(matcher, isProx = false, field = "text") {
     if(isProx && typeof matcher !== "string") throw new Error("Conversion Error")
     if(typeof matcher !== "string") return convertQuery(matcher)
 
-    const multiMatch = matcher.split(/\s/)
+    const multiMatch = matcher.split(/\s|\//)
     if(multiMatch.length <= 1) return isProx ? { span_term: { [field]: matcher } } : { match: { [field]: matcher }}
     return {
         span_near: {
