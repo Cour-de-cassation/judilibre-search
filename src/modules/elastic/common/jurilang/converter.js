@@ -2,7 +2,7 @@ function convertMatcher(matcher, isProx = false, field = "text") {
     if(isProx && typeof matcher !== "string") throw new Error("Conversion Error")
     if(typeof matcher !== "string") return convertQuery(matcher)
 
-    const multiMatch = matcher.split(/\s|\//)
+    const multiMatch = matcher.split(/[^\p{L}\p{N}]+/u)
     if(multiMatch.length <= 1) return isProx ? { span_term: { [field]: matcher } } : { match: { [field]: matcher }}
     return {
         span_near: {
@@ -16,7 +16,7 @@ function convertMatcher(matcher, isProx = false, field = "text") {
 function convertQuery(query) {
     switch(query.operator) {
         case "ET":
-            return { bool: { must: query.matchers.map(_ => convertMatcher(_)), must_not: query.not_matchers.map(_ => convertMatcher(_)) }}
+            return { bool: { must: (query?.matchers ?? []).map(_ => convertMatcher(_)), must_not: (query?.not_matchers ?? []).map(_ => convertMatcher(_)) }}
         case "OU":
             return { bool: { should: query.matchers.map(_ => convertMatcher(_)), minimum_should_match: 1 }}
         case "PROX":
