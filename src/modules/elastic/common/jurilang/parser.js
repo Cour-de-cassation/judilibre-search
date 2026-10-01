@@ -18,7 +18,7 @@ function splitQuerystring(querystring) {
         return [operator[0], ...splitQuerystring(querystring.slice(operator[0].length))]
     }
 
-    const word = querystring.match(/^"[^"]+"|^[^\s\)]+/u)
+    const word = querystring.match(/^"[^"]+"|^[^\s\)]+/)
     if(word) {
         return [word[0], ...splitQuerystring(querystring.slice(word[0].length))]
     }
