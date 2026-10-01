@@ -232,8 +232,9 @@ describe("src/modules/elastic/search/jurilang/parser", () => {
             })
         })
         it("should", () => {
-            const querystring = '"contrat de travail" ET Paris'
+            const querystring = 'article PROX/2 3111-12'
             const result = parseQuerystring(querystring)
+            console.log(result)
             expect(result).toEqual({ query: { "matchers": ["contrat de travail", "Paris"], operator: "ET" }, querystring: "contrat de travail ET Paris" })
         })
     })

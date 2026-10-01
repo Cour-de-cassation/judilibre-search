@@ -3,9 +3,25 @@ const { convertJurilangToEs } = require("./converter")
 describe("src/modules/elastic/search/jurilang/converter", () => {
     describe("convertJurilangToEs", () => {
         it("should", () => {
-            const query = { query: { "matchers": ["contrat de travail", "Paris"], operator: "ET" }, querystring: "contrat de travail ET Paris" }
-            const result = convertJurilangToEs(query.query)
-            expect(result).toEqual({"query": {"bool": {"must": [{"span_near": {"clauses": [{"span_term": {"text": "contrat"}}, {"span_term": {"text": "de"}}, {"span_term": {"text": "travail"}}], "in_order": true, "slop": 0}}, {"match": {"text": "Paris"}}], "must_not": []}}})
+            const query = { matchers: ['article', '3111-12'], operator: 'PROX', slop: 2 }
+            const result = convertJurilangToEs(query)
+            console.dir(result, { depth: null })
+            expect(result).toEqual({
+                query: {
+                    intervals: {
+                        text: {
+                            all_of: {
+                                intervals: [
+                                    { match: { query: 'article', max_gaps: 0, ordered: true } },
+                                    { match: { query: '3111-12', max_gaps: 0, ordered: true } }
+                                ],
+                                max_gaps: 2,
+                                ordered: true
+                            }
+                        }
+                    }
+                }
+            })
         })
     })
 })
