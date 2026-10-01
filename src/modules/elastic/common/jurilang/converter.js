@@ -16,7 +16,7 @@ function convertMatcher(matcher, isProx = false, field = "text") {
 function convertQuery(query) {
     switch(query.operator) {
         case "ET":
-            return { bool: { must: query.matchers.map(_ => convertMatcher(_)), must_not: query.not_matchers.map(_ => convertMatcher(_)) }}
+            return { bool: { must: (query?.matchers ?? []).map(_ => convertMatcher(_)), must_not: (query?.not_matchers ?? []).map(_ => convertMatcher(_)) }}
         case "OU":
             return { bool: { should: query.matchers.map(_ => convertMatcher(_)), minimum_should_match: 1 }}
         case "PROX":

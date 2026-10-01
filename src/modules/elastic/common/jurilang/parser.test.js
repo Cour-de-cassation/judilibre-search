@@ -231,5 +231,10 @@ describe("src/modules/elastic/search/jurilang/parser", () => {
                 querystring: "(aa ET bb SAUF cc) OU (dd ET (ee OU ff) ET (gg PROX/5 hh))"
             })
         })
+        it("should", () => {
+            const querystring = '"contrat de travail" ET Paris'
+            const result = parseQuerystring(querystring)
+            expect(result).toEqual({ query: { "matchers": ["contrat de travail", "Paris"], operator: "ET" }, querystring: "contrat de travail ET Paris" })
+        })
     })
 })
