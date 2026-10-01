@@ -1,36 +1,42 @@
-function convertMatcher(matcher, isProx = false, field = "text") {
-    if(isProx && typeof matcher !== "string") throw new Error("Conversion Error")
-    if(typeof matcher !== "string") return convertQuery(matcher)
+function convertMatcher(matcher, field) {
+    if (typeof matcher !== "string") return convertQuery(matcher, field)
+    return { match_phrase: { [field]: matcher } }
+}
 
-    const multiMatch = matcher.split(/[^\p{L}\p{N}]+/u)
-    if(multiMatch.length <= 1) return isProx ? { span_term: { [field]: matcher } } : { match: { [field]: matcher }}
+function convertProx(matchers, slop, field) {
+    if(matchers.some(_ => typeof _ !== "string")) throw new Error("Conversion Error")
     return {
-        span_near: {
-            clauses: multiMatch.map(_ => ({ span_term: { [field]: _ } })),
-            slop: 0,
-            in_order: true
+        intervals: {
+            [field]: {
+                all_of: {
+                    intervals: matchers.map(_ => ({ match: { query: _, max_gaps: 0, ordered: true } })),
+                    max_gaps: slop,
+                    ordered: true
+                }
+            }
         }
     }
 }
 
-function convertQuery(query) {
-    switch(query.operator) {
+function convertQuery(query, field) {
+    console.log(query)
+    switch (query.operator) {
         case "ET":
-            return { bool: { must: (query?.matchers ?? []).map(_ => convertMatcher(_)), must_not: (query?.not_matchers ?? []).map(_ => convertMatcher(_)) }}
+            return { bool: { must: (query?.matchers ?? []).map(_ => convertMatcher(_, field)), must_not: (query?.not_matchers ?? []).map(_ => convertMatcher(_, field)) } }
         case "OU":
-            return { bool: { should: query.matchers.map(_ => convertMatcher(_)), minimum_should_match: 1 }}
+            return { bool: { should: query.matchers.map(_ => convertMatcher(_, field)), minimum_should_match: 1 } }
         case "PROX":
-            return { span_near: { clauses: query.matchers.map(_ => convertMatcher(_, true)), slop: query.slop, in_order: false } }
+            return convertProx(query.matchers, query.slop, field)
         case undefined:
-            return convertMatcher(query.matchers[0])
+            return convertMatcher(query.matchers[0], field)
         default:
             throw new Error("")
     }
 }
 
-function convertJurilangToEs(jurilang) {
+function convertJurilangToEs(jurilang, field = "text") {
     return {
-        query: convertQuery(jurilang)
+        query: convertQuery(jurilang, field)
     }
 }
 
