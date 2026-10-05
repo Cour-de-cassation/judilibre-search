@@ -18,8 +18,7 @@ function convertProx(matchers, slop, field) {
     }
 }
 
-function convertQuery(query, field) {
-    console.log(query)
+function convertJurilangToEs(query, field) {
     switch (query.operator) {
         case "ET":
             return { bool: { must: (query?.matchers ?? []).map(_ => convertMatcher(_, field)), must_not: (query?.not_matchers ?? []).map(_ => convertMatcher(_, field)) } }
@@ -31,12 +30,6 @@ function convertQuery(query, field) {
             return convertMatcher(query.matchers[0], field)
         default:
             throw new Error("")
-    }
-}
-
-function convertJurilangToEs(jurilang, field = "text") {
-    return {
-        query: convertQuery(jurilang, field)
     }
 }
 

@@ -3,11 +3,10 @@ const { formatNumber, formatNumbers, formatType } = require("./common/format");
 const { convertJurilangToEs } = require("./common/jurilang/converter");
 const { parseQuerystring } = require("./common/jurilang/parser");
 const { getSearchBefore, getSearchAfter, formatSearchAfterIntoUrlParams, formatUrlParamsIntoSearchAfter } = require("./common/pagination");
-const { buildSort } = require("./common/query");
+const { buildSort, filterByJurisdiction, buildFilter } = require("./common/query");
 
 function buildQuery(query) {
   const jlQuery = parseQuerystring(query.querystring)
-  const esQuery = convertJurilangToEs(jlQuery.query)
   return {
     index: process.env.ELASTIC_INDEX,
     preference: 'preventbouncingresults',
@@ -15,7 +14,15 @@ function buildQuery(query) {
     size: query.batch_size || 10,
     _source: true,
     body: {
-      ...esQuery, 
+      query: { 
+        bool: {
+          filter: buildFilter(
+            query,
+            filterByJurisdiction([]),
+          ),
+          must: convertJurilangToEs(jlQuery.query)       
+        } 
+      },
       highlight: { fields: { text: {} } },
       ...(query.searchAfter ? { search_after: formatUrlParamsIntoSearchAfter(query) } : {}),
       sort: buildSort(query),
