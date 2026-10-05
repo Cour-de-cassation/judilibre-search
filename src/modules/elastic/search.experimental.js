@@ -20,7 +20,7 @@ function buildQuery(query) {
             query,
             filterByJurisdiction([]),
           ),
-          must: convertJurilangToEs(jlQuery.query)       
+          must: convertJurilangToEs(jlQuery.query, "text") 
         } 
       },
       highlight: { fields: { text: {} } },
