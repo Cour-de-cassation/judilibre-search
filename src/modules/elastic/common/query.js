@@ -56,9 +56,11 @@ function filterByChamber(chamber) {
   };
 }
 
-function filterByJurisdiction({ jurisdiction }) {
-  const isJurisdiction = jurisdiction && Array.isArray(jurisdiction) && jurisdiction.length > 0;
-  return { terms: { jurisdiction: isJurisdiction ? jurisdiction : ['cc'] } };
+function filterByJurisdiction(defaultJurisdictions = ['cc']) {
+  return ({ jurisdiction }) => {
+    const isJurisdiction = jurisdiction && Array.isArray(jurisdiction) && jurisdiction.length > 0;
+    return { terms: { jurisdiction: isJurisdiction ? jurisdiction : defaultJurisdictions } }
+  };
 }
 
 function filterBySource({ source }) {
