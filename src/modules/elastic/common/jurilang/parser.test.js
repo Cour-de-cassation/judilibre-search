@@ -1,12 +1,12 @@
-const { 
-    splitQuerystring, 
-    cleanSpaces, 
-    cleanOperators, 
-    priorizeProx, 
-    priorizeEt, 
-    priorize, 
-    parseQuerysplitPriorized, 
-    parseQuerystring 
+const {
+    splitQuerystring,
+    cleanSpaces,
+    cleanOperators,
+    priorizeProx,
+    priorizeEt,
+    priorize,
+    parseQuerysplitPriorized,
+    parseQuerystring
 } = require("./parser")
 
 describe("src/modules/elastic/search/jurilang/parser", () => {
@@ -203,12 +203,12 @@ describe("src/modules/elastic/search/jurilang/parser", () => {
         it("should parse with implicit OR and priorization", () => {
             const querystring = "hello world SAUF birds"
             const result = parseQuerystring(querystring)
-            expect(result).toEqual({ 
-                query: { 
-                    "matchers": ["hello", { "matchers": ["world"], "not_matchers": ["birds"], "operator": "ET" }], 
-                    "operator": "OU" 
-                }, 
-                querystring: "hello OU (world SAUF birds)" 
+            expect(result).toEqual({
+                query: {
+                    "matchers": ["hello", { "matchers": ["world"], "not_matchers": ["birds"], "operator": "ET" }],
+                    "operator": "OU"
+                },
+                querystring: "hello OU (world SAUF birds)"
             })
         })
 
@@ -230,12 +230,6 @@ describe("src/modules/elastic/search/jurilang/parser", () => {
                 },
                 querystring: "(aa ET bb SAUF cc) OU (dd ET (ee OU ff) ET (gg PROX/5 hh))"
             })
-        })
-        it("should", () => {
-            const querystring = 'article PROX/2 3111-12'
-            const result = parseQuerystring(querystring)
-            console.log(result)
-            expect(result).toEqual({ query: { "matchers": ["contrat de travail", "Paris"], operator: "ET" }, querystring: "contrat de travail ET Paris" })
         })
     })
 })
