@@ -43,7 +43,7 @@ function buildQuery(query) {
                 filterByChamber,
                 filterByDate,
                 filterByFormation,
-                filterByJurisdiction,
+                filterByJurisdiction(['cc']),
                 filterByLocation,
                 filterByParticularInterest,
                 filterByPublication,
