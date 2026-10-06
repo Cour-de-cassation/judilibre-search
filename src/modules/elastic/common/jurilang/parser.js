@@ -124,7 +124,11 @@ function priorize(querysplit) {
 module.exports.priorize = priorize
 
 function stringify(querysplit) {
-    return querysplit.map(_ => Array.isArray(_) ? `(${stringify(_)})` : _).join(' ')
+    return querysplit.map(term =>
+        Array.isArray(term) ? `(${stringify(term)})` : 
+        isOperator(term) ? term :
+        `"${term}"`
+    ).join(' ')
 }
 
 function parseQuerysplitPriorized(querysplitPriorized = []) {
