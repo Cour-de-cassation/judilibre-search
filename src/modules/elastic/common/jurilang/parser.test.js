@@ -194,10 +194,16 @@ describe("src/modules/elastic/search/jurilang/parser", () => {
     })
 
     describe("parseQuerystring", () => {
+        it("should parse empty", () => {
+            const querystring = ''
+            const result = parseQuerystring(querystring)
+            expect(result).toEqual({ query: {}, querystring: "" })
+        })
+
         it("should parse one word", () => {
             const querystring = '"hello world"'
             const result = parseQuerystring(querystring)
-            expect(result).toEqual({ query: { "matchers": ["hello world"] }, querystring: "hello world" })
+            expect(result).toEqual({ query: { "matchers": ["hello world"] }, querystring: '"hello world"' })
         })
 
         it("should parse with implicit OR and priorization", () => {
@@ -208,7 +214,7 @@ describe("src/modules/elastic/search/jurilang/parser", () => {
                     "matchers": ["hello", { "matchers": ["world"], "not_matchers": ["birds"], "operator": "ET" }],
                     "operator": "OU"
                 },
-                querystring: "hello OU (world SAUF birds)"
+                querystring: '"hello" OU ("world" SAUF "birds")'
             })
         })
 
@@ -228,7 +234,7 @@ describe("src/modules/elastic/search/jurilang/parser", () => {
                         }
                     ], "operator": "OU"
                 },
-                querystring: "(aa ET bb SAUF cc) OU (dd ET (ee OU ff) ET (gg PROX/5 hh))"
+                querystring: '("aa" ET "bb" SAUF "cc") OU ("dd" ET ("ee" OU "ff") ET ("gg" PROX/5 "hh"))'
             })
         })
     })
