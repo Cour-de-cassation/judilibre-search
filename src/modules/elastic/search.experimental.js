@@ -6,7 +6,7 @@ const { getSearchBefore, getSearchAfter, formatSearchAfterIntoUrlParams, formatU
 const { buildSort, filterByJurisdiction, buildFilter } = require("./common/query");
 
 function buildQuery(query) {
-  const jlQuery = parseQuerystring(query.querystring ?? "")
+  const jlQuery = parseQuerystring(query.querystring)
   return {
     index: process.env.ELASTIC_INDEX,
     preference: 'preventbouncingresults',

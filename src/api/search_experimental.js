@@ -15,7 +15,7 @@ api.get(
       in: 'query',
       isString: true,
       errorMessage: `Value of the query parameter must be a string.`,
-      optional: false,
+      optional: true,
     },
     jurisdiction: {
       in: 'query',
