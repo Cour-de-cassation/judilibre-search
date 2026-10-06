@@ -36,7 +36,7 @@ function buildAggregationQuery({ query }) {
         filter: buildFilter(
           query,
           filterByDate,
-          filterByJurisdiction,
+          filterByJurisdiction(),
           filterByLocation,
           filterByParticularInterest
         )
@@ -80,7 +80,7 @@ function buildCountQuery({ query }) {
         filter: buildFilter(
           query,
           filterByDate,
-          filterByJurisdiction,
+          filterByJurisdiction(),
           filterByLocation,
           filterByParticularInterest
         )
