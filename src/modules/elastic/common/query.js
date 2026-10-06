@@ -59,7 +59,9 @@ function filterByChamber(chamber) {
 function filterByJurisdiction(defaultJurisdictions = ['cc']) {
   return ({ jurisdiction }) => {
     const isJurisdiction = jurisdiction && Array.isArray(jurisdiction) && jurisdiction.length > 0;
-    return { terms: { jurisdiction: isJurisdiction ? jurisdiction : defaultJurisdictions } }
+    jurisdiction = isJurisdiction ? jurisdiction : defaultJurisdictions
+    
+    if (jurisdiction.length > 0) return { terms: { jurisdiction: jurisdiction  } }
   };
 }
 
