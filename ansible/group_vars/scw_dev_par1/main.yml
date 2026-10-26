@@ -5,3 +5,9 @@ judilibre_search_namespace: judilibre-scw-dev-par1-dev
 
 # Une seule réplique ici, contre trois en production. Relevé sur le cluster.
 judilibre_search_replicas: 1
+
+judilibre_search_ingress_hosts:
+  - host: search.dev-par1.judilibre.io
+    tls_secret: judilibre-search-cert-acme
+  - host: search.dev.judilibre.io
+    tls_secret: judilibre-search-alter-cert-acme

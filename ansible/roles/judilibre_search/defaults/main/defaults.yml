@@ -51,6 +51,23 @@ judilibre_search_manage_namespace: true
 judilibre_search_manage_config: true
 judilibre_search_manage_service: true
 
+# L'Ingress n'est géré que là où il est nginx (plateforme publique) : en privé,
+# l'exposition passe par Traefik et n'est pas du ressort de ce rôle.
+judilibre_search_manage_ingress: false
+
+# ── Ingress ──────────────────────────────────────────────────────────────────────────────
+# Utilisé seulement si judilibre_search_manage_ingress est vrai.
+judilibre_search_ingress_name: "{{ judilibre_search_app_id }}-route"
+judilibre_search_ingress_body_size: 50m
+judilibre_search_ingress_forbidden_redirect: https://www.courdecassation.fr
+
+# Liste de {host, tls_secret}. Le premier est l'hôte principal.
+judilibre_search_ingress_hosts: []
+
+# Whitelist IP, séparée par des virgules, fournie en extra-var par l'appelant.
+# Vide par défaut : le rôle refuse alors de créer l'Ingress.
+judilibre_search_ingress_whitelist: ""
+
 # ── Injection de configuration ────────────────────────────────────────────────
 # Par défaut, un ConfigMap et un Secret injectés en bloc par envFrom. Là où les
 # valeurs viennent de Secrets préexistants, extra_env les référence clé par clé,

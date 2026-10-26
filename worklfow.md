@@ -80,9 +80,11 @@ précédente.
 Comme un même commit donne une même étiquette, déployer `dev-par1` puis les deux
 sites de production depuis ce commit livre exactement le même artefact.
 
-**Périmètre** : namespace, Service et Deployment. Les autres objets d'un cluster
-— Ingress, Secrets, Elasticsearch, LoadBalancer, certificats — sont créés par
-`judilibre-ops`. Le namespace est partagé avec `judilibre-admin`.
+**Périmètre** : namespace, Service, Deployment et Ingress. La whitelist IP de
+l'Ingress n'est pas dans ce dépôt public : elle est lue dans `judilibre-ops`
+(`scripts/whitelist-search.sh`) à chaque déploiement, ce qui demande le secret
+`GIT_TOKEN`. Les autres objets d'un cluster — Secrets, Elasticsearch,
+LoadBalancer, certificats — sont créés par `judilibre-ops`. Le namespace est partagé avec `judilibre-admin`.
 
 ### Le tag, côté public
 

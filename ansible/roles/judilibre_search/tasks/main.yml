@@ -20,3 +20,7 @@
 - name: Deploy service
   ansible.builtin.import_tasks: create_service.yml
   when: judilibre_search_manage_service | bool
+
+- name: Deploy ingress
+  ansible.builtin.import_tasks: create_ingress.yml
+  when: judilibre_search_manage_ingress | bool

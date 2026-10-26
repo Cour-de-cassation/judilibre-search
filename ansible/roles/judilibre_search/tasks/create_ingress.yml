@@ -1,0 +1,36 @@
+---
+# La whitelist vient de judilibre-ops (scripts/whitelist-<app>.sh), privé :
+# ce dépôt étant public, aucune adresse IP n'y figure. deploy-scaleway.sh la
+# récupère et la passe en extra-var. Les journaux GitHub Actions étant publics
+# eux aussi, aucune tâche n'affiche son contenu.
+- name: Whitelist de l'Ingress — préparation
+  ansible.builtin.set_fact:
+    judilibre_search_ingress_ranges: >-
+      {{ judilibre_search_ingress_whitelist.split(',')
+         | map('trim') | reject('equalto', '') | unique | list }}
+  no_log: true
+
+# Une whitelist vide n'est pas « personne » mais « tout le monde » pour nginx :
+# l'annotation est ignorée. Le déploiement s'arrête donc plutôt que d'ouvrir
+# l'accès ou d'appliquer une entrée que nginx refuserait.
+- name: Whitelist de l'Ingress — contrôle
+  ansible.builtin.assert:
+    that:
+      - judilibre_search_ingress_ranges | length > 0
+      - "'0.0.0.0/0' not in judilibre_search_ingress_ranges"
+      - judilibre_search_ingress_ranges | reject('match', '^([0-9]{1,3}[.]){3}[0-9]{1,3}(/[0-9]{1,2})?$') | list | length == 0
+    fail_msg: >-
+      Whitelist refusée : vide, contenant 0.0.0.0/0, ou avec
+      {{ judilibre_search_ingress_ranges | reject('match', '^([0-9]{1,3}[.]){3}[0-9]{1,3}(/[0-9]{1,2})?$') | list | length }}
+      entrée(s) qui ne sont ni une IPv4 ni un CIDR.
+    success_msg: "{{ judilibre_search_ingress_ranges | length }} entrées dans la whitelist."
+
+- name: Création de l'Ingress {{ judilibre_search_ingress_name }}
+  kubernetes.core.k8s:
+    apply: true
+    state: present
+    kubeconfig: "{{ kubeconfig_path | default(omit) }}"
+    validate_certs: "{{ k8s_validate_certs | default(true) }}"
+    definition: "{{ lookup('ansible.builtin.template', 'ingress.yaml.j2') | from_yaml }}"
+  # L'objet rendu contient la whitelist : rien ne doit en sortir dans les logs.
+  no_log: true

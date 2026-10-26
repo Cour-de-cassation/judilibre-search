@@ -3,3 +3,9 @@
 # Exposé sur search.prod-par1.judilibre.io.
 judilibre_search_namespace: judilibre-scw-prod-par1-master
 judilibre_search_replicas: 3
+
+judilibre_search_ingress_hosts:
+  - host: search.prod-par1.judilibre.io
+    tls_secret: judilibre-search-cert-acme
+  - host: search.judilibre.io
+    tls_secret: judilibre-search-alter-cert-acme

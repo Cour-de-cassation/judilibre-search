@@ -125,4 +125,5 @@ scripts/update_dns_dynamic.sh
 scripts/update_dns_local.sh
 scripts/upgrade_elasticsearch.sh
 scripts/version.sh
-scripts/whitelist.sh
+scripts/whitelist-search.sh
+scripts/whitelist-admin.sh
