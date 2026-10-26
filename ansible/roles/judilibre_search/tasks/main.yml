@@ -14,6 +14,10 @@
   ansible.builtin.import_tasks: create_secret.yml
   when: judilibre_search_manage_config | bool
 
+- name: Deploy Elasticsearch access
+  ansible.builtin.import_tasks: create_es_access.yml
+  when: judilibre_search_manage_es_access | bool
+
 - name: Deploy deployment
   ansible.builtin.import_tasks: create_deployment.yml
 

@@ -30,8 +30,17 @@ judilibre_search_manage_service: true
 # de judilibre-ops/scripts/whitelist-search.sh, lu par deploy-scaleway.sh.
 judilibre_search_manage_ingress: true
 
-# Restent chez judilibre-ops : les certificats TLS (cert-manager), les Secrets
-# d'accès, l'Elasticsearch, le LoadBalancer, l'issuer ACME et le DNS.
+# L'accès à Elasticsearch (utilisateur judilibre_search en lecture seule, son
+# rôle, l'URL de connexion) est géré ici, depuis le vault de chaque cluster
+# (group_vars/scw_<zone>/vault.yml).
+judilibre_search_manage_es_access: true
+
+# Mots de passe propres à chaque cluster, chiffrés dans
+# group_vars/scw_<zone>/vault.yml (convention vault_* du dépôt).
+judilibre_search_es_password: "{{ vault_judilibre_search_es_password }}"
+
+# Restent chez judilibre-ops : les certificats TLS (cert-manager), le Secret
+# http-passwd, l'Elasticsearch, le LoadBalancer, l'issuer ACME et le DNS.
 #
 # Aucun ConfigMap n'existe sur ces clusters : la configuration non sensible est
 # posée dans le Deployment, ce que judilibre_search_extra_env reproduit.
@@ -57,9 +66,9 @@ judilibre_search_read_only_root_fs: true
 judilibre_search_resources: {}
 
 # ── Configuration injectée ────────────────────────────────────────────────────
-# Reprise de k8s/deployment.yaml de judilibre-ops. Les deux Secrets référencés
-# sont créés par ce dépôt-là et ne sont pas gérés ici.
-judilibre_search_es_auth_secret: "{{ judilibre_search_app_id }}-es-path-with-auth"
+# Reprise de k8s/deployment.yaml de judilibre-ops. L'URL de connexion
+# (judilibre_search_es_auth_secret) est créée par ce rôle, cf.
+# create_es_access.yml ; le Secret http-passwd reste créé par judilibre-ops.
 judilibre_search_http_passwd_secret: "{{ judilibre_search_app_id }}-http-passwd"
 judilibre_search_es_ca_secret: judilibre-es-http-certs-public
 
