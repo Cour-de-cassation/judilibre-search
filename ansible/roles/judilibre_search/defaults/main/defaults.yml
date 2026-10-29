@@ -68,6 +68,17 @@ judilibre_search_ingress_hosts: []
 # Vide par défaut : le rôle refuse alors de créer l'Ingress.
 judilibre_search_ingress_whitelist: ""
 
+# Relais des challenges ACME HTTP-01 vers l'autre cluster : liste de
+# {host, target}. Les alias (search.judilibre.io) ne pointent que vers un
+# cluster ; l'autre ne peut renouveler leur certificat que si celui-ci lui
+# transmet les jetons qu'il ne connaît pas. Les solveurs de cert-manager du
+# cluster local, sur le chemin exact du jeton, passent toujours avant ce relais
+# (préfixe /.well-known/acme-challenge). Un seul sens : deux clusters qui se
+# relaient l'un l'autre feraient tourner en boucle un jeton inconnu.
+# Vide : relais absent (et retiré s'il existait).
+judilibre_search_ingress_acme_relay: []
+judilibre_search_ingress_acme_relay_name: "{{ judilibre_search_app_id }}-acme-relay"
+
 # Accès à Elasticsearch (utilisateur, rôle, URL de connexion), géré par le rôle
 # là où il en est la source de vérité (plateforme publique). En privé, l'URL
 # passe par judilibre_search_secrets.

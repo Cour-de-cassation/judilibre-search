@@ -10,3 +10,9 @@ judilibre_search_ingress_hosts:
     tls_secret: judilibre-search-cert-acme
   - host: search.judilibre.io
     tls_secret: judilibre-search-alter-cert-acme
+
+# search.judilibre.io pointe ici : par1 ne peut renouveler son certificat
+# d'alias que si ce cluster lui relaie les challenges ACME qu'il ne connaît pas.
+judilibre_search_ingress_acme_relay:
+  - host: search.judilibre.io
+    target: search.prod-par1.judilibre.io
