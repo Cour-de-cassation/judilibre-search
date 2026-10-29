@@ -1,41 +1,6 @@
 ---
-# La whitelist vient de judilibre-ops (scripts/whitelist-<app>.sh), privé :
-# ce dépôt étant public, aucune adresse IP n'y figure. deploy-scaleway.sh la
-# récupère et la passe en extra-var. Les journaux GitHub Actions étant publics
-# eux aussi, aucune tâche n'affiche son contenu.
-- name: Whitelist de l'Ingress — préparation
-  ansible.builtin.set_fact:
-    judilibre_search_ingress_ranges: >-
-      {{ judilibre_search_ingress_whitelist.split(',')
-         | map('trim') | reject('equalto', '') | unique | list }}
-  no_log: true
-
-# Une whitelist vide n'est pas « personne » mais « tout le monde » pour nginx :
-# l'annotation est ignorée. Le déploiement s'arrête donc plutôt que d'ouvrir
-# l'accès ou d'appliquer une entrée que nginx refuserait.
-# Chaque entrée doit être une IPv4 (octets 0-255, sans zéro en tête), avec un
-# masque facultatif de /8 à /32 : un masque plus large (0.0.0.0/00, /1…)
-# ouvrirait l'accès à une grande partie d'Internet, et une valeur hors bornes
-# serait acceptée par l'API puis rejetée par nginx (503 pour tout le monde).
-- name: Whitelist de l'Ingress — contrôle
-  vars:
-    judilibre_search_ingress_octet: '(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])'
-    judilibre_search_ingress_range_regex: >-
-      ^({{ judilibre_search_ingress_octet }}[.]){3}{{ judilibre_search_ingress_octet }}(/(3[0-2]|[12][0-9]|[89]))?$
-    judilibre_search_ingress_invalid: >-
-      {{ judilibre_search_ingress_ranges
-         | reject('match', judilibre_search_ingress_range_regex) | list | length }}
-  ansible.builtin.assert:
-    that:
-      - judilibre_search_ingress_ranges | length > 0
-      - "'0.0.0.0/0' not in judilibre_search_ingress_ranges"
-      - judilibre_search_ingress_invalid | int == 0
-    fail_msg: >-
-      Whitelist refusée : vide, contenant 0.0.0.0/0, ou avec
-      {{ judilibre_search_ingress_invalid }} entrée(s) qui ne sont ni une IPv4
-      ni un CIDR de /8 à /32.
-    success_msg: "{{ judilibre_search_ingress_ranges | length }} entrées dans la whitelist."
-
+# Whitelist préparée et contrôlée par check_ingress_whitelist.yml, en tête du
+# rôle : judilibre_search_ingress_ranges est déjà défini ici.
 - name: Création de l'Ingress {{ judilibre_search_ingress_name }}
   kubernetes.core.k8s:
     apply: true

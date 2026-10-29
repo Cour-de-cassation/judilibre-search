@@ -1,4 +1,10 @@
 ---
+# Contrôle de la whitelist avant toute modification du cluster : une liste
+# refusée ne doit pas laisser derrière elle un Deployment déjà mis à jour.
+- name: Check ingress whitelist
+  ansible.builtin.import_tasks: check_ingress_whitelist.yml
+  when: judilibre_search_manage_ingress | bool
+
 # Les trois premiers objets ne sont créés que là où le rôle est la source de
 # vérité. Sur la plateforme publique ils préexistent : cf. les drapeaux
 # judilibre_search_manage_* dans les défauts du rôle.
