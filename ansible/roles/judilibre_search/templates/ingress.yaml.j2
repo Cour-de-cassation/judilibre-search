@@ -1,0 +1,34 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ judilibre_search_ingress_name }}
+  namespace: {{ judilibre_search_namespace }}
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/proxy-body-size: {{ judilibre_search_ingress_body_size }}
+    nginx.ingress.kubernetes.io/whitelist-source-range: "{{ judilibre_search_ingress_ranges | join(',') }}"
+    nginx.ingress.kubernetes.io/server-snippet: |
+      error_page 403 @forbidden;
+      location @forbidden {
+        return 301 {{ judilibre_search_ingress_forbidden_redirect }};
+      }
+spec:
+  tls:
+{% for entree in judilibre_search_ingress_hosts %}
+    - hosts:
+        - {{ entree.host }}
+      secretName: {{ entree.tls_secret }}
+{% endfor %}
+  rules:
+{% for entree in judilibre_search_ingress_hosts %}
+    - host: {{ entree.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ judilibre_search_service_name }}
+                port:
+                  number: {{ judilibre_search_service_port }}
+{% endfor %}

@@ -1,0 +1,55 @@
+---
+# Whitelist préparée et contrôlée par check_ingress_whitelist.yml, en tête du
+# rôle : judilibre_search_ingress_ranges est déjà défini ici.
+- name: Création de l'Ingress {{ judilibre_search_ingress_name }}
+  kubernetes.core.k8s:
+    apply: true
+    state: present
+    kubeconfig: "{{ kubeconfig_path | default(omit) }}"
+    validate_certs: "{{ k8s_validate_certs | default(true) }}"
+    definition: "{{ lookup('ansible.builtin.template', 'ingress.yaml.j2') | from_yaml }}"
+  # L'objet rendu contient la whitelist : rien ne doit en sortir dans les logs.
+  no_log: true
+
+# Relais ACME vers l'autre cluster (cf. judilibre_search_ingress_acme_relay).
+# Ni IP ni secret : seulement des noms d'hôtes déjà publics.
+- name: Relais ACME — objets en place
+  kubernetes.core.k8s_info:
+    api_version: networking.k8s.io/v1
+    kind: Ingress
+    namespace: "{{ judilibre_search_namespace }}"
+    kubeconfig: "{{ kubeconfig_path | default(omit) }}"
+    validate_certs: "{{ k8s_validate_certs | default(true) }}"
+  register: judilibre_search_acme_relay_existing
+  # La liste comprend l'Ingress principal et donc sa whitelist.
+  no_log: true
+
+- name: Relais ACME — création
+  kubernetes.core.k8s:
+    apply: true
+    state: present
+    kubeconfig: "{{ kubeconfig_path | default(omit) }}"
+    validate_certs: "{{ k8s_validate_certs | default(true) }}"
+    definition: "{{ lookup('ansible.builtin.template', 'acme-relay.yaml.j2') | from_yaml_all | select | list }}"
+  when: judilibre_search_ingress_acme_relay | length > 0
+
+# Un relais retiré de la configuration (ou dont la liste a raccourci) est
+# supprimé, Service compris : la liste reste la seule source de vérité.
+- name: Relais ACME — suppression des relais retirés
+  kubernetes.core.k8s:
+    state: absent
+    api_version: "{{ item.1.0 }}"
+    kind: "{{ item.1.1 }}"
+    name: "{{ item.0 }}"
+    namespace: "{{ judilibre_search_namespace }}"
+    kubeconfig: "{{ kubeconfig_path | default(omit) }}"
+    validate_certs: "{{ k8s_validate_certs | default(true) }}"
+  loop: "{{ judilibre_search_acme_relay_obsolete | product([['networking.k8s.io/v1', 'Ingress'], ['v1', 'Service']]) | list }}"
+  vars:
+    judilibre_search_acme_relay_wanted: >-
+      {{ range(1, judilibre_search_ingress_acme_relay | length + 1) | map('string')
+         | map('regex_replace', '^', judilibre_search_ingress_acme_relay_name ~ '-') | list }}
+    judilibre_search_acme_relay_obsolete: >-
+      {{ judilibre_search_acme_relay_existing.resources | map(attribute='metadata.name')
+         | select('match', '^' ~ judilibre_search_ingress_acme_relay_name ~ '-[0-9]+$')
+         | reject('in', judilibre_search_acme_relay_wanted) | list }}

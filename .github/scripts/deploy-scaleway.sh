@@ -24,10 +24,25 @@ if [ -z "${ANSIBLE_VAULT_PASSWORD:-}" ]; then
     exit 1
 fi
 
+# La whitelist IP de l'Ingress vit dans judilibre-ops, privé : ce dépôt et ses
+# journaux sont publics. Elle n'est jamais affichée.
+if [ -z "${GIT_TOKEN:-}" ]; then
+    echo "❌ GIT_TOKEN est vide — impossible de lire la whitelist dans judilibre-ops." >&2
+    exit 1
+fi
+
 fichier_vault="$(mktemp)"
-trap 'rm -f "${fichier_vault}"' EXIT
+dossier_ops="$(mktemp -d)"
+fichier_whitelist="$(mktemp)"
+trap 'rm -rf "${fichier_vault}" "${dossier_ops}" "${fichier_whitelist}"' EXIT
 printf '%s' "${ANSIBLE_VAULT_PASSWORD}" > "${fichier_vault}"
-chmod 600 "${fichier_vault}"
+chmod 600 "${fichier_vault}" "${fichier_whitelist}"
+
+# Le jeton passe par un en-tête, jamais par l'URL, qu'une erreur recopierait.
+git -c http.extraheader="AUTHORIZATION: basic $(printf 'x-access-token:%s' "${GIT_TOKEN}" | base64 -w0)" \
+    clone --quiet --depth 1 https://github.com/Cour-de-cassation/judilibre-ops.git "${dossier_ops}"
+whitelist="$(bash "${dossier_ops}/scripts/whitelist-search.sh" | tr -d '\r ')"
+printf 'judilibre_search_ingress_whitelist: "%s"\n' "${whitelist}" > "${fichier_whitelist}"
 
 echo "▶ ${groupe} — image ${IMAGE}"
 
@@ -37,4 +52,5 @@ ansible-playbook \
     --limit "${groupe}" \
     --vault-password-file "${fichier_vault}" \
     -e "app_image=${IMAGE}" \
+    -e "@${fichier_whitelist}" \
     ansible/deploy_app_public.yml

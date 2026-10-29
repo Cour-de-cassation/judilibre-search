@@ -1,0 +1,207 @@
+---
+# Accès de search à Elasticsearch, géré depuis ce dépôt : l'utilisateur et son
+# rôle (file realm ECK), puis les Secrets lus par l'application.
+#
+# L'ordre évite toute coupure : l'URL de connexion n'est réécrite qu'une fois
+# l'utilisateur reconnu par Elasticsearch. Si ce contrôle échoue, l'application
+# garde ses identifiants actuels.
+#
+# Les deux Secrets de l'utilisateur et du rôle sont ajoutés à spec.auth de la
+# ressource Elasticsearch (ECK fusionne les Secrets listés), sans toucher à ceux
+# qui y figurent déjà. Si judilibre-ops recrée l'Elasticsearch (création
+# d'environnement, montée de version), redéployer ensuite cette application.
+#
+# Toute tâche qui manipule un mot de passe porte no_log : ce dépôt et ses
+# journaux sont publics. Les Secrets qui en contiennent ne sont pas créés avec
+# apply, qui en recopierait le contenu en clair dans l'annotation
+# last-applied-configuration.
+
+# Le mot de passe entre dans une URL et dans une commande : alphanumérique
+# seulement, sans quoi il faudrait l'échapper aux deux endroits.
+- name: Accès Elasticsearch — contrôle du mot de passe
+  ansible.builtin.assert:
+    that:
+      - judilibre_search_es_password is defined
+      - judilibre_search_es_password is match('^[A-Za-z0-9]{32,}\Z')
+    fail_msg: >-
+      judilibre_search_es_password (32 caractères alphanumériques au moins, cf.
+      openssl rand -hex 32) doit être défini dans le vault du cluster
+      (group_vars/scw_<zone>/vault.yml).
+    quiet: true
+
+- name: Accès Elasticsearch — rôle {{ judilibre_search_es_role_name }}
+  kubernetes.core.k8s:
+    apply: true
+    state: present
+    kubeconfig: "{{ kubeconfig_path | default(omit) }}"
+    validate_certs: "{{ k8s_validate_certs | default(true) }}"
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: "{{ judilibre_search_es_role_secret }}"
+        namespace: "{{ judilibre_search_namespace }}"
+        labels:
+          app: "{{ judilibre_search_app_id }}"
+      type: Opaque
+      stringData:
+        roles.yml: "{{ {judilibre_search_es_role_name: judilibre_search_es_role_definition} | to_nice_yaml }}"
+
+# Format basic-auth d'ECK : le mot de passe est donné en clair, l'opérateur
+# en calcule lui-même l'empreinte. Rien ne change donc d'un passage à l'autre.
+- name: Accès Elasticsearch — utilisateur {{ judilibre_search_es_username }}
+  kubernetes.core.k8s:
+    state: present
+    kubeconfig: "{{ kubeconfig_path | default(omit) }}"
+    validate_certs: "{{ k8s_validate_certs | default(true) }}"
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: "{{ judilibre_search_es_user_secret }}"
+        namespace: "{{ judilibre_search_namespace }}"
+        labels:
+          app: "{{ judilibre_search_app_id }}"
+      type: kubernetes.io/basic-auth
+      stringData:
+        username: "{{ judilibre_search_es_username }}"
+        password: "{{ judilibre_search_es_password }}"
+        roles: "{{ judilibre_search_es_role_name }}"
+  no_log: true
+
+- name: Accès Elasticsearch — lecture de la ressource Elasticsearch
+  kubernetes.core.k8s_info:
+    kubeconfig: "{{ kubeconfig_path | default(omit) }}"
+    validate_certs: "{{ k8s_validate_certs | default(true) }}"
+    api_version: elasticsearch.k8s.elastic.co/v1
+    kind: Elasticsearch
+    namespace: "{{ judilibre_search_namespace }}"
+    name: "{{ judilibre_search_es_cluster_name }}"
+  register: judilibre_search_es_cluster
+
+- name: Accès Elasticsearch — la ressource existe
+  ansible.builtin.assert:
+    that: judilibre_search_es_cluster.resources | length == 1
+    fail_msg: >-
+      Elasticsearch « {{ judilibre_search_es_cluster_name }} » introuvable dans
+      {{ judilibre_search_namespace }}.
+    quiet: true
+
+# ECK fusionne les Secrets listés dans spec.auth. Chaque application y ajoute
+# les siens par un patch JSON « add » en fin de liste, appliqué par le serveur :
+# deux déploiements simultanés (admin et search) ne peuvent pas s'écraser, ce
+# que ferait une lecture suivie d'un patch « merge » remplaçant la liste.
+- name: Accès Elasticsearch — spec.auth existe
+  ansible.builtin.assert:
+    that:
+      - judilibre_search_es_cluster.resources[0].spec.auth.fileRealm is defined
+      - judilibre_search_es_cluster.resources[0].spec.auth.roles is defined
+    fail_msg: >-
+      spec.auth.fileRealm et spec.auth.roles doivent exister dans l'Elasticsearch
+      (k8s/elasticsearch.yaml de judilibre-ops).
+    quiet: true
+
+- name: Accès Elasticsearch — ajout de l'utilisateur à spec.auth.fileRealm
+  kubernetes.core.k8s_json_patch:
+    kubeconfig: "{{ kubeconfig_path | default(omit) }}"
+    validate_certs: "{{ k8s_validate_certs | default(true) }}"
+    api_version: elasticsearch.k8s.elastic.co/v1
+    kind: Elasticsearch
+    namespace: "{{ judilibre_search_namespace }}"
+    name: "{{ judilibre_search_es_cluster_name }}"
+    patch:
+      - op: add
+        path: /spec/auth/fileRealm/-
+        value:
+          secretName: "{{ judilibre_search_es_user_secret }}"
+  when: >-
+    judilibre_search_es_user_secret not in
+    (judilibre_search_es_cluster.resources[0].spec.auth.fileRealm | map(attribute='secretName') | list)
+
+- name: Accès Elasticsearch — ajout du rôle à spec.auth.roles
+  kubernetes.core.k8s_json_patch:
+    kubeconfig: "{{ kubeconfig_path | default(omit) }}"
+    validate_certs: "{{ k8s_validate_certs | default(true) }}"
+    api_version: elasticsearch.k8s.elastic.co/v1
+    kind: Elasticsearch
+    namespace: "{{ judilibre_search_namespace }}"
+    name: "{{ judilibre_search_es_cluster_name }}"
+    patch:
+      - op: add
+        path: /spec/auth/roles/-
+        value:
+          secretName: "{{ judilibre_search_es_role_secret }}"
+  when: >-
+    judilibre_search_es_role_secret not in
+    (judilibre_search_es_cluster.resources[0].spec.auth.roles | map(attribute='secretName') | list)
+
+- name: Accès Elasticsearch — recherche d'un nœud
+  kubernetes.core.k8s_info:
+    kubeconfig: "{{ kubeconfig_path | default(omit) }}"
+    validate_certs: "{{ k8s_validate_certs | default(true) }}"
+    kind: Pod
+    namespace: "{{ judilibre_search_namespace }}"
+    label_selectors:
+      - "elasticsearch.k8s.elastic.co/cluster-name={{ judilibre_search_es_cluster_name }}"
+    field_selectors:
+      - status.phase=Running
+  register: judilibre_search_es_pods
+
+- name: Accès Elasticsearch — un nœud est disponible
+  ansible.builtin.assert:
+    that: judilibre_search_es_pods.resources | length > 0
+    fail_msg: >-
+      Aucun pod Elasticsearch « {{ judilibre_search_es_cluster_name }} » en cours
+      d'exécution dans {{ judilibre_search_namespace }}.
+    quiet: true
+
+# ECK propage le Secret aux nœuds, puis Elasticsearch relit son file realm :
+# compter une à deux minutes. Le contrôle est fait depuis un nœud, Elasticsearch
+# n'étant joignable que dans le cluster.
+- name: Accès Elasticsearch — attente de la prise en compte de l'utilisateur
+  kubernetes.core.k8s_exec:
+    kubeconfig: "{{ kubeconfig_path | default(omit) }}"
+    validate_certs: "{{ k8s_validate_certs | default(true) }}"
+    namespace: "{{ judilibre_search_namespace }}"
+    pod: "{{ judilibre_search_es_pods.resources[0].metadata.name }}"
+    container: elasticsearch
+    command: >-
+      curl -sk -o /dev/null -w %{http_code}
+      -u {{ judilibre_search_es_username }}:{{ judilibre_search_es_password }}
+      https://localhost:9200/_security/_authenticate
+  register: judilibre_search_es_auth
+  until: judilibre_search_es_auth.stdout | default('') == '200'
+  retries: "{{ judilibre_search_es_auth_retries }}"
+  delay: 10
+  failed_when: false
+  changed_when: false
+  no_log: true
+
+- name: Accès Elasticsearch — utilisateur reconnu
+  ansible.builtin.assert:
+    that: judilibre_search_es_auth.stdout | default('') == '200'
+    fail_msg: >-
+      Elasticsearch ne reconnaît pas {{ judilibre_search_es_username }} (code
+      {{ judilibre_search_es_auth.stdout | default('aucun') }}). Vérifier que
+      {{ judilibre_search_es_user_secret }} et {{ judilibre_search_es_role_secret }}
+      sont listés dans spec.auth de l'Elasticsearch. L'URL de
+      connexion n'a pas été modifiée.
+    quiet: true
+
+- name: Accès Elasticsearch — URL de connexion de l'application
+  kubernetes.core.k8s:
+    state: present
+    kubeconfig: "{{ kubeconfig_path | default(omit) }}"
+    validate_certs: "{{ k8s_validate_certs | default(true) }}"
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: "{{ judilibre_search_es_auth_secret }}"
+        namespace: "{{ judilibre_search_namespace }}"
+        labels:
+          app: "{{ judilibre_search_app_id }}"
+      type: Opaque
+      stringData:
+        elastic-node: "https://{{ judilibre_search_es_username }}:{{ judilibre_search_es_password }}@{{ judilibre_search_es_host }}:9200"
+  no_log: true

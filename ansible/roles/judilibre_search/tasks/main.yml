@@ -1,4 +1,10 @@
 ---
+# Contrôle de la whitelist avant toute modification du cluster : une liste
+# refusée ne doit pas laisser derrière elle un Deployment déjà mis à jour.
+- name: Check ingress whitelist
+  ansible.builtin.import_tasks: check_ingress_whitelist.yml
+  when: judilibre_search_manage_ingress | bool
+
 # Les trois premiers objets ne sont créés que là où le rôle est la source de
 # vérité. Sur la plateforme publique ils préexistent : cf. les drapeaux
 # judilibre_search_manage_* dans les défauts du rôle.
@@ -14,9 +20,17 @@
   ansible.builtin.import_tasks: create_secret.yml
   when: judilibre_search_manage_config | bool
 
+- name: Deploy Elasticsearch access
+  ansible.builtin.import_tasks: create_es_access.yml
+  when: judilibre_search_manage_es_access | bool
+
 - name: Deploy deployment
   ansible.builtin.import_tasks: create_deployment.yml
 
 - name: Deploy service
   ansible.builtin.import_tasks: create_service.yml
   when: judilibre_search_manage_service | bool
+
+- name: Deploy ingress
+  ansible.builtin.import_tasks: create_ingress.yml
+  when: judilibre_search_manage_ingress | bool

@@ -51,6 +51,66 @@ judilibre_search_manage_namespace: true
 judilibre_search_manage_config: true
 judilibre_search_manage_service: true
 
+# L'Ingress n'est géré que là où il est nginx (plateforme publique) : en privé,
+# l'exposition passe par Traefik et n'est pas du ressort de ce rôle.
+judilibre_search_manage_ingress: false
+
+# ── Ingress ──────────────────────────────────────────────────────────────────────────────
+# Utilisé seulement si judilibre_search_manage_ingress est vrai.
+judilibre_search_ingress_name: "{{ judilibre_search_app_id }}-route"
+judilibre_search_ingress_body_size: 50m
+judilibre_search_ingress_forbidden_redirect: https://www.courdecassation.fr
+
+# Liste de {host, tls_secret}. Le premier est l'hôte principal.
+judilibre_search_ingress_hosts: []
+
+# Whitelist IP, séparée par des virgules, fournie en extra-var par l'appelant.
+# Vide par défaut : le rôle refuse alors de créer l'Ingress.
+judilibre_search_ingress_whitelist: ""
+
+# Relais des challenges ACME HTTP-01 vers l'autre cluster : liste de
+# {host, target}. Les alias (search.judilibre.io) ne pointent que vers un
+# cluster ; l'autre ne peut renouveler leur certificat que si celui-ci lui
+# transmet les jetons qu'il ne connaît pas. Les solveurs de cert-manager du
+# cluster local, sur le chemin exact du jeton, passent toujours avant ce relais
+# (préfixe /.well-known/acme-challenge). Un seul sens : deux clusters qui se
+# relaient l'un l'autre feraient tourner en boucle un jeton inconnu.
+# Vide : relais absent (et retiré s'il existait).
+judilibre_search_ingress_acme_relay: []
+judilibre_search_ingress_acme_relay_name: "{{ judilibre_search_app_id }}-acme-relay"
+
+# Accès à Elasticsearch (utilisateur, rôle, URL de connexion), géré par le rôle
+# là où il en est la source de vérité (plateforme publique). En privé, l'URL
+# passe par judilibre_search_secrets.
+judilibre_search_manage_es_access: false
+
+# ── Accès Elasticsearch ───────────────────────────────────────────────────────
+# Utilisé seulement si judilibre_search_manage_es_access est vrai. Le mot de
+# passe (judilibre_search_es_password) vient du vault du cluster, sans valeur
+# de repli.
+judilibre_search_es_cluster_name: judilibre
+judilibre_search_es_host: "{{ judilibre_search_es_cluster_name }}-es-http"
+judilibre_search_es_username: judilibre_search
+judilibre_search_es_role_name: judilibre_search
+judilibre_search_es_user_secret: "{{ judilibre_search_app_id }}-es-user"
+judilibre_search_es_role_secret: "{{ judilibre_search_app_id }}-es-role"
+judilibre_search_es_auth_secret: "{{ judilibre_search_app_id }}-es-path-with-auth"
+
+# Essais espacés de 10 s avant de renoncer à basculer l'URL de connexion.
+judilibre_search_es_auth_retries: 30
+
+# Lecture seule : search ne fait que chercher et lire (search, get, count,
+# search_after, agrégations, PIT sur les transactions).
+judilibre_search_es_role_definition:
+  cluster:
+    - monitor
+  indices:
+    - names:
+        - "{{ judilibre_search_elastic_index | regex_replace('_[0-9]+$', '') }}_*"
+        - "{{ judilibre_search_transaction_index }}"
+      privileges:
+        - read
+
 # ── Injection de configuration ────────────────────────────────────────────────
 # Par défaut, un ConfigMap et un Secret injectés en bloc par envFrom. Là où les
 # valeurs viennent de Secrets préexistants, extra_env les référence clé par clé,
@@ -73,10 +133,15 @@ judilibre_search_env_from: >-
 
 # Les empreintes ne valent que si le rôle gère lui-même le ConfigMap et le
 # Secret ; ailleurs, elles porteraient sur des variables inexistantes.
+# Celle de l'accès Elasticsearch redémarre l'application quand le mot de passe
+# change : sans elle, le pod garderait l'ancienne URL.
 judilibre_search_pod_annotations: >-
-  {{ {'checksum/config': judilibre_search_config | to_json(sort_keys=true) | hash('sha1'),
-      'checksum/secret': judilibre_search_secrets | to_json(sort_keys=true) | hash('sha1')}
-     if judilibre_search_manage_config else {} }}
+  {{ ({'checksum/config': judilibre_search_config | to_json(sort_keys=true) | hash('sha1'),
+       'checksum/secret': judilibre_search_secrets | to_json(sort_keys=true) | hash('sha1')}
+      if judilibre_search_manage_config else {})
+     | combine({'checksum/es-access': [judilibre_search_es_username, judilibre_search_es_password]
+                                      | to_json | hash('sha1')}
+               if judilibre_search_manage_es_access else {}) }}
 
 # Regroupées en une variable : un environnement peut n'en déclarer aucune, un
 # dict vide se rendant en `resources: {}` que l'API accepte sans rien appliquer.

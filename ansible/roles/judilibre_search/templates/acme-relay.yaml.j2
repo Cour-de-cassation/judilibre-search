@@ -1,0 +1,41 @@
+{% for relais in judilibre_search_ingress_acme_relay %}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ judilibre_search_ingress_acme_relay_name }}-{{ loop.index }}
+  namespace: {{ judilibre_search_namespace }}
+spec:
+  type: ExternalName
+  externalName: {{ relais.target }}
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ judilibre_search_ingress_acme_relay_name }}-{{ loop.index }}
+  namespace: {{ judilibre_search_namespace }}
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    # Let's Encrypt valide en HTTP : pas de redirection vers HTTPS, comme les
+    # solveurs de cert-manager. Pas de whitelist non plus : les IP de Let's
+    # Encrypt ne sont pas publiées, et seul ce chemin est concerné.
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    # L'en-tête Host reste l'alias : c'est lui que le solveur distant attend.
+    nginx.ingress.kubernetes.io/upstream-vhost: {{ relais.host }}
+spec:
+  rules:
+    - host: {{ relais.host }}
+      http:
+        paths:
+          - path: /.well-known/acme-challenge
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ judilibre_search_ingress_acme_relay_name }}-{{ loop.index }}
+                port:
+                  number: 80
+{% endfor %}
