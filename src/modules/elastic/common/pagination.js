@@ -1,5 +1,6 @@
-const { buildQuery } = require('./query');
-const { formatElasticToResponse, inverseSort, formatSearchAfterIntoUrlParams, formatQueryIntoUrlParams, SEARCH_AFTER_INITIAL_VALUE } = require('./format');
+const { inverseSort, formatQueryIntoUrlParams } = require("./format");
+
+const SEARCH_AFTER_INITIAL_VALUE = "SEARCH_AFTER_INITIAL_VALUE"
 
 async function getSearchAfter(responses, searchQuery, client) {
   if (responses.length < searchQuery.size) return null;
@@ -10,6 +11,7 @@ async function getSearchAfter(responses, searchQuery, client) {
   const nextElements = await client.search({ ...searchQuery, body: { ...searchQuery.body, search_after: searchAfter }, size: 1 });
   return (nextElements?.body?.hits?.hits ?? []).length > 0 ? searchAfter : null;
 }
+module.exports.getSearchAfter = getSearchAfter
 
 async function getSearchBefore(responses, searchQuery, client) {
   if (responses.length === 0) return null
@@ -29,32 +31,19 @@ async function getSearchBefore(responses, searchQuery, client) {
   const firstElementFromPrevious = previousElements[previousElements.length-1];
   return firstElementFromPrevious.sort;
 }
+module.exports.getSearchBefore = getSearchBefore
 
-async function batchScan({ client }, query) {
-  const searchQuery = buildQuery(query);
-
-  const resultCount = await client.count({
-    index: searchQuery.index,
-    body: { query: searchQuery.body.query },
-  });
-  const rawResponse = await client.search(searchQuery);
-  const responses = rawResponse.body.hits.hits ?? [];
-
-  const searchBefore = await getSearchBefore(responses, searchQuery, client);
-  const searchAfter = await getSearchAfter(responses, searchQuery, client);
-
-  return {
-    batch_from: searchQuery.searchAfter,
-    batch_size: searchQuery.page_size,
-    query,
-    total: resultCount?.body?.count ?? 0,
-    previous_batch: formatSearchAfterIntoUrlParams(query, searchBefore),
-    next_batch: formatSearchAfterIntoUrlParams(query, searchAfter),
-    took: rawResponse?.body?.took ?? 0,
-    results: responses.map((_) => formatElasticToResponse(_, query)),
-    searchQuery,
-    date: new Date(),
-  };
+function formatSearchAfterIntoUrlParams(query, searchAfter) {
+    const { searchAfter: _, ...relevantQuery } = query
+    if (!searchAfter) return null
+    if(searchAfter === SEARCH_AFTER_INITIAL_VALUE) return formatQueryIntoUrlParams(relevantQuery)
+    return formatQueryIntoUrlParams({ ...relevantQuery, searchAfter: searchAfter.join("&") })
 }
+module.exports.formatSearchAfterIntoUrlParams = formatSearchAfterIntoUrlParams
 
-module.exports = batchScan;
+
+function formatUrlParamsIntoSearchAfter(query) {
+    const rawSearchAfter = query.searchAfter.split("&")
+    return [Number(rawSearchAfter[0]), Number(rawSearchAfter[1]), rawSearchAfter[2]]
+}   
+module.exports.formatUrlParamsIntoSearchAfter = formatUrlParamsIntoSearchAfter
