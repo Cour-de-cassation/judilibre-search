@@ -5,6 +5,7 @@ apis.push(require('./export'));
 apis.push(require('./scan'));
 apis.push(require('./healthcheck'));
 apis.push(require('./search'));
+apis.push(require('./search_experimental'));
 apis.push(require('./stats'));
 apis.push(require('./taxonomy'));
 apis.push(require('./published'));
