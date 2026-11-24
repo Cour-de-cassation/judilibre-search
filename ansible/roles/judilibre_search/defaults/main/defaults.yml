@@ -79,6 +79,19 @@ judilibre_search_ingress_whitelist: ""
 judilibre_search_ingress_acme_relay: []
 judilibre_search_ingress_acme_relay_name: "{{ judilibre_search_app_id }}-acme-relay"
 
+# Limites nginx sur /export (Ingress dédié, ingress-export.yaml.j2), par IP
+# source et par pod nginx. /export renvoie jusqu'à 1000 décisions complètes par
+# appel (plusieurs Mo) : c'est l'appel le plus lourd pour Elasticsearch.
+# - connections : exports simultanés ;
+# - rpm : requêtes par minute ; rafale tolérée = rpm × burst_multiplier.
+# Au-delà, nginx répond 503, ou 429 si limit-conn-status-code et
+# limit-req-status-code sont posés dans la ConfigMap du contrôleur
+# (judilibre-ops/k8s/ingress-nginx-controller.yaml).
+# Vide : pas d'Ingress dédié (et retiré s'il existait), /export suit l'Ingress
+# principal sans limite.
+judilibre_search_ingress_export_limit: {}
+judilibre_search_ingress_export_name: "{{ judilibre_search_app_id }}-export-route"
+
 # Accès à Elasticsearch (utilisateur, rôle, URL de connexion), géré par le rôle
 # là où il en est la source de vérité (plateforme publique). En privé, l'URL
 # passe par judilibre_search_secrets.

@@ -30,6 +30,16 @@ judilibre_search_manage_service: true
 # de judilibre-ops/scripts/whitelist-search.sh, lu par deploy-scaleway.sh.
 judilibre_search_manage_ingress: true
 
+# Limites sur /export (cf. defaults). Seuils de départ, d'après les journaux
+# nginx de PAR2 du 24/11/2026 (09:25-10:01 UTC) : jusqu'à 102 exports par
+# minute depuis une IP PISTE, dont l'essentiel vient d'un seul client qui
+# aspire les décisions tcom ; hors ce client, 30 par minute au plus (Actimage).
+# 12 par minute et par pod nginx (3 pods) laisse environ 36 par minute par IP.
+judilibre_search_ingress_export_limit:
+  connections: 3
+  rpm: 12
+  burst_multiplier: 3
+
 # L'accès à Elasticsearch (utilisateur judilibre_search en lecture seule, son
 # rôle, l'URL de connexion) est géré ici, depuis le vault de chaque cluster
 # (group_vars/scw_<zone>/vault.yml).

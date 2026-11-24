@@ -11,6 +11,30 @@
   # L'objet rendu contient la whitelist : rien ne doit en sortir dans les logs.
   no_log: true
 
+# Ingress dédié à /export, avec limites nginx (cf. defaults). Même whitelist
+# que l'Ingress principal.
+- name: Ingress /export — création
+  kubernetes.core.k8s:
+    apply: true
+    state: present
+    kubeconfig: "{{ kubeconfig_path | default(omit) }}"
+    validate_certs: "{{ k8s_validate_certs | default(true) }}"
+    definition: "{{ lookup('ansible.builtin.template', 'ingress-export.yaml.j2') | from_yaml }}"
+  when: judilibre_search_ingress_export_limit | length > 0
+  # L'objet rendu contient la whitelist : rien ne doit en sortir dans les logs.
+  no_log: true
+
+- name: Ingress /export — suppression si les limites sont retirées
+  kubernetes.core.k8s:
+    state: absent
+    api_version: networking.k8s.io/v1
+    kind: Ingress
+    name: "{{ judilibre_search_ingress_export_name }}"
+    namespace: "{{ judilibre_search_namespace }}"
+    kubeconfig: "{{ kubeconfig_path | default(omit) }}"
+    validate_certs: "{{ k8s_validate_certs | default(true) }}"
+  when: judilibre_search_ingress_export_limit | length == 0
+
 # Relais ACME vers l'autre cluster (cf. judilibre_search_ingress_acme_relay).
 # Ni IP ni secret : seulement des noms d'hôtes déjà publics.
 - name: Relais ACME — objets en place
