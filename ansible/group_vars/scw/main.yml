@@ -30,6 +30,11 @@ judilibre_search_manage_service: true
 # de judilibre-ops/scripts/whitelist-search.sh, lu par deploy-scaleway.sh.
 judilibre_search_manage_ingress: true
 
+# Diagnostic temporaire des en-têtes envoyés par PISTE (cf. defaults) : seules
+# les requêtes de test avec cet user-agent sont journalisées. À vider une fois
+# l'analyse terminée.
+judilibre_search_ingress_debug_headers_user_agent: ua-ftho
+
 # L'accès à Elasticsearch (utilisateur judilibre_search en lecture seule, son
 # rôle, l'URL de connexion) est géré ici, depuis le vault de chaque cluster
 # (group_vars/scw_<zone>/vault.yml).

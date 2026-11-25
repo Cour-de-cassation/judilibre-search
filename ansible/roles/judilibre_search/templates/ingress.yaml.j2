@@ -12,6 +12,21 @@ metadata:
       location @forbidden {
         return 301 {{ judilibre_search_ingress_forbidden_redirect }};
       }
+{% if judilibre_search_ingress_debug_headers_user_agent %}
+    # Diagnostic temporaire (cf. defaults) : écrit tous les en-têtes reçus dans
+    # les logs nginx (ligne "piste_headers"), seulement pour cet user-agent.
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      access_by_lua_block {
+        if ngx.var.http_user_agent == "{{ judilibre_search_ingress_debug_headers_user_agent }}" then
+          local masked = { {% for h in judilibre_search_ingress_debug_headers_masked %}["{{ h | lower }}"] = true, {% endfor %}}
+          local out = {}
+          for k, v in pairs(ngx.req.get_headers(100)) do
+            out[k] = masked[k] and "***" or v
+          end
+          ngx.log(ngx.NOTICE, "piste_headers ", require("cjson.safe").encode({ uri = ngx.var.request_uri, headers = out }))
+        end
+      }
+{% endif %}
 spec:
   tls:
 {% for entree in judilibre_search_ingress_hosts %}
