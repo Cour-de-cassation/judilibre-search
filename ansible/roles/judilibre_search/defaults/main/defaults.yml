@@ -92,6 +92,20 @@ judilibre_search_ingress_acme_relay_name: "{{ judilibre_search_app_id }}-acme-re
 judilibre_search_ingress_export_limit: {}
 judilibre_search_ingress_export_name: "{{ judilibre_search_app_id }}-export-route"
 
+# Diagnostic temporaire des en-têtes reçus (ceux qu'ajoute PISTE, notamment).
+# Renseigné, les Ingress (principal et /export) écrivent, pour les seules
+# requêtes dont l'user-agent vaut exactement cette valeur, une ligne "piste_headers {...}"
+# (URL et tous les en-têtes, en JSON) dans les logs des pods nginx-ingress
+# (kube-system), au niveau notice ; les autres requêtes ne changent pas.
+# N'importe qui peut envoyer cet user-agent : à vider une fois l'analyse finie.
+# Vide : pas de snippet (et retiré s'il existait).
+judilibre_search_ingress_debug_headers_user_agent: ""
+# En-têtes écrits "***" au lieu de leur valeur (noms insensibles à la casse).
+judilibre_search_ingress_debug_headers_masked:
+  - authorization
+  - proxy-authorization
+  - cookie
+
 # Accès à Elasticsearch (utilisateur, rôle, URL de connexion), géré par le rôle
 # là où il en est la source de vérité (plateforme publique). En privé, l'URL
 # passe par judilibre_search_secrets.

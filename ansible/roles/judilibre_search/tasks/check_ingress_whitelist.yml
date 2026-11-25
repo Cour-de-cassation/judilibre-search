@@ -35,3 +35,16 @@
       {{ judilibre_search_ingress_invalid }} entrée(s) qui ne sont ni une IPv4
       ni un CIDR de /8 à /32.
     success_msg: "{{ judilibre_search_ingress_ranges | length }} entrées dans la whitelist."
+
+# La valeur est recopiée dans du code Lua (configuration-snippet) : seuls des
+# caractères sans effet dans une chaîne Lua sont acceptés.
+- name: Diagnostic des en-têtes — contrôle de l'user-agent et des en-têtes masqués
+  ansible.builtin.assert:
+    that:
+      - judilibre_search_ingress_debug_headers_user_agent is match('^[A-Za-z0-9._/-]*$')
+      - judilibre_search_ingress_debug_headers_masked | reject('match', '^[A-Za-z0-9_-]+$') | list | length == 0
+    fail_msg: >-
+      judilibre_search_ingress_debug_headers_user_agent ou
+      judilibre_search_ingress_debug_headers_masked contient des caractères
+      non autorisés (lettres, chiffres, . _ / - seulement).
+  when: judilibre_search_ingress_debug_headers_user_agent | length > 0

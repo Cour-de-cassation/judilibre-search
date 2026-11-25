@@ -12,6 +12,7 @@ metadata:
       location @forbidden {
         return 301 {{ judilibre_search_ingress_forbidden_redirect }};
       }
+{% include 'debug-headers-snippet.yaml.j2' %}
 spec:
   tls:
 {% for entree in judilibre_search_ingress_hosts %}

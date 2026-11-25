@@ -5,7 +5,9 @@
    Les limites s'appliquent par IP source et par pod nginx : PISTE arrivant sur
    peu d'adresses, elles plafonnent l'ensemble de ses exports, ce qui est le
    but (protéger Elasticsearch). Le server-snippet reste sur l'Ingress
-   principal : il vaut pour tout le serveur et ne doit pas être déclaré deux fois. #}
+   principal : il vaut pour tout le serveur et ne doit pas être déclaré deux fois.
+   Le diagnostic des en-têtes (debug-headers-snippet.yaml.j2) est en revanche
+   repris ici : il est propre à chaque chemin. #}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -18,6 +20,7 @@ metadata:
     nginx.ingress.kubernetes.io/limit-connections: "{{ judilibre_search_ingress_export_limit.connections }}"
     nginx.ingress.kubernetes.io/limit-rpm: "{{ judilibre_search_ingress_export_limit.rpm }}"
     nginx.ingress.kubernetes.io/limit-burst-multiplier: "{{ judilibre_search_ingress_export_limit.burst_multiplier }}"
+{% include 'debug-headers-snippet.yaml.j2' %}
 spec:
   tls:
 {% for entree in judilibre_search_ingress_hosts %}
